@@ -1,0 +1,1 @@
+<div class='toast-container position-fixed bottom-0 end-0 p-3' data-toast-container>@if(session('status'))<div class='toast show lokantara-toast' role='status'><div class='toast-body'>{{ session('status') }}</div><button type='button' class='btn-close' data-bs-dismiss='toast' aria-label='Tutup'></button></div>@endif</div>

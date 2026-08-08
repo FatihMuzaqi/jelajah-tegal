@@ -1,0 +1,2 @@
+@props(['name','label','type'=>'text','value'=>null,'hint'=>null])
+<div class='form-field'><label for='{{ $name }}'>{{ $label }}</label><input id='{{ $name }}' name='{{ $name }}' type='{{ $type }}' value='{{ old($name,$value) }}' {{ $attributes->class(['form-control','is-invalid'=>$errors->has($name)]) }}>@error($name)<div class='invalid-feedback'>{{ $message }}</div>@enderror@if($hint)<small>{{ $hint }}</small>@endif</div>

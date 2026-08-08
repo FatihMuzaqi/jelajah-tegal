@@ -1,0 +1,5 @@
+<?php
+namespace App\Http\Requests;
+use Illuminate\Foundation\Http\FormRequest;use Illuminate\Validation\Rule;
+class SaveVoucherRequest extends FormRequest
+{public function authorize():bool{return $this->user()?->can('vouchers.manage')??false;}public function rules():array{return['code'=>'required|alpha_dash|max:64','name'=>'required|string|max:191','discount_type'=>['required',Rule::in(['flat','percentage'])],'flat_amount'=>'nullable|required_if:discount_type,flat|numeric|min:0.01','percentage_basis_points'=>'nullable|required_if:discount_type,percentage|integer|between:1,10000','maximum_discount_amount'=>'nullable|numeric|min:0.01','minimum_order_amount'=>'required|numeric|min:0','usage_limit'=>'nullable|integer|min:1','per_user_limit'=>'required|integer|min:1','starts_at'=>'required|date','ends_at'=>'required|date|after:starts_at','status'=>['required',Rule::in(['draft','active','paused'])],'service_type_ids'=>'required|array|min:1','service_type_ids.*'=>'exists:service_types,id'];}}

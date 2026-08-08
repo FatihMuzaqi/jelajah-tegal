@@ -1,0 +1,2 @@
+@props(['label','value'=>null,'tone'=>'primary','caption'=>null])
+<article class='stat-card tone-{{ $tone }}'><div class='stat-icon' aria-hidden='true'>{{ strtoupper(substr($label,0,1)) }}</div><div class='stat-copy'><span>{{ $label }}</span>@if($value===null)<strong>—</strong>@else<strong>{{ is_numeric($value)?number_format($value,0,',','.'):$value }}</strong>@endif@if($caption)<small>{{ $caption }}</small>@endif</div></article>

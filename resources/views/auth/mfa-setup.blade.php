@@ -1,0 +1,1 @@
+@extends('layouts.app') @section('content')<h1>Aktifkan MFA Admin</h1><code>{{ $secret }}</code><form method=POST action={{ route('mfa.confirm') }}>@csrf<input name=code inputmode=numeric><button>Konfirmasi</button></form>@endsection
