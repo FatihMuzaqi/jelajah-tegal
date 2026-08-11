@@ -58,21 +58,34 @@ class PublicPortalController extends Controller
             ['label' => 'Lokasi tersedia', 'value' => (clone $visibleMitraQuery)->whereNotNull('region_id')->distinct()->count('region_id')],
             ['label' => 'Layanan aktif', 'value' => ServiceType::query()->whereHas('categories', fn ($query) => $query->where('is_active', true))->count()],
         ];
-        $featuredAccommodations = $this->flags->enabled('public-accommodation')
-            ? CatalogEntity::publicAccommodation()->with(['region', 'accommodation.rooms.offer'])->orderByDesc('is_featured')->latest('published_at')->limit(4)->get()
-            : collect();
+        $featuredTourisms = CatalogEntity::publicTourism()
+            ->with(['region', 'category', 'media', 'tourism', 'mitra', 'offers'])
+            ->orderByDesc('is_featured')
+            ->latest('published_at')
+            ->limit(6)
+            ->get();
+
+        $featuredAccommodations = CatalogEntity::publicAccommodation()
+            ->with(['region', 'category', 'accommodation.rooms.offer', 'media', 'mitra'])
+            ->orderByDesc('is_featured')
+            ->latest('published_at')
+            ->limit(4)
+            ->get();
+
+        $allRegions = Region::orderBy('name')->get(['id', 'name', 'code']);
 
         return view('public.home', [
             'mitras' => $mitras,
             'services' => $services,
             'categories' => $categories,
-            'regions' => $regions,
+            'regions' => $allRegions,
             'stats' => $stats,
             'filters' => $filters,
             'domains' => config('public-portal.domains'),
             'aiPlannerEnabled' => $this->flags->enabled('public-ai-planner'),
             'newsletterEnabled' => $this->flags->enabled('public-newsletter'),
             'faq' => $this->publishedSetting('public.faq'),
+            'featuredTourisms' => $featuredTourisms,
             'featuredAccommodations' => $featuredAccommodations,
         ]);
     }

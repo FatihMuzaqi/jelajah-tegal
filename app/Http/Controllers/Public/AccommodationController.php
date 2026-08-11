@@ -94,8 +94,9 @@ class AccommodationController extends Controller
     public function room(string $slug, AccommodationRoom $room): View
     {
         abort_unless($this->flags->enabled('public-accommodation'), 404);
-        $accommodation = CatalogEntity::publicAccommodation()->where('slug', $slug)->with('accommodation')->firstOrFail();
+        $accommodation = CatalogEntity::publicAccommodation()->where('slug', $slug)->with(['accommodation', 'mitra', 'region', 'category', 'location', 'media'])->firstOrFail();
         abort_unless($room->accommodation_id === $accommodation->accommodation->id && $room->status === 'active' && $room->offer->status === 'active', 404);
+        $room->load(['facilities', 'media', 'offer.availabilities']);
 
         return view('public.accommodation.room', compact('accommodation', 'room'));
     }

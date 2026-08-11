@@ -56,6 +56,16 @@ class Mitra extends Model
         return $this->hasMany(MediaAsset::class);
     }
 
+    public function logoMedia(): BelongsTo
+    {
+        return $this->belongsTo(MediaAsset::class, 'logo_media_id');
+    }
+
+    public function bannerMedia(): BelongsTo
+    {
+        return $this->belongsTo(MediaAsset::class, 'banner_media_id');
+    }
+
     public function featureRequests(): HasMany
     {
         return $this->hasMany(MitraFeatureRequest::class);

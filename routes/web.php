@@ -5,6 +5,7 @@ use App\Http\Controllers\NavigationController;
 use App\Http\Controllers\Public\AccommodationController;
 use App\Http\Controllers\Public\CulinaryController;
 use App\Http\Controllers\Public\EventController;
+use App\Http\Controllers\Public\PublicMitraController;
 use App\Http\Controllers\Public\PublicPortalController;
 use App\Http\Controllers\Public\RentalController;
 use App\Http\Controllers\Public\TourismController;
@@ -18,6 +19,7 @@ Route::get('/kebijakan-privasi', [PublicPortalController::class, 'privacy'])->na
 Route::get('/syarat-ketentuan', [PublicPortalController::class, 'terms'])->name('public.terms');
 Route::get('/mitra/activation/{token}', [MitraActivationController::class, 'show'])->name('mitra.activation.show');
 Route::post('/mitra/activation/{token}', [MitraActivationController::class, 'store'])->name('mitra.activation.store')->middleware('throttle:6,1');
+Route::get('/mitra-profil/{slug}', [PublicMitraController::class, 'show'])->name('public.mitra.show');
 
 Route::get('/wisata', [TourismController::class, 'index'])->name('tourism.index');
 Route::get('/wisata/{slug}', [TourismController::class, 'show'])->name('tourism.show');

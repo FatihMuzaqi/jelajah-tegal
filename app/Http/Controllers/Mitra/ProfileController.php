@@ -22,7 +22,7 @@ class ProfileController extends Controller
 
     public function edit(Request $request): View
     {
-        $mitra = $this->activeMitra($request)->load(['region:id,name', 'features.serviceType:id,name', 'operatingHours']);
+        $mitra = $this->activeMitra($request)->load(['region:id,name', 'features.serviceType:id,name', 'operatingHours', 'logoMedia', 'bannerMedia']);
         $commission = ApplicationSetting::query()->forMitra($mitra)->where('key_name', 'finance.commission_rate')->where('is_secret', false)->value('value_json');
 
         return view('mitra.profile.edit', ['mitra' => $mitra, 'regions' => Region::query()->orderBy('name')->get(['id', 'name']), 'commission' => $commission]);

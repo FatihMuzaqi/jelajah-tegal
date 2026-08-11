@@ -1,9 +1,378 @@
 @extends('layouts.public')
-@section('title',$item->name.' — Lokantara') @section('meta-description',str($item->description)->limit(155))
+
+@section('title', $item->name . ' — ' . $title . ' Jelajah Tegal')
+@section('meta-description', str($item->description ?: 'Detail informasi, menu, tarif, dan lokasi ' . $item->name . ' di Tegal.')->limit(155))
+@section('canonical', route($routePrefix . '.show', $item->slug))
+
 @section('content')
-<section class="public-section"><div class="container public-container"><a href="{{ route($routePrefix.'.index') }}">← Kembali ke {{ strtolower($title) }}</a><div class="section-heading mt-3"><div><p class="public-eyebrow">{{ $title }}</p><h1>{{ $item->name }}</h1><p>{{ $item->address }}</p></div><x-status-badge status="published" /></div><div class="content-card mb-4"><p>{{ $item->description }}</p></div>
-@if($routePrefix==='culinary')<div class="content-card"><h2>Menu</h2>@forelse($item->culinary->menuCategories as $category)<h3>{{ $category->name }}</h3><ul>@foreach($category->items->where('status','active') as $menu)<li>{{ $menu->name }} — Rp {{ number_format($menu->price,0,',','.') }} @if($menu->is_featured)<span class="badge text-bg-warning">Unggulan</span>@endif</li>@endforeach</ul>@empty<x-empty-state title="Menu belum tersedia" compact />@endforelse</div>@endif
-@if($routePrefix==='event')<div class="content-card"><h2>Jadwal</h2>@forelse($item->event->schedules as $schedule)<p><strong>{{ $schedule->title }}</strong> · {{ $schedule->starts_at->format('d M Y H:i') }}</p>@empty<x-empty-state title="Jadwal belum tersedia" compact />@endforelse<h2>Tiket</h2>@foreach($item->event->ticketTypes as $type)<p>{{ $type->name }} — Rp {{ number_format($type->offer->price,0,',','.') }} · sisa {{ max(0,$type->quota-$type->issued_quantity) }}</p>@endforeach</div>@endif
-@if($routePrefix==='rental')<div class="content-card"><h2>Tarif</h2>@foreach($item->rentalVehicle->rates as $rate)<p>{{ str($rate->drive_mode)->headline() }} — Rp {{ number_format($rate->offer->price,0,',','.') }}/{{ $rate->duration_value }} {{ $rate->duration_unit }}</p>@endforeach<p>Deposit: Rp {{ number_format($item->rentalVehicle->deposit_amount,0,',','.') }}</p></div>@endif
-<div class="content-card mt-4"><h2>Ulasan</h2>@forelse($item->reviews as $review)<article class="mb-3"><strong>{{ $review->rating }}/5</strong><p>{{ $review->body }}</p>@if($review->reply)<blockquote>{{ $review->reply->body }}</blockquote>@endif</article>@empty<x-empty-state title="Belum ada ulasan published" compact />@endforelse</div></div></section>
+<!-- Leaflet Map Assets -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<style>
+/* Hero Header */
+.cd-hero-section {
+    background: linear-gradient(135deg, #092018 0%, #134032 55%, #1b634b 100%);
+    color: #ffffff;
+    padding: 45px 0 65px;
+    position: relative;
+    overflow: hidden;
+}
+.cd-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at 80% 20%, rgba(242,169,59,0.15) 0%, transparent 60%);
+}
+.cd-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: rgba(255,255,255,0.75);
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+.cd-breadcrumbs a {
+    color: rgba(255,255,255,0.85);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.cd-breadcrumbs a:hover {
+    color: #f2a93b;
+}
+.cd-card {
+    background: var(--lokantara-surface);
+    border: 1px solid var(--lokantara-border);
+    border-radius: 20px;
+    padding: 26px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(17,26,24,0.03);
+}
+.cd-card-title {
+    font-size: 19px;
+    font-weight: 800;
+    color: var(--lokantara-text);
+    margin: 0 0 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+#cd-interactive-map {
+    height: 280px;
+    width: 100%;
+    border-radius: 16px;
+    z-index: 1;
+}
+</style>
+
+<!-- Hero Section -->
+<section class="cd-hero-section">
+    <div class="cd-hero-overlay"></div>
+    <div class="container public-container position-relative" style="z-index: 2;">
+        <!-- Breadcrumbs -->
+        <nav class="cd-breadcrumbs" aria-label="Breadcrumb">
+            <a href="{{ route('home') }}">Beranda</a>
+            <span>/</span>
+            <a href="{{ route($routePrefix . '.index') }}">{{ $title }}</a>
+            <span>/</span>
+            <span class="text-white fw-semibold">{{ $item->name }}</span>
+        </nav>
+
+        <div class="row align-items-center g-4">
+            <div class="col-lg-7">
+                <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                    <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
+                        ✔ Terverifikasi Resmi
+                    </span>
+                    <span class="badge" style="background: rgba(45,140,168,0.3); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); border-radius: 99px; font-size: 11px;">
+                        📍 {{ $item->region?->name ?? 'Tegal' }}
+                    </span>
+                    <span class="badge" style="background: rgba(242,169,59,0.25); color: #fbd38d; border: 1px solid rgba(242,169,59,0.4); border-radius: 99px; font-size: 11px;">
+                        🏷️ {{ $item->category?->name ?? $title }}
+                    </span>
+                </div>
+
+                <h1 class="fs-1 fw-bold text-white mb-2">{{ $item->name }}</h1>
+                
+                <div class="d-flex align-items-center gap-2 mb-3 text-white-50" style="font-size: 14px;">
+                    <div class="d-flex align-items-center text-warning gap-1">
+                        ★ <strong class="text-white">{{ number_format($item->rating_average, 1) }}</strong>
+                    </div>
+                    <span>·</span>
+                    <span>{{ $item->reviews->count() }} Ulasan Wisatawan</span>
+                    <span>·</span>
+                    <span>Dikelola oleh: <strong>{{ $item->mitra?->display_name ?? 'Mitra Jelajah Tegal' }}</strong></span>
+                </div>
+
+                <p class="text-white-50 mb-0" style="font-size: 14px; max-width: 650px;">
+                    {{ $item->description ?: 'Layanan ' . strtolower($title) . ' unggulan di Tegal.' }}
+                </p>
+            </div>
+
+            <!-- Cover Photo Box -->
+            <div class="col-lg-5">
+                @php
+                    $cover = $item->media->where('pivot.role', 'cover')->first() ?? $item->media->first();
+                    $coverUrl = $cover ? asset('storage/' . $cover->object_key) : null;
+                @endphp
+                <div style="border-radius: 20px; overflow: hidden; height: 260px; box-shadow: 0 20px 40px rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.2); background: #174d3c;">
+                    @if($coverUrl)
+                        <img src="{{ $coverUrl }}" alt="{{ $item->name }}" style="width: 100%; height: 100%; object-fit: cover;">
+                    @else
+                        <div style="width: 100%; height: 100%; display: grid; place-items: center; color: #fff; font-size: 48px;">
+                            @if($routePrefix === 'culinary') 🍲 @elseif($routePrefix === 'event') 🎪 @else 🚗 @endif
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Main Details Section -->
+<section class="public-section pt-4">
+    <div class="container public-container">
+        <div class="row g-4">
+            <!-- Left Main Column (8 Cols) -->
+            <div class="col-lg-8">
+                <!-- 1. Deskripsi & Foto Galeri -->
+                <div class="cd-card">
+                    <h2 class="cd-card-title"><span>📖</span> Tentang {{ $item->name }}</h2>
+                    <p style="color: var(--lokantara-muted); line-height: 1.7; font-size: 14px;">
+                        {{ $item->description ?: 'Informasi lengkap mengenai tempat ini sedang dipersiapkan oleh Mitra pengelola.' }}
+                    </p>
+
+                    @if($item->media->where('pivot.role', 'gallery')->isNotEmpty())
+                        <h4 class="fs-6 fw-bold mt-4 mb-2">Galeri Foto:</h4>
+                        <div class="row g-2">
+                            @foreach($item->media->where('pivot.role', 'gallery') as $gal)
+                                <div class="col-4">
+                                    <div style="height: 110px; border-radius: 10px; overflow: hidden;">
+                                        <img src="{{ asset('storage/' . $gal->object_key) }}" alt="Galeri" style="width: 100%; height: 100%; object-fit: cover;">
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                </div>
+
+                <!-- 2. Khusus KULINER: Buku Menu Makanan & Minuman -->
+                @if($routePrefix === 'culinary' && $item->culinary)
+                    <div class="cd-card">
+                        <h2 class="cd-card-title"><span>🍲</span> Daftar Menu & Harga</h2>
+
+                        @forelse($item->culinary->menuCategories as $cat)
+                            <div class="mb-4">
+                                <h3 class="fs-6 fw-bold text-dark mb-3 pb-2 border-bottom">
+                                    🍽️ {{ $cat->name }}
+                                </h3>
+
+                                <div class="row g-3">
+                                    @forelse($cat->items->where('status', 'active') as $menu)
+                                        <div class="col-md-6">
+                                            <div class="p-3 rounded-3 h-100 d-flex flex-column justify-content-between" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
+                                                <div>
+                                                    <div class="d-flex align-items-center justify-content-between mb-1">
+                                                        <strong class="text-dark">{{ $menu->name }}</strong>
+                                                        @if($menu->is_featured)
+                                                            <span class="badge bg-warning text-dark" style="font-size: 10px;">Favorit</span>
+                                                        @endif
+                                                    </div>
+                                                    <p class="text-muted mb-2" style="font-size: 12px;">{{ $menu->description ?: 'Menu khas pilihan lezat.' }}</p>
+                                                </div>
+                                                <div class="fw-bold" style="color: var(--lokantara-primary); font-size: 14px;">
+                                                    Rp {{ number_format($menu->price, 0, ',', '.') }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @empty
+                                        <div class="col-12"><small class="text-muted">Menu belum ditambahkan.</small></div>
+                                    @endforelse
+                                </div>
+                            </div>
+                        @empty
+                            <x-empty-state title="Menu Belum Tersedia" description="Mitra sedang melengkapi daftar menu makanan & minuman." compact />
+                        @endforelse
+                    </div>
+
+                    <!-- Form Reservasi Meja jika Menerima Reservasi -->
+                    @if($item->culinary->accepts_reservations)
+                        <div class="cd-card">
+                            <h2 class="cd-card-title"><span>🪑</span> Reservasi Meja / Slot Waktu</h2>
+                            <p class="text-muted" style="font-size: 13px;">Pesan tempat Anda terlebih dahulu untuk kenyamanan bersantap bersama keluarga.</p>
+
+                            @if($item->culinary->tableSlots->isEmpty())
+                                <div class="p-3 rounded bg-light text-muted" style="font-size: 13px;">
+                                    Saat ini belum ada slot jadwal reservasi yang dibuka. Silakan hubungi langsung pihak tempat makan.
+                                </div>
+                            @else
+                                <div class="d-flex flex-column gap-3">
+                                    @foreach($item->culinary->tableSlots as $slot)
+                                        <div class="p-3 rounded-3 border d-flex flex-wrap align-items-center justify-content-between gap-2" style="background: var(--lokantara-background);">
+                                            <div>
+                                                <strong>📅 {{ $slot->service_date?->format('d M Y') }}</strong> · Jam {{ $slot->start_time }} - {{ $slot->end_time }}
+                                                <small class="text-muted d-block">Kapasitas meja: {{ $slot->capacity }} orang</small>
+                                            </div>
+                                            @auth
+                                                <form method="POST" action="{{ route('culinary.reserve', [$item->slug, $slot]) }}">
+                                                    @csrf
+                                                    <input type="hidden" name="party_size" value="2">
+                                                    <button class="btn btn-sm btn-lokantara fw-bold px-3">
+                                                        Pesan Slot Ini
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <a href="{{ route('login') }}" class="btn btn-sm btn-outline-lokantara">
+                                                    Login untuk Reservasi
+                                                </a>
+                                            @endauth
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+                @endif
+
+                <!-- 3. Khusus EVENT -->
+                @if($routePrefix === 'event' && $item->event)
+                    <div class="cd-card">
+                        <h2 class="cd-card-title"><span>🎫</span> Tiket & Jadwal Event</h2>
+                        @foreach($item->event->ticketTypes as $type)
+                            <div class="p-3 rounded-3 mb-2 d-flex align-items-center justify-content-between" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
+                                <div>
+                                    <strong>{{ $type->name }}</strong>
+                                    <small class="text-muted d-block">Sisa kuota: {{ max(0, $type->quota - $type->issued_quantity) }} tiket</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold fs-5" style="color: var(--lokantara-primary);">Rp {{ number_format($type->offer->price, 0, ',', '.') }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <!-- 4. Khusus RENTAL -->
+                @if($routePrefix === 'rental' && $item->rentalVehicle)
+                    <div class="cd-card">
+                        <h2 class="cd-card-title"><span>🚗</span> Tarif Sewa Armada</h2>
+                        @foreach($item->rentalVehicle->rates as $rate)
+                            <div class="p-3 rounded-3 mb-2 d-flex align-items-center justify-content-between" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
+                                <div>
+                                    <strong class="fs-6">{{ str($rate->drive_mode)->headline() }}</strong>
+                                    <small class="text-muted d-block">Durasi: {{ $rate->duration_value }} {{ str($rate->duration_unit)->headline() }}</small>
+                                </div>
+                                <div class="text-end">
+                                    <div class="fw-bold fs-5" style="color: var(--lokantara-primary);">Rp {{ number_format($rate->offer->price, 0, ',', '.') }}</div>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+
+                <!-- 5. Ulasan Pengunjung -->
+                <div class="cd-card">
+                    <h2 class="cd-card-title"><span>⭐</span> Ulasan Pengunjung ({{ $item->reviews->count() }})</h2>
+
+                    @forelse($item->reviews as $review)
+                        <div class="p-3 rounded-3 mb-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
+                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                <strong class="text-dark">{{ $review->user?->name ?? 'Pengunjung' }}</strong>
+                                <span class="text-warning">★ {{ $review->rating }}/5</span>
+                            </div>
+                            <p class="text-muted mb-2" style="font-size: 13px;">{{ $review->body }}</p>
+
+                            @if($review->reply)
+                                <div class="p-2 rounded mt-2 border-start border-3 border-success" style="background: #f0fdf4; font-size: 12px;">
+                                    <strong>Balasan Pengelola:</strong> {{ $review->reply->body }}
+                                </div>
+                            @endif
+                        </div>
+                    @empty
+                        <x-empty-state title="Belum Ada Ulasan" description="Jadilah yang pertama memberikan ulasan setelah berkunjung." compact />
+                    @endforelse
+
+                    @auth
+                        <hr class="my-4">
+                        <h4 class="fs-6 fw-bold mb-2">Tulis Ulasan Anda</h4>
+                        <form method="POST" action="{{ route($routePrefix . '.reviews.store', $item->slug) }}">
+                            @csrf
+                            <div class="row g-2 mb-2">
+                                <div class="col-md-3">
+                                    <select class="form-select form-select-sm" name="rating" required>
+                                        <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+                                        <option value="4">⭐⭐⭐⭐ (4/5)</option>
+                                        <option value="3">⭐⭐⭐ (3/5)</option>
+                                        <option value="2">⭐⭐ (2/5)</option>
+                                        <option value="1">⭐ (1/5)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-9">
+                                    <textarea class="form-control form-control-sm" name="body" rows="2" placeholder="Ceritakan pengalaman Anda..." required></textarea>
+                                </div>
+                            </div>
+                            <button class="btn btn-sm btn-lokantara fw-bold">Kirim Ulasan</button>
+                        </form>
+                    @endauth
+                </div>
+            </div>
+
+            <!-- Right Sidebar (4 Cols) -->
+            <div class="col-lg-4">
+                <!-- Location & Interactive Map Card -->
+                <div class="cd-card" style="position: sticky; top: 90px;">
+                    <h3 class="fs-6 fw-bold mb-3">Lokasi & Petunjuk Arah</h3>
+                    
+                    @php
+                        $lat = $item->location?->latitude ?? -6.8730933;
+                        $lng = $item->location?->longitude ?? 109.2541104;
+                    @endphp
+
+                    <!-- Interactive Map Container -->
+                    <div id="cd-interactive-map" class="mb-3"></div>
+
+                    <div class="mb-3">
+                        <strong class="d-block" style="font-size: 12px; color: var(--lokantara-muted); text-transform: uppercase;">Alamat:</strong>
+                        <p class="mb-0 text-dark" style="font-size: 13px;">{{ $item->address ?: 'Wilayah Tegal' }}</p>
+                    </div>
+
+                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ $lat }},{{ $lng }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-lokantara w-100 fw-bold py-2 fs-7 d-flex align-items-center justify-content-center gap-2 mb-3">
+                        <span>🗺️</span> Buka Google Maps &rarr;
+                    </a>
+
+                    <hr>
+
+                    <div class="d-flex align-items-center gap-2">
+                        <div style="width: 42px; height: 42px; border-radius: 10px; background: #134032; color: #fff; display: grid; place-items: center; font-weight: bold;">
+                            {{ str($item->mitra?->display_name ?? 'M')->substr(0,1)->upper() }}
+                        </div>
+                        <div>
+                            <small class="text-muted d-block" style="font-size: 11px;">Dikelola oleh:</small>
+                            <a href="{{ route('public.mitra.show', $item->mitra?->slug ?? 'lokantara') }}" class="text-decoration-none fw-bold text-dark">
+                                {{ $item->mitra?->display_name ?? 'Mitra Jelajah Tegal' }} &rarr;
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Leaflet Map Script -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const lat = {{ $lat }};
+    const lng = {{ $lng }};
+    const map = L.map('cd-interactive-map').setView([lat, lng], 14);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+    }).addTo(map);
+
+    const marker = L.marker([lat, lng]).addTo(map);
+    marker.bindPopup("<b>{{ addslashes($item->name) }}</b><br>{{ addslashes($item->address ?? 'Tegal') }}").openPopup();
+});
+</script>
 @endsection

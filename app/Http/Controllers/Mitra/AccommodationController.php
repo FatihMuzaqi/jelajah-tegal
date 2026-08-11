@@ -32,7 +32,7 @@ class AccommodationController extends Controller
     public function index(Request $request): View
     {
         abort_unless($request->user()->can('accommodation.manage'), 403);
-        $items = CatalogEntity::where('mitra_id', $this->activeMitra($request)->id)->whereHas('serviceType', fn ($q) => $q->where('code', 'accommodation'))->latest()->paginate(15);
+        $items = CatalogEntity::where('mitra_id', $this->activeMitra($request)->id)->whereHas('serviceType', fn($q) => $q->where('code', 'accommodation'))->latest()->paginate(15);
 
         return view('mitra.accommodation.index', compact('items'));
     }
@@ -101,7 +101,8 @@ class AccommodationController extends Controller
         DB::transaction(function () use ($accommodation, $asset, $data, $audit, $request) {
             if ($data['role'] === 'cover') {
                 $accommodation->media()->wherePivot('role', 'cover')->detach();
-            } $sort = (int) DB::table('catalog_media')->where('catalog_entity_id', $accommodation->id)->max('sort_order') + 1;
+            }
+            $sort = (int) DB::table('catalog_media')->where('catalog_entity_id', $accommodation->id)->max('sort_order') + 1;
             $accommodation->media()->attach($asset->id, ['role' => $data['role'], 'sort_order' => $sort, 'caption' => $data['caption'] ?? null]);
             $audit->record('accommodation.media_added', $accommodation, [], ['media_asset_id' => $asset->id], $request->user());
         });
@@ -152,7 +153,8 @@ class AccommodationController extends Controller
         DB::transaction(function () use ($room, $asset, $data) {
             if ($data['role'] === 'cover') {
                 $room->media()->wherePivot('role', 'cover')->detach();
-            }$sort = (int) DB::table('accommodation_room_media')->where('accommodation_room_id', $room->id)->max('sort_order') + 1;
+            }
+            $sort = (int) DB::table('accommodation_room_media')->where('accommodation_room_id', $room->id)->max('sort_order') + 1;
             $room->media()->attach($asset->id, ['role' => $data['role'], 'sort_order' => $sort, 'caption' => $data['caption'] ?? null]);
         });
 
@@ -172,7 +174,7 @@ class AccommodationController extends Controller
         $this->roomOwned($request, $accommodation, $room);
         $count = $action->execute($room, $request->validated());
 
-        return back()->with('status', $count.' tanggal diperbarui.');
+        return back()->with('status', $count . ' tanggal diperbarui.');
     }
 
     private function owned(Request $request, CatalogEntity $entity): void
