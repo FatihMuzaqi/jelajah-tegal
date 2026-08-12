@@ -15,41 +15,74 @@
  <meta property='og:description' content='{{ trim($__env->yieldContent('meta-description','Temukan Mitra dan layanan lokal wisata, penginapan, kuliner, dan event yang telah tersedia di Jelajah Tegal.')) }}'>
  <meta property='og:url' content='{{ url()->current() }}'>
  <meta property='og:image' content='{{ asset('images/logo.png') }}'>
+ <!-- Icon Libraries: Font Awesome 6 & Bootstrap Icons -->
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" crossorigin="anonymous">
  @vite(['resources/css/app.css','resources/js/app.js'])
  @livewireStyles
 </head>
 <body class='public-body'>
  <a class='skip-link' href='#main-content'>Lewati ke konten</a>
- <header class='public-header'>
-  <nav class='navbar navbar-expand-lg public-navbar' aria-label='Navigasi publik'>
+ <header class='public-header sticky-top bg-white border-bottom shadow-sm'>
+  <nav class='navbar navbar-expand-lg public-navbar py-2' aria-label='Navigasi publik'>
    <div class='container public-container'>
-    <a href='{{ route('home') }}' class='brand-mark public-brand d-flex align-items-center gap-2' aria-label='Jelajah Tegal beranda'>
+    <a href='{{ route('home') }}' class='brand-mark public-brand d-flex align-items-center gap-2 text-decoration-none' aria-label='Jelajah Tegal beranda'>
       <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal' style='height:42px; width:auto; object-fit:contain; border-radius:8px;'>
-      <span class='brand-text-title fw-bold text-dark fs-5'>Jelajah Tegal</span>
+      <div class="d-flex flex-column">
+        <span class='brand-text-title fw-extrabold text-dark fs-5 lh-1'>Jelajah Tegal</span>
+        <small class="text-muted fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Jelajah • Nikmati • Kenali</small>
+      </div>
     </a>
-    <button class='navbar-toggler' type='button' data-bs-toggle='collapse' data-bs-target='#public-navigation' aria-controls='public-navigation' aria-expanded='false' aria-label='Buka navigasi'><span class='navbar-toggler-icon'></span></button>
+    <button class='navbar-toggler border-0 p-2 shadow-none' type='button' data-bs-toggle='collapse' data-bs-target='#public-navigation' aria-controls='public-navigation' aria-expanded='false' aria-label='Buka navigasi'><span class='navbar-toggler-icon'></span></button>
     <div class='collapse navbar-collapse' id='public-navigation'>
-      <ul class='navbar-nav mx-auto'>
-       <li class='nav-item'><a class='nav-link' href='{{ route('home') }}'>Beranda</a></li>
-       <li class='nav-item'><a class='nav-link' href='{{ route('tourism.index') }}'>Wisata</a></li>
-       <li class='nav-item'><a class='nav-link' href='{{ route('accommodation.index') }}'>Penginapan</a></li>
-       <li class='nav-item'><a class='nav-link' href='{{ route('culinary.index') }}'>Kuliner</a></li>
-       <li class='nav-item'><a class='nav-link' href='{{ route('event.index') }}'>Event</a></li>
-       <li class='nav-item'><a class='nav-link' href='{{ route('rental.index') }}'>Rental</a></li>
-       <li class='nav-item'><a class='nav-link' href='{{ route('public.about') }}'>Tentang</a></li>
+      <ul class='navbar-nav mx-auto gap-1 gap-lg-2 fw-semibold my-2 my-lg-0'>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('home') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('home') }}'>Beranda</a>
+       </li>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('tourism.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('tourism.index') }}'>Wisata</a>
+       </li>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('accommodation.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('accommodation.index') }}'>Penginapan</a>
+       </li>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('culinary.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('culinary.index') }}'>Kuliner</a>
+       </li>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('event.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('event.index') }}'>Event</a>
+       </li>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('rental.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('rental.index') }}'>Rental</a>
+       </li>
+       <li class='nav-item dropdown'>
+         <a class='nav-link dropdown-toggle px-3 py-2 rounded-3 d-flex align-items-center gap-1' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'>
+             Informasi
+         </a>
+         <ul class='dropdown-menu border-0 shadow-sm rounded-3 mt-1'>
+           <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}'><i class="fa-solid fa-circle-info text-success me-2"></i>Tentang</a></li>
+           <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}'><i class="fa-solid fa-circle-question text-info me-2"></i>FAQ</a></li>
+           <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}'><i class="fa-solid fa-envelope text-warning me-2"></i>Kontak</a></li>
+         </ul>
+       </li>
       </ul>
-      <div class='public-nav-actions d-flex align-items-center gap-2'>
-       <button class='icon-button' type='button' data-theme-toggle aria-label='Ubah tema'><span aria-hidden='true'>◐</span></button>
-       @guest
-        <a class='btn btn-outline-lokantara' href='{{ route('login') }}'>Masuk</a>
-        <a class='btn btn-lokantara' href='{{ route('register') }}'>Daftar</a>
-       @else
-        <div class="dropdown">
-          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center gap-2 px-3 py-1 rounded-pill" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 13px; font-weight: 600; border-color: var(--lokantara-border);">
+     <div class='public-nav-actions d-flex align-items-center gap-2'>
+      <div class="d-flex align-items-center justify-content-between w-100 d-lg-none mb-2">
+        <span class="fs-8 text-muted fw-bold text-uppercase">Ubah Tema</span>
+        <button class='icon-button' type='button' data-theme-toggle aria-label='Ubah tema'><span aria-hidden='true'>◐</span></button>
+      </div>
+      <button class='icon-button me-2 d-none d-lg-inline-flex' type='button' data-theme-toggle aria-label='Ubah tema'><span aria-hidden='true'>◐</span></button>
+      @guest
+        <a class='btn btn-outline-dark rounded-pill px-4 fw-bold text-center py-2' href='{{ route('login') }}'>
+            <i class="fa-regular fa-user me-1"></i> Masuk
+        </a>
+        <a class='btn btn-emerald rounded-pill px-4 fw-bold text-white text-center py-2' style="background: #047857;" href='{{ route('register') }}'>Daftar</a>
+      @else
+        <div class="dropdown w-100 w-lg-auto">
+          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center justify-content-center gap-2 px-3 py-2 rounded-pill w-100 w-lg-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 13px; font-weight: 600; border-color: var(--lokantara-border);">
             <span class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle" style="width: 26px; height: 26px; font-size: 12px;">
               {{ str(auth()->user()->name)->substr(0,1)->upper() }}
             </span>
-            <span class="d-none d-md-inline">{{ auth()->user()->name }}</span>
+            <span>{{ auth()->user()->name }}</span>
           </button>
           <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 14px; min-width: 220px; font-size: 13px;">
             <li class="px-3 py-2 border-bottom">
@@ -68,10 +101,10 @@
             </li>
           </ul>
         </div>
-       @endguest
-      </div>
+      @endguest
      </div>
     </div>
+   </div>
    </nav>
    @if(session('status'))
     <div class="container public-container mt-2">

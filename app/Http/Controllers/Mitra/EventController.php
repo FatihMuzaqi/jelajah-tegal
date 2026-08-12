@@ -74,6 +74,17 @@ class EventController extends Controller
         return back();
     }
 
+    public function archive(Request $r, CatalogEntity $event, \App\Services\AuditLogger $audit): RedirectResponse
+    {
+        $this->owned($r, $event);
+        abort_unless(in_array($event->status, ['draft', 'rejected', 'published'], true), 422);
+        $before = $event->status;
+        $event->update(['status' => 'archived', 'archived_at' => now()]);
+        $audit->record('event.archived', $event, ['status' => $before], ['status' => 'archived'], $r->user());
+
+        return redirect()->route('mitra.event.index')->with('status', 'Event diarsipkan.');
+    }
+
     public function schedule(Request $r, CatalogEntity $event): RedirectResponse
     {
         $this->owned($r, $event);

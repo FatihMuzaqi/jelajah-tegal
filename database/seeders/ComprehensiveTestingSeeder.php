@@ -186,28 +186,84 @@ class ComprehensiveTestingSeeder extends Seeder
         );
 
         // 4. Media Assets Dummy
-        $media1 = MediaAsset::create([
+        $mediaPai = MediaAsset::create([
             'owner_user_id' => $ownerUser->id,
             'disk' => 'local',
             'object_key' => 'media/pai_cover.jpg',
             'original_name' => 'pai_cover.jpg',
             'mime_type' => 'image/jpeg',
             'size_bytes' => 256000,
-            'checksum_sha256' => hash('sha256', 'media1_content'),
+            'checksum_sha256' => hash('sha256', 'media_pai_content'),
             'visibility' => 'public',
             'purpose' => 'catalog_cover',
             'status' => 'attached',
             'uploaded_at' => now(),
         ]);
 
-        $media2 = MediaAsset::create([
+        $mediaGuci = MediaAsset::create([
             'owner_user_id' => $ownerUser->id,
             'disk' => 'local',
             'object_key' => 'media/guci_cover.jpg',
             'original_name' => 'guci_cover.jpg',
             'mime_type' => 'image/jpeg',
             'size_bytes' => 312000,
-            'checksum_sha256' => hash('sha256', 'media2_content'),
+            'checksum_sha256' => hash('sha256', 'media_guci_content'),
+            'visibility' => 'public',
+            'purpose' => 'catalog_cover',
+            'status' => 'attached',
+            'uploaded_at' => now(),
+        ]);
+
+        $mediaCurug = MediaAsset::create([
+            'owner_user_id' => $ownerUser->id,
+            'disk' => 'local',
+            'object_key' => 'media/curug_putri_cover.jpg',
+            'original_name' => 'curug_putri_cover.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 312000,
+            'checksum_sha256' => hash('sha256', 'media_curug_content'),
+            'visibility' => 'public',
+            'purpose' => 'catalog_cover',
+            'status' => 'attached',
+            'uploaded_at' => now(),
+        ]);
+
+        $mediaBeko = MediaAsset::create([
+            'owner_user_id' => $ownerUser->id,
+            'disk' => 'local',
+            'object_key' => 'media/danau_beko_cover.jpg',
+            'original_name' => 'danau_beko_cover.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 312000,
+            'checksum_sha256' => hash('sha256', 'media_beko_content'),
+            'visibility' => 'public',
+            'purpose' => 'catalog_cover',
+            'status' => 'attached',
+            'uploaded_at' => now(),
+        ]);
+
+        $mediaBahari = MediaAsset::create([
+            'owner_user_id' => $ownerUser->id,
+            'disk' => 'local',
+            'object_key' => 'media/bahari_inn_cover.jpg',
+            'original_name' => 'bahari_inn_cover.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 312000,
+            'checksum_sha256' => hash('sha256', 'media_bahari_content'),
+            'visibility' => 'public',
+            'purpose' => 'catalog_cover',
+            'status' => 'attached',
+            'uploaded_at' => now(),
+        ]);
+
+        $mediaSate = MediaAsset::create([
+            'owner_user_id' => $ownerUser->id,
+            'disk' => 'local',
+            'object_key' => 'media/sate_wendy_cover.jpg',
+            'original_name' => 'sate_wendy_cover.jpg',
+            'mime_type' => 'image/jpeg',
+            'size_bytes' => 312000,
+            'checksum_sha256' => hash('sha256', 'media_sate_content'),
             'visibility' => 'public',
             'purpose' => 'catalog_cover',
             'status' => 'attached',
@@ -218,7 +274,7 @@ class ComprehensiveTestingSeeder extends Seeder
         $mitra->kycDocuments()->updateOrCreate(
             ['document_type' => 'ktp'],
             [
-                'media_asset_id' => $media1->id,
+                'media_asset_id' => $mediaPai->id,
                 'submitted_by' => $ownerUser->id,
                 'status' => 'approved',
                 'reviewed_at' => now(),
@@ -257,30 +313,129 @@ class ComprehensiveTestingSeeder extends Seeder
             ]
         );
 
-        // 6. DOMAIN TOURISM (Wisata Alam Indah Tegal)
+        // Mitra 2: PT Guci Natural Resort Tegal
+        $regionGuci = \App\Models\Region::where('code', 'TGL-KAB-GUCI')->first() ?? $firstRegion;
+        $mitraGuci = Mitra::updateOrCreate(
+            ['slug' => 'guci-resort-tegal'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'region_id' => $regionGuci->id,
+                'legal_name' => 'PT Guci Natural Resort Tegal',
+                'display_name' => 'PT Guci Natural Resort Tegal',
+                'status' => 'active',
+                'approved_at' => now(),
+                'contact_email' => 'guciresort@example.test',
+                'contact_phone' => '081299887766',
+                'address' => 'Jl. Raya Guci No. 88, Bumijawa, Tegal',
+            ]
+        );
+        // Mitra 3: CV Pesona Alam Bumijawa
+        $mitraCurug = Mitra::updateOrCreate(
+            ['slug' => 'pesona-alam-bumijawa'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'region_id' => $regionGuci->id,
+                'legal_name' => 'CV Pesona Alam Bumijawa',
+                'display_name' => 'CV Pesona Alam Bumijawa',
+                'status' => 'active',
+                'approved_at' => now(),
+                'contact_email' => 'pesonaalam@example.test',
+                'contact_phone' => '081344556677',
+                'address' => 'Desa Tuwel, Bumijawa, Tegal',
+            ]
+        );
+
+        // Mitra 4: Pokdarwis Danau Beko Margasari
+        $regionMargasari = \App\Models\Region::where('code', 'TGL-KAB-MARGASARI')->first() ?? $firstRegion;
+        $mitraBeko = Mitra::updateOrCreate(
+            ['slug' => 'pokdarwis-danau-beko'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'region_id' => $regionMargasari->id,
+                'legal_name' => 'Pokdarwis Danau Beko Margasari',
+                'display_name' => 'Pokdarwis Danau Beko Margasari',
+                'status' => 'active',
+                'approved_at' => now(),
+                'contact_email' => 'danaubeko@example.test',
+                'contact_phone' => '081566778899',
+                'address' => 'Jatilaba, Margasari, Tegal',
+            ]
+        );
+
+        foreach ([$tourismType, $accommType, $culinaryType, $eventType, $rentalType] as $type) {
+            if ($type) {
+                MitraFeature::updateOrCreate(['mitra_id' => $mitraGuci->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
+                MitraFeature::updateOrCreate(['mitra_id' => $mitraCurug->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
+                MitraFeature::updateOrCreate(['mitra_id' => $mitraBeko->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
+            }
+        }
+
+        // 6. DOMAIN TOURISM (Katalog Destinasi Wisata)
         $categoryTourism = Category::firstOrCreate([
             'service_type_id' => $tourismType->id,
-            'name' => 'Wisata Bahari',
-            'slug' => 'wisata-bahari',
+            'name' => 'Wisata Alam & Pantai',
+            'slug' => 'wisata-alam-pantai',
         ]);
 
-        $facility1 = Facility::firstOrCreate([
+        // 6a. Guci Hot Spring
+        $entityGuci = CatalogEntity::create([
+            'mitra_id' => $mitraGuci->id,
             'service_type_id' => $tourismType->id,
-            'name' => 'Area Parkir Luas',
-            'slug' => 'area-parkir-luas',
+            'category_id' => $categoryTourism->id,
+            'region_id' => $regionGuci->id,
+            'name' => 'Guci Hot Spring',
+            'slug' => 'guci-hot-spring',
+            'description' => 'Pemandian air panas alami dengan pemandangan indah dan udara sejuk pegunungan.',
+            'address' => 'Kawasan Wisata Guci, Bumijawa, Tegal',
+            'status' => 'published',
+            'is_featured' => true,
+            'rating_average' => 4.8,
+            'rating_count' => 128,
+            'published_at' => now(),
+        ]);
+        $entityGuci->media()->syncWithoutDetaching([$mediaGuci->id => ['role' => 'cover', 'sort_order' => 1]]);
+        
+        $destGuci = TourismDestination::create([
+            'catalog_entity_id' => $entityGuci->id,
+            'destination_type' => 'hot_spring',
+            'visit_duration_minutes' => 180,
+            'badge' => 'Terfavorit',
+            'is_hidden_gem' => false,
+        ]);
+        $offerGuci = CatalogOffer::create([
+            'catalog_entity_id' => $entityGuci->id,
+            'mitra_id' => $mitraGuci->id,
+            'offer_type' => 'ticket',
+            'name' => 'Tiket Masuk Utama Guci',
+            'sku' => 'GUC-REGULER',
+            'currency' => 'IDR',
+            'price' => 25000,
+            'status' => 'published',
+        ]);
+        TourismTicketPackage::create([
+            'tourism_destination_id' => $destGuci->id,
+            'catalog_offer_id' => $offerGuci->id,
+            'name' => 'Tiket Reguler Pemandian Guci',
+            'quota_per_day' => 1000,
         ]);
 
+        // 6b. Pantai Alam Indah Tegal
         $entityTourism = CatalogEntity::create([
             'mitra_id' => $mitra->id,
             'service_type_id' => $tourismType->id,
             'category_id' => $categoryTourism->id,
-            'name' => 'Pantai Alam Indah Tegal',
+            'region_id' => $firstRegion->id,
+            'name' => 'Pantai Alam Indah',
             'slug' => 'pantai-alam-indah-tegal',
-            'description' => 'Destinasi ikonik pesisir utara Tegal dengan pemandangan sunset dan fasilitas lengkap.',
+            'description' => 'Pantai indah dengan pasir luas dan berbagai wahana menarik di pesisir Kota Tegal.',
             'address' => 'Jl. Sangir, Mintaragen, Kota Tegal',
             'status' => 'published',
+            'is_featured' => true,
+            'rating_average' => 4.6,
+            'rating_count' => 95,
             'published_at' => now(),
         ]);
+        $entityTourism->media()->syncWithoutDetaching([$mediaPai->id => ['role' => 'cover', 'sort_order' => 1]]);
 
         $destination = TourismDestination::create([
             'catalog_entity_id' => $entityTourism->id,
@@ -289,7 +444,6 @@ class ComprehensiveTestingSeeder extends Seeder
             'badge' => 'Terpopuler',
             'is_hidden_gem' => false,
         ]);
-
         $offerTourism = CatalogOffer::create([
             'catalog_entity_id' => $entityTourism->id,
             'mitra_id' => $mitra->id,
@@ -300,12 +454,95 @@ class ComprehensiveTestingSeeder extends Seeder
             'price' => 15000,
             'status' => 'published',
         ]);
-
-        $packageTourism = TourismTicketPackage::create([
+        TourismTicketPackage::create([
             'tourism_destination_id' => $destination->id,
             'catalog_offer_id' => $offerTourism->id,
             'name' => 'Tiket Reguler Masuk PAI',
             'quota_per_day' => 500,
+        ]);
+
+        // 6c. Curug Putri Bumijawa
+        $entityCurug = CatalogEntity::create([
+            'mitra_id' => $mitraCurug->id,
+            'service_type_id' => $tourismType->id,
+            'category_id' => $categoryTourism->id,
+            'region_id' => $regionGuci->id,
+            'name' => 'Curug Putri',
+            'slug' => 'curug-putri-bumijawa',
+            'description' => 'Air terjun yang menawan dengan suasana alami yang asri di kawasan lereng pegunungan.',
+            'address' => 'Dukuh Dukuhtengah, Bumijawa, Tegal',
+            'status' => 'published',
+            'is_featured' => true,
+            'rating_average' => 4.7,
+            'rating_count' => 84,
+            'published_at' => now(),
+        ]);
+        $entityCurug->media()->syncWithoutDetaching([$mediaCurug->id => ['role' => 'cover', 'sort_order' => 1]]);
+        
+        $destCurug = TourismDestination::create([
+            'catalog_entity_id' => $entityCurug->id,
+            'destination_type' => 'waterfall',
+            'visit_duration_minutes' => 90,
+            'badge' => 'Asri & Alami',
+            'is_hidden_gem' => true,
+        ]);
+        $offerCurug = CatalogOffer::create([
+            'catalog_entity_id' => $entityCurug->id,
+            'mitra_id' => $mitraCurug->id,
+            'offer_type' => 'ticket',
+            'name' => 'Tiket Masuk Curug Putri',
+            'sku' => 'CRG-PUTRI',
+            'currency' => 'IDR',
+            'price' => 10000,
+            'status' => 'published',
+        ]);
+        TourismTicketPackage::create([
+            'tourism_destination_id' => $destCurug->id,
+            'catalog_offer_id' => $offerCurug->id,
+            'name' => 'Tiket Reguler Curug Putri',
+            'quota_per_day' => 300,
+        ]);
+
+        // 6d. Danau Beko Margasari
+        $entityBeko = CatalogEntity::create([
+            'mitra_id' => $mitraBeko->id,
+            'service_type_id' => $tourismType->id,
+            'category_id' => $categoryTourism->id,
+            'region_id' => $regionMargasari->id,
+            'name' => 'Danau Beko',
+            'slug' => 'danau-beko-margasari',
+            'description' => 'Tempat rekreasi keluarga dengan danau buatan tebing kapur yang unik dan menyenangkan.',
+            'address' => 'Desa Jatilaba, Margasari, Tegal',
+            'status' => 'published',
+            'is_featured' => true,
+            'rating_average' => 4.5,
+            'rating_count' => 62,
+            'published_at' => now(),
+        ]);
+        $entityBeko->media()->syncWithoutDetaching([$mediaBeko->id => ['role' => 'cover', 'sort_order' => 1]]);
+
+        $destBeko = TourismDestination::create([
+            'catalog_entity_id' => $entityBeko->id,
+            'destination_type' => 'lake',
+            'visit_duration_minutes' => 90,
+            'badge' => 'Rekreasi',
+            'is_hidden_gem' => false,
+        ]);
+        $offerBeko = CatalogOffer::create([
+            'catalog_entity_id' => $entityBeko->id,
+            'mitra_id' => $mitraBeko->id,
+            'offer_type' => 'ticket',
+            'name' => 'Tiket Masuk Danau Beko',
+            'sku' => 'BKO-REGULER',
+            'currency' => 'IDR',
+            'price' => 10000,
+            'status' => 'published',
+        ]);
+        TourismTicketPackage::create([
+            'tourism_destination_id' => $destBeko->id,
+            'catalog_offer_id' => $offerBeko->id,
+            'name' => 'Tiket Reguler Danau Beko',
+            'quota_per_day' => 400,
         ]);
 
         // 7. DOMAIN ACCOMMODATION (Hotel Bahari Inn Tegal)
@@ -317,8 +554,11 @@ class ComprehensiveTestingSeeder extends Seeder
             'description' => 'Akomodasi nyaman bintang 3 di pusat Kota Tegal.',
             'address' => 'Jl. Dr. Wahidin Sudirohusodo No. 1, Kota Tegal',
             'status' => 'published',
+            'is_featured' => true,
+            'rating_average' => 4.5,
             'published_at' => now(),
         ]);
+        $entityAccomm->media()->syncWithoutDetaching([$mediaBahari->id => ['role' => 'cover', 'sort_order' => 1]]);
 
         $accomm = Accommodation::create([
             'catalog_entity_id' => $entityAccomm->id,
@@ -361,8 +601,11 @@ class ComprehensiveTestingSeeder extends Seeder
             'description' => 'Kuliner khas sate kambing empuk beraroma bumbu khas Tegal.',
             'address' => 'Jl. Letjen Suprapto No. 59, Kota Tegal',
             'status' => 'published',
+            'is_featured' => true,
+            'rating_average' => 4.9,
             'published_at' => now(),
         ]);
+        $entityCulinary->media()->syncWithoutDetaching([$mediaSate->id => ['role' => 'cover', 'sort_order' => 1]]);
 
         $venue = CulinaryVenue::create([
             'catalog_entity_id' => $entityCulinary->id,
@@ -515,7 +758,7 @@ class ComprehensiveTestingSeeder extends Seeder
 
         RenterDocument::create([
             'user_id' => $consumerUser->id,
-            'media_asset_id' => $media1->id,
+            'media_asset_id' => $mediaPai->id,
             'document_type' => 'sim_a',
             'document_number' => '123456789012',
             'status' => RenterDocumentStatus::Approved,

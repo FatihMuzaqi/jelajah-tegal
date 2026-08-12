@@ -16,9 +16,9 @@ class ActiveMitraContext
         $id = $m instanceof Mitra ? $m->getKey() : $m;
 
         if (! $id && $r->user()) {
-            $first = $r->user()->mitraMemberships()->where('status', 'active')->first();
-            if ($first) {
-                $id = $first->mitra_id;
+            $firstMembership = $r->user()->mitraMemberships()->where('status', 'active')->first();
+            if ($firstMembership) {
+                $id = $firstMembership->mitra_id;
             }
         }
 

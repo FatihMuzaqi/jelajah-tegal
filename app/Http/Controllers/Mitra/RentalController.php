@@ -73,6 +73,17 @@ class RentalController extends Controller
         return back();
     }
 
+    public function archive(Request $r, CatalogEntity $rental, \App\Services\AuditLogger $audit): RedirectResponse
+    {
+        $this->owned($r, $rental);
+        abort_unless(in_array($rental->status, ['draft', 'rejected', 'published'], true), 422);
+        $before = $rental->status;
+        $rental->update(['status' => 'archived', 'archived_at' => now()]);
+        $audit->record('rental.archived', $rental, ['status' => $before], ['status' => 'archived'], $r->user());
+
+        return redirect()->route('mitra.rental.index')->with('status', 'Rental diarsipkan.');
+    }
+
     public function rate(Request $r, CatalogEntity $rental): RedirectResponse
     {
         $this->owned($r, $rental);
