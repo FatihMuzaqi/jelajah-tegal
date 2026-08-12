@@ -116,11 +116,11 @@
                                     <img src="{{ $coverUrl }}" alt="{{ $item->name }}">
                                 @else
                                     <div style="width: 100%; height: 100%; display: grid; place-items: center; background: linear-gradient(135deg, #134032, #1b634b); color: #fff; font-size: 40px;">
-                                        @if($routePrefix === 'culinary') 🍲 @elseif($routePrefix === 'event') 🎪 @else 🚗 @endif
+                                        @if($routePrefix === 'culinary') <i class="fa-solid fa-utensils"></i> @elseif($routePrefix === 'event') <i class="fa-solid fa-ticket"></i> @else <i class="fa-solid fa-car"></i> @endif
                                     </div>
                                 @endif
                                 <span class="domain-badge">
-                                    📍 {{ $item->region?->name ?? 'Tegal' }}
+                                    <i class="fa-solid fa-location-dot me-1"></i> {{ $item->region?->name ?? 'Tegal' }}
                                 </span>
                             </a>
 
@@ -128,7 +128,7 @@
                                 <div class="d-flex align-items-center justify-content-between mb-1">
                                     <small class="text-muted" style="font-size: 11px;">{{ $item->category?->name ?? $title }}</small>
                                     <div class="d-flex align-items-center gap-1 text-warning" style="font-size: 12px;">
-                                        ★ <strong>{{ number_format($item->rating_average, 1) }}</strong>
+                                        <i class="fa-solid fa-star"></i> <strong>{{ number_format($item->rating_average, 1) }}</strong>
                                     </div>
                                 </div>
 

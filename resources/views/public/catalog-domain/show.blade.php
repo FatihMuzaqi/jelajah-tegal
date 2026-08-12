@@ -94,13 +94,13 @@
             <div class="col-lg-7">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
-                        ✔ Terverifikasi Resmi
+                        <i class="fa-solid fa-circle-check me-1"></i> Terverifikasi Resmi
                     </span>
                     <span class="badge" style="background: rgba(45,140,168,0.3); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); border-radius: 99px; font-size: 11px;">
-                        📍 {{ $item->region?->name ?? 'Tegal' }}
+                        <i class="fa-solid fa-location-dot me-1"></i> {{ $item->region?->name ?? 'Tegal' }}
                     </span>
                     <span class="badge" style="background: rgba(242,169,59,0.25); color: #fbd38d; border: 1px solid rgba(242,169,59,0.4); border-radius: 99px; font-size: 11px;">
-                        🏷️ {{ $item->category?->name ?? $title }}
+                        <i class="fa-solid fa-tag me-1"></i> {{ $item->category?->name ?? $title }}
                     </span>
                 </div>
 
@@ -108,7 +108,7 @@
                 
                 <div class="d-flex align-items-center gap-2 mb-3 text-white-50" style="font-size: 14px;">
                     <div class="d-flex align-items-center text-warning gap-1">
-                        ★ <strong class="text-white">{{ number_format($item->rating_average, 1) }}</strong>
+                        <i class="fa-solid fa-star"></i> <strong class="text-white">{{ number_format($item->rating_average, 1) }}</strong>
                     </div>
                     <span>·</span>
                     <span>{{ $item->reviews->count() }} Ulasan Wisatawan</span>
@@ -132,7 +132,7 @@
                         <img src="{{ $coverUrl }}" alt="{{ $item->name }}" style="width: 100%; height: 100%; object-fit: cover;">
                     @else
                         <div style="width: 100%; height: 100%; display: grid; place-items: center; color: #fff; font-size: 48px;">
-                            @if($routePrefix === 'culinary') 🍲 @elseif($routePrefix === 'event') 🎪 @else 🚗 @endif
+                            @if($routePrefix === 'culinary') <i class="fa-solid fa-utensils"></i> @elseif($routePrefix === 'event') <i class="fa-solid fa-ticket"></i> @else <i class="fa-solid fa-car"></i> @endif
                         </div>
                     @endif
                 </div>
@@ -149,7 +149,7 @@
             <div class="col-lg-8">
                 <!-- 1. Deskripsi & Foto Galeri -->
                 <div class="cd-card">
-                    <h2 class="cd-card-title"><span>📖</span> Tentang {{ $item->name }}</h2>
+                    <h2 class="cd-card-title"><i class="fa-solid fa-book-open text-emerald me-2"></i> Tentang {{ $item->name }}</h2>
                     <p style="color: var(--lokantara-muted); line-height: 1.7; font-size: 14px;">
                         {{ $item->description ?: 'Informasi lengkap mengenai tempat ini sedang dipersiapkan oleh Mitra pengelola.' }}
                     </p>
@@ -171,12 +171,12 @@
                 <!-- 2. Khusus KULINER: Buku Menu Makanan & Minuman -->
                 @if($routePrefix === 'culinary' && $item->culinary)
                     <div class="cd-card">
-                        <h2 class="cd-card-title"><span>🍲</span> Daftar Menu & Harga</h2>
+                        <h2 class="cd-card-title"><i class="fa-solid fa-utensils text-warning me-2"></i> Daftar Menu & Harga</h2>
 
                         @forelse($item->culinary->menuCategories as $cat)
                             <div class="mb-4">
                                 <h3 class="fs-6 fw-bold text-dark mb-3 pb-2 border-bottom">
-                                    🍽️ {{ $cat->name }}
+                                    <i class="fa-solid fa-bowl-food text-success me-2"></i> {{ $cat->name }}
                                 </h3>
 
                                 <div class="row g-3">
@@ -249,7 +249,7 @@
                 <!-- 3. Khusus EVENT -->
                 @if($routePrefix === 'event' && $item->event)
                     <div class="cd-card">
-                        <h2 class="cd-card-title"><span>🎫</span> Tiket & Jadwal Event</h2>
+                        <h2 class="cd-card-title"><i class="fa-solid fa-ticket text-danger me-2"></i> Tiket & Jadwal Event</h2>
                         @foreach($item->event->ticketTypes as $type)
                             <div class="p-3 rounded-3 mb-2 d-flex align-items-center justify-content-between" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                                 <div>
@@ -267,7 +267,7 @@
                 <!-- 4. Khusus RENTAL -->
                 @if($routePrefix === 'rental' && $item->rentalVehicle)
                     <div class="cd-card">
-                        <h2 class="cd-card-title"><span>🚗</span> Tarif Sewa Armada</h2>
+                        <h2 class="cd-card-title"><i class="fa-solid fa-car text-primary me-2"></i> Tarif Sewa Armada</h2>
                         @foreach($item->rentalVehicle->rates as $rate)
                             <div class="p-3 rounded-3 mb-2 d-flex align-items-center justify-content-between" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                                 <div>
@@ -284,13 +284,13 @@
 
                 <!-- 5. Ulasan Pengunjung -->
                 <div class="cd-card">
-                    <h2 class="cd-card-title"><span>⭐</span> Ulasan Pengunjung ({{ $item->reviews->count() }})</h2>
+                    <h2 class="cd-card-title"><i class="fa-solid fa-star text-warning me-2"></i> Ulasan Pengunjung ({{ $item->reviews->count() }})</h2>
 
                     @forelse($item->reviews as $review)
                         <div class="p-3 rounded-3 mb-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                             <div class="d-flex align-items-center justify-content-between mb-1">
                                 <strong class="text-dark">{{ $review->user?->name ?? 'Pengunjung' }}</strong>
-                                <span class="text-warning">★ {{ $review->rating }}/5</span>
+                                <span class="text-warning"><i class="fa-solid fa-star"></i> {{ $review->rating }}/5</span>
                             </div>
                             <p class="text-muted mb-2" style="font-size: 13px;">{{ $review->body }}</p>
 
@@ -312,11 +312,11 @@
                             <div class="row g-2 mb-2">
                                 <div class="col-md-3">
                                     <select class="form-select form-select-sm" name="rating" required>
-                                        <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
-                                        <option value="4">⭐⭐⭐⭐ (4/5)</option>
-                                        <option value="3">⭐⭐⭐ (3/5)</option>
-                                        <option value="2">⭐⭐ (2/5)</option>
-                                        <option value="1">⭐ (1/5)</option>
+                                        <option value="5">★ 5 (Sangat Bagus)</option>
+                                        <option value="4">★ 4 (Bagus)</option>
+                                        <option value="3">★ 3 (Cukup)</option>
+                                        <option value="2">★ 2 (Kurang)</option>
+                                        <option value="1">★ 1 (Buruk)</option>
                                     </select>
                                 </div>
                                 <div class="col-md-9">
@@ -333,7 +333,7 @@
             <div class="col-lg-4">
                 <!-- Location & Interactive Map Card -->
                 <div class="cd-card" style="position: sticky; top: 90px;">
-                    <h3 class="fs-6 fw-bold mb-3">Lokasi & Petunjuk Arah</h3>
+                    <h3 class="fs-6 fw-bold mb-3"><i class="fa-solid fa-map-location-dot text-success me-2"></i> Lokasi & Petunjuk Arah</h3>
                     
                     @php
                         $lat = $item->location?->latitude ?? -6.8730933;
@@ -344,12 +344,12 @@
                     <div id="cd-interactive-map" class="mb-3"></div>
 
                     <div class="mb-3">
-                        <strong class="d-block" style="font-size: 12px; color: var(--lokantara-muted); text-transform: uppercase;">Alamat:</strong>
+                        <strong class="d-block" style="font-size: 12px; color: var(--lokantara-muted); text-transform: uppercase;"><i class="fa-solid fa-location-dot text-danger me-1"></i> Alamat:</strong>
                         <p class="mb-0 text-dark" style="font-size: 13px;">{{ $item->address ?: 'Wilayah Tegal' }}</p>
                     </div>
 
                     <a href="https://www.google.com/maps/dir/?api=1&destination={{ $lat }},{{ $lng }}" target="_blank" rel="noopener noreferrer" class="btn btn-outline-lokantara w-100 fw-bold py-2 fs-7 d-flex align-items-center justify-content-center gap-2 mb-3">
-                        <span>🗺️</span> Buka Google Maps &rarr;
+                        <i class="fa-solid fa-map-location-dot text-emerald"></i> Buka Google Maps &rarr;
                     </a>
 
                     <hr>
