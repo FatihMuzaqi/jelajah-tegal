@@ -23,7 +23,7 @@ return [
     ],
     'gatekeeper' => [
         ['label' => 'Dashboard', 'route' => 'gatekeeper.dashboard', 'permission' => 'access.gatekeeper'],
-        ['label' => 'Validasi Tiket', 'href' => '#validation', 'permission' => 'tickets.validate'],
+        ['label' => 'Validasi Tiket QR', 'route' => 'gatekeeper.event-tickets.index', 'permission' => 'tickets.validate'],
     ],
     'admin' => [
         ['label' => 'Dashboard', 'route' => 'admin.dashboard', 'permission' => 'access.admin'],

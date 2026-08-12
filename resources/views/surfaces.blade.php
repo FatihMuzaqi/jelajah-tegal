@@ -6,10 +6,10 @@
         
         <!-- Header & Profile Info -->
         <div class="surface-top-nav">
-            <div class="surface-brand-logo">
-                <span class="surface-brand-badge">L</span>
-                <span class="surface-brand-text">Lokantara</span>
-            </div>
+            <a href="{{ route('home') }}" class="surface-brand-logo text-decoration-none d-flex align-items-center gap-2">
+                <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" style="height: 36px; width: auto; border-radius: 8px;">
+                <span class="surface-brand-text fw-bold text-dark fs-5">Jelajah Tegal</span>
+            </a>
 
             <div class="surface-user-pill">
                 <span class="user-avatar-circle">{{ str(auth()->user()->name)->substr(0,1)->upper() }}</span>

@@ -51,6 +51,9 @@
        <li class='nav-item'>
          <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('event.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('event.index') }}'>Event</a>
        </li>
+       <li class='nav-item'>
+         <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('rental.*') ? 'active text-emerald fw-bold' : '' }}' href='{{ route('rental.index') }}'>Rental</a>
+       </li>
        <li class='nav-item dropdown'>
          <a class='nav-link dropdown-toggle px-3 py-2 rounded-3 d-flex align-items-center gap-1' href='#' role='button' data-bs-toggle='dropdown' aria-expanded='false'>
              Informasi
@@ -74,13 +77,44 @@
         </a>
         <a class='btn btn-emerald rounded-pill px-4 fw-bold text-white text-center py-2' style="background: #047857;" href='{{ route('register') }}'>Daftar</a>
       @else
-        <a class='btn btn-emerald rounded-pill px-4 fw-bold text-white text-center py-2' style="background: #047857;" href='{{ route('post-login') }}'>Dashboard</a>
+        <div class="dropdown w-100 w-lg-auto">
+          <button class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center justify-content-center gap-2 px-3 py-2 rounded-pill w-100 w-lg-auto" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-size: 13px; font-weight: 600; border-color: var(--lokantara-border);">
+            <span class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle" style="width: 26px; height: 26px; font-size: 12px;">
+              {{ str(auth()->user()->name)->substr(0,1)->upper() }}
+            </span>
+            <span>{{ auth()->user()->name }}</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="border-radius: 14px; min-width: 220px; font-size: 13px;">
+            <li class="px-3 py-2 border-bottom">
+              <strong class="d-block text-dark">{{ auth()->user()->name }}</strong>
+              <small class="text-muted">{{ auth()->user()->email }}</small>
+            </li>
+            <li><a class="dropdown-item py-2" href="{{ route('consumer.orders.index') }}">🎫 Pesanan & Tiket Saya</a></li>
+            <li><a class="dropdown-item py-2" href="{{ route('post-login') }}">📊 Dashboard Portal</a></li>
+            <li><a class="dropdown-item py-2" href="{{ route('surfaces.select') }}">🔄 Ganti Portal (Surface)</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <form method="POST" action="{{ route('logout') }}" class="m-0">
+                @csrf
+                <button type="submit" class="dropdown-item py-2 text-danger fw-bold">🚪 Keluar</button>
+              </form>
+            </li>
+          </ul>
+        </div>
       @endguest
      </div>
     </div>
    </div>
-  </nav>
- </header>
+   </nav>
+   @if(session('status'))
+    <div class="container public-container mt-2">
+      <div class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-between py-2 px-3 mb-0" role="alert" style="border-radius: 12px; font-size: 13px;">
+        <div><strong>🎉 Info:</strong> {{ session('status') }}</div>
+        <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close" style="font-size: 10px;"></button>
+      </div>
+    </div>
+   @endif
+  </header>
  <main id='main-content'>@yield('content')</main>
  <footer class='public-footer'>
   <div class='container public-container footer-grid'>
