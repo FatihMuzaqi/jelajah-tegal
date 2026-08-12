@@ -166,11 +166,24 @@ class ComprehensiveTestingSeeder extends Seeder
 
         $mitra->members()->updateOrCreate(['user_id' => $ownerUser->id], ['status' => 'active', 'joined_at' => now()]);
         $mitra->members()->updateOrCreate(['user_id' => $staffUser->id], ['status' => 'active', 'joined_at' => now()]);
+        $gkMember = $mitra->members()->updateOrCreate(['user_id' => $gatekeeperUser->id], ['status' => 'active', 'joined_at' => now()]);
 
         setPermissionsTeamId($mitra->id);
         $ownerUser->syncRoles(['mitra-owner']);
         $staffUser->syncRoles(['mitra-staff']);
+        $gatekeeperUser->syncRoles(['gatekeeper']);
         setPermissionsTeamId(null);
+
+        GatekeeperAssignment::updateOrCreate(
+            ['mitra_id' => $mitra->id, 'member_id' => $gkMember->id],
+            [
+                'scope_type' => 'mitra',
+                'valid_from' => now()->subDay(),
+                'valid_until' => now()->addYear(),
+                'assigned_by' => $ownerUser->id,
+                'revoked_at' => null,
+            ]
+        );
 
         // 4. Media Assets Dummy
         $media1 = MediaAsset::create([
