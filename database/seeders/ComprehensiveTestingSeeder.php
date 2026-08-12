@@ -22,6 +22,7 @@ use App\Models\EventTicketType;
 use App\Models\EventTicketValidationLog;
 use App\Models\Facility;
 use App\Models\FeatureFlag;
+use App\Models\GatekeeperAssignment;
 use App\Models\IdempotencyKey;
 use App\Models\LedgerAccount;
 use App\Models\LedgerJournal;
