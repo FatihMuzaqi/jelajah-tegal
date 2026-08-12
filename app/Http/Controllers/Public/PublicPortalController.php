@@ -72,10 +72,24 @@ class PublicPortalController extends Controller
             ->limit(4)
             ->get();
 
+        $popularMitras = Mitra::query()
+            ->publiclyVisible()
+            ->with([
+                'region:id,name',
+                'features' => fn ($query) => $query->where('status', 'enabled')->with('serviceType:id,code,name'),
+                'media',
+            ])
+            ->withCount('catalogEntities')
+            ->orderByDesc('catalog_entities_count')
+            ->orderBy('display_name')
+            ->limit(6)
+            ->get();
+
         $allRegions = Region::orderBy('name')->get(['id', 'name', 'code']);
 
         return view('public.home', [
             'mitras' => $mitras,
+            'popularMitras' => $popularMitras,
             'services' => $services,
             'categories' => $categories,
             'regions' => $allRegions,
