@@ -509,175 +509,27 @@
     background: #047857;
     color: #ffffff;
     border-color: #047857;
-/* Ultra-Premium Popular Mitra Cards CSS */
-.jt-mitra-card {
+}
+
+/* Category Filter Tabs Bar */
+.jt-mitra-tab-pill {
     background: #ffffff;
-    border: 1px solid rgba(226, 232, 240, 0.9);
-    border-radius: 24px;
-    overflow: hidden;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 10px 30px -5px rgba(15, 23, 42, 0.05);
-    transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
-    position: relative;
-}
-.jt-mitra-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 24px 48px -12px rgba(4, 120, 87, 0.18);
-    border-color: rgba(167, 243, 208, 0.9);
-}
-.jt-mitra-header {
-    height: 140px;
-    position: relative;
-    overflow: hidden;
-    background: linear-gradient(135deg, #092018 0%, #064e3b 50%, #0d9488 100%);
-}
-.jt-mitra-header-img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    opacity: 0.55;
-    transition: transform 0.5s ease;
-}
-.jt-mitra-card:hover .jt-mitra-header-img {
-    transform: scale(1.08);
-}
-.jt-mitra-overlay-gradient {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(180deg, rgba(15, 23, 42, 0.3) 0%, rgba(6, 78, 59, 0.85) 100%);
-}
-.jt-mitra-glass-badge {
-    position: absolute;
-    top: 14px;
-    left: 14px;
-    background: rgba(15, 23, 42, 0.65);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    color: #ffffff;
-    border-radius: 99px;
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    z-index: 3;
-}
-.jt-mitra-verified-badge {
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    background: linear-gradient(135deg, #059669, #0d9488);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    color: #ffffff;
-    border-radius: 99px;
-    padding: 4px 12px;
-    font-size: 11px;
-    font-weight: 700;
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-    z-index: 3;
-}
-.jt-mitra-avatar-wrap {
-    width: 68px;
-    height: 68px;
-    border-radius: 20px;
-    background: #ffffff;
-    border: 4px solid #ffffff;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
-    position: absolute;
-    bottom: -28px;
-    left: 24px;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    z-index: 4;
-}
-.jt-mitra-avatar-wrap img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-.jt-mitra-avatar-fallback {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(135deg, #047857, #0d9488);
-    color: #ffffff;
-    font-weight: 800;
-    font-size: 24px;
-    display: grid;
-    place-items: center;
-}
-.jt-mitra-card-body {
-    padding: 38px 24px 24px;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-}
-.jt-mitra-name {
-    font-size: 18px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 4px;
-    letter-spacing: -0.01em;
-}
-.jt-mitra-location {
-    font-size: 13px;
-    color: #64748b;
-    margin-bottom: 14px;
-    font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-}
-.jt-mitra-feature-pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    margin-bottom: 16px;
-}
-.jt-mitra-pill {
-    padding: 4px 12px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 700;
-    background: #f1f5f9;
-    color: #475569;
     border: 1px solid #e2e8f0;
-}
-.jt-mitra-pill-green {
-    background: #f0fdf4;
-    color: #15803d;
-    border-color: #bbf7d0;
-}
-.jt-mitra-cta-btn {
-    margin-top: auto;
-    background: linear-gradient(135deg, #047857 0%, #0d9488 100%);
-    color: #ffffff;
-    border-radius: 14px;
-    padding: 12px 20px;
-    font-weight: 700;
+    color: #475569;
+    font-weight: 600;
     font-size: 13px;
+    padding: 6px 16px;
+    border-radius: 99px;
     text-decoration: none;
-    display: flex;
+    transition: all 0.2s ease;
+    display: inline-flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    transition: all 0.25s ease;
-    border: none;
-    box-shadow: 0 4px 14px rgba(4, 120, 87, 0.2);
+    gap: 6px;
 }
-.jt-mitra-card:hover .jt-mitra-cta-btn {
-    background: linear-gradient(135deg, #065f46 0%, #0f766e 100%);
-    box-shadow: 0 8px 20px rgba(4, 120, 87, 0.35);
+.jt-mitra-tab-pill.active, .jt-mitra-tab-pill:hover {
+    background: #064e3b;
     color: #ffffff;
-}
-.jt-mitra-cta-btn i {
-    transition: transform 0.25s ease;
-}
-.jt-mitra-card:hover .jt-mitra-cta-btn i {
-    transform: translateX(4px);
+    border-color: #064e3b;
 }
 
 /* Bottom Newsletter Banner */
@@ -991,109 +843,212 @@
     </div>
 </section>
 
-<!-- Section: Mitra Terpopuler & Rating Tertinggi -->
-<section class="public-section py-4">
+<!-- Section: Mitra Paling Populer (Exact Reference Image Design) -->
+<section class="public-section py-5" style="background: #fafafa;">
     <div class="container public-container">
-        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+        <!-- Header Row -->
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
             <div>
-                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill mb-2 fw-bold fs-8">
-                    <i class="fa-solid fa-award me-1"></i> Partner Resmi Terverifikasi
-                </span>
-                <h2 class="fs-2 fw-extrabold text-dark m-0">Mitra Terpopuler & Rating Tertinggi</h2>
+                <h2 class="fs-3 fw-extrabold text-dark m-0 d-flex align-items-center gap-2">
+                    <span class="fs-4">🤝</span> Mitra Paling Populer
+                </h2>
+                <p class="text-muted mb-0 fs-7" style="font-weight: 500;">Partner terpercaya pilihan wisatawan Jelajah Tegal</p>
             </div>
-            <a href="{{ route('home') }}#mitra-list-section" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
-                Jelajahi Semua Mitra <i class="fa-solid fa-arrow-right ms-1"></i>
-            </a>
+
+            <!-- Filter Tabs & Link -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <div class="d-flex gap-2 me-2">
+                    <a href="{{ route('home') }}" class="jt-mitra-tab-pill active">Semua</a>
+                    <a href="{{ route('tourism.index') }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-compass text-emerald me-1"></i> Wisata</a>
+                    <a href="{{ route('accommodation.index') }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-hotel text-primary me-1"></i> Penginapan</a>
+                    <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-utensils text-warning me-1"></i> Kuliner</a>
+                    <a href="{{ route('home') }}#mitra-list-section" class="jt-mitra-tab-pill">Lainnya</a>
+                </div>
+                <a href="{{ route('home') }}#mitra-list-section" class="fw-bold text-success text-decoration-none fs-7 d-flex align-items-center gap-1">
+                    Lihat Semua Mitra <i class="fa-solid fa-arrow-right fs-8"></i>
+                </a>
+            </div>
         </div>
 
-        <div class="row g-4">
+        <!-- 4 Column Cards Grid -->
+        <div class="row g-4 pt-1">
             @if(isset($popularMitras) && $popularMitras->isNotEmpty())
-                @foreach($popularMitras as $mitra)
+                @foreach($popularMitras->take(4) as $mitra)
                     @php
                         $coverUrl = $mitra->bannerMedia ? asset('storage/' . $mitra->bannerMedia->object_key) : 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop';
                         $logoUrl = $mitra->logoMedia ? asset('storage/' . $mitra->logoMedia->object_key) : null;
+                        
+                        $primaryFeature = $mitra->features->first()?->serviceType?->name ?? 'Layanan';
+                        $catIcon = match(strtolower($primaryFeature)) {
+                            'wisata' => 'fa-compass',
+                            'penginapan' => 'fa-hotel',
+                            'kuliner' => 'fa-utensils',
+                            'rental' => 'fa-car',
+                            default => 'fa-store',
+                        };
                     @endphp
-                    <div class="col-lg-4 col-md-6">
-                        <article class="jt-mitra-card">
-                            <div class="jt-mitra-header">
-                                <img src="{{ $coverUrl }}" alt="{{ $mitra->display_name }}" class="jt-mitra-header-img">
-                                <div class="jt-mitra-overlay-gradient"></div>
-                                <div class="jt-mitra-glass-badge">
-                                    <i class="fa-solid fa-star text-warning"></i> <span>4.9</span>
+                    <div class="col-lg-3 col-md-6">
+                        <div class="jt-mitra-ref-card">
+                            <!-- Cover Photo -->
+                            <div class="jt-mitra-ref-cover">
+                                <img src="{{ $coverUrl }}" alt="{{ $mitra->display_name }}">
+                                <div class="jt-mitra-ref-verified">
+                                    <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
                                 </div>
-                                <div class="jt-mitra-verified-badge">
-                                    <i class="fa-solid fa-shield-halved me-1"></i> Terverifikasi
-                                </div>
-                                <div class="jt-mitra-avatar-wrap">
+                                <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="jt-mitra-ref-body">
+                                <div class="jt-mitra-ref-header-row">
                                     @if($logoUrl)
-                                        <img src="{{ $logoUrl }}" alt="{{ $mitra->display_name }}">
+                                        <img src="{{ $logoUrl }}" alt="{{ $mitra->display_name }}" class="jt-mitra-ref-logo">
                                     @else
-                                        <div class="jt-mitra-avatar-fallback">
+                                        <div class="jt-mitra-ref-logo-fallback">
                                             {{ str($mitra->display_name)->substr(0,1)->upper() }}
                                         </div>
                                     @endif
+                                    <div class="jt-mitra-ref-title-wrap">
+                                        <h3 class="jt-mitra-ref-title">{{ $mitra->display_name }}</h3>
+                                        <div class="jt-mitra-ref-category">
+                                            <i class="fa-solid {{ $catIcon }} fs-8"></i> {{ $primaryFeature }}
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="jt-mitra-card-body">
-                                <h3 class="jt-mitra-name">{{ $mitra->display_name }}</h3>
-                                <div class="jt-mitra-location">
-                                    <i class="fa-solid fa-location-dot text-danger me-1"></i> {{ $mitra->region?->name ?? 'Kabupaten Tegal' }}
+
+                                <!-- Location -->
+                                <div class="jt-mitra-ref-location">
+                                    <i class="fa-solid fa-location-dot text-secondary"></i> {{ $mitra->region?->name ?? 'Kabupaten Tegal' }}
                                 </div>
-                                <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.6;">
-                                    {{ str($mitra->description ?: 'Mitra resmi penyedia destinasi & layanan unggulan di Tegal.')->limit(85) }}
-                                </p>
-                                <div class="jt-mitra-feature-pills">
-                                    @foreach($mitra->features->take(3) as $feat)
-                                        <span class="jt-mitra-pill jt-mitra-pill-green">
-                                            <i class="fa-solid fa-circle-check me-1"></i> {{ $feat->serviceType?->name ?? 'Layanan' }}
-                                        </span>
-                                    @endforeach
-                                    <span class="jt-mitra-pill">
-                                        <i class="fa-solid fa-layer-group me-1"></i>{{ $mitra->catalog_entities_count ?? 1 }} Layanan
-                                    </span>
+
+                                <!-- Rating & Visitor Stats -->
+                                <div class="jt-mitra-ref-stats">
+                                    <div class="jt-mitra-ref-rating">
+                                        <i class="fa-solid fa-star"></i> 4.9 <span class="text-muted fw-normal">(320 ulasan)</span>
+                                    </div>
+                                    <div class="jt-mitra-ref-visitors">
+                                        <i class="fa-solid fa-users fs-8"></i> 1.2K+ <span class="d-none d-xl-inline">pengunjung</span>
+                                    </div>
                                 </div>
-                                <a href="{{ route('public.mitra.show', $mitra->slug) }}" class="jt-mitra-cta-btn">
-                                    <span>Kunjungi Profil Mitra</span>
-                                    <i class="fa-solid fa-arrow-right"></i>
+
+                                <!-- Button Action -->
+                                <a href="{{ route('public.mitra.show', $mitra->slug) }}" class="jt-mitra-ref-btn">
+                                    Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i>
                                 </a>
                             </div>
-                        </article>
+                        </div>
                     </div>
                 @endforeach
             @else
-                <!-- Fallback Popular Mitras -->
-                <div class="col-lg-4 col-md-6">
-                    <article class="jt-mitra-card">
-                        <div class="jt-mitra-header">
-                            <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop" alt="PT Guci Natural Resort Tegal" class="jt-mitra-header-img">
-                            <div class="jt-mitra-overlay-gradient"></div>
-                            <div class="jt-mitra-glass-badge">
-                                <i class="fa-solid fa-star text-warning"></i> <span>4.9</span>
+                <!-- Mockup Cards matching the user's reference image exactly -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-mitra-ref-card">
+                        <div class="jt-mitra-ref-cover">
+                            <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop" alt="Purwahamba Indah">
+                            <div class="jt-mitra-ref-verified">
+                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
                             </div>
-                            <div class="jt-mitra-verified-badge">
-                                <i class="fa-solid fa-shield-halved me-1"></i> Terverifikasi
-                            </div>
-                            <div class="jt-mitra-avatar-wrap">
-                                <div class="jt-mitra-avatar-fallback">G</div>
-                            </div>
+                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
                         </div>
-                        <div class="jt-mitra-card-body">
-                            <h3 class="jt-mitra-name">PT Guci Natural Resort Tegal</h3>
-                            <div class="jt-mitra-location">
-                                <i class="fa-solid fa-location-dot text-danger me-1"></i> Bumijawa, Tegal
+                        <div class="jt-mitra-ref-body">
+                            <div class="jt-mitra-ref-header-row">
+                                <div class="jt-mitra-ref-logo-fallback" style="background:#0284c7;">P</div>
+                                <div class="jt-mitra-ref-title-wrap">
+                                    <h3 class="jt-mitra-ref-title">Purwahamba Indah</h3>
+                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-compass fs-8"></i> Destinasi Wisata Alam</div>
+                                </div>
                             </div>
-                            <p class="text-muted mb-3" style="font-size: 13px; line-height: 1.6;">Pengelola resmi kawasan wisata alam Guci, pemandian air panas, dan villa penginapan.</p>
-                            <div class="jt-mitra-feature-pills">
-                                <span class="jt-mitra-pill jt-mitra-pill-green"><i class="fa-solid fa-circle-check me-1"></i> Wisata</span>
-                                <span class="jt-mitra-pill jt-mitra-pill-green"><i class="fa-solid fa-circle-check me-1"></i> Penginapan</span>
-                                <span class="jt-mitra-pill"><i class="fa-solid fa-layer-group me-1"></i>4 Layanan</span>
+                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Kramat, Kabupaten Tegal</div>
+                            <div class="jt-mitra-ref-stats">
+                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.8 <span class="text-muted fw-normal">(324 ulasan)</span></div>
+                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 1.2K+ pengunjung</div>
                             </div>
-                            <a href="{{ route('home') }}" class="jt-mitra-cta-btn">
-                                <span>Kunjungi Profil Mitra</span>
-                                <i class="fa-solid fa-arrow-right"></i>
-                            </a>
+                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
                         </div>
-                    </article>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-mitra-ref-card">
+                        <div class="jt-mitra-ref-cover">
+                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop" alt="Hotel Grand Diana">
+                            <div class="jt-mitra-ref-verified">
+                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
+                            </div>
+                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                        <div class="jt-mitra-ref-body">
+                            <div class="jt-mitra-ref-header-row">
+                                <div class="jt-mitra-ref-logo-fallback" style="background:#1e293b;">GD</div>
+                                <div class="jt-mitra-ref-title-wrap">
+                                    <h3 class="jt-mitra-ref-title">Hotel Grand Diana</h3>
+                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-hotel fs-8"></i> Hotel & Penginapan</div>
+                                </div>
+                            </div>
+                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Slawi, Kabupaten Tegal</div>
+                            <div class="jt-mitra-ref-stats">
+                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.7 <span class="text-muted fw-normal">(218 ulasan)</span></div>
+                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 980+ pengunjung</div>
+                            </div>
+                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-mitra-ref-card">
+                        <div class="jt-mitra-ref-cover">
+                            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" alt="Sate Kambing Muda H. Taslim">
+                            <div class="jt-mitra-ref-verified">
+                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
+                            </div>
+                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                        <div class="jt-mitra-ref-body">
+                            <div class="jt-mitra-ref-header-row">
+                                <div class="jt-mitra-ref-logo-fallback" style="background:#b91c1c;">HT</div>
+                                <div class="jt-mitra-ref-title-wrap">
+                                    <h3 class="jt-mitra-ref-title">Sate Kambing Muda H. Taslim</h3>
+                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-utensils fs-8"></i> Kuliner Khas Tegal</div>
+                                </div>
+                            </div>
+                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Slawi, Kabupaten Tegal</div>
+                            <div class="jt-mitra-ref-stats">
+                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.9 <span class="text-muted fw-normal">(512 ulasan)</span></div>
+                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 2.3K+ pengunjung</div>
+                            </div>
+                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-mitra-ref-card">
+                        <div class="jt-mitra-ref-cover">
+                            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop" alt="d'Pine Resort">
+                            <div class="jt-mitra-ref-verified">
+                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
+                            </div>
+                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
+                        </div>
+                        <div class="jt-mitra-ref-body">
+                            <div class="jt-mitra-ref-header-row">
+                                <div class="jt-mitra-ref-logo-fallback" style="background:#064e3b;">DP</div>
+                                <div class="jt-mitra-ref-title-wrap">
+                                    <h3 class="jt-mitra-ref-title">d'Pine Resort</h3>
+                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-tree fs-8"></i> Resort & Penginapan</div>
+                                </div>
+                            </div>
+                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Guci, Kabupaten Tegal</div>
+                            <div class="jt-mitra-ref-stats">
+                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.6 <span class="text-muted fw-normal">(187 ulasan)</span></div>
+                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 750+ pengunjung</div>
+                            </div>
+                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                        </div>
+                    </div>
                 </div>
             @endif
         </div>
