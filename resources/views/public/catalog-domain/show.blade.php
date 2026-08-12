@@ -66,8 +66,19 @@
 }
 </style>
 
+@php
+    $showHeroBgMap = [
+        'culinary' => 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=80',
+        'event' => 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80',
+        'rental' => 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1600&q=80',
+        'tourism' => asset('images/guci_hero.png'),
+    ];
+    $coverMedia = $item->media->where('pivot.role', 'cover')->first() ?? $item->media->first();
+    $currentShowBg = $coverMedia ? asset('storage/' . $coverMedia->object_key) : ($showHeroBgMap[$routePrefix ?? ''] ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80');
+@endphp
+
 <!-- Hero Section -->
-<section class="cd-hero-section">
+<section class="cd-hero-section position-relative" style="background: linear-gradient(135deg, rgba(9, 32, 24, 0.84) 0%, rgba(19, 64, 50, 0.90) 100%), url('{{ $currentShowBg }}') center/cover no-repeat; padding: 55px 0 65px;">
     <div class="cd-hero-overlay"></div>
     <div class="container public-container position-relative" style="z-index: 2;">
         <!-- Breadcrumbs -->

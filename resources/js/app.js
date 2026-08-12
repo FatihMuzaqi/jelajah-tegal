@@ -1,9 +1,4 @@
 import './bootstrap';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../css/dashboard.css';
-import '../css/components.css';
-import '../css/responsive.css';
-import '../css/public.css';
 import * as bootstrap from 'bootstrap';
 
 window.bootstrap = bootstrap;

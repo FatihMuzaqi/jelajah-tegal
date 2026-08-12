@@ -62,8 +62,18 @@
 }
 </style>
 
+@php
+    $heroBgMap = [
+        'culinary' => 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1600&q=80',
+        'event' => 'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1600&q=80',
+        'rental' => 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&w=1600&q=80',
+        'tourism' => asset('images/guci_hero.png'),
+    ];
+    $currentBg = $heroBgMap[$routePrefix ?? ''] ?? 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1600&q=80';
+@endphp
+
 <!-- Hero Header -->
-<section class="domain-hero-section">
+<section class="domain-hero-section position-relative" style="background: linear-gradient(135deg, rgba(9, 32, 24, 0.82) 0%, rgba(19, 64, 50, 0.88) 100%), url('{{ $currentBg }}') center/cover no-repeat; padding: 75px 0 65px;">
     <div class="domain-hero-overlay"></div>
     <div class="container public-container position-relative" style="z-index: 2;">
         <p class="public-eyebrow mb-2" style="color: #f2a93b;">Pilihan Terbaik di Tegal</p>
@@ -73,10 +83,10 @@
         </p>
 
         <!-- Search Bar -->
-        <form class="p-3 rounded-4" style="background: rgba(255,255,255,0.12); backdrop-filter: blur(12px); border: 1px solid rgba(255,255,255,0.2); max-width: 700px;" method="GET" action="{{ route($routePrefix . '.index') }}">
+        <form class="p-3 rounded-4" style="background: rgba(255,255,255,0.14); backdrop-filter: blur(14px); border: 1px solid rgba(255,255,255,0.25); max-width: 700px;" method="GET" action="{{ route($routePrefix . '.index') }}">
             <div class="input-group">
-                <input class="form-control border-0 py-2 ps-3" name="q" value="{{ request('q') }}" placeholder="Cari nama {{ strtolower($title) }}, menu, atau lokasi..." style="border-radius: 12px 0 0 12px; font-size: 14px;">
-                <button class="btn btn-lokantara fw-bold px-4" style="border-radius: 0 12px 12px 0;">Cari</button>
+                <input class="form-control border-0 py-2 ps-3" name="q" value="{{ request('q') }}" placeholder="Cari nama {{ strtolower($title) }}, menu, atau lokasi..." style="border-radius: 12px 0 0 12px; font-size: 14px; background: rgba(255,255,255,0.95);">
+                <button class="btn btn-emerald fw-bold px-4 text-white" style="border-radius: 0 12px 12px 0; background: #047857;">Cari</button>
             </div>
         </form>
     </div>
