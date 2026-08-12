@@ -77,7 +77,8 @@ class PublicPortalController extends Controller
             ->with([
                 'region:id,name',
                 'features' => fn ($query) => $query->where('status', 'enabled')->with('serviceType:id,code,name'),
-                'media',
+                'logoMedia',
+                'bannerMedia',
             ])
             ->withCount('catalogEntities')
             ->orderByDesc('catalog_entities_count')

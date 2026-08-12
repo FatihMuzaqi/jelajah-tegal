@@ -948,10 +948,8 @@
             @if(isset($popularMitras) && $popularMitras->isNotEmpty())
                 @foreach($popularMitras as $mitra)
                     @php
-                        $coverMedia = $mitra->media->where('pivot.role', 'cover')->first() ?? $mitra->media->first();
-                        $coverUrl = $coverMedia ? asset('storage/' . $coverMedia->object_key) : 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop';
-                        $logoMedia = $mitra->media->where('pivot.role', 'logo')->first();
-                        $logoUrl = $logoMedia ? asset('storage/' . $logoMedia->object_key) : null;
+                        $coverUrl = $mitra->bannerMedia ? asset('storage/' . $mitra->bannerMedia->object_key) : 'https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?q=80&w=800&auto=format&fit=crop';
+                        $logoUrl = $mitra->logoMedia ? asset('storage/' . $mitra->logoMedia->object_key) : null;
                     @endphp
                     <div class="col-lg-4 col-md-6">
                         <article class="jt-mitra-card">
