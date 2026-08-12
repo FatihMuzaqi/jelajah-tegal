@@ -14,6 +14,14 @@ class ActiveMitraContext
     {
         $m = $r->route('mitra') ?: $r->session()->get('active_mitra_id');
         $id = $m instanceof Mitra ? $m->getKey() : $m;
+
+        if (!$id && $r->user()) {
+            $firstMembership = $r->user()->mitraMemberships()->where('status', 'active')->first();
+            if ($firstMembership) {
+                $id = $firstMembership->mitra_id;
+            }
+        }
+
         abort_unless($id && $r->user()->mitraMemberships()->where('mitra_id', $id)->where('status', 'active')->exists(), 403);
         $r->session()->put('active_mitra_id', $id);
         $this->context->activate($id);

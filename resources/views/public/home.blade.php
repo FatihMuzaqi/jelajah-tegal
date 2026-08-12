@@ -6,805 +6,966 @@
 
 @section('content')
 <style>
-/* Modern Hero Styling */
-.jt-hero {
+/* Modern Hero Styling with Real Photo Background */
+.jt-hero-mockup {
     position: relative;
-    background: linear-gradient(135deg, #092018 0%, #124032 50%, #1b634b 100%);
+    background: linear-gradient(180deg, rgba(7, 30, 20, 0.68) 0%, rgba(10, 42, 28, 0.86) 100%), 
+                url('{{ asset('images/guci_hero.png') }}') center/cover no-repeat;
     color: #ffffff;
-    padding: 70px 0 90px;
+    padding: 90px 0 110px;
     overflow: hidden;
 }
-.jt-hero-orb {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(80px);
-    pointer-events: none;
-    opacity: 0.28;
-}
-.jt-hero-orb-1 {
-    width: 350px;
-    height: 350px;
-    background: #f2a93b;
-    top: -50px;
-    right: -50px;
-}
-.jt-hero-orb-2 {
-    width: 400px;
-    height: 400px;
-    background: #2d8ca8;
-    bottom: -80px;
-    left: -80px;
-}
-.jt-hero-content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    max-width: 860px;
-    margin: 0 auto;
-}
-.jt-hero-badge {
+.jt-hero-badge-pill {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 18px;
+    padding: 8px 22px;
     border-radius: 99px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.22);
-    backdrop-filter: blur(10px);
-    color: #fbd38d;
+    background: rgba(4, 120, 87, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(12px);
+    color: #ffffff;
     font-size: 13px;
     font-weight: 700;
-    margin-bottom: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
 }
-.jt-hero-title {
-    font-size: 46px;
+.jt-hero-title-large {
+    font-size: 54px;
     font-weight: 900;
-    line-height: 1.18;
+    line-height: 1.12;
     letter-spacing: -0.03em;
     color: #ffffff;
-    margin-bottom: 18px;
+    margin-bottom: 20px;
+    text-align: left;
 }
-.jt-hero-lead {
-    font-size: 17px;
+.jt-hero-title-large span {
+    color: #34d399;
+}
+.jt-hero-subtitle {
+    font-size: 18px;
     line-height: 1.6;
-    color: rgba(255,255,255,0.85);
-    margin-bottom: 36px;
-    max-width: 720px;
-    margin-left: auto;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 40px;
+    max-width: 750px;
+    margin-left: 0;
     margin-right: auto;
+    text-align: left;
 }
 
-/* Glassmorphism Multi-Filter Search Bar */
-.jt-search-wrapper {
-    background: rgba(255,255,255,0.95);
-    border: 1px solid rgba(255,255,255,0.4);
+/* Glassmorphism 4-Field Search Card */
+.jt-search-box-card {
+    background: #ffffff;
     border-radius: 20px;
     padding: 12px 14px;
-    box-shadow: 0 20px 45px rgba(0,0,0,0.2);
-    backdrop-filter: blur(15px);
+    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
     text-align: left;
-    margin-bottom: 24px;
+    margin-bottom: 30px;
 }
-.jt-search-form {
+.jt-search-grid-layout {
     display: grid;
-    grid-template-columns: 2fr 1.3fr 1.2fr auto;
-    gap: 12px;
+    grid-template-columns: 2.2fr 1.2fr 1.2fr 1.2fr auto;
+    gap: 10px;
     align-items: center;
 }
 @media (max-width: 991px) {
-    .jt-search-form {
+    .jt-search-grid-layout {
         grid-template-columns: 1fr;
     }
 }
-.jt-search-group {
-    padding: 6px 12px;
-    border-radius: 12px;
-    background: #f8faf9;
-    border: 1px solid #e2e8f0;
+.jt-search-field-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-right: 1px solid #e2e8f0;
 }
-.jt-search-group label {
+@media (max-width: 991px) {
+    .jt-search-field-item {
+        border-right: none;
+        border-bottom: 1px solid #e2e8f0;
+    }
+}
+.jt-search-field-item:last-child {
+    border-right: none;
+}
+.jt-field-icon {
+    font-size: 18px;
+    color: #64748b;
+}
+.jt-field-content {
+    flex: 1;
+}
+.jt-field-content label {
     display: block;
     font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    color: #64748b;
+    font-weight: 800;
+    color: #0f172a;
     margin-bottom: 2px;
 }
-.jt-search-group input,
-.jt-search-group select {
+.jt-field-content input,
+.jt-field-content select {
     width: 100%;
     border: none;
     background: transparent;
-    font-size: 14px;
-    font-weight: 600;
-    color: #1e293b;
+    font-size: 13px;
+    font-weight: 500;
+    color: #64748b;
     outline: none;
     padding: 0;
 }
-.jt-search-btn {
-    background: linear-gradient(135deg, #1f7a5c, #13352c);
+.btn-emerald-search {
+    background: #047857;
     color: #ffffff;
     font-weight: 700;
-    font-size: 15px;
-    padding: 14px 28px;
-    border-radius: 14px;
+    font-size: 14px;
+    padding: 14px 26px;
+    border-radius: 12px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 4px 15px rgba(31,122,92,0.3);
-    transition: all 0.2s;
-    height: 100%;
+    box-shadow: 0 4px 15px rgba(4,120,87,0.35);
+    transition: all 0.25s ease;
+    white-space: nowrap;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 8px;
 }
-.jt-search-btn:hover {
-    background: linear-gradient(135deg, #185e47, #0d261e);
+.btn-emerald-search:hover {
+    background: #065f46;
+    color: #ffffff;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(31,122,92,0.4);
-    color: #fff;
 }
 
 /* Quick Search Chips */
-.jt-chips-row {
+.jt-chips-wrapper {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
+    justify-content: flex-start;
+    gap: 10px;
     font-size: 13px;
-    color: rgba(255,255,255,0.9);
 }
-.jt-chip {
-    padding: 6px 14px;
+.jt-chip-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 18px;
     border-radius: 99px;
-    background: rgba(255,255,255,0.12);
-    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.14);
+    border: 1px solid rgba(255,255,255,0.22);
     color: #ffffff;
     text-decoration: none;
     font-weight: 600;
-    font-size: 12px;
-    transition: all 0.2s;
-}
-.jt-chip:hover {
-    background: rgba(242,169,59,0.3);
-    border-color: #f2a93b;
-    color: #fbd38d;
-}
-
-/* Stats Counter Bar */
-.jt-stats-bar {
-    background: var(--lokantara-surface);
-    border: 1px solid var(--lokantara-border);
-    border-radius: 20px;
-    padding: 24px;
-    margin-top: -40px;
-    position: relative;
-    z-index: 10;
-    box-shadow: 0 15px 35px rgba(17,26,24,0.08);
-}
-.jt-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 20px;
-    text-align: center;
-}
-.jt-stat-item h3 {
-    font-size: 32px;
-    font-weight: 900;
-    color: var(--lokantara-primary);
-    margin: 0 0 4px;
-    line-height: 1;
-}
-.jt-stat-item p {
-    margin: 0;
     font-size: 13px;
-    font-weight: 600;
-    color: var(--lokantara-muted);
-    text-transform: uppercase;
+    backdrop-filter: blur(8px);
+    transition: all 0.2s ease;
+}
+.jt-chip-item:hover {
+    background: rgba(255,255,255,0.28);
+    color: #ffffff;
+    transform: translateY(-2px);
 }
 
-/* Category Cards */
-.jt-category-card {
-    background: var(--lokantara-surface);
-    border: 1px solid var(--lokantara-border);
-    border-radius: 18px;
-    padding: 24px 20px;
+/* Section Header Leaf Styling */
+.jt-section-title-wrap {
     text-align: center;
-    text-decoration: none;
-    color: var(--lokantara-text);
-    transition: all 0.25s ease;
-    display: flex;
-    flex-direction: column;
+    margin-bottom: 45px;
+}
+.jt-eyebrow-leaf {
+    display: inline-flex;
     align-items: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
-}
-.jt-category-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--lokantara-primary);
-    box-shadow: 0 12px 30px rgba(31,122,92,0.12);
-    color: var(--lokantara-primary);
-}
-.jt-cat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 16px;
-    background: rgba(31,122,92,0.08);
-    display: grid;
-    place-items: center;
-    font-size: 28px;
-    margin-bottom: 14px;
-    transition: transform 0.25s;
-}
-.jt-category-card:hover .jt-cat-icon {
-    transform: scale(1.1) rotate(5deg);
-    background: rgba(31,122,92,0.15);
-}
-.jt-category-card h4 {
-    font-size: 16px;
+    gap: 8px;
+    color: #047857;
     font-weight: 800;
-    margin: 0 0 6px;
+    font-size: 18px;
+    margin-bottom: 6px;
 }
-.jt-category-card p {
-    font-size: 12px;
-    color: var(--lokantara-muted);
+.jt-section-subtext {
+    color: #64748b;
+    font-size: 15px;
     margin: 0;
 }
 
-/* Showcase Cards (Wisata & Hotel) */
-.jt-showcase-card {
-    background: var(--lokantara-surface);
-    border: 1px solid var(--lokantara-border);
+/* 4 Feature Exploration Cards with Overlapping Icons */
+.jt-explore-card {
+    background: #ffffff;
     border-radius: 20px;
+    border: 1px solid #e2e8f0;
     overflow: hidden;
-    transition: all 0.25s ease;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
     display: flex;
     flex-direction: column;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
-.jt-showcase-card:hover {
-    transform: translateY(-5px);
-    border-color: var(--lokantara-primary);
-    box-shadow: 0 15px 35px rgba(31,122,92,0.14);
+.jt-explore-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px -10px rgba(4,120,87,0.15);
+    border-color: #a7f3d0;
 }
-.jt-card-image-wrap {
-    height: 200px;
+.jt-explore-img-wrap {
+    height: 170px;
     position: relative;
     overflow: hidden;
-    background: #e2e8f0;
 }
-.jt-card-image-wrap img {
+.jt-explore-img-wrap img {
     width: 100%;
     height: 100%;
     object-fit: cover;
     transition: transform 0.4s ease;
 }
-.jt-showcase-card:hover .jt-card-image-wrap img {
-    transform: scale(1.06);
+.jt-explore-card:hover .jt-explore-img-wrap img {
+    transform: scale(1.08);
 }
-.jt-card-badges {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    right: 12px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    pointer-events: none;
-}
-.jt-card-badge {
-    padding: 4px 10px;
-    border-radius: 99px;
-    font-size: 11px;
-    font-weight: 700;
-    backdrop-filter: blur(8px);
-}
-.badge-wisata {
-    background: rgba(13,38,30,0.85);
-    color: #fbd38d;
-}
-.badge-hotel {
-    background: rgba(13,38,30,0.85);
-    color: #90cdf4;
-}
-.jt-card-body {
-    padding: 22px;
+.jt-explore-body {
+    padding: 20px;
+    position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
 }
-.jt-card-body h3 {
-    font-size: 18px;
-    font-weight: 800;
-    margin: 0 0 8px;
-    color: var(--lokantara-text);
-}
-.jt-card-body p {
-    font-size: 13px;
-    color: var(--lokantara-muted);
-    line-height: 1.5;
-    margin-bottom: 16px;
-    flex: 1;
-}
-.jt-card-footer {
-    padding-top: 14px;
-    border-top: 1px solid var(--lokantara-border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-.jt-price-tag {
-    font-size: 16px;
-    font-weight: 800;
-    color: var(--lokantara-primary);
-}
-
-/* Feature Spotlight Box */
-.jt-feature-box {
-    background: var(--lokantara-surface);
-    border: 1px solid var(--lokantara-border);
-    border-radius: 18px;
-    padding: 28px 24px;
-    transition: all 0.2s;
-    height: 100%;
-}
-.jt-feature-box:hover {
-    border-color: var(--lokantara-primary);
-    box-shadow: 0 8px 25px rgba(31,122,92,0.08);
-}
-.jt-feat-icon {
+.jt-floating-icon-circle {
     width: 52px;
     height: 52px;
-    border-radius: 14px;
-    background: rgba(31,122,92,0.1);
-    color: var(--lokantara-primary);
+    border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 24px;
-    margin-bottom: 16px;
+    font-size: 20px;
+    color: #ffffff;
+    margin-top: -46px;
+    margin-bottom: 14px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.12);
+    position: relative;
+    z-index: 2;
 }
-.jt-feature-box h4 {
-    font-size: 17px;
+.bg-icon-green { background: #059669; }
+.bg-icon-orange { background: #ea580c; }
+.bg-icon-blue { background: #0284c7; }
+.bg-icon-purple { background: #7c3aed; }
+
+.jt-explore-body h3 {
+    font-size: 19px;
     font-weight: 800;
-    margin: 0 0 8px;
-    color: var(--lokantara-text);
+    color: #0f172a;
+    margin-bottom: 8px;
 }
-.jt-feature-box p {
+.jt-explore-body p {
     font-size: 13px;
-    color: var(--lokantara-muted);
+    color: #64748b;
     line-height: 1.6;
+    margin-bottom: 18px;
+    flex: 1;
+}
+.jt-circle-arrow-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    border: 1px solid #e2e8f0;
+    display: grid;
+    place-items: center;
+    color: #0f172a;
+    font-size: 14px;
+    margin-left: auto;
+    transition: all 0.2s ease;
+    text-decoration: none;
+}
+.jt-explore-card:hover .jt-circle-arrow-btn {
+    background: #047857;
+    color: #ffffff;
+    border-color: #047857;
+}
+
+/* Popular Destinations Section */
+.jt-popular-card {
+    background: #ffffff;
+    border-radius: 20px;
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+    height: 100%;
+}
+.jt-popular-card:hover {
+    transform: translateY(-6px);
+    border-color: #10b981;
+    box-shadow: 0 20px 40px -10px rgba(16,185,129,0.18);
+}
+.jt-pop-img-wrap {
+    height: 190px;
+    position: relative;
+    overflow: hidden;
+}
+.jt-pop-img-wrap img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+.jt-popular-card:hover .jt-pop-img-wrap img {
+    transform: scale(1.08);
+}
+.jt-pop-rating-badge {
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(8px);
+    border-radius: 99px;
+    padding: 4px 12px;
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+.jt-pop-category-pill {
+    position: absolute;
+    bottom: 14px;
+    left: 14px;
+    background: #047857;
+    color: #ffffff;
+    border-radius: 99px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-weight: 700;
+}
+.jt-pop-body {
+    padding: 20px;
+}
+.jt-pop-body h3 {
+    font-size: 18px;
+    font-weight: 800;
+    color: #0f172a;
+    margin-bottom: 4px;
+}
+.jt-pop-location {
+    font-size: 12px;
+    color: #64748b;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+.jt-pop-body p {
+    font-size: 13px;
+    color: #64748b;
+    line-height: 1.5;
     margin: 0;
 }
 
-/* CTA Banner */
-.jt-cta-banner {
-    background: linear-gradient(135deg, #092018 0%, #154737 60%, #1f7a5c 100%);
+/* 3-Column Bottom Grid Box Components */
+.jt-box-card {
     border-radius: 24px;
-    padding: 50px 40px;
-    color: #ffffff;
+    padding: 28px;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.jt-box-ai {
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+}
+.jt-box-event {
+    background: #fffbeb;
+    border: 1px solid #fef3c7;
+}
+.jt-box-kuliner {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.jt-box-header {
+    margin-bottom: 16px;
+}
+.jt-box-header h3 {
+    font-size: 20px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0 0 6px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.jt-box-header p {
+    font-size: 13px;
+    color: #64748b;
+    margin: 0;
+    line-height: 1.5;
+}
+
+/* Sub-Thumbnails Grid for AI Recommendation */
+.jt-ai-thumbs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+    flex: 1;
+}
+.jt-ai-thumb-item {
+    text-decoration: none;
+    color: #0f172a;
     text-align: center;
-    position: relative;
-    overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+.jt-ai-thumb-item img {
+    width: 100%;
+    height: 75px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 6px;
+}
+.jt-ai-thumb-item h5 {
+    font-size: 12px;
+    font-weight: 800;
+    margin: 0;
+}
+.jt-ai-thumb-item span {
+    font-size: 10px;
+    color: #64748b;
+    display: block;
+}
+
+/* Event List Items */
+.jt-event-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    flex: 1;
+}
+.jt-event-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: #ffffff;
+    padding: 10px;
+    border-radius: 14px;
+    border: 1px solid #fef3c7;
+}
+.jt-event-item img {
+    width: 54px;
+    height: 54px;
+    border-radius: 10px;
+    object-fit: cover;
+}
+.jt-event-item h5 {
+    font-size: 13px;
+    font-weight: 800;
+    margin: 0 0 2px;
+    color: #0f172a;
+}
+.jt-event-item p {
+    font-size: 11px;
+    color: #d97706;
+    margin: 0;
+    font-weight: 700;
+}
+.jt-event-item span {
+    font-size: 11px;
+    color: #64748b;
+    display: block;
+}
+
+/* Kuliner Round Circles */
+.jt-kuliner-circles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    text-align: center;
+    margin-bottom: 20px;
+    flex: 1;
+    align-items: center;
+}
+.jt-kuliner-circle-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin: 0 auto 8px;
+    border: 3px solid #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+.jt-kuliner-circle-item h5 {
+    font-size: 12px;
+    font-weight: 800;
+    color: #0f172a;
+    margin: 0;
+}
+
+.btn-box-outline {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 99px;
+    padding: 10px 20px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0f172a;
+    text-decoration: none;
+    text-align: center;
+    display: block;
+    width: 100%;
+    margin-top: auto;
+    transition: all 0.2s ease;
+}
+.btn-box-outline:hover {
+    background: #047857;
+    color: #ffffff;
+    border-color: #047857;
+}
+
+/* Bottom Newsletter Banner */
+.jt-newsletter-banner-footer {
+    background: #044e38;
+    color: #ffffff;
+    border-radius: 20px;
+    padding: 30px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 60px;
+}
+@media (max-width: 991px) {
+    .jt-newsletter-banner-footer {
+        flex-direction: column;
+        text-align: center;
+    }
 }
 </style>
 
-<!-- 1. Hero Section & Multi-Filter Search -->
-<section class="jt-hero">
-    <div class="jt-hero-orb jt-hero-orb-1"></div>
-    <div class="jt-hero-orb jt-hero-orb-2"></div>
-
-    <div class="container public-container jt-hero-content">
-        <div class="jt-hero-badge">
-            ✨ Portal Digital Resmi Pariwisata & Ekonomi Kreatif Tegal
+<!-- 1. Hero Section & Multi-Filter Search Bar -->
+<section class="jt-hero-mockup">
+    <div class="container public-container text-start">
+        <div class="jt-hero-badge-pill">
+            <i class="fa-solid fa-compass text-warning me-1"></i> Portal Digital Resmi Pariwisata & Ekonomi Kreatif Tegal
         </div>
 
-        <h1 class="jt-hero-title">
-            Eksplorasi Keindahan & Pesona Lokal Tegal
+        <h1 class="jt-hero-title-large">
+            Jelajahi Tegal,<br><span>Temukan Ceritamu</span>
         </h1>
 
-        <p class="jt-hero-lead">
-            Temukan destinasi wisata eksotis, penginapan nyaman, sentra kuliner legendaris, dan event budaya di wilayah Kabupaten & Kota Tegal dalam satu platform terpadu.
+        <p class="jt-hero-subtitle">
+            Temukan destinasi wisata, kuliner, penginapan, dan pengalaman lokal terbaik di Tegal dalam satu platform.
         </p>
 
-        <!-- Glassmorphism Multi-Filter Search Hub -->
-        <div class="jt-search-wrapper">
-            <form class="jt-search-form" method="GET" action="{{ route('home') }}" role="search">
-                <div class="jt-search-group">
-                    <label for="public-search">🔍 Kata Kunci</label>
-                    <input id="public-search" name="q" value="{{ $filters['q'] ?? '' }}" maxlength="100" placeholder="Cari wisata, hotel, kuliner...">
+        <!-- Floating Search Box Card -->
+        <div class="jt-search-box-card">
+            <form class="jt-search-grid-layout" method="GET" action="{{ route('home') }}" role="search">
+                <div class="jt-search-field-item">
+                    <i class="fa-solid fa-magnifying-glass jt-field-icon"></i>
+                    <div class="jt-field-content">
+                        <label for="public-search">Mau ke mana hari ini?</label>
+                        <input id="public-search" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari destinasi, kuliner, hotel, atau aktivitas...">
+                    </div>
                 </div>
 
-                <div class="jt-search-group">
-                    <label for="public-region">📍 Wilayah / Lokasi</label>
-                    <select id="public-region" name="region">
-                        <option value="">Semua 21 Wilayah</option>
-                        @foreach($regions as $region)
-                            <option value="{{ $region->id }}" @selected(($filters['region'] ?? null) == $region->id)>
-                                {{ $region->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="jt-search-field-item">
+                    <i class="fa-solid fa-location-dot jt-field-icon"></i>
+                    <div class="jt-field-content">
+                        <label for="public-region">Lokasi</label>
+                        <select id="public-region" name="region">
+                            <option value="">Semua Wilayah</option>
+                            @foreach($regions as $region)
+                                <option value="{{ $region->id }}" @selected(($filters['region'] ?? null) == $region->id)>
+                                    {{ $region->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <div class="jt-search-group">
-                    <label for="public-service">🏷️ Kategori Layanan</label>
-                    <select id="public-service" name="service">
-                        <option value="">Semua Layanan</option>
-                        @foreach($services as $service)
-                            <option value="{{ $service->code }}" @selected(($filters['service'] ?? null) === $service->code)>
-                                {{ $service->name }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="jt-search-field-item">
+                    <i class="fa-solid fa-border-all jt-field-icon"></i>
+                    <div class="jt-field-content">
+                        <label for="public-service">Kategori</label>
+                        <select id="public-service" name="service">
+                            <option value="">Semua Kategori</option>
+                            @foreach($services as $service)
+                                <option value="{{ $service->code }}" @selected(($filters['service'] ?? null) === $service->code)>
+                                    {{ $service->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
-                <button class="jt-search-btn" type="submit">
+                <div class="jt-search-field-item" onclick="document.getElementById('public-search-date')?.showPicker?.() || document.getElementById('public-search-date')?.focus()">
+                    <i class="fa-solid fa-calendar-days jt-field-icon"></i>
+                    <div class="jt-field-content">
+                        <label for="public-search-date">Tanggal</label>
+                        <input type="date" id="public-search-date" name="date" value="{{ request('date') }}" min="{{ date('Y-m-d') }}" style="cursor: pointer;">
+                    </div>
+                </div>
+
+                <button class="btn-emerald-search" type="submit">
                     <span>Cari Sekarang</span>
-                    <span>&rarr;</span>
+                    <i class="fa-solid fa-arrow-right"></i>
                 </button>
             </form>
         </div>
 
-        <!-- Quick Chips / Popular Searches -->
-        <div class="jt-chips-row">
-            <span class="text-white-50">Populer di Tegal:</span>
-            <a href="{{ route('tourism.show', 'purwahamba-indah') }}" class="jt-chip">🏖️ Purwahamba Indah</a>
-            <a href="{{ route('accommodation.show', 'hotel-purwahamba-indah') }}" class="jt-chip">🏨 Hotel Purwahamba</a>
-            <a href="{{ route('tourism.index') }}" class="jt-chip">♨️ Guci & Curug</a>
-            <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-chip">🍲 Sate Tegal & Teh Poci</a>
-            <a href="{{ route('home', ['service' => 'event']) }}" class="jt-chip">🎪 Event Budaya</a>
+        <!-- Popular Chips -->
+        <div class="jt-chips-wrapper">
+            <span class="text-white-50"><i class="fa-solid fa-fire text-danger me-1"></i> Sedang Populer</span>
+            <a href="{{ route('tourism.show', 'purwahamba-indah') }}" class="jt-chip-item">
+                <i class="fa-solid fa-umbrella-beach text-warning me-1"></i> Purwahamba Indah
+            </a>
+            <a href="{{ route('tourism.index') }}" class="jt-chip-item">
+                <i class="fa-solid fa-water text-cyan me-1"></i> Guci & Curug
+            </a>
+            <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-chip-item">
+                <i class="fa-solid fa-utensils text-warning me-1"></i> Sate Tegal
+            </a>
+            <a href="{{ route('accommodation.index') }}" class="jt-chip-item">
+                <i class="fa-solid fa-hotel text-info me-1"></i> Hotel Pilihan
+            </a>
+            <a href="{{ route('home', ['service' => 'event']) }}" class="jt-chip-item">
+                <i class="fa-solid fa-calendar-day text-danger me-1"></i> Event Budaya
+            </a>
         </div>
     </div>
 </section>
 
-<!-- 2. Quick Platform Stats Bar -->
-<div class="container public-container">
-    <div class="jt-stats-bar">
-        <div class="jt-stats-grid">
-            <div class="jt-stat-item">
-                <h3>{{ $stats[0]['value'] }}+</h3>
-                <p>Mitra Terverifikasi</p>
+<!-- 2. Section 1: Jelajahi Tegal (4 Cards) -->
+<section class="public-section py-5">
+    <div class="container public-container">
+        <div class="jt-section-title-wrap">
+            <div class="jt-eyebrow-leaf">
+                <i class="fa-solid fa-leaf text-success"></i> Jelajahi Tegal <i class="fa-solid fa-leaf text-success"></i>
             </div>
-            <div class="jt-stat-item">
-                <h3>21</h3>
-                <p>Wilayah & Kecamatan Tegal</p>
+            <p class="jt-section-subtext">Temukan berbagai hal menarik yang bisa kamu jelajahi di Tegal</p>
+        </div>
+
+        <div class="row g-4">
+            <!-- Card 1: Wisata -->
+            <div class="col-lg-3 col-md-6">
+                <div class="jt-explore-card">
+                    <div class="jt-explore-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="Wisata Tegal">
+                    </div>
+                    <div class="jt-explore-body">
+                        <div class="jt-floating-icon-circle bg-icon-green">
+                            <i class="fa-solid fa-umbrella-beach"></i>
+                        </div>
+                        <h3>Wisata</h3>
+                        <p>Temukan destinasi wisata alam, pantai, pegunungan, dan lebih banyak lagi.</p>
+                        <a href="{{ route('tourism.index') }}" class="jt-circle-arrow-btn" aria-label="Lihat Wisata">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="jt-stat-item">
-                <h3>{{ $stats[2]['value'] }}</h3>
-                <p>Layanan Aktif</p>
+
+            <!-- Card 2: Kuliner -->
+            <div class="col-lg-3 col-md-6">
+                <div class="jt-explore-card">
+                    <div class="jt-explore-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" alt="Kuliner Tegal">
+                    </div>
+                    <div class="jt-explore-body">
+                        <div class="jt-floating-icon-circle bg-icon-orange">
+                            <i class="fa-solid fa-utensils"></i>
+                        </div>
+                        <h3>Kuliner</h3>
+                        <p>Nikmati berbagai kuliner khas Tegal yang lezat dan menggugah selera.</p>
+                        <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-circle-arrow-btn" aria-label="Lihat Kuliner">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
             </div>
-            <div class="jt-stat-item">
-                <h3 class="text-warning">100%</h3>
-                <p>Legal & Terpercaya</p>
+
+            <!-- Card 3: Penginapan -->
+            <div class="col-lg-3 col-md-6">
+                <div class="jt-explore-card">
+                    <div class="jt-explore-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop" alt="Penginapan Tegal">
+                    </div>
+                    <div class="jt-explore-body">
+                        <div class="jt-floating-icon-circle bg-icon-blue">
+                            <i class="fa-solid fa-bed"></i>
+                        </div>
+                        <h3>Penginapan</h3>
+                        <p>Temukan penginapan nyaman dari hotel, homestay, hingga villa terbaik.</p>
+                        <a href="{{ route('accommodation.index') }}" class="jt-circle-arrow-btn" aria-label="Lihat Penginapan">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 4: Event -->
+            <div class="col-lg-3 col-md-6">
+                <div class="jt-explore-card">
+                    <div class="jt-explore-img-wrap">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop" alt="Event Tegal">
+                    </div>
+                    <div class="jt-explore-body">
+                        <div class="jt-floating-icon-circle bg-icon-purple">
+                            <i class="fa-solid fa-masks-theater"></i>
+                        </div>
+                        <h3>Event</h3>
+                        <p>Jangan lewatkan berbagai event menarik dan budaya lokal yang autentik.</p>
+                        <a href="{{ route('home', ['service' => 'event']) }}" class="jt-circle-arrow-btn" aria-label="Lihat Event">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 3. Section 2: Destinasi Populer -->
+<section class="public-section py-4">
+    <div class="container public-container">
+        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+            <h2 class="fs-2 fw-extrabold text-dark m-0">Destinasi Populer</h2>
+            <a href="{{ route('tourism.index') }}" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+                Lihat Semua Destinasi <i class="fa-solid fa-arrow-right ms-1"></i>
+            </a>
+        </div>
+
+        <div class="row g-4 position-relative">
+            @if(isset($featuredTourisms) && $featuredTourisms->isNotEmpty())
+                @foreach($featuredTourisms as $tourism)
+                    @php
+                        $coverMedia = $tourism->media->where('pivot.role', 'cover')->first() ?? $tourism->media->first();
+                        $coverUrl = $coverMedia ? asset('storage/' . $coverMedia->object_key) : 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop';
+                        $rating = $tourism->rating_average > 0 ? number_format($tourism->rating_average, 1) : '4.8';
+                        $regionName = $tourism->region?->name ?? 'Tegal';
+                        $mitraName = $tourism->mitra?->display_name ?? 'Mitra Terverifikasi';
+                    @endphp
+                    <div class="col-lg-3 col-md-6">
+                        <div class="jt-popular-card">
+                            <div class="jt-pop-img-wrap">
+                                <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}">
+                                <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>{{ $rating }}</span>
+                                <span class="jt-pop-category-pill">{{ $tourism->category?->name ?? 'Wisata' }}</span>
+                            </div>
+                            <div class="jt-pop-body">
+                                <h3>
+                                    <a href="{{ route('tourism.show', $tourism->slug) }}" class="text-decoration-none text-dark">
+                                        {{ $tourism->name }}
+                                    </a>
+                                </h3>
+                                <div class="jt-pop-location">
+                                    <i class="fa-solid fa-location-dot text-danger me-1"></i> {{ $regionName }}
+                                    <span class="text-muted d-block fw-normal fs-8">Oleh: {{ $mitraName }}</span>
+                                </div>
+                                <p>{{ str($tourism->description)->limit(70) }}</p>
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            @else
+                <!-- Fallback Mockup Cards -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-popular-card">
+                        <div class="jt-pop-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop" alt="Guci Hot Spring">
+                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.8</span>
+                            <span class="jt-pop-category-pill">Alam</span>
+                        </div>
+                        <div class="jt-pop-body">
+                            <h3>Guci Hot Spring</h3>
+                            <div class="jt-pop-location">Bumijawa, Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: PT Guci Natural Resort Tegal</span></div>
+                            <p>Pemandian air panas alami dengan pemandangan indah dan udara sejuk.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-popular-card">
+                        <div class="jt-pop-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=800&auto=format&fit=crop" alt="Pantai Alam Indah">
+                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.6</span>
+                            <span class="jt-pop-category-pill" style="background: #0d9488;">Pantai</span>
+                        </div>
+                        <div class="jt-pop-body">
+                            <h3>Pantai Alam Indah</h3>
+                            <div class="jt-pop-location">Kota Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: Mitra Wisata Utama Tegal</span></div>
+                            <p>Pantai indah dengan pasir luas dan berbagai wahana menarik.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-popular-card">
+                        <div class="jt-pop-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop" alt="Curug Putri">
+                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.7</span>
+                            <span class="jt-pop-category-pill">Curug</span>
+                        </div>
+                        <div class="jt-pop-body">
+                            <h3>Curug Putri</h3>
+                            <div class="jt-pop-location">Bumijawa, Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: CV Pesona Alam Bumijawa</span></div>
+                            <p>Air terjun yang menawan dengan suasana alami yang asri.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <div class="jt-popular-card">
+                        <div class="jt-pop-img-wrap">
+                            <img src="https://images.unsplash.com/photo-1476514525535-ce74f45814de?q=80&w=800&auto=format&fit=crop" alt="Danau Beko">
+                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.5</span>
+                            <span class="jt-pop-category-pill" style="background: #0284c7;">Keluarga</span>
+                        </div>
+                        <div class="jt-pop-body">
+                            <h3>Danau Beko</h3>
+                            <div class="jt-pop-location">Margasari, Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: Pokdarwis Danau Beko Margasari</span></div>
+                            <p>Tempat rekreasi keluarga dengan danau buatan yang menyenangkan.</p>
+                        </div>
+                    </div>
+                </div>
+            @endif
+        </div>
+    </div>
+</section>
+
+<!-- 4. Section 3: 3-Column Feature Grid (AI, Event, Kuliner) -->
+<section class="public-section py-4">
+    <div class="container public-container">
+        <div class="row g-4">
+            <!-- Box 1: Rekomendasi AI -->
+            <div class="col-lg-4">
+                <div class="jt-box-card jt-box-ai">
+                    <div class="jt-box-header">
+                        <h3>
+                            <i class="fa-solid fa-wand-magic-sparkles text-primary"></i> 
+                            Rekomendasi Untukmu 
+                            <span class="badge bg-primary text-white rounded-pill px-2 py-1 fs-8">AI</span>
+                        </h3>
+                        <p>Berdasarkan minatmu, kami menemukan beberapa tempat yang mungkin kamu suka.</p>
+                    </div>
+
+                    <div class="jt-ai-thumbs-grid">
+                        <a href="{{ route('tourism.index') }}" class="jt-ai-thumb-item">
+                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=400&auto=format&fit=crop" alt="Bukit Bintang">
+                            <h5>Bukit Bintang</h5>
+                            <span>Bumijawa</span>
+                        </a>
+                        <a href="{{ route('tourism.index') }}" class="jt-ai-thumb-item">
+                            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=400&auto=format&fit=crop" alt="Waduk Cacaban">
+                            <h5>Waduk Cacaban</h5>
+                            <span>Lebaksiu</span>
+                        </a>
+                        <a href="{{ route('tourism.index') }}" class="jt-ai-thumb-item">
+                            <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=400&auto=format&fit=crop" alt="Pagaralang">
+                            <h5>Pagaralang</h5>
+                            <span>Tegal</span>
+                        </a>
+                    </div>
+
+                    <a href="{{ route('tourism.index') }}" class="btn-box-outline">
+                        Lihat Rekomendasi Lainnya <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Box 2: Event Terdekat -->
+            <div class="col-lg-4">
+                <div class="jt-box-card jt-box-event">
+                    <div class="jt-box-header">
+                        <h3>
+                            <i class="fa-solid fa-calendar-days text-amber-600"></i> Event Terdekat
+                        </h3>
+                    </div>
+
+                    <div class="jt-event-list">
+                        <div class="jt-event-item">
+                            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=400&auto=format&fit=crop" alt="Karnaval Budaya Tegal">
+                            <div>
+                                <h5>Karnaval Budaya Tegal</h5>
+                                <p>18 Agustus 2026</p>
+                                <span>Alun-alun Kabupaten Tegal</span>
+                            </div>
+                        </div>
+
+                        <div class="jt-event-item">
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400&auto=format&fit=crop" alt="Festival Kuliner Tegal">
+                            <div>
+                                <h5>Festival Kuliner Tegal</h5>
+                                <p>25–27 Agustus 2026</p>
+                                <span>Taman Rakyat Slawi</span>
+                            </div>
+                        </div>
+
+                        <div class="jt-event-item">
+                            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=400&auto=format&fit=crop" alt="Larung Sesaji Pantai">
+                            <div>
+                                <h5>Larung Sesaji Pantai</h5>
+                                <p>30 Agustus 2026</p>
+                                <span>Pantai Alam Indah</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('home', ['service' => 'event']) }}" class="btn-box-outline">
+                        Lihat Semua Event <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Box 3: Kuliner Khas Tegal -->
+            <div class="col-lg-4">
+                <div class="jt-box-card jt-box-kuliner">
+                    <div class="jt-box-header">
+                        <h3>
+                            <i class="fa-solid fa-utensils text-rose-600"></i> Kuliner Khas Tegal
+                        </h3>
+                        <p>Jangan lewatkan cita rasa khas Tegal yang melegenda dan wajib dicoba!</p>
+                    </div>
+
+                    <div class="jt-kuliner-circles">
+                        <div class="jt-kuliner-circle-item">
+                            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=300&auto=format&fit=crop" alt="Sate Kambing">
+                            <h5>Sate Kambing</h5>
+                        </div>
+                        <div class="jt-kuliner-circle-item">
+                            <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=300&auto=format&fit=crop" alt="Tahu Aci">
+                            <h5>Tahu Aci</h5>
+                        </div>
+                        <div class="jt-kuliner-circle-item">
+                            <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=300&auto=format&fit=crop" alt="Teh Poci">
+                            <h5>Teh Poci</h5>
+                        </div>
+                    </div>
+
+                    <a href="{{ route('home', ['service' => 'culinary']) }}" class="btn-box-outline">
+                        Jelajahi Kuliner Lainnya <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- 5. Section 4: Newsletter Footer Banner -->
+<div class="container public-container pb-5">
+    <div class="jt-newsletter-banner-footer">
+        <div class="d-flex align-items-center gap-3">
+            <div class="bg-white text-emerald p-3 rounded-circle" style="width: 54px; height: 54px; display: grid; place-items: center; background: rgba(255,255,255,0.15); color: #ffffff;">
+                <i class="fa-solid fa-paper-plane fs-4"></i>
+            </div>
+            <div>
+                <h3 class="fs-4 fw-extrabold m-0 text-white">Dapatkan Info Wisata Tegal Terbaru</h3>
+                <p class="m-0 text-white-50 fs-7">Berlangganan newsletter untuk mendapatkan info destinasi, event, dan promo menarik dari Jelajah Tegal.</p>
+            </div>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+            <div class="input-group">
+                <input type="email" class="form-control px-3 py-2 rounded-start-pill border-0" placeholder="Masukkan email kamu" style="min-width: 240px; font-size: 13px;">
+                <button class="btn btn-emerald px-4 rounded-end-pill fw-bold" style="background: #059669; color: #ffffff;" type="button">Berlangganan</button>
+            </div>
+            <div class="d-flex gap-2 text-white-50 fs-5 ms-2">
+                <a href="#" class="text-white-50"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#" class="text-white-50"><i class="fa-brands fa-facebook"></i></a>
+                <a href="#" class="text-white-50"><i class="fa-brands fa-youtube"></i></a>
+                <a href="#" class="text-white-50"><i class="fa-brands fa-tiktok"></i></a>
             </div>
         </div>
     </div>
 </div>
 
-<!-- 3. Kategori Layanan Terpadu -->
-<section class="public-section">
-    <div class="container public-container">
-        <div class="text-center mb-5">
-            <p class="public-eyebrow">Pilihan Eksplorasi</p>
-            <h2 class="fs-2 fw-bold text-dark">Kategori Layanan Jelajah Tegal</h2>
-            <p class="text-muted" style="max-width: 540px; margin: 0 auto;">Pilih ragam pengalaman yang ingin Anda nikmati selama berkunjung di Tegal.</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-lg-2 col-md-4 col-6">
-                <a href="{{ route('tourism.index') }}" class="jt-category-card">
-                    <div class="jt-cat-icon">🏖️</div>
-                    <h4>Wisata</h4>
-                    <p>Pantai & Alam</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-4 col-6">
-                <a href="{{ route('accommodation.index') }}" class="jt-category-card">
-                    <div class="jt-cat-icon">🏨</div>
-                    <h4>Penginapan</h4>
-                    <p>Hotel & Villa</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-4 col-6">
-                <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-category-card">
-                    <div class="jt-cat-icon">🍲</div>
-                    <h4>Kuliner</h4>
-                    <p>Sate & Poci</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-4 col-6">
-                <a href="{{ route('home', ['service' => 'event']) }}" class="jt-category-card">
-                    <div class="jt-cat-icon">🎪</div>
-                    <h4>Event</h4>
-                    <p>Festival Seni</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-4 col-6">
-                <a href="{{ route('home', ['service' => 'rental']) }}" class="jt-category-card">
-                    <div class="jt-cat-icon">🚗</div>
-                    <h4>Rental</h4>
-                    <p>Mobil & Motor</p>
-                </a>
-            </div>
-            <div class="col-lg-2 col-md-4 col-6">
-                <a href="{{ route('home') }}" class="jt-category-card">
-                    <div class="jt-cat-icon">🏢</div>
-                    <h4>Mitra</h4>
-                    <p>Direktori Resmi</p>
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 4. Destinasi Wisata Pilihan -->
-@if($featuredTourisms->isNotEmpty())
-<section class="public-section pt-0">
-    <div class="container public-container">
-        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
-            <div>
-                <p class="public-eyebrow">Rekomendasi Terbaik</p>
-                <h2 class="fs-2 fw-bold text-dark">Destinasi Wisata Pilihan</h2>
-            </div>
-            <a href="{{ route('tourism.index') }}" class="btn btn-outline-lokantara fw-bold">
-                Lihat Semua Wisata &rarr;
-            </a>
-        </div>
-
-        <div class="row g-4">
-            @foreach($featuredTourisms as $tourism)
-                @php
-                    $coverMedia = $tourism->media->where('pivot.role', 'cover')->first() ?? $tourism->media->first();
-                    $coverUrl = $coverMedia ? asset('storage/' . $coverMedia->object_key) : null;
-                    $minTicket = $tourism->offers->min('price');
-                @endphp
-                <div class="col-lg-4 col-md-6">
-                    <article class="jt-showcase-card">
-                        <div class="jt-card-image-wrap">
-                            @if($coverUrl)
-                                <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}">
-                            @else
-                                <div style="width: 100%; height: 100%; display: grid; place-items: center; background: linear-gradient(135deg, #174d3c, #1f7a5c); color: #fff; font-size: 36px;">
-                                    🏖️
-                                </div>
-                            @endif
-                            <div class="jt-card-badges">
-                                <span class="jt-card-badge badge-wisata">
-                                    📍 {{ $tourism->region?->name ?? 'Tegal' }}
-                                </span>
-                                @if($tourism->category)
-                                    <span class="jt-card-badge" style="background: rgba(255,255,255,0.9); color: #174d3c;">
-                                        {{ $tourism->category->name }}
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                        <div class="jt-card-body">
-                            <h3>
-                                <a href="{{ route('tourism.show', $tourism->slug) }}" class="text-decoration-none text-dark">
-                                    {{ $tourism->name }}
-                                </a>
-                            </h3>
-                            <p>{{ str($tourism->description ?: 'Eksplorasi destinasi wisata unggulan di wilayah Tegal.')->limit(95) }}</p>
-
-                            <div class="jt-card-footer">
-                                <div>
-                                    <small class="text-muted d-block" style="font-size: 11px;">Tiket Masuk</small>
-                                    <div class="jt-price-tag">
-                                        {{ $minTicket ? 'Rp ' . number_format($minTicket, 0, ',', '.') : 'Tiket Masuk Terjangkau' }}
-                                    </div>
-                                </div>
-                                <a href="{{ route('tourism.show', $tourism->slug) }}" class="btn btn-sm btn-lokantara fw-bold px-3">
-                                    Lihat Detail
-                                </a>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-<!-- 5. Penginapan & Hotel Rekomendasi -->
-@if($featuredAccommodations->isNotEmpty())
-<section class="public-section pt-0">
-    <div class="container public-container">
-        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
-            <div>
-                <p class="public-eyebrow">Istirahat Nyaman</p>
-                <h2 class="fs-2 fw-bold text-dark">Penginapan & Hotel Pilihan</h2>
-            </div>
-            <a href="{{ route('accommodation.index') }}" class="btn btn-outline-lokantara fw-bold">
-                Lihat Semua Penginapan &rarr;
-            </a>
-        </div>
-
-        <div class="row g-4">
-            @foreach($featuredAccommodations as $hotel)
-                @php
-                    $coverMedia = $hotel->media->where('pivot.role', 'cover')->first() ?? $hotel->media->first();
-                    $coverUrl = $coverMedia ? asset('storage/' . $coverMedia->object_key) : null;
-                    $minPrice = $hotel->accommodation->rooms->min('offer.price') ?? 0;
-                @endphp
-                <div class="col-lg-6">
-                    <article class="jt-showcase-card">
-                        <div class="row g-0 h-100">
-                            <div class="col-md-5">
-                                <div class="jt-card-image-wrap h-100" style="min-height: 200px;">
-                                    @if($coverUrl)
-                                        <img src="{{ $coverUrl }}" alt="{{ $hotel->name }}">
-                                    @else
-                                        <div style="width: 100%; height: 100%; display: grid; place-items: center; background: linear-gradient(135deg, #1b634b, #0d261e); color: #fff; font-size: 36px;">
-                                            🏨
-                                        </div>
-                                    @endif
-                                    <div class="jt-card-badges">
-                                        <span class="jt-card-badge badge-hotel">
-                                            {{ str($hotel->accommodation->property_type ?? 'Hotel')->headline() }}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-7 d-flex flex-column">
-                                <div class="jt-card-body">
-                                    <div class="d-flex align-items-center gap-1 text-warning mb-1" style="font-size: 13px;">
-                                        ★ <strong>{{ number_format($hotel->rating_average, 1) }}</strong>
-                                        <span class="text-muted">({{ $hotel->region?->name ?? 'Tegal' }})</span>
-                                    </div>
-                                    <h3>
-                                        <a href="{{ route('accommodation.show', $hotel->slug) }}" class="text-decoration-none text-dark">
-                                            {{ $hotel->name }}
-                                        </a>
-                                    </h3>
-                                    <p>{{ str($hotel->description ?: 'Penginapan nyaman dengan pelayanan prima di Tegal.')->limit(85) }}</p>
-
-                                    <div class="jt-card-footer mt-auto">
-                                        <div>
-                                            <small class="text-muted d-block" style="font-size: 11px;">Mulai dari</small>
-                                            <div class="jt-price-tag">
-                                                {{ $minPrice ? 'Rp ' . number_format($minPrice, 0, ',', '.') : 'Hubungi Mitra' }}
-                                                <small class="text-muted fw-normal" style="font-size: 11px;">/malam</small>
-                                            </div>
-                                        </div>
-                                        <a href="{{ route('accommodation.show', $hotel->slug) }}" class="btn btn-sm btn-lokantara fw-bold px-3">
-                                            Pesan Kamar
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </article>
-                </div>
-            @endforeach
-        </div>
-    </div>
-</section>
-@endif
-
-<!-- 6. Direktori Mitra Terverifikasi -->
-<section class="public-section pt-0" aria-labelledby="result-heading">
-    <div class="container public-container">
-        <div class="d-flex flex-wrap align-items-end justify-content-between mb-4">
-            <div>
-                <p class="public-eyebrow">Direktori Resmi</p>
-                <h2 id="result-heading" class="fs-2 fw-bold text-dark">
-                    {{ request()->hasAny(['q','region','service']) ? 'Hasil Pencarian Mitra' : 'Mitra yang Tersedia' }}
-                </h2>
-            </div>
-            <span class="text-muted fw-semibold">{{ $mitras->total() }} Mitra Aktif</span>
-        </div>
-
-        @if($mitras->isEmpty())
-            <x-empty-state title="Belum ada Mitra yang cocok" description="Coba ubah kata kunci pencarian atau pilih filter wilayah lain." />
-        @else
-            <div class="public-card-grid">
-                @foreach($mitras as $mitra)
-                    <article class="mitra-card" style="transition: all 0.25s ease; border-radius: 18px;">
-                        <a href="{{ route('public.mitra.show', $mitra->slug) }}" class="text-decoration-none">
-                            <div class="mitra-cover" style="background: linear-gradient(135deg, #124032, #1b634b); color: #fff;">
-                                <span>{{ str($mitra->display_name)->substr(0,1)->upper() }}</span>
-                            </div>
-                        </a>
-                        <div class="mitra-card-body d-flex flex-column">
-                            <div class="card-meta mb-2">
-                                <span>📍 {{ $mitra->region?->name ?? 'Tegal' }}</span>
-                                <span class="verified-label">✔ Terverifikasi</span>
-                            </div>
-                            <h3 class="mb-1">
-                                <a href="{{ route('public.mitra.show', $mitra->slug) }}" class="text-decoration-none text-dark fw-bold">
-                                    {{ $mitra->display_name }}
-                                </a>
-                            </h3>
-                            <p class="text-muted flex-grow-1" style="font-size: 13px;">
-                                {{ str($mitra->description ?: 'Pelaku usaha terverifikasi di platform Jelajah Tegal.')->limit(110) }}
-                            </p>
-                            <div class="tag-row mb-3">
-                                @forelse($mitra->features as $feature)
-                                    <span>{{ $feature->serviceType->name }}</span>
-                                @empty
-                                    <span>Wisata & Penginapan</span>
-                                @endforelse
-                            </div>
-                            <div class="pt-2 border-top mt-auto">
-                                <a href="{{ route('public.mitra.show', $mitra->slug) }}" class="btn btn-sm btn-outline-lokantara w-100 fw-bold">
-                                    Kunjungi Profil Mitra &rarr;
-                                </a>
-                            </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-            <div class="public-pagination mt-4">{{ $mitras->links() }}</div>
-        @endif
-    </div>
-</section>
-
-<!-- 7. Keunggulan Platform Jelajah Tegal -->
-<section class="public-section pt-0">
-    <div class="container public-container">
-        <div class="text-center mb-5">
-            <p class="public-eyebrow">Kenapa Jelajah Tegal?</p>
-            <h2 class="fs-2 fw-bold text-dark">Solusi Terpadu Liburan & Bisnis di Tegal</h2>
-            <p class="text-muted" style="max-width: 580px; margin: 0 auto;">Kami menghubungkan wisatawan langsung dengan pelaku pariwisata dan ekonomi kreatif lokal secara aman dan transparan.</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
-                <div class="jt-feature-box">
-                    <div class="jt-feat-icon">🛡️</div>
-                    <h4>Mitra Terverifikasi</h4>
-                    <p>Semua pelaku usaha melewati verifikasi dokumen legalitas & KYC resmi sebelum dipublikasikan.</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="jt-feature-box">
-                    <div class="jt-feat-icon">🎟️</div>
-                    <h4>Pemesanan Transparan</h4>
-                    <p>Harga tiket dan reservasi kamar jelas tanpa biaya tersembunyi dengan konfirmasi instan.</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="jt-feature-box">
-                    <div class="jt-feat-icon">🗺️</div>
-                    <h4>Peta Interaktif Presisi</h4>
-                    <p>Didukung koordinat GPS presisi dan integrasi langsung ke petunjuk arah Google Maps.</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="jt-feature-box">
-                    <div class="jt-feat-icon">🤝</div>
-                    <h4>Dukung UMKM Lokal</h4>
-                    <p>Setiap kunjungan dan transaksi turut mendukung pertumbuhan pariwisata daerah Tegal.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- 8. Call to Action (CTA) Banner -->
-<section class="public-section pt-0">
-    <div class="container public-container">
-        <div class="jt-cta-banner">
-            <h2 class="fs-1 fw-bold text-white mb-3">Punya Usaha Wisata, Hotel, atau Kuliner di Tegal?</h2>
-            <p class="text-white-50 fs-6 mb-4" style="max-width: 620px; margin-left: auto; margin-right: auto;">
-                Bergabunglah bersama ratusan Mitra lainnya di Jelajah Tegal. Jangkau ribuan wisatawan dan tingkatkan omset bisnis Anda sekarang juga.
-            </p>
-            <div class="d-flex flex-wrap gap-3 justify-content-center">
-                <a href="{{ route('register') }}" class="btn btn-light fw-bold px-4 py-3" style="border-radius: 12px; color: #13352c;">
-                    🚀 Gabung Menjadi Mitra
-                </a>
-                <a href="{{ route('public.about') }}" class="btn btn-outline-light fw-semibold px-4 py-3" style="border-radius: 12px;">
-                    Pelajari Selengkapnya
-                </a>
-            </div>
-        </div>
-    </div>
-</section>
-
-@include('public.partials.platform-sections')
 @endsection
