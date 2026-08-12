@@ -1,7 +1,9 @@
+@import 'bootstrap/dist/css/bootstrap.min.css';
 @import './dashboard-shell.css';
 @import './dashboard.css';
 @import './components.css';
 @import './responsive.css';
+@import './public.css';
 
 .auth-page-wrapper{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px;background:radial-gradient(circle at 10% 20%,rgba(31,122,92,0.06) 0%,transparent 40%),radial-gradient(circle at 90% 80%,rgba(45,140,168,0.06) 0%,transparent 40%),var(--lokantara-background)}
 .auth-container{width:100%;max-width:1100px;margin:0 auto}

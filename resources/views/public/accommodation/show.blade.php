@@ -273,21 +273,21 @@
                 <!-- Badges -->
                 <div class="hotel-badge-row">
                     <span class="hotel-badge-pill badge-property-type">
-                        🏨 {{ str($accommodation->accommodation->property_type ?? 'Hotel')->headline() }}
+                        <i class="fa-solid fa-hotel me-1 text-info"></i> {{ str($accommodation->accommodation->property_type ?? 'Hotel')->headline() }}
                     </span>
                     @if ($accommodation->region)
                         <span class="hotel-badge-pill badge-hotel-region">
-                            📍 {{ $accommodation->region->name }}
+                            <i class="fa-solid fa-location-dot me-1 text-danger"></i> {{ $accommodation->region->name }}
                         </span>
                     @endif
                     @if ($accommodation->accommodation->star_rating)
                         <span class="hotel-badge-pill badge-star-rating">
-                            ⭐ Bintang {{ $accommodation->accommodation->star_rating }}
+                            <i class="fa-solid fa-star me-1 text-warning"></i> Bintang {{ $accommodation->accommodation->star_rating }}
                         </span>
                     @endif
                     @if ($accommodation->is_featured)
                         <span class="hotel-badge-pill" style="background: linear-gradient(135deg, #e53e3e, #dd6b20); color: #fff;">
-                            ✨ Rekomendasi Unggulan
+                            <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Rekomendasi Unggulan
                         </span>
                     @endif
                 </div>
@@ -298,16 +298,16 @@
                 <!-- Meta Details -->
                 <div class="hotel-hero-meta">
                     <div class="hotel-meta-item">
-                        <span class="text-warning">★</span>
+                        <span class="text-warning"><i class="fa-solid fa-star"></i></span>
                         <strong>{{ number_format($accommodation->rating_average, 1) }}</strong>
                         <span class="text-white-50">({{ $accommodation->rating_count }} ulasan)</span>
                     </div>
                     <div class="hotel-meta-item">
-                        <span>🏢</span>
+                        <i class="fa-solid fa-building text-info"></i>
                         <span>Dikelola oleh <strong>{{ $accommodation->mitra->display_name }}</strong></span>
                     </div>
                     <div class="hotel-meta-item">
-                        <span>📍</span>
+                        <i class="fa-solid fa-location-dot text-danger"></i>
                         <span>{{ $accommodation->address ?: 'Kawasan ' . ($accommodation->region?->name ?? 'Tegal') }}</span>
                     </div>
                 </div>
@@ -330,28 +330,28 @@
     <div class="hotel-stats-card">
         <div class="hotel-stats-grid">
             <div class="hotel-stat-box">
-                <div class="hotel-stat-icon">🛎️</div>
+                <div class="hotel-stat-icon"><i class="fa-solid fa-bell-concierge text-primary"></i></div>
                 <div class="hotel-stat-info">
                     <h6>Waktu Check-In</h6>
                     <p>{{ $accommodation->accommodation->check_in_time ? substr($accommodation->accommodation->check_in_time, 0, 5) . ' WIB' : '14:00 WIB' }}</p>
                 </div>
             </div>
             <div class="hotel-stat-box">
-                <div class="hotel-stat-icon">🚪</div>
+                <div class="hotel-stat-icon"><i class="fa-solid fa-door-open text-danger"></i></div>
                 <div class="hotel-stat-info">
                     <h6>Waktu Check-Out</h6>
                     <p>{{ $accommodation->accommodation->check_out_time ? substr($accommodation->accommodation->check_out_time, 0, 5) . ' WIB' : '12:00 WIB' }}</p>
                 </div>
             </div>
             <div class="hotel-stat-box">
-                <div class="hotel-stat-icon">🛏️</div>
+                <div class="hotel-stat-icon"><i class="fa-solid fa-bed text-info"></i></div>
                 <div class="hotel-stat-info">
                     <h6>Pilihan Kamar</h6>
                     <p>{{ $accommodation->accommodation->rooms->count() }} Tipe Kamar</p>
                 </div>
             </div>
             <div class="hotel-stat-box">
-                <div class="hotel-stat-icon">🏷️</div>
+                <div class="hotel-stat-icon"><i class="fa-solid fa-tag text-success"></i></div>
                 <div class="hotel-stat-info">
                     <h6>Harga Mulai Dari</h6>
                     <p class="text-success">
@@ -375,7 +375,7 @@
             <div class="col-lg-8">
                 <!-- Description Card -->
                 <div class="hotel-card">
-                    <h2 class="hotel-card-title"><span class="title-icon">📖</span> Tentang Penginapan</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-book-open text-emerald"></i></span> Tentang Penginapan</h2>
                     <div style="font-size: 15px; line-height: 1.8; color: var(--lokantara-text);">
                         {!! nl2br(e($accommodation->description ?: 'Selamat datang di ' . $accommodation->name . '. Nikmati pengalaman menginap yang nyaman dan istirahat berkualitas dengan fasilitas lengkap dan pelayanan ramah di kawasan ' . ($accommodation->region?->name ?? 'Tegal') . '.')) !!}
                     </div>
@@ -383,7 +383,7 @@
                     <!-- Gallery Photos if available -->
                     @if ($galleryMedia->isNotEmpty())
                         <hr class="my-4">
-                        <h3 class="fs-6 fw-bold mb-2">Galeri Foto Penginapan</h3>
+                        <h3 class="fs-6 fw-bold mb-2"><i class="fa-solid fa-images text-primary me-2"></i>Galeri Foto Penginapan</h3>
                         <div class="d-flex gap-2 flex-wrap">
                             @foreach ($galleryMedia as $media)
                                 <div style="width: 140px; height: 100px; border-radius: 12px; overflow: hidden; border: 1px solid var(--lokantara-border);">
@@ -396,7 +396,7 @@
 
                 <!-- Rooms Selection Card -->
                 <div class="hotel-card">
-                    <h2 class="hotel-card-title"><span class="title-icon">🛏️</span> Pilihan Tipe Kamar Tersedia</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-bed text-info"></i></span> Pilihan Tipe Kamar Tersedia</h2>
                     <p class="text-muted fs-7 mb-4">Pilih tipe kamar yang paling sesuai dengan kebutuhan menginap Anda:</p>
 
                     @forelse ($accommodation->accommodation->rooms as $room)
@@ -418,12 +418,12 @@
                                         <div>
                                             <h3 class="fs-5 fw-bold mb-1" style="color: var(--lokantara-text);">{{ $room->name }}</h3>
                                             <div class="d-flex flex-wrap gap-2 text-muted" style="font-size: 13px;">
-                                                <span>👥 {{ $room->capacity_adults }} Dewasa, {{ $room->capacity_children }} Anak</span>
+                                                <span><i class="fa-solid fa-users text-primary me-1"></i> {{ $room->capacity_adults }} Dewasa, {{ $room->capacity_children }} Anak</span>
                                                 <span>·</span>
-                                                <span>🏢 {{ $room->total_units }} Unit Tersedia</span>
+                                                <span><i class="fa-solid fa-building text-info me-1"></i> {{ $room->total_units }} Unit Tersedia</span>
                                                 @if ($room->bed_type)
                                                     <span>·</span>
-                                                    <span>🛏️ {{ $room->bed_type }}</span>
+                                                    <span><i class="fa-solid fa-bed text-secondary me-1"></i> {{ $room->bed_type }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -444,16 +444,16 @@
                                     <!-- Room Facilities preview -->
                                     <div class="d-flex flex-wrap gap-2 mb-3">
                                         @forelse ($room->facilities->take(4) as $facility)
-                                            <span class="badge text-bg-light border" style="font-size: 11px;">✔ {{ $facility->name }}</span>
+                                            <span class="badge text-bg-light border" style="font-size: 11px;"><i class="fa-solid fa-circle-check text-success me-1"></i> {{ $facility->name }}</span>
                                         @empty
-                                            <span class="badge text-bg-light border" style="font-size: 11px;">✔ Fasilitas Kamar Standar Nyaman</span>
+                                            <span class="badge text-bg-light border" style="font-size: 11px;"><i class="fa-solid fa-circle-check text-success me-1"></i> Fasilitas Kamar Standar Nyaman</span>
                                         @endforelse
                                     </div>
 
                                     <!-- Action Buttons -->
                                     <div class="d-flex flex-wrap gap-2 pt-2 border-top">
                                         <a href="{{ route('accommodation.rooms.show', [$accommodation->slug, $room]) }}" class="btn btn-sm btn-outline-lokantara fw-semibold px-3">
-                                            🔍 Lihat Rincian Kamar
+                                            <i class="fa-solid fa-magnifying-glass me-1"></i> Lihat Rincian Kamar
                                         </a>
                                         @auth
                                             <a href="{{ route('orders.index') }}" class="btn btn-sm btn-lokantara fw-bold px-4">
@@ -475,29 +475,29 @@
 
                 <!-- Facilities Card -->
                 <div class="hotel-card">
-                    <h2 class="hotel-card-title"><span class="title-icon">✨</span> Fasilitas Utama Properti</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-wand-magic-sparkles text-warning"></i></span> Fasilitas Utama Properti</h2>
                     @if ($accommodation->facilities->isNotEmpty())
                         <div class="hotel-facility-grid">
                             @foreach ($accommodation->facilities as $facility)
                                 <div class="hotel-facility-pill">
-                                    <span>✔</span>
+                                    <i class="fa-solid fa-circle-check text-success me-1"></i>
                                     <span>{{ $facility->name }}</span>
                                 </div>
                             @endforeach
                         </div>
                     @else
                         <div class="hotel-facility-grid">
-                            <div class="hotel-facility-pill"><span>✔</span><span>Parkir Kendaraan Luas</span></div>
-                            <div class="hotel-facility-pill"><span>✔</span><span>Resepsionis 24 Jam</span></div>
-                            <div class="hotel-facility-pill"><span>✔</span><span>Akses Wi-Fi Cepat</span></div>
-                            <div class="hotel-facility-pill"><span>✔</span><span>Pendingin Ruangan (AC)</span></div>
+                            <div class="hotel-facility-pill"><i class="fa-solid fa-circle-check text-success me-1"></i><span>Parkir Kendaraan Luas</span></div>
+                            <div class="hotel-facility-pill"><i class="fa-solid fa-circle-check text-success me-1"></i><span>Resepsionis 24 Jam</span></div>
+                            <div class="hotel-facility-pill"><i class="fa-solid fa-circle-check text-success me-1"></i><span>Akses Wi-Fi Cepat</span></div>
+                            <div class="hotel-facility-pill"><i class="fa-solid fa-circle-check text-success me-1"></i><span>Pendingin Ruangan (AC)</span></div>
                         </div>
                     @endif
                 </div>
 
                 <!-- Interactive Map Card -->
                 <div class="hotel-card">
-                    <h2 class="hotel-card-title"><span class="title-icon">🗺️</span> Lokasi & Peta Arah</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-map-location-dot text-info"></i></span> Lokasi & Peta Arah</h2>
                     <div id="hotelMap"></div>
 
                     <div class="hotel-map-address-box">
@@ -509,33 +509,30 @@
                             <small class="text-muted">Koordinat: {{ number_format($lat, 6) }}, {{ number_format($lng, 6) }}</small>
                         </div>
                         <a href="https://www.google.com/maps/dir/?api=1&destination={{ $lat }},{{ $lng }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary fw-semibold px-3 py-2" style="border-radius: 10px;">
-                            🗺️ Petunjuk Arah Google Maps
+                            <i class="fa-solid fa-map-location-dot me-1"></i> Petunjuk Arah Google Maps
                         </a>
                     </div>
                 </div>
 
                 <!-- Nearby Tourism Card (Radius 25 km) -->
                 <div class="hotel-card">
-                    <h2 class="hotel-card-title"><span class="title-icon">🏖️</span> Destinasi Wisata Terdekat</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-umbrella-beach text-primary"></i></span> Destinasi Wisata Terdekat</h2>
                     <p class="text-muted mb-3" style="font-size: 14px;">Eksplorasi tempat wisata menarik di sekitar penginapan ini dalam radius 25 km:</p>
                     <a class="btn btn-outline-lokantara fw-bold" href="{{ route('tourism.index', ['latitude' => $lat, 'longitude' => $lng, 'radius' => 25]) }}">
-                        🌊 Cari Destinasi Wisata Sekitar (25 km)
+                        <i class="fa-solid fa-compass me-1"></i> Cari Destinasi Wisata Sekitar (25 km)
                     </a>
                 </div>
 
                 <!-- Visitor Reviews Card -->
                 <div class="hotel-card">
-                    <h2 class="hotel-card-title"><span class="title-icon">💬</span> Ulasan & Pengalaman Menginap</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-comments text-info"></i></span> Ulasan & Pengalaman Menginap</h2>
                     @forelse ($accommodation->reviews as $review)
                         <div class="p-3 mb-3 rounded-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                             <div class="d-flex align-items-center justify-content-between mb-2">
                                 <div>
                                     <strong class="fs-6">{{ $review->user?->name ?? 'Tamu Penginapan' }}</strong>
                                     <div class="text-warning" style="font-size: 13px;">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            {{ $i <= $review->rating ? '★' : '☆' }}
-                                        @endfor
-                                        <span class="text-dark fw-bold ms-1">{{ $review->rating }}/5</span>
+                                        <i class="fa-solid fa-star"></i> {{ $review->rating }}/5
                                     </div>
                                 </div>
                                 <small class="text-muted">{{ $review->created_at?->diffForHumans() }}</small>
@@ -555,7 +552,7 @@
             <div class="col-lg-4">
                 <!-- Stay Overview Card -->
                 <div class="hotel-card" style="position: sticky; top: 90px;">
-                    <h2 class="hotel-card-title"><span class="title-icon">📋</span> Informasi Menginap</h2>
+                    <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-clipboard-list text-primary"></i></span> Informasi Menginap</h2>
 
                     <div class="p-3 rounded-3 mb-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                         <div class="d-flex justify-content-between py-2 border-bottom">

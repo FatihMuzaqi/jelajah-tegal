@@ -372,19 +372,19 @@
                 <!-- Badges -->
                 <div class="tourism-badge-row">
                     @if ($tourism->category)
-                        <span class="hero-badge-pill badge-category">🏷️ {{ $tourism->category->name }}</span>
+                        <span class="hero-badge-pill badge-category"><i class="fa-solid fa-tag me-1"></i> {{ $tourism->category->name }}</span>
                     @endif
                     @if ($tourism->region)
-                        <span class="hero-badge-pill badge-region">📍 {{ $tourism->region->name }}</span>
+                        <span class="hero-badge-pill badge-region"><i class="fa-solid fa-location-dot me-1"></i> {{ $tourism->region->name }}</span>
                     @endif
                     @if ($tourism->is_featured)
-                        <span class="hero-badge-pill badge-featured">⭐ Pilihan Wisata</span>
+                        <span class="hero-badge-pill badge-featured"><i class="fa-solid fa-star me-1 text-warning"></i> Pilihan Wisata</span>
                     @endif
                     @if ($tourism->tourism?->is_hidden_gem)
-                        <span class="hero-badge-pill badge-gem">💎 Hidden Gem Tegal</span>
+                        <span class="hero-badge-pill badge-gem"><i class="fa-solid fa-gem me-1 text-info"></i> Hidden Gem Tegal</span>
                     @endif
                     @if ($tourism->tourism?->badge)
-                        <span class="hero-badge-pill badge-category">✨ {{ $tourism->tourism->badge }}</span>
+                        <span class="hero-badge-pill badge-category"><i class="fa-solid fa-wand-magic-sparkles me-1 text-warning"></i> {{ $tourism->tourism->badge }}</span>
                     @endif
                 </div>
 
@@ -395,18 +395,18 @@
                 <div class="tourism-hero-meta">
                     @if ($tourism->rating_count > 0)
                         <div class="meta-item">
-                            <span class="text-warning">★</span>
+                            <span class="text-warning"><i class="fa-solid fa-star"></i></span>
                             <strong>{{ number_format($tourism->rating_average, 1) }}</strong>
                             <span class="text-white-50">({{ $tourism->rating_count }} ulasan)</span>
                         </div>
                     @endif
                     <div class="meta-item">
-                        <span>🏢</span>
+                        <i class="fa-solid fa-building text-info"></i>
                         <span>Dikelola oleh <strong>{{ $tourism->mitra->display_name }}</strong></span>
                     </div>
                     @if ($tourism->tourism?->destination_type)
                         <div class="meta-item">
-                            <span>🏖️</span>
+                            <i class="fa-solid fa-umbrella-beach text-warning"></i>
                             <span>Kategori: <strong>{{ str($tourism->tourism->destination_type)->headline() }}</strong></span>
                         </div>
                     @endif
@@ -430,7 +430,7 @@
     <div class="quick-stats-card">
         <div class="quick-stats-grid">
             <div class="quick-stat-box">
-                <div class="quick-stat-icon">⏰</div>
+                <div class="quick-stat-icon"><i class="fa-solid fa-clock text-primary"></i></div>
                 <div class="quick-stat-info">
                     <h6>Jam Operasional</h6>
                     <p>
@@ -443,21 +443,21 @@
                 </div>
             </div>
             <div class="quick-stat-box">
-                <div class="quick-stat-icon">⏱️</div>
+                <div class="quick-stat-icon"><i class="fa-solid fa-hourglass-half text-warning"></i></div>
                 <div class="quick-stat-info">
                     <h6>Estimasi Kunjungan</h6>
                     <p>{{ $tourism->tourism?->visit_duration_minutes ?? '120' }} Menit</p>
                 </div>
             </div>
             <div class="quick-stat-box">
-                <div class="quick-stat-icon">📍</div>
+                <div class="quick-stat-icon"><i class="fa-solid fa-location-dot text-danger"></i></div>
                 <div class="quick-stat-info">
                     <h6>Wilayah Destinasi</h6>
                     <p>{{ $tourism->region?->name ?? 'Kabupaten Tegal' }}</p>
                 </div>
             </div>
             <div class="quick-stat-box">
-                <div class="quick-stat-icon">🛡️</div>
+                <div class="quick-stat-icon"><i class="fa-solid fa-shield-halved text-success"></i></div>
                 <div class="quick-stat-info">
                     <h6>Status Destinasi</h6>
                     <p class="text-success">Terverifikasi Resmi</p>
@@ -475,7 +475,7 @@
             <div class="col-lg-8">
                 <!-- Description Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon">📖</span> Tentang Destinasi</h2>
+                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-book-open text-emerald"></i></span> Tentang Destinasi</h2>
                     <div style="font-size: 15px; line-height: 1.8; color: var(--lokantara-text);">
                         {!! nl2br(e($tourism->description ?: 'Nikmati keindahan dan pesona lokal di ' . $tourism->name . ', salah satu destinasi wisata unggulan di wilayah Tegal yang menawarkan pengalaman tak terlupakan.')) !!}
                     </div>
@@ -483,7 +483,7 @@
                     <!-- Gallery Photos if available -->
                     @if ($galleryMedia->isNotEmpty())
                         <hr class="my-4">
-                        <h3 class="fs-6 fw-bold mb-2">Galeri Foto Destinasi</h3>
+                        <h3 class="fs-6 fw-bold mb-2"><i class="fa-solid fa-images text-primary me-2"></i>Galeri Foto Destinasi</h3>
                         <div class="gallery-grid">
                             @foreach ($galleryMedia as $media)
                                 <div class="gallery-thumb">
@@ -496,7 +496,7 @@
 
                 <!-- Interactive Map Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon">🗺️</span> Lokasi & Peta Interaktif</h2>
+                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-map-location-dot text-info"></i></span> Lokasi & Peta Interaktif</h2>
                     
                     <!-- Leaflet Map Container -->
                     <div id="tourismMap"></div>
@@ -504,7 +504,7 @@
                     <!-- Address & Direct Google Maps Action -->
                     <div class="map-address-box">
                         <div class="map-address-text">
-                            <span class="fs-5">📌</span>
+                            <span class="fs-5 text-danger"><i class="fa-solid fa-location-dot"></i></span>
                             <div>
                                 <strong>Alamat Lengkap:</strong>
                                 <div>{{ $tourism->address ?: 'Kawasan Wisata ' . $tourism->name . ', ' . ($tourism->region?->name ?? 'Tegal') }}</div>
@@ -512,9 +512,7 @@
                             </div>
                         </div>
                         <a href="https://www.google.com/maps/dir/?api=1&destination={{ $lat }},{{ $lng }}" target="_blank" rel="noopener noreferrer" class="btn-gmaps">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0zm3.5 7.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H11.5z"/>
-                            </svg>
+                            <i class="fa-solid fa-diamond-turn-right me-1"></i>
                             Buka di Google Maps
                         </a>
                     </div>
@@ -522,12 +520,12 @@
 
                 <!-- Facilities Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon">✨</span> Fasilitas Tersedia</h2>
+                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-wand-magic-sparkles text-warning"></i></span> Fasilitas Tersedia</h2>
                     @if ($tourism->facilities->isNotEmpty())
                         <div class="facility-grid">
                             @foreach ($tourism->facilities as $facility)
                                 <div class="facility-pill">
-                                    <span>✔</span>
+                                    <i class="fa-solid fa-circle-check text-success me-1"></i>
                                     <span>{{ $facility->name }}</span>
                                 </div>
                             @endforeach
@@ -540,7 +538,7 @@
                 <!-- Operating Hours Schedule Card -->
                 @if ($tourism->operatingHours->isNotEmpty())
                     <div class="detail-card">
-                        <h2 class="detail-card-title"><span class="title-icon">📅</span> Jadwal Jam Operasional Mingguan</h2>
+                        <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-calendar-days text-primary"></i></span> Jadwal Jam Operasional Mingguan</h2>
                         <table class="schedule-table">
                             <tbody>
                                 @php
@@ -579,7 +577,7 @@
 
                 <!-- Visitor Reviews Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon">💬</span> Ulasan & Testimoni Pengunjung</h2>
+                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-comments text-info"></i></span> Ulasan & Testimoni Pengunjung</h2>
                     
                     @forelse ($tourism->reviews as $review)
                         <div class="p-3 mb-3 rounded-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
@@ -587,10 +585,7 @@
                                 <div>
                                     <strong class="fs-6">{{ $review->user?->name ?? 'Pengunjung Jelajah Tegal' }}</strong>
                                     <div class="text-warning" style="font-size: 13px;">
-                                        @for ($i = 1; $i <= 5; $i++)
-                                            {{ $i <= $review->rating ? '★' : '☆' }}
-                                        @endfor
-                                        <span class="text-dark fw-bold ms-1">{{ $review->rating }}/5</span>
+                                        <i class="fa-solid fa-star"></i> {{ $review->rating }}/5
                                     </div>
                                 </div>
                                 <small class="text-muted">{{ $review->created_at?->diffForHumans() }}</small>
@@ -610,7 +605,7 @@
             <div class="col-lg-4">
                 <!-- Ticket Booking Card -->
                 <div class="detail-card" style="position: sticky; top: 90px;">
-                    <h2 class="detail-card-title"><span class="title-icon">🎟️</span> Paket Tiket Masuk</h2>
+                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-ticket text-danger"></i></span> Paket Tiket Masuk</h2>
                     
                     @forelse ($tourism->offers->where('status', 'active') as $offer)
                         <div class="ticket-offer-item">
@@ -642,7 +637,7 @@
                             <form method="POST" action="{{ route('tourism.favorite', $tourism->slug) }}">
                                 @csrf
                                 <button type="submit" class="btn btn-outline-lokantara w-100 d-flex align-items-center justify-content-center gap-2 py-2">
-                                    <span>❤️</span> Simpan ke Favorit
+                                    <i class="fa-solid fa-heart text-danger"></i> Simpan ke Favorit
                                 </button>
                             </form>
                         @endauth
