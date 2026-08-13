@@ -37,18 +37,31 @@ class AccommodationController extends Controller
         return view('mitra.accommodation.index', compact('items'));
     }
 
-    public function create(Request $request): View
+    public function create(Request $request)
     {
         abort_unless($request->user()->can('accommodation.manage'), 403);
+        $mitra = $this->activeMitra($request);
+        $service = \App\Models\ServiceType::where('code', 'accommodation')->firstOrFail();
+
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Penginapan & Hotel belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
+        }
 
         return view('mitra.accommodation.form', $this->references());
     }
 
     public function store(SaveAccommodationRequest $request, SaveAccommodation $action): RedirectResponse
     {
-        $entity = $action->execute($this->activeMitra($request), $request->validated(), $request->user());
+        $mitra = $this->activeMitra($request);
+        $service = \App\Models\ServiceType::where('code', 'accommodation')->firstOrFail();
 
-        return redirect()->route('mitra.accommodation.show', $entity)->with('status', 'Draft penginapan dibuat.');
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Penginapan & Hotel belum aktif untuk Mitra Anda.');
+        }
+
+        $entity = $action->execute($mitra, $request->validated(), $request->user());
+
+        return redirect()->route('mitra.accommodation.show', $entity)->with('status', 'Draft penginapan berhasil dibuat.');
     }
 
     public function show(Request $request, CatalogEntity $accommodation): View

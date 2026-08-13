@@ -13,4 +13,7 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.super-a
     Route::get('/flags', [FeatureFlagController::class, 'index'])->name('flags.index');
     Route::patch('/flags/{flag}', [FeatureFlagController::class, 'toggle'])->name('flags.toggle');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::get('/chatbot', [\App\Http\Controllers\SuperAdmin\ChatbotSettingController::class, 'index'])->name('chatbot.index');
+    Route::post('/chatbot', [\App\Http\Controllers\SuperAdmin\ChatbotSettingController::class, 'update'])->name('chatbot.update');
+    Route::post('/chatbot/test-connection', [\App\Http\Controllers\SuperAdmin\ChatbotSettingController::class, 'testConnection'])->name('chatbot.test-connection');
 });

@@ -68,11 +68,11 @@ class ComprehensiveTestingSeeder extends Seeder
             FeatureFlagSeeder::class,
         ]);
 
-        $tourismType = ServiceType::where('name', 'tourism')->first();
-        $accommType = ServiceType::where('name', 'accommodation')->first();
-        $culinaryType = ServiceType::where('name', 'culinary')->first();
-        $eventType = ServiceType::where('name', 'event')->first();
-        $rentalType = ServiceType::where('name', 'rental')->first();
+        $tourismType = ServiceType::where('code', 'tourism')->first();
+        $accommType = ServiceType::where('code', 'accommodation')->first();
+        $culinaryType = ServiceType::where('code', 'culinary')->first();
+        $eventType = ServiceType::where('code', 'event')->first();
+        $rentalType = ServiceType::where('code', 'rental')->first();
 
         // 2. Akun Pengguna Utama Testing (Password: 'password')
         setPermissionsTeamId(null);

@@ -152,6 +152,21 @@ body.dashboard-body {
     gap: 4px;
 }
 
+.sidebar-category-header {
+    padding: 14px 12px 6px;
+    margin-top: 4px;
+}
+
+.sidebar-category-label {
+    font-size: 10.5px;
+    font-weight: 800;
+    color: var(--lokantara-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    display: block;
+    opacity: 0.75;
+}
+
 .sidebar-label {
     padding: 8px 12px 4px;
     font-size: 11px;
@@ -170,26 +185,38 @@ body.dashboard-body {
     border-radius: 12px;
     color: var(--lokantara-muted);
     text-decoration: none;
-    font-size: 14px;
+    font-size: 13.5px;
     font-weight: 600;
-    transition: all var(--transition);
+    transition: all 0.2s ease;
 }
 
 .sidebar-link:hover {
     background: var(--lokantara-background);
     color: var(--lokantara-primary);
+    transform: translateX(3px);
 }
 
 .sidebar-link.active {
     background: color-mix(in srgb, var(--lokantara-primary) 12%, transparent);
     color: var(--lokantara-primary);
     font-weight: 700;
+    box-shadow: inset 3px 0 0 var(--lokantara-primary);
 }
 
 .menu-icon {
-    font-size: 16px;
-    width: 20px;
+    font-size: 15px;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     text-align: center;
+    color: currentColor;
+    flex-shrink: 0;
+}
+
+.menu-icon i {
+    font-size: 14.5px;
 }
 
 .sidebar-footer {

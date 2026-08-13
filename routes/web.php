@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ChatbotController;
 use App\Http\Controllers\MitraActivationController;
 use App\Http\Controllers\NavigationController;
 use App\Http\Controllers\Public\AccommodationController;
@@ -20,6 +21,9 @@ Route::get('/syarat-ketentuan', [PublicPortalController::class, 'terms'])->name(
 Route::get('/mitra/activation/{token}', [MitraActivationController::class, 'show'])->name('mitra.activation.show');
 Route::post('/mitra/activation/{token}', [MitraActivationController::class, 'store'])->name('mitra.activation.store')->middleware('throttle:6,1');
 Route::get('/mitra-profil/{slug}', [PublicMitraController::class, 'show'])->name('public.mitra.show');
+
+// Smart AI Chatbot Assistant Endpoint
+Route::post('/chatbot/message', [ChatbotController::class, 'message'])->name('chatbot.message')->middleware('throttle:30,1');
 
 Route::get('/wisata', [TourismController::class, 'index'])->name('tourism.index');
 Route::get('/wisata/{slug}', [TourismController::class, 'show'])->name('tourism.show');

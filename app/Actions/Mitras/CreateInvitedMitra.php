@@ -26,6 +26,7 @@ class CreateInvitedMitra
                 'region_id' => $data['region_id'] ?? null,
                 'status' => 'draft',
             ]);
+
             $this->audit->record('mitra.created', $mitra, [], ['status' => 'draft', 'owner_email' => $owner->email], $admin);
             $this->invite->execute($mitra, $admin, ['name' => $owner->name, 'email' => $owner->email, 'role' => 'mitra-owner']);
 

@@ -130,6 +130,7 @@
   </div>
   <div class='container public-container footer-bottom'><span>&copy; {{ now()->year }} Jelajah Tegal</span><span>Platform Digital Terpadu Pariwisata & Ekonomi Kreatif Tegal.</span></div>
  </footer>
+ <x-chatbot-widget />
  @livewireScripts
 </body>
 </html>

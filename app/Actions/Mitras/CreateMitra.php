@@ -17,6 +17,7 @@ class CreateMitra
         return DB::transaction(function () use ($owner, $attributes) {
             $mitra = Mitra::create(array_merge($attributes, ['owner_user_id' => $owner->id, 'status' => $attributes['status'] ?? 'draft']));
             $mitra->members()->create(['user_id' => $owner->id, 'status' => 'active', 'joined_at' => now()]);
+
             $this->context->activate($mitra->id);
             try {
                 $owner->assignRole('mitra-owner');

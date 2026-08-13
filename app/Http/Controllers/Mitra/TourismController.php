@@ -37,18 +37,31 @@ class TourismController extends Controller
         return view('mitra.tourism.index', compact('items'));
     }
 
-    public function create(Request $request): View
+    public function create(Request $request)
     {
-        $request->user()->can('tourism.manage') ?: abort(403);
+        abort_unless($request->user()->can('tourism.manage'), 403);
+        $mitra = $this->activeMitra($request);
+        $service = ServiceType::where('code', 'tourism')->firstOrFail();
+
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Destinasi Wisata belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
+        }
 
         return view('mitra.tourism.form', $this->references());
     }
 
     public function store(SaveTourismRequest $request, SaveTourismDestination $action): RedirectResponse
     {
-        $entity = $action->execute($this->activeMitra($request), $request->validated(), $request->user());
+        $mitra = $this->activeMitra($request);
+        $service = ServiceType::where('code', 'tourism')->firstOrFail();
 
-        return redirect()->route('mitra.tourism.show', $entity)->with('status', 'Draft wisata dibuat.');
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Destinasi Wisata belum aktif untuk Mitra Anda.');
+        }
+
+        $entity = $action->execute($mitra, $request->validated(), $request->user());
+
+        return redirect()->route('mitra.tourism.show', $entity)->with('status', 'Draft wisata berhasil dibuat.');
     }
 
     public function show(Request $request, CatalogEntity $tourism): View
