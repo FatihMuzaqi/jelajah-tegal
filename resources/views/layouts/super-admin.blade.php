@@ -1,1 +1,1 @@
-@extends('layouts.dashboard',['surface'=>'super-admin','surfaceLabel'=>'Super Admin'])
+@extends('layouts.dashboard', ['surface' => 'super-admin', 'surfaceLabel' => 'Super Admin'])

@@ -1,6 +1,49 @@
 @extends('layouts.mitra')
-@section('title','Rekening Bank') @section('page-title','Rekening Bank') @section('page-description','Nomor rekening disimpan terenkripsi dan hanya ditampilkan dalam bentuk mask.')
+@section('title', 'Rekening Bank') @section('page-title', 'Rekening Bank') @section('page-description', 'Nomor rekening
+disimpan terenkripsi dan hanya ditampilkan dalam bentuk mask.')
 @section('content')
-<x-content-card title='Tambah rekening'><form method='POST' action='{{ route('mitra.bank-accounts.store') }}'>@csrf<div class='row'><div class='col-md-4'><x-form-input name='bank_code' label='Kode bank' required /></div><div class='col-md-4'><x-form-input name='account_name' label='Nama pemilik' required /></div><div class='col-md-4'><x-form-input name='account_number' label='Nomor rekening' inputmode='numeric' required /></div></div><label class='form-check mb-3'><input class='form-check-input' type='checkbox' name='is_primary' value='1'> <span class='form-check-label'>Jadikan rekening utama</span></label><button class='btn btn-lokantara'>Tambah rekening</button></form></x-content-card>
-<x-table-wrapper title='Rekening tersimpan' class='mt-3'>@if($accounts->isEmpty())<tbody><tr><td><x-empty-state title='Belum ada rekening' description='Tambahkan rekening untuk proses settlement di masa mendatang.' compact /></td></tr></tbody>@else<thead><tr><th>Bank</th><th>Pemilik</th><th>Nomor</th><th>Status</th><th>Aksi</th></tr></thead><tbody>@foreach($accounts as $item)@php($account=$item['model'])<tr><td data-label='Bank'>{{ $account->bank_code }}</td><td data-label='Pemilik'>{{ $item['name'] }}</td><td data-label='Nomor'>{{ $item['masked'] }}</td><td data-label='Status'><x-status-badge :status='$account->status' /></td><td data-label='Aksi'><form method='POST' action='{{ route('mitra.bank-accounts.destroy',$account) }}'>@csrf @method('DELETE')<button class='btn btn-sm btn-outline-danger' data-confirm='Hapus rekening ini?'>Hapus</button></form></td></tr>@endforeach</tbody>@endif</x-table-wrapper>
+    <x-content-card title='Tambah rekening'>
+        <form method='POST' action='{{ route('mitra.bank-accounts.store') }}'>@csrf<div class='row'>
+                <div class='col-md-4'><x-form-input name='bank_code' label='Kode bank' required /></div>
+                <div class='col-md-4'><x-form-input name='account_name' label='Nama pemilik' required /></div>
+                <div class='col-md-4'><x-form-input name='account_number' label='Nomor rekening' inputmode='numeric'
+                        required /></div>
+            </div><label class='form-check mb-3'><input class='form-check-input' type='checkbox' name='is_primary'
+                    value='1'> <span class='form-check-label'>Jadikan rekening utama</span></label><button
+                class='btn btn-lokantara'>Tambah rekening</button></form>
+    </x-content-card>
+    <x-table-wrapper title='Rekening tersimpan' class='mt-3'>
+        @if ($accounts->isEmpty())
+            <tbody>
+                <tr>
+                    <td><x-empty-state title='Belum ada rekening'
+                            description='Tambahkan rekening untuk proses settlement di masa mendatang.' compact /></td>
+                </tr>
+        </tbody>@else<thead>
+                <tr>
+                    <th>Bank</th>
+                    <th>Pemilik</th>
+                    <th>Nomor</th>
+                    <th>Status</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($accounts as $item)
+                    @php($account = $item['model'])
+                    <tr>
+                        <td data-label='Bank'>{{ $account->bank_code }}</td>
+                        <td data-label='Pemilik'>{{ $item['name'] }}</td>
+                        <td data-label='Nomor'>{{ $item['masked'] }}</td>
+                        <td data-label='Status'><x-status-badge :status='$account->status' /></td>
+                        <td data-label='Aksi'>
+                            <form method='POST' action='{{ route('mitra.bank-accounts.destroy', $account) }}'>@csrf
+                                @method('DELETE')<button class='btn btn-sm btn-outline-danger'
+                                    data-confirm='Hapus rekening ini?'>Hapus</button></form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        @endif
+    </x-table-wrapper>
 @endsection

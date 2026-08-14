@@ -1,2 +1,8 @@
-@props(['title','chartId'=>'dashboard-chart','labels'=>[],'series'=>[]])
-<x-content-card :title='$title' {{ $attributes }}>@if(count($series))<div class='chart-container' id='{{ $chartId }}' data-chart data-labels='@json($labels)' data-series='@json($series)' aria-label='{{ $title }}'></div>@else<x-empty-state title='Belum ada data grafik' description='Grafik akan tampil setelah data aktivitas tersedia.' compact />@endif</x-content-card>
+@props(['title', 'chartId' => 'dashboard-chart', 'labels' => [], 'series' => []])
+<x-content-card :title='$title' {{ $attributes }}>
+    @if (count($series))
+        <div class='chart-container' id='{{ $chartId }}' data-chart data-labels='@json($labels)'
+        data-series='@json($series)' aria-label='{{ $title }}'></div>@else<x-empty-state
+            title='Belum ada data grafik' description='Grafik akan tampil setelah data aktivitas tersedia.' compact />
+    @endif
+</x-content-card>

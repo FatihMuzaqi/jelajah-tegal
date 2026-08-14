@@ -1,1 +1,1 @@
-@extends('layouts.dashboard',['surface'=>'mitra','surfaceLabel'=>'Portal Mitra'])
+@extends('layouts.dashboard', ['surface' => 'mitra', 'surfaceLabel' => 'Portal Mitra'])

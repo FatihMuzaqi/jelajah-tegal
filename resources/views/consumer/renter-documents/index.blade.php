@@ -1,1 +1,22 @@
-@extends('layouts.consumer') @section('title','Dokumen penyewa') @section('page-title','Dokumen Penyewa') @section('page-description','KTP/SIM disimpan privat dan hanya dapat diakses secara terotorisasi.') @section('content')<form class="content-card" method="POST" enctype="multipart/form-data" action="{{ route('consumer.renter-documents.store') }}">@csrf<div class="row g-3"><div class="col-md-3"><select class="form-select" name="document_type"><option value="ktp">KTP</option><option value="sim_a">SIM A</option><option value="sim_c">SIM C</option></select></div><div class="col-md-3"><input class="form-control" name="document_number" placeholder="Nomor dokumen" required></div><div class="col-md-3"><input class="form-control" type="date" name="expires_at"></div><div class="col-md-3"><input class="form-control" type="file" name="file" required></div></div><button class="btn btn-lokantara mt-3">Unggah</button></form><div class="content-card mt-3">@forelse($documents as $document)<p>{{ str($document->document_type)->upper() }} · <x-status-badge :status="$document->status->value" /> · <a href="{{ route('consumer.renter-documents.download',$document) }}">Unduh</a></p>@empty<x-empty-state title="Belum ada dokumen" compact />@endforelse</div>@endsection
+@extends('layouts.consumer') @section('title', 'Dokumen penyewa') @section('page-title', 'Dokumen Penyewa')
+@section('page-description', 'KTP/SIM disimpan privat dan hanya dapat diakses secara terotorisasi.') @section('content')
+<form class="content-card" method="POST" enctype="multipart/form-data"
+    action="{{ route('consumer.renter-documents.store') }}">
+    @csrf<div class="row g-3">
+        <div class="col-md-3"><select class="form-select" name="document_type">
+                <option value="ktp">KTP</option>
+                <option value="sim_a">SIM A</option>
+                <option value="sim_c">SIM C</option>
+            </select></div>
+        <div class="col-md-3"><input class="form-control" name="document_number" placeholder="Nomor dokumen" required>
+        </div>
+        <div class="col-md-3"><input class="form-control" type="date" name="expires_at"></div>
+        <div class="col-md-3"><input class="form-control" type="file" name="file" required></div>
+    </div><button class="btn btn-lokantara mt-3">Unggah</button></form>
+<div class="content-card mt-3">
+    @forelse($documents as $document)
+        <p>{{ str($document->document_type)->upper() }} · <x-status-badge :status="$document->status->value" /> · <a
+            href="{{ route('consumer.renter-documents.download', $document) }}">Unduh</a></p>@empty<x-empty-state
+            title="Belum ada dokumen" compact />
+    @endforelse
+</div>@endsection

@@ -1,1 +1,16 @@
-@extends('layouts.admin') @section('title',$withdrawal->withdrawal_number) @section('page-title',$withdrawal->withdrawal_number) @section('content')<div class="content-card"><p>{{ $withdrawal->mitra->display_name }} · Rp {{ number_format($withdrawal->amount,0,',','.') }}</p><x-status-badge :status="$withdrawal->status->value" /><form class="mt-3" method="POST" action="{{ route('admin.withdrawals.transition',$withdrawal) }}">@csrf @method('PATCH')<select class="form-select" name="transition"><option value="review">Mulai review</option><option value="approve">Approve</option><option value="reject">Reject</option><option value="processing">Processing</option><option value="paid">Catat paid</option></select><input class="form-control mt-2" name="reason" placeholder="Alasan reject"><input class="form-control mt-2" name="transfer_reference" placeholder="Referensi transfer"><input class="form-control mt-2" type="datetime-local" name="transferred_at"><button class="btn btn-lokantara mt-2">Proses</button></form></div>@endsection
+@extends('layouts.admin') @section('title', $withdrawal->withdrawal_number) @section('page-title',
+$withdrawal->withdrawal_number) @section('content')<div class="content-card">
+        <p>{{ $withdrawal->mitra->display_name }} · Rp {{ number_format($withdrawal->amount, 0, ',', '.') }}</p><x-status-badge
+            :status="$withdrawal->status->value" />
+        <form class="mt-3" method="POST" action="{{ route('admin.withdrawals.transition', $withdrawal) }}">@csrf
+            @method('PATCH')<select class="form-select" name="transition">
+                <option value="review">Mulai review</option>
+                <option value="approve">Approve</option>
+                <option value="reject">Reject</option>
+                <option value="processing">Processing</option>
+                <option value="paid">Catat paid</option>
+            </select><input class="form-control mt-2" name="reason" placeholder="Alasan reject"><input
+                class="form-control mt-2" name="transfer_reference" placeholder="Referensi transfer"><input
+                class="form-control mt-2" type="datetime-local" name="transferred_at"><button
+                class="btn btn-lokantara mt-2">Proses</button></form>
+</div>@endsection

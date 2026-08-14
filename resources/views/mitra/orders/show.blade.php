@@ -1,1 +1,6 @@
-@extends('layouts.mitra') @section('title',$order->order_number) @section('page-title',$order->order_number) @section('page-description','Detail order milik Mitra aktif.') @section('content')<div class="content-card"><p>Pembeli: {{ $order->user_snapshot['name'] }}</p><p>Total: Rp {{ number_format($order->total_amount,0,',','.') }}</p><p>Mitra net: Rp {{ number_format($order->mitra_net_amount,0,',','.') }}</p><x-status-badge :status="$order->status->value" /></div>@endsection
+@extends('layouts.mitra') @section('title', $order->order_number) @section('page-title', $order->order_number)
+@section('page-description', 'Detail order milik Mitra aktif.') @section('content')<div class="content-card">
+    <p>Pembeli: {{ $order->user_snapshot['name'] }}</p>
+    <p>Total: Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
+    <p>Mitra net: Rp {{ number_format($order->mitra_net_amount, 0, ',', '.') }}</p><x-status-badge :status="$order->status->value" />
+</div>@endsection

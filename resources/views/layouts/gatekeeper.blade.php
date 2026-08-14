@@ -1,1 +1,1 @@
-@extends('layouts.dashboard',['surface'=>'gatekeeper','surfaceLabel'=>'Portal Gatekeeper'])
+@extends('layouts.dashboard', ['surface' => 'gatekeeper', 'surfaceLabel' => 'Portal Gatekeeper'])

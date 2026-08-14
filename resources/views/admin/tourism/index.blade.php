@@ -1,6 +1,71 @@
 @extends('layouts.admin')
-@section('title','Moderasi Wisata') @section('page-title','Moderasi Wisata') @section('page-description','Antrean pengajuan publikasi destinasi.')
+@section('title', 'Moderasi Wisata') @section('page-title', 'Moderasi Wisata') @section('page-description', 'Antrean
+pengajuan publikasi destinasi.')
 @section('content')
-<x-table-wrapper title='Antrean moderasi'>@if($items->isEmpty())<tbody><tr><td><x-empty-state title='Antrean kosong' description='Tidak ada wisata yang menunggu moderasi.' compact /></td></tr></tbody>@else<thead><tr><th>Destinasi</th><th>Mitra</th><th>Status</th><th>Diajukan</th><th></th></tr></thead><tbody>@foreach($items as $item)<tr><td>{{ $item->name }}</td><td>{{ $item->mitra->display_name }}</td><td><x-status-badge :status='$item->status' /></td><td>{{ $item->updated_at->diffForHumans() }}</td><td><a class='btn btn-sm btn-lokantara' href='{{ route('admin.tourism.show',$item) }}'>Tinjau</a></td></tr>@endforeach</tbody>@endif<x-slot:pagination>{{ $items->links() }}</x-slot:pagination></x-table-wrapper>
-<x-table-wrapper title='Ulasan menunggu moderasi' class='mt-3'>@if($reviews->isEmpty())<tbody><tr><td><x-empty-state title='Tidak ada ulasan tertunda' description='Ulasan baru akan tampil di sini.' compact /></td></tr></tbody>@else<thead><tr><th>Wisata</th><th>Rating</th><th>Ulasan</th><th>Keputusan</th></tr></thead><tbody>@foreach($reviews as $review)<tr><td>{{ $review->catalogEntity->name }}</td><td>{{ $review->rating }}/5</td><td>{{ str($review->body)->limit(100) }}</td><td><form method='POST' action='{{ route('admin.tourism.reviews.update',$review) }}'>@csrf @method('PATCH')<button class='btn btn-sm btn-lokantara' name='decision' value='publish'>Publikasikan</button><button class='btn btn-sm btn-outline-danger' name='decision' value='reject'>Tolak</button><input class='form-control form-control-sm mt-1' name='reason' placeholder='Alasan penolakan'></form></td></tr>@endforeach</tbody>@endif<x-slot:pagination>{{ $reviews->links() }}</x-slot:pagination></x-table-wrapper>
+    <x-table-wrapper title='Antrean moderasi'>
+        @if ($items->isEmpty())
+            <tbody>
+                <tr>
+                    <td><x-empty-state title='Antrean kosong' description='Tidak ada wisata yang menunggu moderasi.'
+                            compact /></td>
+                </tr>
+        </tbody>@else<thead>
+                <tr>
+                    <th>Destinasi</th>
+                    <th>Mitra</th>
+                    <th>Status</th>
+                    <th>Diajukan</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($items as $item)
+                    <tr>
+                        <td>{{ $item->name }}</td>
+                        <td>{{ $item->mitra->display_name }}</td>
+                        <td><x-status-badge :status='$item->status' /></td>
+                        <td>{{ $item->updated_at->diffForHumans() }}</td>
+                        <td><a class='btn btn-sm btn-lokantara' href='{{ route('admin.tourism.show', $item) }}'>Tinjau</a></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        @endif
+        <x-slot:pagination>
+            {{ $items->links() }}</x-slot:pagination>
+    </x-table-wrapper>
+    <x-table-wrapper title='Ulasan menunggu moderasi' class='mt-3'>
+        @if ($reviews->isEmpty())
+            <tbody>
+                <tr>
+                    <td><x-empty-state title='Tidak ada ulasan tertunda' description='Ulasan baru akan tampil di sini.'
+                            compact /></td>
+                </tr>
+        </tbody>@else<thead>
+                <tr>
+                    <th>Wisata</th>
+                    <th>Rating</th>
+                    <th>Ulasan</th>
+                    <th>Keputusan</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($reviews as $review)
+                    <tr>
+                        <td>{{ $review->catalogEntity->name }}</td>
+                        <td>{{ $review->rating }}/5</td>
+                        <td>{{ str($review->body)->limit(100) }}</td>
+                        <td>
+                            <form method='POST' action='{{ route('admin.tourism.reviews.update', $review) }}'>@csrf
+                                @method('PATCH')<button class='btn btn-sm btn-lokantara' name='decision'
+                                    value='publish'>Publikasikan</button><button class='btn btn-sm btn-outline-danger'
+                                    name='decision' value='reject'>Tolak</button><input
+                                    class='form-control form-control-sm mt-1' name='reason' placeholder='Alasan penolakan'>
+                            </form>
+                        </td>
+                    </tr>
+                @endforeach
+            </tbody>
+        @endif
+        <x-slot:pagination>{{ $reviews->links() }}</x-slot:pagination>
+    </x-table-wrapper>
 @endsection

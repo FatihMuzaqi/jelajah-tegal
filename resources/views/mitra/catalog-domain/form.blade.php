@@ -1,6 +1,58 @@
-@extends('layouts.mitra') @section('title',$title) @section('page-title',isset($item)?'Edit '.$title:'Tambah '.$title) @section('page-description','Simpan sebagai draft sebelum diajukan.')
-@section('content')@php($detail=isset($item)?$item->{$domain}:null)<form class="content-card" method="POST" action="{{ isset($item)?route($routePrefix.'.update',$item):route($routePrefix.'.store') }}">@csrf @if(isset($item))@method('PUT')@endif<div class="row g-3"><div class="col-md-8"><label class="form-label">Nama</label><input class="form-control" name="name" value="{{ old('name',$item->name??'') }}" required></div><div class="col-md-4"><label class="form-label">Slug</label><input class="form-control" name="slug" value="{{ old('slug',$item->slug??'') }}" required></div><div class="col-12"><label class="form-label">Deskripsi</label><textarea class="form-control" name="description" required>{{ old('description',$item->description??'') }}</textarea></div><div class="col-12"><label class="form-label">Alamat</label><input class="form-control" name="address" value="{{ old('address',$item->address??'') }}" required></div><div class="col-md-4"><label class="form-label">Wilayah</label><select class="form-select" name="region_id" required>@foreach($regions as $region)<option value="{{ $region->id }}" @selected(old('region_id',$item->region_id??null)==$region->id)>{{ $region->name }}</option>@endforeach</select></div><div class="col-md-4"><label class="form-label">Latitude</label><input class="form-control" name="latitude" value="{{ old('latitude',$item?->location?->latitude??'') }}" required></div><div class="col-md-4"><label class="form-label">Longitude</label><input class="form-control" name="longitude" value="{{ old('longitude',$item?->location?->longitude??'') }}" required></div>
-@if($domain==='culinary')<div class="col-md-4"><label>Jenis venue</label><select class="form-select" name="venue_type"><option value="restaurant">Restaurant</option><option value="cafe">Cafe</option><option value="street_food">Street food</option></select></div><div class="col-md-4"><label>Telepon</label><input class="form-control" name="phone" value="{{ old('phone',$detail?->phone) }}"></div><div class="col-md-4 form-check mt-5"><input type="hidden" name="accepts_reservations" value="0"><input class="form-check-input" type="checkbox" name="accepts_reservations" value="1" @checked(old('accepts_reservations',$detail?->accepts_reservations))><label>Menerima reservasi</label></div>@endif
-@if($domain==='event')<div class="col-md-4"><label>Jenis event</label><input class="form-control" name="event_type" value="{{ old('event_type',$detail?->event_type) }}" required></div><div class="col-md-4"><label>Mulai</label><input type="datetime-local" class="form-control" name="starts_at" value="{{ old('starts_at',$detail?->starts_at?->format('Y-m-d\TH:i')) }}" required></div><div class="col-md-4"><label>Selesai</label><input type="datetime-local" class="form-control" name="ends_at" value="{{ old('ends_at',$detail?->ends_at?->format('Y-m-d\TH:i')) }}" required></div>@endif
-@if($domain==='rental')@foreach(['vehicle_type'=>'Jenis','brand'=>'Merek','model'=>'Model','plate_number'=>'Nomor polisi','seats'=>'Kursi','deposit_amount'=>'Deposit'] as $name=>$label)<div class="col-md-4"><label>{{ $label }}</label><input class="form-control" name="{{ $name }}" value="{{ old($name,$detail?->{$name}) }}" required></div>@endforeach<input type="hidden" name="self_drive_available" value="1"><input type="hidden" name="driver_available" value="0">@endif
-</div><button class="btn btn-lokantara mt-4">Simpan draft</button></form>@endsection
+@extends('layouts.mitra') @section('title', $title) @section('page-title', isset($item) ? 'Edit ' . $title : 'Tambah ' . $title)
+@section('page-description', 'Simpan sebagai draft sebelum diajukan.')
+@section('content')@php($detail = isset($item) ? $item->{$domain} : null)<form class="content-card" method="POST"
+        action="{{ isset($item) ? route($routePrefix . '.update', $item) : route($routePrefix . '.store') }}">
+        @csrf @if (isset($item))
+            @method('PUT')
+        @endif
+        <div class="row g-3">
+            <div class="col-md-8"><label class="form-label">Nama</label><input class="form-control" name="name"
+                    value="{{ old('name', $item->name ?? '') }}" required></div>
+            <div class="col-md-4"><label class="form-label">Slug</label><input class="form-control" name="slug"
+                    value="{{ old('slug', $item->slug ?? '') }}" required></div>
+            <div class="col-12"><label class="form-label">Deskripsi</label>
+                <textarea class="form-control" name="description" required>{{ old('description', $item->description ?? '') }}</textarea>
+            </div>
+            <div class="col-12"><label class="form-label">Alamat</label><input class="form-control" name="address"
+                    value="{{ old('address', $item->address ?? '') }}" required></div>
+            <div class="col-md-4"><label class="form-label">Wilayah</label><select class="form-select" name="region_id"
+                    required>
+                    @foreach ($regions as $region)
+                        <option value="{{ $region->id }}" @selected(old('region_id', $item->region_id ?? null) == $region->id)>{{ $region->name }}</option>
+                    @endforeach
+                </select>
+            </div>
+            <div class="col-md-4"><label class="form-label">Latitude</label><input class="form-control" name="latitude"
+                    value="{{ old('latitude', $item?->location?->latitude ?? '') }}" required></div>
+            <div class="col-md-4"><label class="form-label">Longitude</label><input class="form-control" name="longitude"
+                    value="{{ old('longitude', $item?->location?->longitude ?? '') }}" required></div>
+            @if ($domain === 'culinary')
+                <div class="col-md-4"><label>Jenis venue</label><select class="form-select" name="venue_type">
+                        <option value="restaurant">Restaurant</option>
+                        <option value="cafe">Cafe</option>
+                        <option value="street_food">Street food</option>
+                    </select></div>
+                <div class="col-md-4"><label>Telepon</label><input class="form-control" name="phone"
+                        value="{{ old('phone', $detail?->phone) }}"></div>
+                <div class="col-md-4 form-check mt-5"><input type="hidden" name="accepts_reservations"
+                        value="0"><input class="form-check-input" type="checkbox" name="accepts_reservations"
+                        value="1" @checked(old('accepts_reservations', $detail?->accepts_reservations))><label>Menerima reservasi</label></div>
+            @endif
+            @if ($domain === 'event')
+                <div class="col-md-4"><label>Jenis event</label><input class="form-control" name="event_type"
+                        value="{{ old('event_type', $detail?->event_type) }}" required></div>
+                <div class="col-md-4"><label>Mulai</label><input type="datetime-local" class="form-control" name="starts_at"
+                        value="{{ old('starts_at', $detail?->starts_at?->format('Y-m-d\TH:i')) }}" required></div>
+                <div class="col-md-4"><label>Selesai</label><input type="datetime-local" class="form-control" name="ends_at"
+                        value="{{ old('ends_at', $detail?->ends_at?->format('Y-m-d\TH:i')) }}" required></div>
+            @endif
+            @if ($domain === 'rental')
+                @foreach (['vehicle_type' => 'Jenis', 'brand' => 'Merek', 'model' => 'Model', 'plate_number' => 'Nomor polisi', 'seats' => 'Kursi', 'deposit_amount' => 'Deposit'] as $name => $label)
+                    <div class="col-md-4"><label>{{ $label }}</label><input class="form-control"
+                            name="{{ $name }}" value="{{ old($name, $detail?->{$name}) }}" required></div>
+                @endforeach
+                <input type="hidden" name="self_drive_available" value="1"><input type="hidden"
+                    name="driver_available" value="0">
+            @endif
+        </div><button class="btn btn-lokantara mt-4">Simpan draft</button>
+</form>@endsection

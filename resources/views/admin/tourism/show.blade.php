@@ -1,6 +1,44 @@
 @extends('layouts.admin')
-@section('title','Moderasi '.$tourism->name) @section('page-title','Moderasi '.$tourism->name) @section('page-description','Periksa bukti, kelengkapan, dan lifecycle sebelum mengambil keputusan.')
+@section('title', 'Moderasi ' . $tourism->name) @section('page-title', 'Moderasi ' . $tourism->name)
+@section('page-description', 'Periksa bukti, kelengkapan, dan lifecycle sebelum mengambil keputusan.')
 @section('content')
-<div class='row g-3'><div class='col-lg-8'><x-content-card title='Detail destinasi'><x-status-badge :status='$tourism->status' /><h2 class='mt-3'>{{ $tourism->name }}</h2><p>{{ $tourism->description }}</p><dl class='row'><dt class='col-4'>Mitra</dt><dd class='col-8'>{{ $tourism->mitra->display_name }}</dd><dt class='col-4'>Kategori</dt><dd class='col-8'>{{ $tourism->category?->name }}</dd><dt class='col-4'>Lokasi</dt><dd class='col-8'>{{ $tourism->address }} ({{ $tourism->location?->latitude }}, {{ $tourism->location?->longitude }})</dd><dt class='col-4'>Media</dt><dd class='col-8'>{{ $tourism->media->count() }}</dd></dl></x-content-card></div><div class='col-lg-4'><x-content-card title='Keputusan'><form method='POST' action='{{ route('admin.tourism.update',$tourism) }}'>@csrf @method('PATCH')<x-select name='decision' label='Keputusan' required><option value='approve'>Setujui & publikasikan</option><option value='reject'>Tolak</option>@if($tourism->status==='published')<option value='takedown'>Takedown</option>@endif</x-select><x-textarea name='reason' label='Alasan' /><button class='btn btn-lokantara'>Simpan keputusan</button></form></x-content-card></div></div>
-<x-content-card title='Riwayat' class='mt-3'>@forelse($tourism->moderationReports as $report)@foreach($report->actions as $action)<div class='py-2 border-bottom'><strong>{{ str($action->action_type)->headline() }}</strong> · {{ $action->created_at?->format('d M Y H:i') }}<p class='mb-0'>{{ $action->notes }}</p></div>@endforeach @empty<x-empty-state title='Belum ada riwayat' description='Belum terdapat aksi moderasi.' compact />@endforelse</x-content-card>
+    <div class='row g-3'>
+        <div class='col-lg-8'><x-content-card title='Detail destinasi'><x-status-badge :status='$tourism->status' />
+                <h2 class='mt-3'>{{ $tourism->name }}</h2>
+                <p>{{ $tourism->description }}</p>
+                <dl class='row'>
+                    <dt class='col-4'>Mitra</dt>
+                    <dd class='col-8'>{{ $tourism->mitra->display_name }}</dd>
+                    <dt class='col-4'>Kategori</dt>
+                    <dd class='col-8'>{{ $tourism->category?->name }}</dd>
+                    <dt class='col-4'>Lokasi</dt>
+                    <dd class='col-8'>{{ $tourism->address }} ({{ $tourism->location?->latitude }},
+                        {{ $tourism->location?->longitude }})</dd>
+                    <dt class='col-4'>Media</dt>
+                    <dd class='col-8'>{{ $tourism->media->count() }}</dd>
+                </dl>
+            </x-content-card></div>
+        <div class='col-lg-4'><x-content-card title='Keputusan'>
+                <form method='POST' action='{{ route('admin.tourism.update', $tourism) }}'>@csrf @method('PATCH')<x-select
+                        name='decision' label='Keputusan' required>
+                        <option value='approve'>Setujui & publikasikan</option>
+                        <option value='reject'>Tolak</option>
+                        @if ($tourism->status === 'published')
+                            <option value='takedown'>Takedown</option>
+                        @endif
+                    </x-select>
+                    <x-textarea name='reason' label='Alasan' /><button class='btn btn-lokantara'>Simpan keputusan</button>
+                </form>
+            </x-content-card></div>
+    </div>
+    <x-content-card title='Riwayat' class='mt-3'>
+        @forelse($tourism->moderationReports as $report)
+            @foreach ($report->actions as $action)
+                <div class='py-2 border-bottom'><strong>{{ str($action->action_type)->headline() }}</strong> ·
+                    {{ $action->created_at?->format('d M Y H:i') }}<p class='mb-0'>{{ $action->notes }}</p>
+                </div>
+            @endforeach @empty<x-empty-state title='Belum ada riwayat'
+                description='Belum terdapat aksi moderasi.' compact />
+        @endforelse
+    </x-content-card>
 @endsection

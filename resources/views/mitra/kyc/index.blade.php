@@ -1,6 +1,51 @@
 @extends('layouts.mitra')
-@section('title','KYC Mitra') @section('page-title','KYC dan Dokumen Legal') @section('page-description','Dokumen disimpan privat dan hanya dapat diunduh setelah authorization.')
+@section('title', 'KYC Mitra') @section('page-title', 'KYC dan Dokumen Legal') @section('page-description', 'Dokumen
+disimpan privat dan hanya dapat diunduh setelah authorization.')
 @section('content')
-<x-content-card title='Kirim dokumen'><form method='POST' action='{{ route('mitra.kyc.store') }}' enctype='multipart/form-data'>@csrf<div class='row'><div class='col-md-6'><x-select name='document_type' label='Jenis dokumen' required><option value=''>Pilih jenis</option><option value='business_license'>Izin usaha</option><option value='tax_document'>Dokumen pajak</option><option value='owner_identity'>Identitas owner</option><option value='bank_proof'>Bukti rekening</option></x-select></div><div class='col-md-6'><x-form-input name='expires_on' label='Tanggal kedaluwarsa' type='date' /></div></div><x-form-input name='document_number' label='Nomor dokumen' hint='Disimpan terenkripsi.' /><x-file-uploader name='document' label='PDF, JPEG, atau PNG; maksimal 5 MB' accept='application/pdf,image/jpeg,image/png' /><button class='btn btn-lokantara mt-3'>Kirim untuk review</button></form></x-content-card>
-<x-table-wrapper title='Riwayat dokumen' class='mt-3'>@if($documents->isEmpty())<tbody><tr><td><x-empty-state title='Belum ada dokumen' description='Unggah dokumen legal untuk memulai proses KYC.' compact /></td></tr></tbody>@else<thead><tr><th>Jenis</th><th>Versi</th><th>Status</th><th>Ditinjau oleh</th><th>Aksi</th></tr></thead><tbody>@foreach($documents as $document)<tr><td data-label='Jenis'>{{ str($document->document_type)->headline() }}</td><td data-label='Versi'>{{ $document->version }}</td><td data-label='Status'><x-status-badge :status='$document->status' /></td><td data-label='Reviewer'>{{ $document->reviewer?->name ?? '—' }}</td><td data-label='Aksi'><a class='btn btn-sm btn-outline-lokantara' href='{{ route('mitra.kyc.download',$document) }}'>Unduh privat</a></td></tr>@endforeach</tbody>@endif<x-slot:pagination>{{ $documents->links() }}</x-slot:pagination></x-table-wrapper>
+    <x-content-card title='Kirim dokumen'>
+        <form method='POST' action='{{ route('mitra.kyc.store') }}' enctype='multipart/form-data'>@csrf<div class='row'>
+                <div class='col-md-6'><x-select name='document_type' label='Jenis dokumen' required>
+                        <option value=''>Pilih jenis</option>
+                        <option value='business_license'>Izin usaha</option>
+                        <option value='tax_document'>Dokumen pajak</option>
+                        <option value='owner_identity'>Identitas owner</option>
+                        <option value='bank_proof'>Bukti rekening</option>
+                    </x-select></div>
+                <div class='col-md-6'><x-form-input name='expires_on' label='Tanggal kedaluwarsa' type='date' /></div>
+            </div><x-form-input name='document_number' label='Nomor dokumen' hint='Disimpan terenkripsi.' /><x-file-uploader
+                name='document' label='PDF, JPEG, atau PNG; maksimal 5 MB'
+                accept='application/pdf,image/jpeg,image/png' /><button class='btn btn-lokantara mt-3'>Kirim untuk
+                review</button></form>
+    </x-content-card>
+    <x-table-wrapper title='Riwayat dokumen' class='mt-3'>
+        @if ($documents->isEmpty())
+            <tbody>
+                <tr>
+                    <td><x-empty-state title='Belum ada dokumen'
+                            description='Unggah dokumen legal untuk memulai proses KYC.' compact /></td>
+                </tr>
+        </tbody>@else<thead>
+                <tr>
+                    <th>Jenis</th>
+                    <th>Versi</th>
+                    <th>Status</th>
+                    <th>Ditinjau oleh</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($documents as $document)
+                    <tr>
+                        <td data-label='Jenis'>{{ str($document->document_type)->headline() }}</td>
+                        <td data-label='Versi'>{{ $document->version }}</td>
+                        <td data-label='Status'><x-status-badge :status='$document->status' /></td>
+                        <td data-label='Reviewer'>{{ $document->reviewer?->name ?? '—' }}</td>
+                        <td data-label='Aksi'><a class='btn btn-sm btn-outline-lokantara'
+                                href='{{ route('mitra.kyc.download', $document) }}'>Unduh privat</a></td>
+                    </tr>
+                @endforeach
+            </tbody>
+        @endif
+        <x-slot:pagination>{{ $documents->links() }}</x-slot:pagination>
+    </x-table-wrapper>
 @endsection

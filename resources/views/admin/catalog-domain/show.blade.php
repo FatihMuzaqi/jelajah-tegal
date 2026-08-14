@@ -1,1 +1,16 @@
-@extends('layouts.admin') @section('title',$title) @section('page-title',$item->name) @section('page-description','Moderasi lifecycle katalog.') @section('content')<div class="content-card"><p>{{ $item->description }}</p><form method="POST" action="{{ route($routePrefix.'.update',$item) }}">@csrf @method('PATCH')<div class="row g-2"><div class="col"><select class="form-select" name="decision"><option value="approve">Setujui</option><option value="reject">Tolak</option><option value="takedown">Takedown</option></select></div><div class="col"><textarea class="form-control" name="reason" placeholder="Alasan"></textarea></div><div class="col"><button class="btn btn-lokantara">Simpan</button></div></div></form></div>@endsection
+@extends('layouts.admin') @section('title', $title) @section('page-title', $item->name) @section('page-description', 'Moderasi
+lifecycle katalog.') @section('content')<div class="content-card">
+        <p>{{ $item->description }}</p>
+        <form method="POST" action="{{ route($routePrefix . '.update', $item) }}">@csrf @method('PATCH')<div class="row g-2">
+                <div class="col"><select class="form-select" name="decision">
+                        <option value="approve">Setujui</option>
+                        <option value="reject">Tolak</option>
+                        <option value="takedown">Takedown</option>
+                    </select></div>
+                <div class="col">
+                    <textarea class="form-control" name="reason" placeholder="Alasan"></textarea>
+                </div>
+                <div class="col"><button class="btn btn-lokantara">Simpan</button></div>
+            </div>
+        </form>
+</div>@endsection
