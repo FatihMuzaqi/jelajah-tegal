@@ -371,7 +371,7 @@
 
                     <!-- Action Button -->
                     @auth
-                        <a href="{{ route('orders.index') }}" class="btn btn-lokantara w-100 fw-bold py-3 mb-2 fs-6">
+                        <a href="{{ route('consumer.orders.index') }}" class="btn btn-lokantara w-100 fw-bold py-3 mb-2 fs-6">
                             Pesan Kamar Ini Sekarang
                         </a>
                     @else

@@ -616,9 +616,9 @@
                             <p class="text-muted mb-3" style="font-size: 12px;">{{ $offer->description ?: 'Tiket akses masuk destinasi wisata per orang/kunjungan.' }}</p>
                             
                             @auth
-                                <a href="{{ route('orders.index') }}" class="btn btn-lokantara w-100 fw-bold py-2">
-                                    Pesan Tiket Sekarang
-                                </a>
+                                <button type="button" class="btn btn-lokantara w-100 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#bookModal-{{ $offer->id }}">
+                                    <i class="fa-solid fa-ticket me-1"></i> Pesan Tiket Sekarang
+                                </button>
                             @else
                                 <a href="{{ route('login') }}" class="btn btn-lokantara w-100 fw-bold py-2">
                                     Masuk untuk Memesan
@@ -767,4 +767,84 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 400);
 });
 </script>
+
+@auth
+    @foreach ($tourism->offers->where('status', 'active') as $offer)
+        <!-- Booking Modal for Offer {{ $offer->name }} -->
+        <div class="modal fade" id="bookModal-{{ $offer->id }}" tabindex="-1" aria-labelledby="bookModalLabel-{{ $offer->id }}" aria-hidden="true" style="z-index: 1055;">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content rounded-4 border-0 shadow-lg text-start">
+                    <div class="modal-header border-bottom-0 pb-0">
+                        <h5 class="modal-title fw-extrabold text-dark fs-5" id="bookModalLabel-{{ $offer->id }}">
+                            <i class="fa-solid fa-ticket text-success me-2"></i> Pemesanan Tiket
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form action="{{ route('consumer.checkout.store') }}" method="POST">
+                        @csrf
+                        <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
+                        <input type="hidden" name="domain" value="tourism">
+                        <input type="hidden" name="reference_id" value="{{ $offer->id }}">
+
+                        <div class="modal-body pt-3">
+                            <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                                <h6 class="fw-bold mb-1 text-dark">{{ $offer->name }}</h6>
+                                <p class="text-muted small mb-2">{{ $tourism->name }} — {{ $tourism->region?->name ?? 'Kabupaten Tegal' }}</p>
+                                <div class="fs-5 fw-extrabold text-success">
+                                    Rp {{ number_format($offer->price, 0, ',', '.') }} <span class="fs-8 fw-normal text-muted">/ orang</span>
+                                </div>
+                            </div>
+
+                            <!-- Tanggal Kunjungan -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold fs-7 text-dark">Tanggal Kunjungan <span class="text-danger">*</span></label>
+                                <input type="date" name="service_date" class="form-control rounded-3" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
+                            </div>
+
+                            <!-- Jumlah Tiket -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold fs-7 text-dark">Jumlah Tiket <span class="text-danger">*</span></label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); if(parseInt(q.value) > 1) { q.value = parseInt(q.value) - 1; calcTotal{{ $offer->id }}(); }">-</button>
+                                    <input type="number" id="qty-{{ $offer->id }}" name="quantity" class="form-control text-center fw-bold" value="1" min="1" max="50" onchange="calcTotal{{ $offer->id }}()" required>
+                                    <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); q.value = parseInt(q.value || 0) + 1; calcTotal{{ $offer->id }}();">+</button>
+                                </div>
+                            </div>
+
+                            <!-- Kode Voucher (Opsional) -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold fs-7 text-dark">Kode Voucher (Opsional)</label>
+                                <input type="text" name="voucher_code" class="form-control rounded-3 text-uppercase" placeholder="Contoh: TEGALHEMAT">
+                            </div>
+
+                            <!-- Total Cost Summary -->
+                            <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+                                <span class="fw-bold text-muted fs-7">Total Pembayaran</span>
+                                <span class="fs-4 fw-extrabold text-success" id="totalDisplay-{{ $offer->id }}">
+                                    Rp {{ number_format($offer->price, 0, ',', '.') }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="modal-footer border-top-0 pt-0">
+                            <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold text-white">
+                                Lanjutkan Pembayaran <i class="fa-solid fa-arrow-right ms-1"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function calcTotal{{ $offer->id }}() {
+                let price = {{ $offer->price }};
+                let qty = parseInt(document.getElementById('qty-{{ $offer->id }}').value) || 1;
+                let total = price * qty;
+                document.getElementById('totalDisplay-{{ $offer->id }}').innerText = 'Rp ' + total.toLocaleString('id-ID');
+            }
+        </script>
+    @endforeach
+@endauth
 @endsection

@@ -456,7 +456,7 @@
                                             <i class="fa-solid fa-magnifying-glass me-1"></i> Lihat Rincian Kamar
                                         </a>
                                         @auth
-                                            <a href="{{ route('orders.index') }}" class="btn btn-sm btn-lokantara fw-bold px-4">
+                                            <a href="{{ route('consumer.orders.index') }}" class="btn btn-sm btn-lokantara fw-bold px-4">
                                                 Pesan Kamar Ini
                                             </a>
                                         @else
