@@ -48,16 +48,18 @@ class AccommodationController extends Controller
         }
         $query->whereHas('accommodation.rooms', function ($rooms) use ($data) {
             $rooms->where('status', 'active')->whereHas('offer', function ($offer) use ($data) {
-                $offer->where('status', 'active');
+                $offer->whereIn('status', ['active', 'published']);
                 if (isset($data['min_price'])) {
                     $offer->where('price', '>=', $data['min_price']);
-                }if (isset($data['max_price'])) {
+                }
+                if (isset($data['max_price'])) {
                     $offer->where('price', '<=', $data['max_price']);
                 }
             });
             if (isset($data['adults'])) {
                 $rooms->where('capacity_adults', '>=', $data['adults']);
-            }if (isset($data['children'])) {
+            }
+            if (isset($data['children'])) {
                 $rooms->where('capacity_children', '>=', $data['children']);
             }
         });
@@ -74,7 +76,7 @@ class AccommodationController extends Controller
         } elseif (($data['sort'] ?? null) === 'rating') {
             $query->orderByDesc('rating_average');
         } elseif (($data['sort'] ?? null) === 'price_asc') {
-            $query->withMin(['offers as minimum_price' => fn ($q) => $q->where('status', 'active')], 'price')->orderBy('minimum_price');
+            $query->withMin(['offers as minimum_price' => fn ($q) => $q->whereIn('status', ['active', 'published'])], 'price')->orderBy('minimum_price');
         } else {
             $query->latest('published_at');
         }
@@ -95,7 +97,7 @@ class AccommodationController extends Controller
     {
         abort_unless($this->flags->enabled('public-accommodation'), 404);
         $accommodation = CatalogEntity::publicAccommodation()->where('slug', $slug)->with(['accommodation', 'mitra', 'region', 'category', 'location', 'media'])->firstOrFail();
-        abort_unless($room->accommodation_id === $accommodation->accommodation->id && $room->status === 'active' && $room->offer->status === 'active', 404);
+        abort_unless($room->accommodation_id === $accommodation->accommodation->id && $room->status === 'active' && in_array($room->offer->status, ['active', 'published']), 404);
         $room->load(['facilities', 'media', 'offer.availabilities']);
 
         return view('public.accommodation.room', compact('accommodation', 'room'));

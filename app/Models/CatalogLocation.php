@@ -13,7 +13,7 @@ class CatalogLocation extends Model
 
     protected $keyType = 'string';
 
-    protected $fillable = ['catalog_entity_id', 'latitude', 'longitude'];
+    protected $fillable = ['catalog_entity_id', 'latitude', 'longitude', 'location'];
 
     protected $hidden = ['location'];
 

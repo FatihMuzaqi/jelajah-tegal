@@ -97,6 +97,12 @@ class NavigationController extends Controller
         }
 
         if ($s === 'gatekeeper') {
+            session(['target_tenant_surface' => 'gatekeeper']);
+
+            if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
+                return redirect()->route('mitra.select');
+            }
+
             $memberships = $r->user()->mitraMemberships()->with('mitra')->where('status', 'active')->get();
             if ($memberships->count() === 1) {
                 $r->session()->put('active_mitra_id', $memberships->first()->mitra_id);
@@ -106,6 +112,12 @@ class NavigationController extends Controller
         }
 
         if ($s === 'mitra') {
+            session(['target_tenant_surface' => 'mitra']);
+
+            if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
+                return redirect()->route('mitra.select');
+            }
+
             $memberships = $r->user()->mitraMemberships()->with('mitra')->where('status', 'active')->get();
             if ($memberships->count() === 1) {
                 $r->session()->put('active_mitra_id', $memberships->first()->mitra_id);
@@ -119,33 +131,61 @@ class NavigationController extends Controller
 
     public function mitras(Request $r)
     {
+        $isSuperAdmin = $r->user()->hasRole('super-admin') || $r->user()->hasRole('admin');
+        $targetSurface = session('target_tenant_surface', 'mitra');
+
+        if ($isSuperAdmin) {
+            $allMitras = \App\Models\Mitra::where('status', 'active')
+                ->with(['owner', 'region', 'features.serviceType'])
+                ->get();
+
+            return view('mitras', [
+                'memberships' => collect(),
+                'allMitras' => $allMitras,
+                'isSuperAdmin' => true,
+                'targetSurface' => $targetSurface,
+            ]);
+        }
+
         $memberships = $r->user()->mitraMemberships()->with('mitra')->where('status', 'active')->get();
 
         if ($memberships->count() === 1) {
             $r->session()->put('active_mitra_id', $memberships->first()->mitra_id);
 
-            if ($r->user()->can('access.gatekeeper') && ! $r->user()->can('access.mitra')) {
+            if ($targetSurface === 'gatekeeper' || ($r->user()->can('access.gatekeeper') && ! $r->user()->can('access.mitra'))) {
                 return redirect()->route('gatekeeper.dashboard');
             }
 
             return redirect()->route('mitra.dashboard');
         }
 
-        return view('mitras', compact('memberships'));
+        return view('mitras', [
+            'memberships' => $memberships,
+            'allMitras' => collect(),
+            'isSuperAdmin' => false,
+            'targetSurface' => $targetSurface,
+        ]);
     }
 
     public function chooseMitra(Request $r): RedirectResponse
     {
-        $id = $r->validate(['mitra_id' => 'required'])['mitra_id'];
-        abort_unless($r->user()->mitraMemberships()->where('mitra_id', $id)->where('status', 'active')->exists(), 403);
+        $id = $r->validate(['mitra_id' => 'required|exists:mitras,id'])['mitra_id'];
+        $isSuperAdmin = $r->user()->hasRole('super-admin') || $r->user()->hasRole('admin');
+        $targetSurface = $r->input('target_surface', session('target_tenant_surface', 'mitra'));
+
+        if (! $isSuperAdmin) {
+            abort_unless($r->user()->mitraMemberships()->where('mitra_id', $id)->where('status', 'active')->exists(), 403);
+        }
 
         $r->session()->put('active_mitra_id', $id);
         $mitra = \App\Models\Mitra::find($id);
+
         if ($mitra) {
-            app(\App\Services\AuditLogger::class)->record('mitra.tenant_switched', $mitra);
+            $action = $isSuperAdmin ? 'superadmin.tenant_impersonated' : 'mitra.tenant_switched';
+            app(\App\Services\AuditLogger::class)->record($action, $mitra);
         }
 
-        if ($r->user()->can('access.gatekeeper') && ! $r->user()->can('access.mitra')) {
+        if ($targetSurface === 'gatekeeper' || (! $isSuperAdmin && $r->user()->can('access.gatekeeper') && ! $r->user()->can('access.mitra'))) {
             return redirect()->route('gatekeeper.dashboard');
         }
 
@@ -165,6 +205,16 @@ class NavigationController extends Controller
         foreach (['mitra', 'gatekeeper'] as $s) {
             if ($tenant->contains('access.'.$s) && ! in_array($s, $out)) {
                 $out[] = $s;
+            }
+        }
+
+        // Super Admin & Admin secara otomatis memiliki akses Master Switch ke Mitra & Gatekeeper
+        if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
+            if (! in_array('mitra', $out)) {
+                $out[] = 'mitra';
+            }
+            if (! in_array('gatekeeper', $out)) {
+                $out[] = 'gatekeeper';
             }
         }
 
