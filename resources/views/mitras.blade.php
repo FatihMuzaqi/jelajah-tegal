@@ -1,91 +1,165 @@
 @extends('layouts.app')
 
+@section('title', 'Pilih Tenant Mitra Bisnis · Jelajah Tegal')
+
 @section('content')
 <div class="surface-selector-wrapper">
-    <div class="surface-selector-container">
+    <div class="surface-selector-container" style="max-width: 1080px;">
         
         <!-- Header & Profile Info -->
         <div class="surface-top-nav">
-            <div class="surface-brand-logo">
-                <span class="surface-brand-badge">L</span>
-                <span class="surface-brand-text">Lokantara</span>
-            </div>
+            <a href="{{ route('home') }}" class="surface-brand-logo text-decoration-none">
+                <span class="surface-brand-badge">J</span>
+                <span class="surface-brand-text">Jelajah Tegal</span>
+            </a>
 
             <div class="surface-user-pill">
                 <span class="user-avatar-circle">{{ str(auth()->user()->name)->substr(0,1)->upper() }}</span>
                 <div class="user-info">
                     <strong>{{ auth()->user()->name }}</strong>
-                    <small>{{ auth()->user()->email }}</small>
+                    <small>
+                        @if($isSuperAdmin)
+                            <span class="badge bg-warning-subtle text-warning-emphasis">Super Admin Access</span>
+                        @else
+                            {{ auth()->user()->email }}
+                        @endif
+                    </small>
                 </div>
                 <form method="POST" action="{{ route('logout') }}" class="m-0 ms-2">
                     @csrf
                     <button type="submit" class="btn-logout-icon" title="Keluar">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                        <i class="fa-solid fa-right-from-bracket"></i>
                     </button>
                 </form>
             </div>
         </div>
 
         <!-- Headline Hero -->
-        <div class="surface-hero-section">
-            <span class="surface-eyebrow">Seleksi Tenant Mitra</span>
-            <h1 class="surface-title">Pilih Tenant Mitra Bisnis</h1>
-            <p class="surface-subtitle">Anda terdaftar sebagai anggota pada beberapa unit bisnis mitra. Silakan pilih tenant mitra yang ingin Anda operasionalkan saat ini:</p>
+        <div class="surface-hero-section text-center mb-4">
+            <span class="surface-eyebrow">
+                @if($isSuperAdmin)
+                    <i class="fa-solid fa-crown text-warning me-1"></i> Mode Master Switch Platform
+                @else
+                    Seleksi Tenant Mitra
+                @endif
+            </span>
+            <h1 class="surface-title">
+                @if($targetSurface === 'gatekeeper')
+                    Pilih Lokasi Tenant untuk Scanner Gatekeeper
+                @else
+                    Pilih Unit Bisnis Mitra
+                @endif
+            </h1>
+            <p class="surface-subtitle">
+                @if($isSuperAdmin)
+                    Sebagai <strong>Super Admin</strong>, Anda dapat memilih dan masuk ke unit bisnis mitra manapun di platform untuk menginspeksi operasional katalog, pesanan, dan scanner tiket.
+                @else
+                    Silakan pilih tenant mitra aktif yang ingin Anda operasionalkan saat ini:
+                @endif
+            </p>
         </div>
 
-        @if($memberships->isEmpty())
-            <div class="content-card p-4 text-center">
+        @php
+            $items = $isSuperAdmin ? $allMitras : $memberships->map(fn($m) => $m->mitra);
+        @endphp
+
+        @if($items->isEmpty())
+            <div class="content-card p-5 text-center shadow-sm" style="border-radius: 20px; background: var(--lokantara-surface);">
                 <x-empty-state 
-                    title="Belum Terdaftar di Tenant Mitra" 
-                    description="Akun Anda saat ini belum terhubung dengan unit bisnis mitra aktif. Silakan hubungi Administrator Platform." 
+                    title="Belum Ada Tenant Mitra Aktif" 
+                    description="Belum ada unit bisnis mitra terdaftar dan aktif di platform saat ini." 
                 />
-                <div class="mt-3">
-                    <a href="{{ route('surfaces.select') }}" class="btn btn-outline-primary">Kembali ke Pilih Surface</a>
+                <div class="mt-4">
+                    <a href="{{ route('surfaces.select') }}" class="btn btn-outline-primary rounded-pill px-4">
+                        <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Pilih Surface
+                    </a>
                 </div>
             </div>
         @else
             <!-- Mitra Cards Grid Form -->
             <form method="POST" action="{{ route('mitra.choose') }}" class="surface-form">
                 @csrf
+                <input type="hidden" name="target_surface" value="{{ $targetSurface }}">
 
-                <div class="surface-cards-grid">
-                    @foreach($memberships as $m)
+                <div class="row g-4 justify-content-center">
+                    @foreach($items as $mitra)
                         @php
-                            $isCurrentlyActive = session('active_mitra_id') === $m->mitra_id;
+                            $isCurrentlyActive = session('active_mitra_id') === $mitra->id;
+                            $features = $mitra->features->where('status', 'enabled');
                         @endphp
 
-                        <button type="submit" name="mitra_id" value="{{ $m->mitra_id }}" class="surface-card-btn tone-mitra {{ $isCurrentlyActive ? 'border-primary' : '' }}">
-                            <div class="card-top">
-                                <div class="surface-icon-box">
-                                    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path><path d="M2 7h20"></path></svg>
-                                </div>
-                                <span class="surface-badge {{ $isCurrentlyActive ? 'bg-success text-white' : '' }}">
-                                    {{ $isCurrentlyActive ? 'Tenant Aktif Saat Ini' : 'Mitra Terverifikasi' }}
-                                </span>
-                            </div>
-                            
-                            <div class="card-content">
-                                <h3 class="surface-card-title">{{ $m->mitra->display_name }}</h3>
-                                <p class="surface-card-desc">
-                                    <strong>{{ $m->mitra->legal_name }}</strong><br>
-                                    <small class="text-muted">📍 {{ $m->mitra->address ?? 'Lokasi Tegal' }}</small>
-                                </p>
-                            </div>
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card h-100 border-0 shadow-sm surface-card-interactive {{ $isCurrentlyActive ? 'border-primary shadow' : '' }}" style="border-radius: 18px; border: 1.5px solid {{ $isCurrentlyActive ? 'var(--lokantara-primary)' : 'var(--lokantara-border)' }}; transition: all 0.25s ease;">
+                                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <div class="rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 44px; height: 44px; background: linear-gradient(135deg, var(--lokantara-primary), #175e47); font-size: 18px;">
+                                                <i class="fa-solid fa-store"></i>
+                                            </div>
+                                            @if($isCurrentlyActive)
+                                                <span class="badge bg-success-subtle text-success rounded-pill px-3 py-1">
+                                                    <i class="fa-solid fa-circle-check me-1"></i> Aktif Saat Ini
+                                                </span>
+                                            @else
+                                                <span class="badge bg-light text-muted rounded-pill px-2 py-1 small">
+                                                    {{ $mitra->region?->name ?? 'Tegal' }}
+                                                </span>
+                                            @endif
+                                        </div>
 
-                            <div class="card-footer-action">
-                                <span>{{ $isCurrentlyActive ? 'Lanjutkan ke Dashboard' : 'Pilih Tenant Ini' }}</span>
-                                <svg class="arrow-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                                        <h3 class="h5 fw-bold text-dark mb-1">{{ $mitra->display_name }}</h3>
+                                        <p class="text-muted small mb-2">{{ $mitra->legal_name }}</p>
+                                        
+                                        <div class="small text-muted mb-3">
+                                            <i class="fa-solid fa-location-dot text-danger me-1"></i>
+                                            {{ str($mitra->address ?? 'Wilayah Tegal')->limit(45) }}
+                                        </div>
+
+                                        {{-- Fitur Bisnis Badges --}}
+                                        <div class="d-flex flex-wrap gap-1 mb-3">
+                                            @forelse($features as $feat)
+                                                <span class="badge bg-light text-dark border" style="font-size: 11px;">
+                                                    {{ $feat->serviceType?->name ?? $feat->serviceType?->code }}
+                                                </span>
+                                            @empty
+                                                <span class="text-muted small fst-italic">Belum ada fitur aktif</span>
+                                            @endforelse
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-3 border-top d-flex flex-column gap-2">
+                                        <button type="submit" name="mitra_id" value="{{ $mitra->id }}" class="btn btn-lokantara w-100 rounded-pill py-2 d-flex align-items-center justify-content-center gap-2">
+                                            @if($targetSurface === 'gatekeeper')
+                                                <i class="fa-solid fa-qrcode"></i>
+                                                <span>Masuk Scanner Gatekeeper</span>
+                                            @else
+                                                <i class="fa-solid fa-gauge"></i>
+                                                <span>{{ $isCurrentlyActive ? 'Lanjutkan ke Dashboard' : 'Buka Dashboard Mitra' }}</span>
+                                            @endif
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
-                        </button>
+                        </div>
                     @endforeach
                 </div>
             </form>
         @endif
 
-        <div class="surface-footer-note">
-            <p>Lokantara Multi-Tenant Context · Sesuai Spesifikasi Arsitektur `docs/02-target-architecture/06-multi-mitra-context.md`</p>
+        <div class="surface-footer-note text-center mt-5 text-muted small">
+            <p>Jelajah Tegal Platform &middot; Super Admin Master Tenant Switch Activated</p>
+            <a href="{{ route('surfaces.select') }}" class="text-decoration-none text-primary fw-semibold">
+                <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Menu Surface
+            </a>
         </div>
 
     </div>
 </div>
+
+<style>
+.surface-card-interactive:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(31, 122, 92, 0.15) !important;
+}
+</style>
 @endsection
