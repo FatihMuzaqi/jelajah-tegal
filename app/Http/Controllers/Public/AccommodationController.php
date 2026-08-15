@@ -48,7 +48,7 @@ class AccommodationController extends Controller
         }
         $query->whereHas('accommodation.rooms', function ($rooms) use ($data) {
             $rooms->where('status', 'active')->whereHas('offer', function ($offer) use ($data) {
-                $offer->where('status', 'active');
+                $offer->whereIn('status', ['published', 'active']);
                 if (isset($data['min_price'])) {
                     $offer->where('price', '>=', $data['min_price']);
                 }if (isset($data['max_price'])) {
