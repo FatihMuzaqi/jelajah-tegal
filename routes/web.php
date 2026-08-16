@@ -13,6 +13,15 @@ use App\Http\Controllers\Public\TourismController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [PublicPortalController::class, 'home'])->name('home');
+
+Route::prefix('tour-assistant')->name('tour-assistant.')->group(function () {
+    Route::get('/', [\App\Http\Controllers\Public\TourAssistantController::class, 'index'])->name('index');
+    Route::post('/generate', [\App\Http\Controllers\Public\TourAssistantController::class, 'generate'])->name('generate');
+    Route::post('/checkout', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'process'])->name('checkout')->middleware(['auth', 'verified', 'active.user']);
+    Route::get('/invoice/{invoice_number}', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'showInvoice'])->name('invoice.show')->middleware(['auth', 'verified', 'active.user']);
+    Route::post('/invoice/{invoice_number}/confirm-direct', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'confirmDirect'])->name('invoice.confirm-direct')->middleware(['auth', 'verified', 'active.user']);
+});
+
 Route::get('/tentang', [PublicPortalController::class, 'about'])->name('public.about');
 Route::get('/faq', [PublicPortalController::class, 'faq'])->name('public.faq');
 Route::get('/kontak', [PublicPortalController::class, 'contact'])->name('public.contact');

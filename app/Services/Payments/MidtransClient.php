@@ -41,6 +41,36 @@ class MidtransClient
         return $data;
     }
 
+    public function createSnapForInvoice(\App\Models\Invoice $invoice): array
+    {
+        $response = $this->http()->post($this->configuration->snapBaseUrl().'/snap/v1/transactions', [
+            'transaction_details' => ['order_id' => $invoice->invoice_number, 'gross_amount' => $this->wholeRupiah($invoice->total_amount)],
+            'item_details' => [[
+                'id' => $invoice->invoice_number,
+                'price' => $this->wholeRupiah($invoice->total_amount),
+                'quantity' => 1,
+                'name' => 'Tour Assistant Invoice '.$invoice->invoice_number,
+            ]],
+            'customer_details' => [
+                'first_name' => $invoice->user->name ?? 'Customer',
+                'email' => $invoice->user->email ?? null,
+                'phone' => $invoice->user->phone ?? null,
+            ],
+            'expiry' => ['unit' => 'minute', 'duration' => (int) max(1, (int) ceil(now()->diffInMinutes($invoice->expires_at, false)))],
+            'callbacks' => [
+                'finish' => url('/tour-assistant/invoice/'.$invoice->invoice_number),
+                'unfinish' => url('/tour-assistant/invoice/'.$invoice->invoice_number),
+                'error' => url('/tour-assistant/invoice/'.$invoice->invoice_number),
+            ],
+        ]);
+        $response->throw();
+        $data = $response->json();
+        if (blank($data['token'] ?? null) || blank($data['redirect_url'] ?? null)) {
+            throw new RuntimeException('Respons Snap tidak memiliki token atau redirect_url.');
+        }
+        return $data;
+    }
+
     public function status(string $orderNumber): array
     {
         $response = $this->http()->get($this->configuration->apiBaseUrl().'/v2/'.rawurlencode($orderNumber).'/status');

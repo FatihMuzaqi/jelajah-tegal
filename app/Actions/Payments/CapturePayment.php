@@ -56,7 +56,7 @@ class CapturePayment
                     $hold->update(['status' => 'converted']);
                 }
 
-                if (in_array($item->resource_type, ['tourism_ticket_package', 'event_ticket_type'], true)) {
+                if (in_array($item->resource_type, ['tourism_ticket_package', 'event_ticket_type', 'tourism', 'event', 'culinary', 'rental', 'accommodation'], true)) {
                     for ($i = 0; $i < $item->quantity; $i++) {
                         $id = (string) Str::ulid();
                         $token = TicketToken::for($id);
