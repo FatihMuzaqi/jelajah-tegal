@@ -167,7 +167,9 @@
                 <form method='POST' action='{{ route('mitra.tourism.hours', $tourism) }}'>
                     @csrf
                     @method('PUT')
-                    @php($dayLabels = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'])
+                    @php
+                        $dayLabels = [1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis', 5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu'];
+                    @endphp
                     @for ($day = 1; $day <= 7; $day++)
                         <div class='row align-items-center mb-2 pb-2 border-bottom' style='font-size: 13px;'>
                             <input type='hidden' name='hours[{{ $day }}][weekday]' value='{{ $day }}'>
@@ -209,35 +211,76 @@
                     <button class='btn btn-sm btn-lokantara mt-2 fw-bold'>+ Tambah Paket Tiket</button>
                 </form>
 
-                <h6 class='fw-bold mt-3 mb-2' style='font-size: 13px;'>Daftar Paket Tiket Aktif:</h6>
-                @forelse($tourism->offers as $offer)
-                    <div class='p-3 rounded mb-2'
-                        style='background: var(--lokantara-background); border: 1px solid var(--lokantara-border); font-size: 13px;'>
-                        <div class='d-flex align-items-center justify-content-between mb-2'>
-                            <strong class='fs-6'>{{ $offer->name }}</strong>
-                            <span class='badge bg-success'>Rp {{ number_format($offer->price, 0, ',', '.') }}</span>
-                        </div>
+                <h6 class='fw-bold mt-4 mb-2' style='font-size: 13px;'>Daftar Paket Tiket & Status Kuota:</h6>
+                @if($tourism->offers->isNotEmpty())
+                    @foreach($tourism->offers as $offer)
+                        @php
+                            $todayAvail = $offer->availabilities->where('service_date', now()->format('Y-m-d'))->first();
+                            $cap = $todayAvail?->capacity ?? ($offer->ticketPackage?->quota_per_day ?? 100);
+                            $res = $todayAvail?->reserved_quantity ?? 0;
+                            $rem = max(0, $cap - $res);
+                            $pct = $cap > 0 ? min(100, round(($res / $cap) * 100)) : 0;
+                            $progressColor = $pct >= 90 ? 'bg-danger' : ($pct >= 70 ? 'bg-warning' : 'bg-success');
+                        @endphp
+                        <div class='p-3 rounded mb-3'
+                            style='background: var(--lokantara-background); border: 1px solid var(--lokantara-border); font-size: 13px;'>
+                            <div class='d-flex align-items-center justify-content-between mb-2'>
+                                <div>
+                                    <strong class='fs-6 text-dark'>{{ $offer->name }}</strong>
+                                    <span class='badge bg-success ms-1'>Rp {{ number_format($offer->price, 0, ',', '.') }}</span>
+                                </div>
+                                @if ($rem <= 0)
+                                    <span class='badge bg-danger'>❌ Habis (Sold Out)</span>
+                                @elseif ($rem <= 10)
+                                    <span class='badge bg-warning text-dark'>⚠️ Sisa Kritis</span>
+                                @else
+                                    <span class='badge bg-success-subtle text-success border border-success'>🟢 Tersedia</span>
+                                @endif
+                            </div>
 
-                        <form class='row g-2 align-items-center' method='POST'
-                            action='{{ route('mitra.tourism.quota', [$tourism, $offer->ticketPackage]) }}'>
-                            @csrf
-                            @method('PUT')
-                            <div class='col-5'>
-                                <input class='form-control form-control-sm' type='date' name='service_date'
-                                    value='{{ date('Y-m-d') }}' required>
+                            <!-- Quota Metric Summary Box -->
+                            <div class='p-2 rounded mb-2' style='background: #ffffff; border: 1px solid #e2e8f0;'>
+                                <div class='d-flex justify-content-between align-items-center mb-1' style='font-size: 11px;'>
+                                    <span class='text-muted'>Keterisian Kuota Hari Ini ({{ now()->translatedFormat('d M Y') }}):</span>
+                                    <strong class='text-dark'>{{ $res }} / {{ $cap }} Tiket ({{ $pct }}%)</strong>
+                                </div>
+                                <div class='progress' style='height: 8px; border-radius: 99px; background: #e2e8f0;'>
+                                    <div class='progress-bar {{ $progressColor }}' role='progressbar' style='width: {{ $pct }}%;' aria-valuenow='{{ $pct }}' aria-valuemin='0' aria-valuemax='100'></div>
+                                </div>
+                                <div class='d-flex justify-content-between mt-2 pt-1 border-top' style='font-size: 11px;'>
+                                    <span>Kapasitas: <strong>{{ $cap }}</strong></span>
+                                    <span>Terjual/Hold: <strong>{{ $res }}</strong></span>
+                                    <span class='text-success fw-bold'>Sisa Riil: {{ $rem }} Tiket</span>
+                                </div>
                             </div>
-                            <div class='col-4'>
-                                <input class='form-control form-control-sm' type='number' name='capacity'
-                                    placeholder='Kuota' required>
-                            </div>
-                            <div class='col-3'>
-                                <button class='btn btn-sm btn-outline-lokantara w-100 fw-bold'>Set</button>
-                            </div>
-                        </form>
+
+                            <!-- Update Quota Form -->
+                            <form class='row g-2 align-items-center' method='POST'
+                                action='{{ route('mitra.tourism.quota', [$tourism, $offer->ticketPackage]) }}'>
+                                @csrf
+                                @method('PUT')
+                                <div class='col-5'>
+                                    <label class='form-label mb-1 text-muted' style='font-size: 10px;'>Pilih Tanggal</label>
+                                    <input class='form-control form-control-sm' type='date' name='service_date'
+                                        value='{{ date('Y-m-d') }}' min='{{ date('Y-m-d') }}' required>
+                                </div>
+                                <div class='col-4'>
+                                    <label class='form-label mb-1 text-muted' style='font-size: 10px;'>Set Kuota</label>
+                                    <input class='form-control form-control-sm' type='number' name='capacity'
+                                        value='{{ $cap }}' placeholder='Kuota' min='1' required>
+                                </div>
+                                <div class='col-3'>
+                                    <label class='form-label mb-1 text-muted d-block' style='font-size: 10px;'>&nbsp;</label>
+                                    <button class='btn btn-sm btn-outline-lokantara w-100 fw-bold' title='Simpan Kuota Tanggal Ini'>Update</button>
+                                </div>
+                            </form>
+                        </div>
+                    @endforeach
+                @else
+                    <div class='p-3 text-center rounded' style='background: var(--lokantara-background);'>
+                        <small class='text-muted'>Belum ada paket tiket dibuat. Tambahkan formulir di atas.</small>
                     </div>
-                @empty
-                    <small class='text-muted'>Belum ada paket tiket dibuat.</small>
-                @endforelse
+                @endif
             </x-content-card>
         </div>
     </div>

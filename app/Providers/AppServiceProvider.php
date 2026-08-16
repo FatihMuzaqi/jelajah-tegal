@@ -14,7 +14,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->scoped(MitraContext::class, fn () => new MitraContext);
+        $this->app->scoped(MitraContext::class, fn() => new MitraContext);
     }
 
     /**
@@ -30,7 +30,7 @@ class AppServiceProvider extends ServiceProvider
             try {
                 app(MidtransConfiguration::class)->assertReady();
             } catch (LogicException $exception) {
-                throw new LogicException('Midtrans diaktifkan tetapi konfigurasi invalid. '.$exception->getMessage(), previous: $exception);
+                throw new LogicException('Midtrans diaktifkan tetapi konfigurasi invalid. ' . $exception->getMessage(), previous: $exception);
             }
         }
     }

@@ -52,7 +52,7 @@ class TourismController extends Controller
     public function show(string $slug): View
     {
         abort_unless($this->flags->enabled('public-tourism'), 404);
-        $tourism = CatalogEntity::query()->publicTourism()->where('slug', $slug)->with(['mitra', 'category', 'region', 'tourism', 'location', 'facilities', 'operatingHours', 'media', 'offers.availabilities', 'reviews' => fn ($q) => $q->where('status', 'published')->latest()])->firstOrFail();
+        $tourism = CatalogEntity::query()->publicTourism()->where('slug', $slug)->with(['mitra', 'category', 'region', 'tourism', 'location', 'facilities', 'operatingHours', 'media', 'offers.ticketPackage', 'offers.availabilities', 'reviews' => fn ($q) => $q->where('status', 'published')->latest()])->firstOrFail();
 
         return view('public.tourism.show', compact('tourism'));
     }

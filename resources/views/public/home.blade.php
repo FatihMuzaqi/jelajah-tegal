@@ -6,47 +6,49 @@
 
 @section('content')
 <style>
-/* Modern Hero Styling with Real Photo Background */
+/* Modern Responsive Hero Styling with Real Photo Background */
 .jt-hero-mockup {
     position: relative;
-    background: linear-gradient(180deg, rgba(7, 30, 20, 0.68) 0%, rgba(10, 42, 28, 0.86) 100%), 
+    background: linear-gradient(180deg, rgba(7, 30, 20, 0.72) 0%, rgba(10, 42, 28, 0.88) 100%), 
                 url('{{ asset('images/guci_hero.png') }}') center/cover no-repeat;
     color: #ffffff;
-    padding: 90px 0 110px;
+    padding: clamp(48px, 8vw, 95px) 0 clamp(60px, 9vw, 115px);
     overflow: hidden;
 }
 .jt-hero-badge-pill {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 22px;
+    padding: 6px 18px;
     border-radius: 99px;
     background: rgba(4, 120, 87, 0.85);
     border: 1px solid rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(12px);
     color: #ffffff;
-    font-size: 13px;
+    font-size: clamp(11px, 2.5vw, 13px);
     font-weight: 700;
-    margin-bottom: 24px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    line-height: 1.4;
+    max-width: 100%;
 }
 .jt-hero-title-large {
-    font-size: 54px;
+    font-size: clamp(28px, 6vw, 54px);
     font-weight: 900;
-    line-height: 1.12;
+    line-height: 1.15;
     letter-spacing: -0.03em;
     color: #ffffff;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
     text-align: left;
 }
 .jt-hero-title-large span {
     color: #34d399;
 }
 .jt-hero-subtitle {
-    font-size: 18px;
+    font-size: clamp(14px, 2.5vw, 18px);
     line-height: 1.6;
     color: rgba(255,255,255,0.92);
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     max-width: 750px;
     margin-left: 0;
     margin-right: auto;
@@ -57,44 +59,35 @@
 .jt-search-box-card {
     background: #ffffff;
     border-radius: 20px;
-    padding: 12px 14px;
-    box-shadow: 0 25px 60px rgba(0,0,0,0.35);
+    padding: 10px 12px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.32);
     text-align: left;
-    margin-bottom: 30px;
+    margin-bottom: 24px;
 }
 .jt-search-grid-layout {
     display: grid;
-    grid-template-columns: 2.2fr 1.2fr 1.2fr 1.2fr auto;
-    gap: 10px;
+    grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr auto;
+    gap: 8px;
     align-items: center;
-}
-@media (max-width: 991px) {
-    .jt-search-grid-layout {
-        grid-template-columns: 1fr;
-    }
 }
 .jt-search-field-item {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 14px;
+    padding: 8px 12px;
     border-right: 1px solid #e2e8f0;
-}
-@media (max-width: 991px) {
-    .jt-search-field-item {
-        border-right: none;
-        border-bottom: 1px solid #e2e8f0;
-    }
 }
 .jt-search-field-item:last-child {
     border-right: none;
 }
 .jt-field-icon {
-    font-size: 18px;
+    font-size: 16px;
     color: #64748b;
+    flex-shrink: 0;
 }
 .jt-field-content {
     flex: 1;
+    min-width: 0;
 }
 .jt-field-content label {
     display: block;
@@ -110,7 +103,7 @@
     background: transparent;
     font-size: 13px;
     font-weight: 500;
-    color: #64748b;
+    color: #475569;
     outline: none;
     padding: 0;
 }
@@ -119,8 +112,8 @@
     color: #ffffff;
     font-weight: 700;
     font-size: 14px;
-    padding: 14px 26px;
-    border-radius: 12px;
+    padding: 12px 24px;
+    border-radius: 14px;
     border: none;
     cursor: pointer;
     box-shadow: 0 4px 15px rgba(4,120,87,0.35);
@@ -128,6 +121,7 @@
     white-space: nowrap;
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
 }
 .btn-emerald-search:hover {
@@ -136,29 +130,66 @@
     transform: translateY(-2px);
 }
 
-/* Quick Search Chips */
+/* Tablet & Mobile Search Layout Responsive */
+@media (max-width: 991px) {
+    .jt-search-grid-layout {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+    .jt-search-field-item.search-item-query {
+        grid-column: 1 / -1;
+    }
+    .jt-search-grid-layout .btn-emerald-search {
+        grid-column: 1 / -1;
+        width: 100%;
+        padding: 14px;
+    }
+    .jt-search-field-item {
+        border-right: none;
+        background: #f8fafc;
+        border-radius: 12px;
+        padding: 10px 14px;
+    }
+}
+@media (max-width: 576px) {
+    .jt-search-grid-layout {
+        grid-template-columns: 1fr;
+    }
+    .jt-search-box-card {
+        padding: 10px;
+        border-radius: 16px;
+    }
+}
+
+/* Quick Search Chips - Smooth Scroll on Mobile */
 .jt-chips-wrapper {
     display: flex;
-    flex-wrap: wrap;
     align-items: center;
-    justify-content: flex-start;
-    gap: 10px;
-    font-size: 13px;
+    gap: 8px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 6px;
+}
+.jt-chips-wrapper::-webkit-scrollbar {
+    display: none;
 }
 .jt-chip-item {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 8px 18px;
+    padding: 6px 14px;
     border-radius: 99px;
     background: rgba(255,255,255,0.14);
     border: 1px solid rgba(255,255,255,0.22);
     color: #ffffff;
     text-decoration: none;
     font-weight: 600;
-    font-size: 13px;
+    font-size: 12px;
     backdrop-filter: blur(8px);
     transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 .jt-chip-item:hover {
     background: rgba(255,255,255,0.28);
@@ -169,7 +200,7 @@
 /* Section Header Leaf Styling */
 .jt-section-title-wrap {
     text-align: center;
-    margin-bottom: 45px;
+    margin-bottom: 35px;
 }
 .jt-eyebrow-leaf {
     display: inline-flex;
@@ -177,34 +208,34 @@
     gap: 8px;
     color: #047857;
     font-weight: 800;
-    font-size: 18px;
+    font-size: clamp(16px, 3.5vw, 19px);
     margin-bottom: 6px;
 }
 .jt-section-subtext {
     color: #64748b;
-    font-size: 15px;
+    font-size: clamp(13px, 2vw, 15px);
     margin: 0;
 }
 
 /* 4 Feature Exploration Cards with Overlapping Icons */
 .jt-explore-card {
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 18px;
     border: 1px solid #e2e8f0;
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     height: 100%;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
 }
 .jt-explore-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 20px 40px -10px rgba(4,120,87,0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 16px 32px -8px rgba(4,120,87,0.15);
     border-color: #a7f3d0;
 }
 .jt-explore-img-wrap {
-    height: 170px;
+    height: 160px;
     position: relative;
     overflow: hidden;
 }
@@ -215,25 +246,25 @@
     transition: transform 0.4s ease;
 }
 .jt-explore-card:hover .jt-explore-img-wrap img {
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 .jt-explore-body {
-    padding: 20px;
+    padding: 18px;
     position: relative;
     flex: 1;
     display: flex;
     flex-direction: column;
 }
 .jt-floating-icon-circle {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 20px;
+    font-size: 19px;
     color: #ffffff;
-    margin-top: -46px;
-    margin-bottom: 14px;
+    margin-top: -42px;
+    margin-bottom: 12px;
     border: 3px solid #ffffff;
     box-shadow: 0 6px 16px rgba(0,0,0,0.12);
     position: relative;
@@ -245,16 +276,16 @@
 .bg-icon-purple { background: #7c3aed; }
 
 .jt-explore-body h3 {
-    font-size: 19px;
+    font-size: 18px;
     font-weight: 800;
     color: #0f172a;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 .jt-explore-body p {
     font-size: 13px;
     color: #64748b;
-    line-height: 1.6;
-    margin-bottom: 18px;
+    line-height: 1.55;
+    margin-bottom: 16px;
     flex: 1;
 }
 .jt-circle-arrow-btn {
@@ -280,20 +311,20 @@
 /* Popular Destinations Section */
 .jt-popular-card {
     background: #ffffff;
-    border-radius: 20px;
+    border-radius: 18px;
     border: 1px solid #e2e8f0;
     overflow: hidden;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     height: 100%;
 }
 .jt-popular-card:hover {
-    transform: translateY(-6px);
+    transform: translateY(-5px);
     border-color: #10b981;
-    box-shadow: 0 20px 40px -10px rgba(16,185,129,0.18);
+    box-shadow: 0 16px 32px -8px rgba(16,185,129,0.18);
 }
 .jt-pop-img-wrap {
-    height: 190px;
+    height: 180px;
     position: relative;
     overflow: hidden;
 }
@@ -304,37 +335,37 @@
     transition: transform 0.5s ease;
 }
 .jt-popular-card:hover .jt-pop-img-wrap img {
-    transform: scale(1.08);
+    transform: scale(1.06);
 }
 .jt-pop-rating-badge {
     position: absolute;
-    top: 14px;
-    right: 14px;
+    top: 12px;
+    right: 12px;
     background: rgba(255,255,255,0.92);
     backdrop-filter: blur(8px);
     border-radius: 99px;
-    padding: 4px 12px;
-    font-size: 12px;
+    padding: 3px 10px;
+    font-size: 11px;
     font-weight: 800;
     color: #0f172a;
     box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 .jt-pop-category-pill {
     position: absolute;
-    bottom: 14px;
-    left: 14px;
+    bottom: 12px;
+    left: 12px;
     background: #047857;
     color: #ffffff;
     border-radius: 99px;
-    padding: 4px 14px;
+    padding: 3px 12px;
     font-size: 11px;
     font-weight: 700;
 }
 .jt-pop-body {
-    padding: 20px;
+    padding: 16px;
 }
 .jt-pop-body h3 {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 800;
     color: #0f172a;
     margin-bottom: 4px;
@@ -342,7 +373,7 @@
 .jt-pop-location {
     font-size: 12px;
     color: #64748b;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-weight: 600;
 }
 .jt-pop-body p {
@@ -354,8 +385,8 @@
 
 /* 3-Column Bottom Grid Box Components */
 .jt-box-card {
-    border-radius: 24px;
-    padding: 28px;
+    border-radius: 20px;
+    padding: 24px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -377,7 +408,7 @@
     margin-bottom: 16px;
 }
 .jt-box-header h3 {
-    font-size: 20px;
+    font-size: 19px;
     font-weight: 800;
     color: #0f172a;
     margin: 0 0 6px;
@@ -407,15 +438,18 @@
 }
 .jt-ai-thumb-item img {
     width: 100%;
-    height: 75px;
+    height: 70px;
     object-fit: cover;
-    border-radius: 12px;
+    border-radius: 10px;
     margin-bottom: 6px;
 }
 .jt-ai-thumb-item h5 {
     font-size: 12px;
     font-weight: 800;
     margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .jt-ai-thumb-item span {
     font-size: 10px;
@@ -427,7 +461,7 @@
 .jt-event-list {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
     margin-bottom: 20px;
     flex: 1;
 }
@@ -437,14 +471,15 @@
     gap: 12px;
     background: #ffffff;
     padding: 10px;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid #fef3c7;
 }
 .jt-event-item img {
-    width: 54px;
-    height: 54px;
-    border-radius: 10px;
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
     object-fit: cover;
+    flex-shrink: 0;
 }
 .jt-event-item h5 {
     font-size: 13px;
@@ -468,18 +503,18 @@
 .jt-kuliner-circles {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
     text-align: center;
     margin-bottom: 20px;
     flex: 1;
     align-items: center;
 }
 .jt-kuliner-circle-item img {
-    width: 80px;
-    height: 80px;
+    width: clamp(55px, 12vw, 75px);
+    height: clamp(55px, 12vw, 75px);
     border-radius: 50%;
     object-fit: cover;
-    margin: 0 auto 8px;
+    margin: 0 auto 6px;
     border: 3px solid #ffffff;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
@@ -494,7 +529,7 @@
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 99px;
-    padding: 10px 20px;
+    padding: 10px 18px;
     font-size: 13px;
     font-weight: 700;
     color: #0f172a;
@@ -511,20 +546,35 @@
     border-color: #047857;
 }
 
-/* Category Filter Tabs Bar */
+/* Category Filter Tabs Bar - Horizontal Scroll on Mobile */
+.jt-mitra-tabs-container {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: 4px;
+    max-width: 100%;
+}
+.jt-mitra-tabs-container::-webkit-scrollbar {
+    display: none;
+}
 .jt-mitra-tab-pill {
     background: #ffffff;
     border: 1px solid #e2e8f0;
     color: #475569;
     font-weight: 600;
-    font-size: 13px;
-    padding: 6px 16px;
+    font-size: 12px;
+    padding: 6px 14px;
     border-radius: 99px;
     text-decoration: none;
     transition: all 0.2s ease;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    flex-shrink: 0;
 }
 .jt-mitra-tab-pill.active, .jt-mitra-tab-pill:hover {
     background: #064e3b;
@@ -537,17 +587,36 @@
     background: #044e38;
     color: #ffffff;
     border-radius: 20px;
-    padding: 30px 40px;
+    padding: clamp(24px, 4vw, 36px);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 20px;
-    margin-top: 60px;
+    margin-top: 50px;
 }
 @media (max-width: 991px) {
     .jt-newsletter-banner-footer {
         flex-direction: column;
         text-align: center;
+    }
+    .jt-newsletter-banner-footer .input-group {
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+    }
+}
+@media (max-width: 576px) {
+    .jt-newsletter-banner-footer .input-group {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .jt-newsletter-banner-footer input {
+        border-radius: 99px !important;
+        text-align: center;
+    }
+    .jt-newsletter-banner-footer button {
+        border-radius: 99px !important;
+        width: 100%;
     }
 }
 </style>
@@ -570,7 +639,7 @@
         <!-- Floating Search Box Card -->
         <div class="jt-search-box-card">
             <form class="jt-search-grid-layout" method="GET" action="{{ route('home') }}" role="search">
-                <div class="jt-search-field-item">
+                <div class="jt-search-field-item search-item-query">
                     <i class="fa-solid fa-magnifying-glass jt-field-icon"></i>
                     <div class="jt-field-content">
                         <label for="public-search">Mau ke mana hari ini?</label>
@@ -625,7 +694,7 @@
 
         <!-- Popular Chips -->
         <div class="jt-chips-wrapper">
-            <span class="text-white-50"><i class="fa-solid fa-fire text-danger me-1"></i> Sedang Populer</span>
+            <span class="text-white-50 flex-shrink-0"><i class="fa-solid fa-fire text-danger me-1"></i> Sedang Populer</span>
             <a href="{{ route('tourism.show', 'purwahamba-indah') }}" class="jt-chip-item">
                 <i class="fa-solid fa-umbrella-beach text-warning me-1"></i> Purwahamba Indah
             </a>
@@ -657,7 +726,7 @@
 
         <div class="row g-4">
             <!-- Card 1: Wisata -->
-            <div class="col-lg-3 col-md-6">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
                         <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="Wisata Tegal">
@@ -676,7 +745,7 @@
             </div>
 
             <!-- Card 2: Kuliner -->
-            <div class="col-lg-3 col-md-6">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
                         <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" alt="Kuliner Tegal">
@@ -695,7 +764,7 @@
             </div>
 
             <!-- Card 3: Penginapan -->
-            <div class="col-lg-3 col-md-6">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
                         <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop" alt="Penginapan Tegal">
@@ -714,7 +783,7 @@
             </div>
 
             <!-- Card 4: Event -->
-            <div class="col-lg-3 col-md-6">
+            <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
                         <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop" alt="Event Tegal">
@@ -731,16 +800,12 @@
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-</section>
-
 <!-- 3. Section 2: Destinasi Populer -->
 <section class="public-section py-4">
     <div class="container public-container">
-        <div class="d-flex flex-wrap align-items-center justify-content-between mb-4">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
             <h2 class="fs-2 fw-extrabold text-dark m-0">Destinasi Populer</h2>
-            <a href="{{ route('tourism.index') }}" class="btn btn-outline-dark rounded-pill px-4 fw-bold">
+            <a href="{{ route('tourism.index') }}" class="btn btn-outline-dark rounded-pill px-4 fw-bold fs-8">
                 Lihat Semua Destinasi <i class="fa-solid fa-arrow-right ms-1"></i>
             </a>
         </div>
@@ -755,7 +820,7 @@
                         $regionName = $tourism->region?->name ?? 'Tegal';
                         $mitraName = $tourism->mitra?->display_name ?? 'Mitra Terverifikasi';
                     @endphp
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-12 col-sm-6 col-lg-3">
                         <div class="jt-popular-card">
                             <div class="jt-pop-img-wrap">
                                 <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}">
@@ -779,7 +844,7 @@
                 @endforeach
             @else
                 <!-- Fallback Mockup Cards -->
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-popular-card">
                         <div class="jt-pop-img-wrap">
                             <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop" alt="Guci Hot Spring">
@@ -794,7 +859,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-popular-card">
                         <div class="jt-pop-img-wrap">
                             <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=800&auto=format&fit=crop" alt="Pantai Alam Indah">
@@ -809,7 +874,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-popular-card">
                         <div class="jt-pop-img-wrap">
                             <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop" alt="Curug Putri">
@@ -824,7 +889,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-popular-card">
                         <div class="jt-pop-img-wrap">
                             <img src="https://images.unsplash.com/photo-1476514525535-ce74f45814de?q=80&w=800&auto=format&fit=crop" alt="Danau Beko">
@@ -856,15 +921,15 @@
             </div>
 
             <!-- Filter Tabs & Link -->
-            <div class="d-flex align-items-center gap-2 flex-wrap">
-                <div class="d-flex gap-2 me-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap w-100 w-lg-auto justify-content-between justify-content-lg-end">
+                <div class="jt-mitra-tabs-container">
                     <a href="{{ route('home') }}" class="jt-mitra-tab-pill active">Semua</a>
                     <a href="{{ route('tourism.index') }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-compass text-emerald me-1"></i> Wisata</a>
                     <a href="{{ route('accommodation.index') }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-hotel text-primary me-1"></i> Penginapan</a>
                     <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-utensils text-warning me-1"></i> Kuliner</a>
                     <a href="{{ route('home') }}#mitra-list-section" class="jt-mitra-tab-pill">Lainnya</a>
                 </div>
-                <a href="{{ route('home') }}#mitra-list-section" class="fw-bold text-success text-decoration-none fs-7 d-flex align-items-center gap-1">
+                <a href="{{ route('home') }}#mitra-list-section" class="fw-bold text-success text-decoration-none fs-8 d-flex align-items-center gap-1 flex-shrink-0">
                     Lihat Semua Mitra <i class="fa-solid fa-arrow-right fs-8"></i>
                 </a>
             </div>
@@ -887,7 +952,7 @@
                             default => 'fa-store',
                         };
                     @endphp
-                    <div class="col-lg-3 col-md-6">
+                    <div class="col-12 col-sm-6 col-lg-3">
                         <div class="jt-mitra-ref-card">
                             <!-- Cover Photo -->
                             <div class="jt-mitra-ref-cover">
@@ -943,7 +1008,7 @@
                 @endforeach
             @else
                 <!-- Mockup Cards matching the user's reference image exactly -->
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-mitra-ref-card">
                         <div class="jt-mitra-ref-cover">
                             <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop" alt="Purwahamba Indah">
@@ -970,7 +1035,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-mitra-ref-card">
                         <div class="jt-mitra-ref-cover">
                             <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop" alt="Hotel Grand Diana">
@@ -997,7 +1062,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-mitra-ref-card">
                         <div class="jt-mitra-ref-cover">
                             <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" alt="Sate Kambing Muda H. Taslim">
@@ -1024,7 +1089,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-3">
                     <div class="jt-mitra-ref-card">
                         <div class="jt-mitra-ref-cover">
                             <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop" alt="d'Pine Resort">
@@ -1060,7 +1125,7 @@
     <div class="container public-container">
         <div class="row g-4">
             <!-- Box 1: Rekomendasi AI -->
-            <div class="col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="jt-box-card jt-box-ai">
                     <div class="jt-box-header">
                         <h3>
@@ -1096,7 +1161,7 @@
             </div>
 
             <!-- Box 2: Event Terdekat -->
-            <div class="col-lg-4">
+            <div class="col-12 col-md-6 col-lg-4">
                 <div class="jt-box-card jt-box-event">
                     <div class="jt-box-header">
                         <h3>
@@ -1140,7 +1205,7 @@
             </div>
 
             <!-- Box 3: Kuliner Khas Tegal -->
-            <div class="col-lg-4">
+            <div class="col-12 col-md-12 col-lg-4">
                 <div class="jt-box-card jt-box-kuliner">
                     <div class="jt-box-header">
                         <h3>
@@ -1186,12 +1251,12 @@
             </div>
         </div>
 
-        <div class="d-flex align-items-center gap-3">
-            <div class="input-group">
-                <input type="email" class="form-control px-3 py-2 rounded-start-pill border-0" placeholder="Masukkan email kamu" style="min-width: 240px; font-size: 13px;">
-                <button class="btn btn-emerald px-4 rounded-end-pill fw-bold" style="background: #059669; color: #ffffff;" type="button">Berlangganan</button>
+        <div class="d-flex align-items-center gap-3 flex-wrap flex-lg-nowrap w-100 w-lg-auto justify-content-center justify-content-lg-end">
+            <div class="input-group" style="max-width: 420px;">
+                <input type="email" class="form-control px-3 py-2 border-0" placeholder="Masukkan email kamu" style="font-size: 13px;">
+                <button class="btn btn-emerald px-4 fw-bold" style="background: #059669; color: #ffffff;" type="button">Berlangganan</button>
             </div>
-            <div class="d-flex gap-2 text-white-50 fs-5 ms-2">
+            <div class="d-flex gap-3 text-white-50 fs-5">
                 <a href="#" class="text-white-50"><i class="fa-brands fa-instagram"></i></a>
                 <a href="#" class="text-white-50"><i class="fa-brands fa-facebook"></i></a>
                 <a href="#" class="text-white-50"><i class="fa-brands fa-youtube"></i></a>

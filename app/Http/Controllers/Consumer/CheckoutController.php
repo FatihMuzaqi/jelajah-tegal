@@ -19,8 +19,15 @@ class CheckoutController extends Controller
         return redirect()->route('consumer.orders.show', $order)->with('status', 'Checkout ' . $order->order_number . ' berhasil dibuat.');
     }
 
-    public function index(Request $r): View
+    public function index(Request $r): View|RedirectResponse
     {
+        if ($orderNumber = $r->query('order_id')) {
+            $matched = Order::where('order_number', $orderNumber)->orWhere('id', $orderNumber)->first();
+            if ($matched && $matched->user_id === $r->user()->id) {
+                return redirect()->route('consumer.orders.show', $matched);
+            }
+        }
+
         $orders = Order::where('user_id', $r->user()->id)->with('items')->latest()->paginate(15);
         return view('consumer.orders.index', compact('orders'));
     }
@@ -36,17 +43,18 @@ class CheckoutController extends Controller
     public function confirmDirect(Request $request, Order $order, CapturePayment $capture): RedirectResponse
     {
         abort_unless($order->user_id === $request->user()->id, 403);
+        abort_if(config('midtrans.production'), 403, 'Konfirmasi manual dinonaktifkan di mode production.');
 
         if ($order->status->value === 'pending_payment') {
             $payment = $order->payments()->first();
             if ($payment) {
-                $ref = 'LOKET-' . str()->upper(str()->random(10));
+                $ref = 'TEST-' . str()->upper(str()->random(10));
                 $capture->execute(
                     payment: $payment,
                     providerReference: $ref,
                     amount: (string) $order->total_amount,
                     currency: 'IDR',
-                    provider: 'loket_direct'
+                    provider: 'test_direct'
                 );
             }
         }

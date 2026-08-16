@@ -605,25 +605,59 @@
             <div class="col-lg-4">
                 <!-- Ticket Booking Card -->
                 <div class="detail-card" style="position: sticky; top: 90px;">
-                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-ticket text-danger"></i></span> Paket Tiket Masuk</h2>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="detail-card-title mb-0"><span class="title-icon"><i class="fa-solid fa-ticket text-danger"></i></span> Paket Tiket Masuk</h2>
+                    </div>
                     
-                    @forelse ($tourism->offers->where('status', 'active') as $offer)
+                    @forelse ($tourism->offers->whereIn('status', ['active', 'published']) as $offer)
+                        @php
+                            $todayAvailability = $offer->availabilities->where('service_date', now()->format('Y-m-d'))->first();
+                            $capacity = $todayAvailability?->capacity ?? ($offer->ticketPackage?->quota_per_day ?? 100);
+                            $reserved = $todayAvailability?->reserved_quantity ?? 0;
+                            $remaining = max(0, $capacity - $reserved);
+                            $isClosed = ($todayAvailability && $todayAvailability->status !== 'available');
+                            $isSoldOut = $isClosed || ($remaining <= 0);
+                        @endphp
+
                         <div class="ticket-offer-item">
                             <div class="ticket-offer-header">
-                                <h3 class="ticket-name">{{ $offer->name }}</h3>
+                                <div>
+                                    <h3 class="ticket-name">{{ $offer->name }}</h3>
+                                    <div class="mt-1">
+                                        @if ($isSoldOut)
+                                            <span class="badge bg-danger-subtle text-danger border border-danger-subtle px-2 py-1" style="font-size: 11px;">
+                                                <i class="fa-solid fa-ban me-1"></i> Tiket Habis (Sold Out)
+                                            </span>
+                                        @elseif ($remaining <= 10)
+                                            <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-2 py-1" style="font-size: 11px;">
+                                                <i class="fa-solid fa-fire text-danger me-1"></i> Segera Habis! Sisa {{ $remaining }} tiket
+                                            </span>
+                                        @else
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1" style="font-size: 11px;">
+                                                <i class="fa-solid fa-circle-check text-success me-1"></i> Slot Tersedia Hari Ini
+                                            </span>
+                                        @endif
+                                    </div>
+                                </div>
                                 <div class="ticket-price">Rp {{ number_format($offer->price, 0, ',', '.') }}</div>
                             </div>
                             <p class="text-muted mb-3" style="font-size: 12px;">{{ $offer->description ?: 'Tiket akses masuk destinasi wisata per orang/kunjungan.' }}</p>
                             
-                            @auth
-                                <button type="button" class="btn btn-lokantara w-100 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#bookModal-{{ $offer->id }}">
-                                    <i class="fa-solid fa-ticket me-1"></i> Pesan Tiket Sekarang
+                            @if ($isSoldOut)
+                                <button type="button" class="btn btn-secondary w-100 fw-bold py-2 disabled" disabled>
+                                    <i class="fa-solid fa-ban me-1"></i> Tiket Habis Hari Ini
                                 </button>
                             @else
-                                <a href="{{ route('login') }}" class="btn btn-lokantara w-100 fw-bold py-2">
-                                    Masuk untuk Memesan
-                                </a>
-                            @endauth
+                                @auth
+                                    <button type="button" class="btn btn-lokantara w-100 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#bookModal-{{ $offer->id }}">
+                                        <i class="fa-solid fa-ticket me-1"></i> Pesan Tiket Sekarang
+                                    </button>
+                                @else
+                                    <a href="{{ route('login') }}" class="btn btn-lokantara w-100 fw-bold py-2">
+                                        Masuk untuk Memesan
+                                    </a>
+                                @endauth
+                            @endif
                         </div>
                     @empty
                         <div class="p-3 mb-3 rounded-3 text-center" style="background: var(--lokantara-background);">
@@ -769,7 +803,15 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 @auth
-    @foreach ($tourism->offers->where('status', 'active') as $offer)
+    @foreach ($tourism->offers->whereIn('status', ['active', 'published']) as $offer)
+        @php
+            $todayAvailModal = $offer->availabilities->where('service_date', now()->format('Y-m-d'))->first();
+            $capModal = $todayAvailModal?->capacity ?? ($offer->ticketPackage?->quota_per_day ?? 100);
+            $resModal = $todayAvailModal?->reserved_quantity ?? 0;
+            $remModal = max(0, $capModal - $resModal);
+            $maxBookable = min(10, max(1, $remModal));
+        @endphp
+
         <!-- Booking Modal for Offer {{ $offer->name }} -->
         <div class="modal fade" id="bookModal-{{ $offer->id }}" tabindex="-1" aria-labelledby="bookModalLabel-{{ $offer->id }}" aria-hidden="true" style="z-index: 1055;">
             <div class="modal-dialog modal-dialog-centered">
@@ -803,11 +845,18 @@ document.addEventListener('DOMContentLoaded', function() {
 
                             <!-- Jumlah Tiket -->
                             <div class="mb-3">
-                                <label class="form-label fw-bold fs-7 text-dark">Jumlah Tiket <span class="text-danger">*</span></label>
+                                <div class="d-flex align-items-center justify-content-between mb-1">
+                                    <label class="form-label fw-bold fs-7 text-dark mb-0">Jumlah Tiket <span class="text-danger">*</span></label>
+                                    @if ($remModal <= 10)
+                                        <small class="text-danger fw-bold"><i class="fa-solid fa-fire me-1"></i>Sisa {{ $remModal }} tiket untuk hari ini</small>
+                                    @else
+                                        <small class="text-success fw-semibold"><i class="fa-solid fa-circle-check me-1"></i>Slot tersedia</small>
+                                    @endif
+                                </div>
                                 <div class="input-group">
                                     <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); if(parseInt(q.value) > 1) { q.value = parseInt(q.value) - 1; calcTotal{{ $offer->id }}(); }">-</button>
-                                    <input type="number" id="qty-{{ $offer->id }}" name="quantity" class="form-control text-center fw-bold" value="1" min="1" max="50" onchange="calcTotal{{ $offer->id }}()" required>
-                                    <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); q.value = parseInt(q.value || 0) + 1; calcTotal{{ $offer->id }}();">+</button>
+                                    <input type="number" id="qty-{{ $offer->id }}" name="quantity" class="form-control text-center fw-bold" value="1" min="1" max="{{ $maxBookable }}" onchange="calcTotal{{ $offer->id }}()" required>
+                                    <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); if(parseInt(q.value || 0) < {{ $maxBookable }}) { q.value = parseInt(q.value || 0) + 1; calcTotal{{ $offer->id }}(); }">+</button>
                                 </div>
                             </div>
 

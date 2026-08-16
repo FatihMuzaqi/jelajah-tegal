@@ -62,6 +62,13 @@ Route::middleware(['auth', 'verified', 'active.user'])->group(function () {
     Route::post('/surfaces', [NavigationController::class, 'choose'])->name('surfaces.choose');
     Route::get('/select-mitra', [NavigationController::class, 'mitras'])->name('mitra.select');
     Route::post('/select-mitra', [NavigationController::class, 'chooseMitra'])->name('mitra.choose');
+
+    // Midtrans Finish / Unfinish / Shorthand Redirects
+    Route::get('/orders', fn () => redirect()->route('consumer.orders.index'));
+    Route::get('/orders/{order}', fn ($order) => redirect()->route('consumer.orders.show', $order));
+    Route::get('/finish', fn (\Illuminate\Http\Request $r) => redirect()->route('consumer.orders.index', $r->query()));
+    Route::get('/unfinish', fn (\Illuminate\Http\Request $r) => redirect()->route('consumer.orders.index', $r->query()));
+    Route::get('/error', fn (\Illuminate\Http\Request $r) => redirect()->route('consumer.orders.index', $r->query()));
 });
 foreach (['consumer', 'mitra', 'gatekeeper', 'admin', 'super-admin'] as $routes) {
     require __DIR__.'/'.$routes.'.php';
