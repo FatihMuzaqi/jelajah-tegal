@@ -62,6 +62,10 @@
                                 href='{{ route('accommodation.index') }}'>Penginapan</a>
                         </li>
                         <li class='nav-item'>
+                            <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('tour-assistant.*') ? 'active text-emerald fw-bold' : '' }}'
+                                href='{{ route('tour-assistant.index') }}'>Tour AI</a>
+                        </li>
+                        <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('culinary.*') ? 'active text-emerald fw-bold' : '' }}'
                                 href='{{ route('culinary.index') }}'>Kuliner</a>
                         </li>

@@ -14,7 +14,7 @@ class Order extends Model
 {
     use HasFactory,HasUlids;
 
-    protected $fillable = ['order_number', 'user_id', 'mitra_id', 'voucher_id', 'currency', 'subtotal', 'admin_fee', 'discount_amount', 'total_amount', 'commission_basis_points', 'commission_amount', 'mitra_net_amount', 'status', 'payment_status', 'user_snapshot', 'mitra_snapshot', 'voucher_snapshot', 'placed_at', 'expires_at', 'paid_at', 'cancelled_at'];
+    protected $fillable = ['order_number', 'invoice_id', 'user_id', 'mitra_id', 'voucher_id', 'currency', 'subtotal', 'admin_fee', 'discount_amount', 'total_amount', 'commission_basis_points', 'commission_amount', 'mitra_net_amount', 'status', 'payment_status', 'user_snapshot', 'mitra_snapshot', 'voucher_snapshot', 'placed_at', 'expires_at', 'paid_at', 'cancelled_at'];
 
     protected function casts(): array
     {
@@ -61,5 +61,10 @@ class Order extends Model
     public function journals(): HasMany
     {
         return $this->hasMany(LedgerJournal::class);
+    }
+
+    public function invoice(): BelongsTo
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

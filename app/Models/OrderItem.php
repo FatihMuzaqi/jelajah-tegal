@@ -34,6 +34,11 @@ class OrderItem extends Model
         return $this->belongsTo(CatalogOffer::class, 'catalog_offer_id');
     }
 
+    public function catalogOffer(): BelongsTo
+    {
+        return $this->belongsTo(CatalogOffer::class, 'catalog_offer_id');
+    }
+
     public function holds(): HasMany
     {
         return $this->hasMany(OrderReservationHold::class);

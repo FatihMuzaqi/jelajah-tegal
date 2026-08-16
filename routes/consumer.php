@@ -19,5 +19,6 @@ Route::middleware(['auth', 'verified', 'active.user'])->prefix('consumer')->name
     Route::post('/orders/{order}/payment/snap', [PaymentController::class, 'snap'])->name('orders.payment.snap');
     Route::post('/orders/{order}/confirm-direct', [CheckoutController::class, 'confirmDirect'])->name('orders.confirm-direct');
     Route::get('/tickets/{ticket}/qr', [TicketController::class, 'qr'])->name('tickets.qr');
+    Route::get('/invoices/{invoice}', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'showInvoice'])->name('invoices.show');
     Route::post('/vouchers/claim', [VoucherController::class, 'claim'])->name('vouchers.claim');
 });

@@ -48,117 +48,33 @@
     font-size: clamp(14px, 2.5vw, 18px);
     line-height: 1.6;
     color: rgba(255,255,255,0.92);
-    margin-bottom: 30px;
+    margin-bottom: 24px;
     max-width: 750px;
     margin-left: 0;
     margin-right: auto;
     text-align: left;
 }
 
-/* Glassmorphism 4-Field Search Card */
-.jt-search-box-card {
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 10px 12px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.32);
-    text-align: left;
-    margin-bottom: 24px;
+/* Hero Action Buttons (Rekomendasi AI & Pencarian) */
+.jt-hero-btn-ai {
+    background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.25) !important;
+    box-shadow: 0 10px 25px rgba(5, 150, 105, 0.45) !important;
+    transition: all 0.3s ease;
 }
-.jt-search-grid-layout {
-    display: grid;
-    grid-template-columns: 2fr 1.2fr 1.2fr 1.2fr auto;
-    gap: 8px;
-    align-items: center;
+.jt-hero-btn-ai:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 32px rgba(5, 150, 105, 0.65) !important;
+    color: #ffffff !important;
 }
-.jt-search-field-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 8px 12px;
-    border-right: 1px solid #e2e8f0;
+.jt-hero-btn-search {
+    transition: all 0.3s ease;
 }
-.jt-search-field-item:last-child {
-    border-right: none;
-}
-.jt-field-icon {
-    font-size: 16px;
-    color: #64748b;
-    flex-shrink: 0;
-}
-.jt-field-content {
-    flex: 1;
-    min-width: 0;
-}
-.jt-field-content label {
-    display: block;
-    font-size: 11px;
-    font-weight: 800;
-    color: #0f172a;
-    margin-bottom: 2px;
-}
-.jt-field-content input,
-.jt-field-content select {
-    width: 100%;
-    border: none;
-    background: transparent;
-    font-size: 13px;
-    font-weight: 500;
-    color: #475569;
-    outline: none;
-    padding: 0;
-}
-.btn-emerald-search {
-    background: #047857;
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 14px;
-    padding: 12px 24px;
-    border-radius: 14px;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(4,120,87,0.35);
-    transition: all 0.25s ease;
-    white-space: nowrap;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-}
-.btn-emerald-search:hover {
-    background: #065f46;
-    color: #ffffff;
-    transform: translateY(-2px);
-}
-
-/* Tablet & Mobile Search Layout Responsive */
-@media (max-width: 991px) {
-    .jt-search-grid-layout {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-    }
-    .jt-search-field-item.search-item-query {
-        grid-column: 1 / -1;
-    }
-    .jt-search-grid-layout .btn-emerald-search {
-        grid-column: 1 / -1;
-        width: 100%;
-        padding: 14px;
-    }
-    .jt-search-field-item {
-        border-right: none;
-        background: #f8fafc;
-        border-radius: 12px;
-        padding: 10px 14px;
-    }
-}
-@media (max-width: 576px) {
-    .jt-search-grid-layout {
-        grid-template-columns: 1fr;
-    }
-    .jt-search-box-card {
-        padding: 10px;
-        border-radius: 16px;
-    }
+.jt-hero-btn-search:hover {
+    transform: translateY(-3px);
+    background: #f0fdf4 !important;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2) !important;
+    color: #047857 !important;
 }
 
 /* Quick Search Chips - Smooth Scroll on Mobile */
@@ -636,60 +552,19 @@
             Temukan destinasi wisata, kuliner, penginapan, dan pengalaman lokal terbaik di Tegal dalam satu platform.
         </p>
 
-        <!-- Floating Search Box Card -->
-        <div class="jt-search-box-card">
-            <form class="jt-search-grid-layout" method="GET" action="{{ route('home') }}" role="search">
-                <div class="jt-search-field-item search-item-query">
-                    <i class="fa-solid fa-magnifying-glass jt-field-icon"></i>
-                    <div class="jt-field-content">
-                        <label for="public-search">Mau ke mana hari ini?</label>
-                        <input id="public-search" name="q" value="{{ $filters['q'] ?? '' }}" placeholder="Cari destinasi, kuliner, hotel, atau aktivitas...">
-                    </div>
-                </div>
-
-                <div class="jt-search-field-item">
-                    <i class="fa-solid fa-location-dot jt-field-icon"></i>
-                    <div class="jt-field-content">
-                        <label for="public-region">Lokasi</label>
-                        <select id="public-region" name="region">
-                            <option value="">Semua Wilayah</option>
-                            @foreach($regions as $region)
-                                <option value="{{ $region->id }}" @selected(($filters['region'] ?? null) == $region->id)>
-                                    {{ $region->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="jt-search-field-item">
-                    <i class="fa-solid fa-border-all jt-field-icon"></i>
-                    <div class="jt-field-content">
-                        <label for="public-service">Kategori</label>
-                        <select id="public-service" name="service">
-                            <option value="">Semua Kategori</option>
-                            @foreach($services as $service)
-                                <option value="{{ $service->code }}" @selected(($filters['service'] ?? null) === $service->code)>
-                                    {{ $service->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    </div>
-                </div>
-
-                <div class="jt-search-field-item" onclick="document.getElementById('public-search-date')?.showPicker?.() || document.getElementById('public-search-date')?.focus()">
-                    <i class="fa-solid fa-calendar-days jt-field-icon"></i>
-                    <div class="jt-field-content">
-                        <label for="public-search-date">Tanggal</label>
-                        <input type="date" id="public-search-date" name="date" value="{{ request('date') }}" min="{{ date('Y-m-d') }}" style="cursor: pointer;">
-                    </div>
-                </div>
-
-                <button class="btn-emerald-search" type="submit">
-                    <span>Cari Sekarang</span>
-                    <i class="fa-solid fa-arrow-right"></i>
-                </button>
-            </form>
+        <!-- Dua Tombol Utama: Rekomendasi AI & Pencarian -->
+        <div class="d-flex align-items-center gap-3 flex-wrap mb-4 pt-2">
+            <a href="{{ route('tour-assistant.index') }}" class="btn btn-lg rounded-pill px-4 py-3 fw-bold text-white shadow-lg d-inline-flex align-items-center gap-2 jt-hero-btn-ai"
+               style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.3); font-size: 16px;">
+                <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
+                <span>Rekomendasi AI</span>
+                <span class="badge bg-white text-emerald rounded-pill px-2.5 py-1 ms-1 fw-bold text-xs" style="color: #047857;">Pintar & Otomatis ✨</span>
+            </a>
+            <a href="{{ route('tourism.index') }}" class="btn btn-lg btn-light rounded-pill px-4 py-3 fw-bold text-dark shadow-lg d-inline-flex align-items-center gap-2 jt-hero-btn-search"
+               style="font-size: 16px; background: #ffffff; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);">
+                <i class="fa-solid fa-magnifying-glass text-success fs-5"></i>
+                <span>Pencarian Wisata</span>
+            </a>
         </div>
 
         <!-- Popular Chips -->

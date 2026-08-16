@@ -28,8 +28,19 @@ class CheckoutController extends Controller
             }
         }
 
-        $orders = Order::where('user_id', $r->user()->id)->with('items')->latest()->paginate(15);
-        return view('consumer.orders.index', compact('orders'));
+        $user = $r->user();
+        $invoices = \App\Models\Invoice::where('user_id', $user->id)
+            ->with(['orders.items.tickets', 'orders.mitra'])
+            ->latest()
+            ->get();
+
+        $standaloneOrders = Order::where('user_id', $user->id)
+            ->whereNull('invoice_id')
+            ->with(['items.tickets', 'mitra'])
+            ->latest()
+            ->get();
+
+        return view('consumer.orders.index', compact('invoices', 'standaloneOrders'));
     }
 
     public function show(Request $r, Order $order): View
