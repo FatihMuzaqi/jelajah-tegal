@@ -21,6 +21,13 @@ class Order extends Model
         return ['subtotal' => 'decimal:2', 'admin_fee' => 'decimal:2', 'discount_amount' => 'decimal:2', 'total_amount' => 'decimal:2', 'commission_basis_points' => 'integer', 'commission_amount' => 'decimal:2', 'mitra_net_amount' => 'decimal:2', 'status' => OrderStatus::class, 'payment_status' => PaymentStatus::class, 'user_snapshot' => 'array', 'mitra_snapshot' => 'array', 'voucher_snapshot' => 'array', 'placed_at' => 'datetime', 'expires_at' => 'datetime', 'paid_at' => 'datetime', 'cancelled_at' => 'datetime'];
     }
 
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        return $this->where($field ?? 'id', $value)
+            ->orWhere('order_number', $value)
+            ->firstOrFail();
+    }
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

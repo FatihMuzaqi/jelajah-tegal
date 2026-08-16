@@ -21,7 +21,7 @@ class AccommodationCheckoutAdapter implements CheckoutAdapter
         $room = AccommodationRoom::with(['accommodation.catalogEntity.mitra.features.serviceType', 'accommodation.catalogEntity.serviceType', 'offer'])->findOrFail($p['reference_id']);
         $entity = $room->accommodation->catalogEntity;
         $this->eligibility->assert($entity, 'accommodation');
-        if ($room->status !== 'active' || $room->offer->status !== 'active') {
+        if ($room->status !== 'active' || ! in_array($room->offer->status, ['active', 'published'], true)) {
             throw ValidationException::withMessages(['reference_id' => 'Kamar tidak aktif.']);
         }$start = Carbon::parse($p['start_date'])->startOfDay();
         $end = Carbon::parse($p['end_date'])->startOfDay();

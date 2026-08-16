@@ -26,7 +26,12 @@ class MidtransClient
                 'email' => $order->user_snapshot['email'] ?? null,
                 'phone' => $order->user_snapshot['phone'] ?? null,
             ],
-            'expiry' => ['unit' => 'minutes', 'duration' => max(1, now()->diffInMinutes($order->expires_at, false))],
+            'expiry' => ['unit' => 'minute', 'duration' => (int) max(1, (int) ceil(now()->diffInMinutes($order->expires_at, false)))],
+            'callbacks' => [
+                'finish' => route('consumer.orders.show', $order->order_number),
+                'unfinish' => route('consumer.orders.show', $order->order_number),
+                'error' => route('consumer.orders.show', $order->order_number),
+            ],
         ]);
         $response->throw();
         $data = $response->json();
@@ -46,7 +51,13 @@ class MidtransClient
     private function http(): PendingRequest
     {
         return Http::withBasicAuth($this->configuration->serverKey(), '')
-            ->acceptJson()->asJson()->timeout((int) config('midtrans.timeout_seconds', 15))->retry(2, 200, throw: false);
+            ->acceptJson()
+            ->asJson()
+            ->withOptions([
+                'verify' => app()->environment('production'),
+            ])
+            ->timeout((int) config('midtrans.timeout_seconds', 15))
+            ->retry(2, 200, throw: false);
     }
 
     private function wholeRupiah(string $amount): int

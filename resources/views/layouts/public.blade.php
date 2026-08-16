@@ -104,38 +104,59 @@
                             <a class='btn btn-emerald rounded-pill px-4 fw-bold text-white text-center py-2'
                                 style="background: #047857;" href='{{ route('register') }}'>Daftar</a>
                         @else
-                            <div class="dropdown w-100 w-lg-auto">
+                            <div class="dropdown">
                                 <button
-                                    class="btn btn-outline-secondary dropdown-toggle d-flex align-items-center justify-content-center gap-2 px-3 py-2 rounded-pill w-100 w-lg-auto"
+                                    class="d-flex align-items-center justify-content-center p-0 rounded-circle border-0 bg-transparent"
                                     type="button" data-bs-toggle="dropdown" aria-expanded="false"
-                                    style="font-size: 13px; font-weight: 600; border-color: var(--lokantara-border);">
+                                    title="{{ auth()->user()->name }}" aria-label="Menu Akun {{ auth()->user()->name }}">
                                     <span
-                                        class="d-inline-flex align-items-center justify-content-center bg-success text-white rounded-circle"
-                                        style="width: 26px; height: 26px; font-size: 12px;">
+                                        class="d-inline-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                        style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #047857 0%, #10b981 100%); font-size: 15px; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(4,120,87,0.25);">
                                         {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
                                     </span>
-                                    <span>{{ auth()->user()->name }}</span>
                                 </button>
-                                <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2"
-                                    style="border-radius: 14px; min-width: 220px; font-size: 13px;">
-                                    <li class="px-3 py-2 border-bottom">
-                                        <strong class="d-block text-dark">{{ auth()->user()->name }}</strong>
-                                        <small class="text-muted">{{ auth()->user()->email }}</small>
+                                <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2"
+                                    style="border-radius: 18px; min-width: 240px; font-size: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;">
+                                    <li class="px-3 py-2.5 mb-1 rounded-3" style="background: #f8fafc;">
+                                        <div class="d-flex align-items-center gap-2">
+                                            <span class="d-inline-flex align-items-center justify-content-center text-white fw-bold rounded-circle flex-shrink-0"
+                                                style="width: 32px; height: 32px; background: #047857; font-size: 13px;">
+                                                {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
+                                            </span>
+                                            <div class="text-truncate">
+                                                <strong class="d-block text-dark text-truncate" style="font-size: 13px;">{{ auth()->user()->name }}</strong>
+                                                <small class="text-muted d-block text-truncate" style="font-size: 11px;">{{ auth()->user()->email }}</small>
+                                            </div>
+                                        </div>
                                     </li>
-                                    <li><a class="dropdown-item py-2" href="{{ route('consumer.orders.index') }}">🎫
-                                            Pesanan & Tiket Saya</a></li>
-                                    <li><a class="dropdown-item py-2" href="{{ route('post-login') }}">📊 Dashboard
-                                            Portal</a></li>
-                                    <li><a class="dropdown-item py-2" href="{{ route('surfaces.select') }}">🔄 Ganti
-                                            Portal (Surface)</a></li>
                                     <li>
-                                        <hr class="dropdown-divider">
+                                        <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center gap-2" href="{{ route('consumer.orders.index') }}">
+                                            <i class="fa-solid fa-ticket text-emerald" style="width: 16px;"></i>
+                                            <span>Pesanan & Tiket Saya</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center gap-2" href="{{ route('post-login') }}">
+                                            <i class="fa-solid fa-chart-pie text-primary" style="width: 16px;"></i>
+                                            <span>Dashboard Portal</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center gap-2" href="{{ route('surfaces.select') }}">
+                                            <i class="fa-solid fa-arrows-split-up-and-left text-warning" style="width: 16px;"></i>
+                                            <span>Ganti Portal</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <hr class="dropdown-divider my-1">
                                     </li>
                                     <li>
                                         <form method="POST" action="{{ route('logout') }}" class="m-0">
                                             @csrf
-                                            <button type="submit" class="dropdown-item py-2 text-danger fw-bold">🚪
-                                                Keluar</button>
+                                            <button type="submit" class="dropdown-item py-2 px-3 rounded-2 text-danger fw-bold d-flex align-items-center gap-2">
+                                                <i class="fa-solid fa-right-from-bracket" style="width: 16px;"></i>
+                                                <span>Keluar</span>
+                                            </button>
                                         </form>
                                     </li>
                                 </ul>
@@ -145,17 +166,46 @@
                 </div>
             </div>
         </nav>
-        @if (session('status'))
-            <div class="container public-container mt-2">
-                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center justify-content-between py-2 px-3 mb-0"
-                    role="alert" style="border-radius: 12px; font-size: 13px;">
-                    <div><strong>🎉 Info:</strong> {{ session('status') }}</div>
-                    <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"
-                        style="font-size: 10px;"></button>
+    </header>
+
+    {{-- Floating Toast Notification (Tidak Mengganggu Navbar) --}}
+    @if (session('status') || session('success') || session('error') || session('info'))
+        <div class="position-fixed" style="top: 85px; right: 24px; z-index: 1060; max-width: 420px; animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);">
+            <div class="toast show border-0 shadow-lg rounded-4 overflow-hidden" role="alert" aria-live="assertive" aria-atomic="true" id="floating-alert-toast" style="background: #ffffff;">
+                <div class="d-flex align-items-center p-3 border-start border-4 {{ session('error') ? 'border-danger' : 'border-success' }}">
+                    <div class="me-3 fs-4 {{ session('error') ? 'text-danger' : 'text-success' }}">
+                        <i class="fa-solid {{ session('error') ? 'fa-circle-exclamation' : 'fa-circle-check' }}"></i>
+                    </div>
+                    <div class="flex-grow-1 pe-2">
+                        <strong class="d-block text-dark fs-7" style="font-weight: 700;">
+                            {{ session('error') ? 'Pemberitahuan' : 'Berhasil' }}
+                        </strong>
+                        <div class="text-muted fs-8" style="line-height: 1.4;">
+                            {{ session('status') ?? session('success') ?? session('error') ?? session('info') }}
+                        </div>
+                    </div>
+                    <button type="button" class="btn-close ms-auto flex-shrink-0" data-bs-dismiss="toast" aria-label="Close" style="font-size: 10px;"></button>
                 </div>
             </div>
-        @endif
-    </header>
+        </div>
+        <style>
+            @keyframes slideInToast {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        </style>
+        <script>
+            setTimeout(function() {
+                const toastEl = document.getElementById('floating-alert-toast');
+                if (toastEl) {
+                    toastEl.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    toastEl.style.opacity = '0';
+                    toastEl.style.transform = 'translateY(-10px)';
+                    setTimeout(() => toastEl.remove(), 500);
+                }
+            }, 4500);
+        </script>
+    @endif
     <main id='main-content'>@yield('content')</main>
     <footer class='public-footer'>
         <div class='container public-container footer-grid'>
