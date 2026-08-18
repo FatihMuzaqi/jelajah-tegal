@@ -39,23 +39,23 @@
                                 <option value="{{ $service->id }}" @selected(old('service_type_id') == $service->id)>
                                     @switch($service->code)
                                         @case('tourism')
-                                            🏖️ {{ $service->name }} (Wisata Alam, Rekreasi & Wahana)
+                                            {{ $service->name }} (Wisata Alam, Rekreasi & Wahana)
                                         @break
 
                                         @case('accommodation')
-                                            🏨 {{ $service->name }} (Hotel, Villa, Homestay & Glamping)
+                                            {{ $service->name }} (Hotel, Villa, Homestay & Glamping)
                                         @break
 
                                         @case('culinary')
-                                            🍲 {{ $service->name }} (Restoran, Kafe & Kuliner Khas)
+                                            {{ $service->name }} (Restoran, Kafe & Kuliner Khas)
                                         @break
 
                                         @case('event')
-                                            🎪 {{ $service->name }} (Festival, Konser & Tiket Acara)
+                                            {{ $service->name }} (Festival, Konser & Tiket Acara)
                                         @break
 
                                         @case('rental')
-                                            🚗 {{ $service->name }} (Sewa Mobil, Motor & Transportasi)
+                                            {{ $service->name }} (Sewa Mobil, Motor & Transportasi)
                                         @break
 
                                         @default

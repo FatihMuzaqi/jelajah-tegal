@@ -6,28 +6,38 @@
 
 @section('content')
     <!-- Action Bar -->
-    <div class='d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 rounded'
-        style='background: var(--lokantara-surface); border: 1px solid var(--lokantara-border);'>
+    <div class='d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 rounded-4'
+        style='background: #ffffff; border: 1px solid var(--lokantara-border, #e2e8f0); box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);'>
         <div class='d-flex align-items-center gap-2'>
             <x-status-badge :status='$accommodation->status' />
             <span class='text-muted'>|</span>
-            <span class='fw-semibold'>📍 {{ $accommodation->region?->name ?? 'Tegal' }}</span>
-            <span class='text-muted'>·</span>
-            <span
-                class='badge text-bg-light'>{{ str($accommodation->accommodation?->property_type ?? 'Hotel')->headline() }}</span>
+            <span class='badge text-bg-light border'>
+                <i class="fa-solid fa-location-dot text-danger me-1"></i>
+                {{ $accommodation->region?->name ?? 'Tegal' }}
+            </span>
+            <span class='badge bg-primary-subtle text-primary border'>
+                <i class="fa-solid fa-hotel me-1"></i>
+                {{ str($accommodation->accommodation?->property_type ?? 'Hotel')->headline() }}
+            </span>
+            @if($accommodation->accommodation?->star_rating)
+                <span class="badge bg-warning-subtle text-warning-emphasis border">
+                    <i class="fa-solid fa-star text-warning me-0.5"></i>
+                    {{ $accommodation->accommodation->star_rating }} Bintang
+                </span>
+            @endif
         </div>
 
         <div class='d-flex align-items-center gap-2'>
-            <a class='btn btn-sm btn-outline-lokantara fw-bold'
+            <a class='btn btn-sm btn-outline-lokantara rounded-pill px-3 fw-bold'
                 href='{{ route('mitra.accommodation.edit', $accommodation) }}'>
-                ✏️ Edit Properti
+                <i class="fa-solid fa-pen-to-square me-1"></i> Edit Properti
             </a>
 
             @if (in_array($accommodation->status, ['draft', 'rejected']))
                 <form method='POST' action='{{ route('mitra.accommodation.submit', $accommodation) }}'>
                     @csrf
-                    <button class='btn btn-sm btn-lokantara fw-bold'>
-                        🚀 Ajukan Moderasi
+                    <button class='btn btn-sm btn-lokantara rounded-pill px-3 fw-bold'>
+                        <i class="fa-solid fa-paper-plane me-1"></i> Ajukan Moderasi
                     </button>
                 </form>
             @endif
@@ -35,9 +45,9 @@
             @if (in_array($accommodation->status, ['draft', 'rejected', 'published']))
                 <form method='POST' action='{{ route('mitra.accommodation.archive', $accommodation) }}'>
                     @csrf
-                    <button class='btn btn-sm btn-outline-danger'
+                    <button class='btn btn-sm btn-outline-danger rounded-pill px-3'
                         onclick="return confirm('Apakah Anda yakin ingin mengarsipkan properti ini?')">
-                        Arsipkan
+                        <i class="fa-solid fa-box-archive me-1"></i> Arsipkan
                     </button>
                 </form>
             @endif
@@ -48,44 +58,44 @@
         <!-- Left Column: Property Preview (7 Cols) -->
         <div class='col-lg-7'>
             <x-content-card title='Preview Properti'>
-                <h2 class='fs-4 fw-bold mb-2'>{{ $accommodation->name }}</h2>
+                <h2 class='fs-4 fw-bold mb-2 text-dark'>{{ $accommodation->name }}</h2>
                 <p class='text-muted mb-3' style='font-size: 14px;'>
                     {{ $accommodation->description ?: 'Deskripsi penginapan belum diisi.' }}
                 </p>
 
-                <div class='p-3 rounded mb-3'
+                <div class='p-3 rounded-3 mb-3'
                     style='background: var(--lokantara-background); border: 1px solid var(--lokantara-border); font-size: 13px;'>
                     <div class='mb-2'>
-                        <strong>📍 Alamat:</strong> {{ $accommodation->address ?: 'Belum diisi' }}
+                        <strong class="text-dark"><i class="fa-solid fa-map-pin text-primary me-1"></i> Alamat:</strong> {{ $accommodation->address ?: 'Belum diisi' }}
                     </div>
-                    <div class='row'>
+                    <div class='row g-2'>
                         <div class='col-6'>
-                            <strong>🕒 Waktu Check-In:</strong>
-                            {{ $accommodation->accommodation?->check_in_time ?? '14:00' }} WIB
+                            <span class="text-muted"><i class="fa-regular fa-clock text-primary me-1"></i> Waktu Check-In:</span>
+                            <strong class="text-dark ms-1">{{ $accommodation->accommodation?->check_in_time ? \Carbon\Carbon::parse($accommodation->accommodation->check_in_time)->format('H:i') : '14:00' }} WIB</strong>
                         </div>
                         <div class='col-6'>
-                            <strong>🕚 Waktu Check-Out:</strong>
-                            {{ $accommodation->accommodation?->check_out_time ?? '12:00' }} WIB
+                            <span class="text-muted"><i class="fa-regular fa-clock text-warning me-1"></i> Waktu Check-Out:</span>
+                            <strong class="text-dark ms-1">{{ $accommodation->accommodation?->check_out_time ? \Carbon\Carbon::parse($accommodation->accommodation->check_out_time)->format('H:i') : '12:00' }} WIB</strong>
                         </div>
                     </div>
                     @if ($accommodation->location)
                         <div class='mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2'>
                             <div>
-                                <strong>🌐 Koordinat GPS:</strong> {{ $accommodation->location->latitude }}, {{ $accommodation->location->longitude }}
+                                <strong class="text-dark"><i class="fa-solid fa-crosshairs text-success me-1"></i> Koordinat GPS:</strong> {{ $accommodation->location->latitude }}, {{ $accommodation->location->longitude }}
                             </div>
                             <a href="https://www.google.com/maps?q={{ $accommodation->location->latitude }},{{ $accommodation->location->longitude }}" target="_blank" rel="noopener noreferrer" class="badge text-bg-light border text-decoration-none py-1.5 px-2">
-                                <i class="fa-solid fa-arrow-up-right-from-square text-emerald me-1"></i> Buka di Google Maps
+                                <i class="fa-solid fa-arrow-up-right-from-square text-success me-1"></i> Buka di Google Maps
                             </a>
                         </div>
                     @endif
                 </div>
 
-                <strong class='d-block mb-2' style='font-size: 13px;'>Fasilitas Properti:</strong>
+                <strong class='d-block mb-2 text-dark' style='font-size: 13px;'>Fasilitas Properti:</strong>
                 <div class='d-flex gap-2 flex-wrap'>
                     @forelse($accommodation->facilities as $facility)
-                        <span class='badge'
-                            style='background: #e2e8f0; color: #1e293b; padding: 6px 12px; font-weight: 500;'>
-                            ✔ {{ $facility->name }}
+                        <span class='badge border'
+                            style='background: #f8fafc; color: #334155; padding: 6px 12px; font-weight: 500;'>
+                            <i class="fa-solid fa-check text-success me-1"></i> {{ $facility->name }}
                         </span>
                     @empty
                         <span class='text-muted' style='font-size: 13px;'>Belum ada fasilitas dipilih.</span>
@@ -102,7 +112,7 @@
                     action='{{ route('mitra.accommodation.media', $accommodation) }}' class='mb-3'>
                     @csrf
                     <div class='mb-2'>
-                        <label class='form-label fw-semibold' style='font-size: 13px;'>Pilih Foto Hotel / Properti</label>
+                        <label class='form-label fw-semibold text-dark' style='font-size: 13px;'>Pilih Foto Hotel / Properti</label>
                         <input class='form-control form-control-sm' type='file' name='image'
                             accept='image/jpeg,image/png,image/webp' required onchange='previewHotelMedia(this)'>
                     </div>
@@ -119,8 +129,8 @@
                         <div class='col-6'>
                             <label class='form-label' style='font-size: 12px;'>Peran Foto</label>
                             <select class='form-select form-select-sm' name='role' required>
-                                <option value='cover'>⭐ Foto Cover Utama</option>
-                                <option value='gallery'>🖼️ Galeri Properti</option>
+                                <option value='cover'>Foto Cover Utama</option>
+                                <option value='gallery'>Galeri Properti</option>
                             </select>
                         </div>
                         <div class='col-6'>
@@ -130,7 +140,7 @@
                     </div>
 
                     <button class='btn btn-sm btn-lokantara w-100 fw-bold'>
-                        📤 Unggah Foto Properti
+                        <i class="fa-solid fa-cloud-arrow-up me-1"></i> Unggah Foto Properti
                     </button>
                 </form>
 
@@ -138,14 +148,13 @@
 
                 <!-- Saved Media Gallery Preview -->
                 <div class='d-flex align-items-center justify-content-between mb-2'>
-                    <h6 class='fw-bold mb-0' style='font-size: 13px;'>Foto Tersimpan ({{ $accommodation->media->count() }})
-                    </h6>
+                    <h6 class='fw-bold mb-0' style='font-size: 13px;'>Foto Tersimpan ({{ $accommodation->media->count() }})</h6>
                 </div>
 
                 @if ($accommodation->media->isEmpty())
                     <div class='p-3 text-center rounded'
                         style='background: var(--lokantara-background); border: 1px solid var(--lokantara-border);'>
-                        <span class='fs-3 d-block mb-1'>🏨</span>
+                        <i class="fa-solid fa-images fs-2 text-muted mb-1 d-block"></i>
                         <small class='text-muted'>Belum ada foto yang diunggah. Unggah minimal 1 Foto Cover agar dapat
                             diajukan ke publik.</small>
                     </div>
@@ -159,7 +168,7 @@
                                             alt='{{ $media->pivot->caption ?? $accommodation->name }}'
                                             style='width: 100%; height: 100%; object-fit: cover;'>
                                         <span
-                                            class='badge {{ $media->pivot->role === 'cover' ? 'bg-warning text-dark' : 'bg-dark text-white' }}'
+                                            class='badge {{ $media->pivot->role === 'cover' ? 'bg-primary' : 'bg-dark text-white' }}'
                                             style='position: absolute; top: 6px; left: 6px; font-size: 10px;'>
                                             {{ strtoupper($media->pivot->role) }}
                                         </span>
@@ -180,48 +189,68 @@
     </div>
 
     <!-- Add Room Card -->
-    <x-content-card title='Tambah Tipe Kamar' class='mt-4'>
+    <x-content-card title='Tambah Tipe Kamar Baru' class='mt-4'>
         <form method='POST' action='{{ route('mitra.accommodation.rooms.store', $accommodation) }}'>
             @csrf
             <div class='row g-3'>
                 <div class='col-md-4'>
-                    <x-form-input name='name' label='Nama Kamar (cth: Deluxe King / Standard Room)' required />
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Nama Kamar <span class='text-danger'>*</span></label>
+                    <input type='text' name='name' class='form-control' placeholder='Contoh: Deluxe King Room' required>
                 </div>
                 <div class='col-md-4'>
-                    <x-form-input name='room_type' label='Tipe Kamar (cth: Deluxe, Suite, Standar)' required />
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Tipe / Kategori Kamar <span class='text-danger'>*</span></label>
+                    <input type='text' name='room_type' class='form-control' placeholder='Contoh: Deluxe / Standard / Suite' required>
                 </div>
                 <div class='col-md-4'>
-                    <x-select name='kind' label='Jenis Unit' required>
-                        <option value='room'>Kamar Tidur</option>
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Jenis Unit <span class='text-danger'>*</span></label>
+                    <select name='kind' class='form-select' required>
+                        <option value='room'>Kamar Bangunan (Room)</option>
                         <option value='tent_plot'>Lahan Tenda / Glamping</option>
-                    </x-select>
+                    </select>
                 </div>
             </div>
 
             <div class='row g-3 mt-1'>
                 <div class='col-md-2'>
-                    <x-form-input name='capacity_adults' type='number' label='Kapasitas Dewasa' value='2'
-                        required />
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Dewasa <span class='text-danger'>*</span></label>
+                    <div class='input-group'>
+                        <input type='number' min='1' max='100' name='capacity_adults' class='form-control' value='2' required>
+                        <span class='input-group-text bg-white' style='font-size: 11px;'>Org</span>
+                    </div>
                 </div>
                 <div class='col-md-2'>
-                    <x-form-input name='capacity_children' type='number' label='Kapasitas Anak' value='1'
-                        required />
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Anak <span class='text-danger'>*</span></label>
+                    <div class='input-group'>
+                        <input type='number' min='0' max='100' name='capacity_children' class='form-control' value='1' required>
+                        <span class='input-group-text bg-white' style='font-size: 11px;'>Anak</span>
+                    </div>
                 </div>
                 <div class='col-md-2'>
-                    <x-form-input name='total_units' type='number' label='Jumlah Kamar' value='1' required />
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Jumlah Unit <span class='text-danger'>*</span></label>
+                    <div class='input-group'>
+                        <input type='number' min='1' max='10000' name='total_units' class='form-control' value='1' required>
+                        <span class='input-group-text bg-white' style='font-size: 11px;'>Unit</span>
+                    </div>
                 </div>
                 <div class='col-md-3'>
-                    <x-form-input name='nightly_price' type='number' label='Harga Sewa / Malam (Rp)' required />
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Tarif per Malam (Rp) <span class='text-danger'>*</span></label>
+                    <div class='input-group'>
+                        <span class='input-group-text bg-white fw-bold text-success'>Rp</span>
+                        <input type='number' step='0.01' min='0' name='nightly_price' class='form-control' placeholder='Contoh: 350000' required>
+                    </div>
                 </div>
                 <div class='col-md-3'>
-                    <x-select name='status' label='Status Kamar' required>
-                        <option value='active'>Aktif</option>
-                        <option value='draft'>Draft</option>
-                    </x-select>
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Status Publikasi <span class='text-danger'>*</span></label>
+                    <select name='status' class='form-select' required>
+                        <option value='active'>🟢 Aktif (Tersedia)</option>
+                        <option value='draft'>🟡 Draft (Disembunyikan)</option>
+                    </select>
                 </div>
             </div>
 
-            <button class='btn btn-lokantara mt-3 fw-bold'>+ Tambahkan Tipe Kamar</button>
+            <button class='btn btn-lokantara mt-3 fw-bold rounded-pill px-4'>
+                <i class="fa-solid fa-plus me-1"></i> Tambahkan Tipe Kamar
+            </button>
         </form>
     </x-content-card>
 
@@ -252,23 +281,32 @@
                 @foreach ($accommodation->accommodation->rooms as $room)
                     <tr>
                         <td>
-                            <strong class='d-block'>{{ $room->name }}</strong>
+                            <strong class='d-block text-dark'>{{ $room->name }}</strong>
                             <small class='text-muted'>{{ str($room->room_type)->headline() }}</small>
                         </td>
-                        <td>{{ $room->capacity_adults }} Dewasa, {{ $room->capacity_children }} Anak</td>
-                        <td class='fw-bold' style='color: var(--lokantara-primary);'>
+                        <td>
+                            <span class="badge text-bg-light border">
+                                <i class="fa-solid fa-users text-primary me-1"></i>
+                                {{ $room->capacity_adults }} Dewasa, {{ $room->capacity_children }} Anak
+                            </span>
+                        </td>
+                        <td class='fw-bold text-success'>
                             Rp {{ number_format($room->offer->price, 0, ',', '.') }}
                         </td>
-                        <td>{{ $room->total_units }} Unit</td>
+                        <td>
+                            <span class="badge bg-secondary-subtle text-secondary border">
+                                {{ $room->total_units }} Unit
+                            </span>
+                        </td>
                         <td><x-status-badge :status='$room->status' /></td>
                         <td class='text-end'>
-                            <a class='btn btn-sm btn-outline-lokantara'
-                                href='{{ route('mitra.accommodation.rooms.edit', [$accommodation, $room]) }}'>
-                                ✏️ Edit
+                            <a class='btn btn-sm btn-outline-lokantara rounded-pill px-2.5 py-1 fw-semibold'
+                                href='{{ route('mitra.accommodation.rooms.edit', [$accommodation, $room]) }}' style='font-size: 12px;'>
+                                <i class="fa-solid fa-pen-to-square me-1"></i> Edit
                             </a>
-                            <a class='btn btn-sm btn-outline-lokantara'
-                                href='{{ route('mitra.accommodation.rooms.calendar', [$accommodation, $room]) }}'>
-                                📅 Kalender
+                            <a class='btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fw-semibold ms-1'
+                                href='{{ route('mitra.accommodation.rooms.calendar', [$accommodation, $room]) }}' style='font-size: 12px;'>
+                                <i class="fa-solid fa-calendar-days me-1"></i> Kalender
                             </a>
                         </td>
                     </tr>

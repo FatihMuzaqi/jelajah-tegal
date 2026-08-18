@@ -20,8 +20,8 @@ class SaveAccommodation
         abort_unless($mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists(), 403);
         if ($entity) {
             abort_unless($entity->mitra_id === $mitra->id && $entity->service_type_id === $service->id, 403);
-            if (! in_array($entity->status, ['draft', 'rejected'], true)) {
-                throw ValidationException::withMessages(['status' => 'Hanya draft atau properti ditolak yang dapat diubah.']);
+            if (! in_array($entity->status, ['draft', 'rejected', 'published', 'pending_review'], true)) {
+                throw ValidationException::withMessages(['status' => 'Properti dengan status saat ini tidak dapat diubah.']);
             }
         }
 
@@ -29,7 +29,7 @@ class SaveAccommodation
             $before = $entity?->toArray() ?? [];
             $entity ??= new CatalogEntity(['mitra_id' => $mitra->id, 'service_type_id' => $service->id]);
             $entity->fill(Arr::only($data, ['category_id', 'region_id', 'name', 'slug', 'description', 'address', 'is_featured']));
-            $entity->status = 'draft';
+            $entity->status = $entity->status ?? 'draft';
             $entity->save();
             $entity->accommodation()->updateOrCreate([], Arr::only($data, ['property_type', 'check_in_time', 'check_out_time', 'star_rating']));
             if (isset($data['latitude'], $data['longitude'])) {

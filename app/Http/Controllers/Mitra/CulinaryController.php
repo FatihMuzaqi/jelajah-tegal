@@ -23,4 +23,33 @@ class CulinaryController extends Controller
             'domain' => 'culinary'
         ]);
     }public function update(SaveCulinaryVenueRequest $r,CatalogEntity $culinary,SaveCulinaryVenue $a):RedirectResponse{$this->owned($r,$culinary);$a->execute($this->activeMitra($r),$r->validated(),$r->user(),$culinary);return redirect()->route('mitra.culinary.show',$culinary);}public function submit(Request $r,CatalogEntity $culinary,SubmitCatalogDomain $a):RedirectResponse{$this->owned($r,$culinary);$a->execute($culinary,'culinary',$r->user(),[$culinary->culinary->menuItems()->where('status','active')->exists()=>'menu aktif']);return back();}public function archive(Request $r,CatalogEntity $culinary,AuditLogger $audit):RedirectResponse{$this->owned($r,$culinary);abort_unless(in_array($culinary->status,['draft','rejected','published'],true),422);$before=$culinary->status;$culinary->update(['status'=>'archived','archived_at'=>now()]);$audit->record('culinary.archived',$culinary,['status'=>$before],['status'=>'archived'],$r->user());return redirect()->route('mitra.culinary.index')->with('status','Kuliner diarsipkan.');}
-public function category(Request $r,CatalogEntity $culinary):RedirectResponse{$this->owned($r,$culinary);$d=$r->validate(['name'=>'required|string|max:150','sort_order'=>'nullable|integer|min:0']);$culinary->culinary->menuCategories()->create($d);return back();}public function item(Request $r,CatalogEntity $culinary,CulinaryMenuCategory $category):RedirectResponse{$this->owned($r,$culinary);abort_unless($category->culinary_venue_id===$culinary->culinary->id,404);$d=$r->validate(['name'=>'required|string|max:150','description'=>'nullable|string','price'=>'required|numeric|min:0','is_featured'=>'sometimes|boolean']);$category->items()->create($d+['culinary_venue_id'=>$culinary->culinary->id,'status'=>'active']);return back();}public function slot(Request $r,CatalogEntity $culinary):RedirectResponse{$this->owned($r,$culinary);$d=$r->validate(['service_date'=>'required|date|after_or_equal:today','starts_at'=>'required|date_format:H:i','ends_at'=>'required|date_format:H:i|after:starts_at','capacity_tables'=>'required|integer|min:1','capacity_guests'=>'required|integer|min:1']);$culinary->culinary->tableSlots()->updateOrCreate(['service_date'=>$d['service_date'],'starts_at'=>$d['starts_at']],$d+['status'=>'available']);return back();}public function decide(Request $r,CatalogEntity $culinary,CulinaryReservation $reservation,DecideCulinaryReservation $a):RedirectResponse{$this->owned($r,$culinary);abort_unless($reservation->culinary_venue_id===$culinary->culinary->id,404);$d=$r->validate(['decision'=>'required|in:confirm,reject','reason'=>'nullable|required_if:decision,reject|string']);$a->execute($reservation,$d['decision'],$r->user(),$d['reason']??null);return back();}private function owned(Request $r,CatalogEntity $e):void{abort_unless($r->user()->can('culinary.manage')&&$e->mitra_id===$this->activeMitra($r)->id&&$e->serviceType()->where('code','culinary')->exists(),403);}private function refs():array{$id=ServiceType::where('code','culinary')->value('id');return ['categories'=>Category::where('service_type_id',$id)->get(),'facilities'=>Facility::where('service_type_id',$id)->get(),'regions'=>Region::orderBy('name')->get()];}}
+public function category(Request $r,CatalogEntity $culinary):RedirectResponse{$this->owned($r,$culinary);$d=$r->validate(['name'=>'required|string|max:150','sort_order'=>'nullable|integer|min:0']);$culinary->culinary->menuCategories()->create($d);return back();}public function item(Request $r,CatalogEntity $culinary,CulinaryMenuCategory $category):RedirectResponse{$this->owned($r,$culinary);abort_unless($category->culinary_venue_id===$culinary->culinary->id,404);$d=$r->validate(['name'=>'required|string|max:150','description'=>'nullable|string','price'=>'required|numeric|min:0','is_featured'=>'sometimes|boolean']);$category->items()->create($d+['culinary_venue_id'=>$culinary->culinary->id,'status'=>'active']);return back()->with('status','Menu berhasil ditambahkan.');}
+
+public function updateItem(Request $r, CatalogEntity $culinary, CulinaryMenuItem $item): RedirectResponse
+{
+    $this->owned($r, $culinary);
+    abort_unless($item->culinary_venue_id === $culinary->culinary->id, 404);
+    $d = $r->validate([
+        'name' => 'required|string|max:150',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric|min:0',
+        'is_featured' => 'sometimes|boolean',
+        'status' => 'required|in:active,inactive',
+    ]);
+    $item->update([
+        'name' => $d['name'],
+        'description' => $d['description'] ?? null,
+        'price' => $d['price'],
+        'is_featured' => (bool) ($d['is_featured'] ?? false),
+        'status' => $d['status'],
+    ]);
+    return back()->with('status', 'Menu kuliner berhasil diperbarui.');
+}
+
+public function destroyItem(Request $r, CatalogEntity $culinary, CulinaryMenuItem $item): RedirectResponse
+{
+    $this->owned($r, $culinary);
+    abort_unless($item->culinary_venue_id === $culinary->culinary->id, 404);
+    $item->delete();
+    return back()->with('status', 'Menu kuliner berhasil dihapus.');
+}public function slot(Request $r,CatalogEntity $culinary):RedirectResponse{$this->owned($r,$culinary);$d=$r->validate(['service_date'=>'required|date|after_or_equal:today','starts_at'=>'required|date_format:H:i','ends_at'=>'required|date_format:H:i|after:starts_at','capacity_tables'=>'required|integer|min:1','capacity_guests'=>'required|integer|min:1']);$culinary->culinary->tableSlots()->updateOrCreate(['service_date'=>$d['service_date'],'starts_at'=>$d['starts_at']],$d+['status'=>'available']);return back();}public function decide(Request $r,CatalogEntity $culinary,CulinaryReservation $reservation,DecideCulinaryReservation $a):RedirectResponse{$this->owned($r,$culinary);abort_unless($reservation->culinary_venue_id===$culinary->culinary->id,404);$d=$r->validate(['decision'=>'required|in:confirm,reject','reason'=>'nullable|required_if:decision,reject|string']);$a->execute($reservation,$d['decision'],$r->user(),$d['reason']??null);return back();}private function owned(Request $r,CatalogEntity $e):void{abort_unless($r->user()->can('culinary.manage')&&$e->mitra_id===$this->activeMitra($r)->id&&$e->serviceType()->where('code','culinary')->exists(),403);}private function refs():array{$id=ServiceType::where('code','culinary')->value('id');return ['categories'=>Category::where('service_type_id',$id)->get(),'facilities'=>Facility::where('service_type_id',$id)->get(),'regions'=>Region::orderBy('name')->get()];}}

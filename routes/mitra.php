@@ -47,6 +47,8 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::post('/tourism/{tourism}/media', [TourismController::class, 'media'])->name('tourism.media');
     Route::put('/tourism/{tourism}/hours', [TourismController::class, 'hours'])->name('tourism.hours');
     Route::post('/tourism/{tourism}/packages', [TourismController::class, 'package'])->name('tourism.packages.store');
+    Route::put('/tourism/{tourism}/packages/{package}', [TourismController::class, 'updatePackage'])->name('tourism.packages.update');
+    Route::delete('/tourism/{tourism}/packages/{package}', [TourismController::class, 'destroyPackage'])->name('tourism.packages.destroy');
     Route::put('/tourism/{tourism}/packages/{package}/quota', [TourismController::class, 'quota'])->name('tourism.quota');
     Route::get('/accommodation', [AccommodationController::class, 'index'])->name('accommodation.index');
     Route::get('/accommodation/create', [AccommodationController::class, 'create'])->name('accommodation.create');
@@ -69,6 +71,8 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::post('/culinary/{culinary}/archive', [CulinaryController::class, 'archive'])->name('culinary.archive');
     Route::post('/culinary/{culinary}/menu-categories', [CulinaryController::class, 'category'])->name('culinary.categories.store');
     Route::post('/culinary/{culinary}/menu-categories/{category}/items', [CulinaryController::class, 'item'])->name('culinary.items.store');
+    Route::put('/culinary/{culinary}/menu-items/{item}', [CulinaryController::class, 'updateItem'])->name('culinary.items.update');
+    Route::delete('/culinary/{culinary}/menu-items/{item}', [CulinaryController::class, 'destroyItem'])->name('culinary.items.destroy');
     Route::put('/culinary/{culinary}/slots', [CulinaryController::class, 'slot'])->name('culinary.slots.update');
     Route::patch('/culinary/{culinary}/reservations/{reservation}', [CulinaryController::class, 'decide'])->name('culinary.reservations.decide');
     Route::resource('event', EventController::class)->except(['destroy']);
@@ -76,11 +80,15 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::post('/event/{event}/archive', [EventController::class, 'archive'])->name('event.archive');
     Route::post('/event/{event}/schedules', [EventController::class, 'schedule'])->name('event.schedules.store');
     Route::post('/event/{event}/ticket-types', [EventController::class, 'ticketType'])->name('event.ticket-types.store');
+    Route::put('/event/{event}/ticket-types/{type}', [EventController::class, 'updateTicketType'])->name('event.ticket-types.update');
+    Route::delete('/event/{event}/ticket-types/{type}', [EventController::class, 'destroyTicketType'])->name('event.ticket-types.destroy');
     Route::post('/event/{event}/ticket-types/{type}/issue', [EventController::class, 'issue'])->name('event.tickets.issue');
     Route::resource('rental', RentalController::class)->except(['destroy']);
     Route::post('/rental/{rental}/submit', [RentalController::class, 'submit'])->name('rental.submit');
     Route::post('/rental/{rental}/archive', [RentalController::class, 'archive'])->name('rental.archive');
     Route::post('/rental/{rental}/rates', [RentalController::class, 'rate'])->name('rental.rates.store');
+    Route::put('/rental/{rental}/rates/{rate}', [RentalController::class, 'updateRate'])->name('rental.rates.update');
+    Route::delete('/rental/{rental}/rates/{rate}', [RentalController::class, 'destroyRate'])->name('rental.rates.destroy');
     Route::put('/rental/{rental}/availability', [RentalController::class, 'availability'])->name('rental.availability.update');
     Route::patch('/rental/{rental}/bookings/{booking}', [RentalController::class, 'transition'])->name('rental.bookings.transition');
     Route::patch('/renter-documents/{document}', [RentalController::class, 'reviewDocument'])->name('renter-documents.review');

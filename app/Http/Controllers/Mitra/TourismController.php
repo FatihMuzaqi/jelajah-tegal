@@ -154,6 +154,42 @@ class TourismController extends Controller
         return back()->with('status', 'Paket tiket dibuat.');
     }
 
+    public function updatePackage(Request $request, CatalogEntity $tourism, TourismTicketPackage $package): RedirectResponse
+    {
+        $this->owned($request, $tourism);
+        abort_unless($package->tourism_destination_id === $tourism->tourism->id, 404);
+        $data = $request->validate([
+            'name' => 'required|string|max:150',
+            'price' => 'required|numeric|min:0',
+            'quota_per_day' => 'nullable|integer|min:0',
+        ]);
+
+        DB::transaction(function () use ($package, $data) {
+            $package->update([
+                'name' => $data['name'],
+                'quota_per_day' => $data['quota_per_day'] ?? null,
+            ]);
+            $package->offer->update([
+                'name' => $data['name'],
+                'price' => $data['price'],
+            ]);
+        });
+
+        return back()->with('status', 'Paket tiket berhasil diperbarui.');
+    }
+
+    public function destroyPackage(Request $request, CatalogEntity $tourism, TourismTicketPackage $package): RedirectResponse
+    {
+        $this->owned($request, $tourism);
+        abort_unless($package->tourism_destination_id === $tourism->tourism->id, 404);
+        DB::transaction(function () use ($package) {
+            $package->offer()->delete();
+            $package->delete();
+        });
+
+        return back()->with('status', 'Paket tiket berhasil dihapus.');
+    }
+
     public function quota(Request $request, CatalogEntity $tourism, TourismTicketPackage $package, SetTourismQuota $action): RedirectResponse
     {
         $this->owned($request, $tourism);
@@ -166,8 +202,7 @@ class TourismController extends Controller
 
     private function owned(Request $request, CatalogEntity $entity): void
     {
-        abort_unless($entity->mitra_id === $this->activeMitra($request)->id, 403);
-        Gate::authorize('update', $entity);
+        abort_unless($request->user()->can('tourism.manage') && $entity->mitra_id === $this->activeMitra($request)->id && $entity->serviceType()->where('code', 'tourism')->exists(), 403);
     }
 
     private function references(): array

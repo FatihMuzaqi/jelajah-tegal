@@ -1,34 +1,74 @@
 @extends('layouts.mitra')
-@section('title', 'Wisata') @section('page-title', 'Katalog Wisata') @section('page-description', 'Kelola destinasi,
-publikasi, tiket, dan riwayat moderasi.')
+
+@section('title', 'Katalog Wisata')
+@section('page-title', 'Katalog Destinasi Wisata')
+@section('page-description', 'Kelola destinasi wisata, status publikasi, paket tiket masuk, dan riwayat moderasi.')
+
+@section('page-actions')
+    @can('tourism.manage')
+        <a class="btn btn-lokantara rounded-pill px-4 py-2 fw-bold d-inline-flex align-items-center gap-2" href="{{ route('mitra.tourism.create') }}">
+            <i class="fa-solid fa-plus"></i>
+            <span>Tambah Wisata</span>
+        </a>
+    @endcan
+@endsection
+
 @section('content')
-    <div class='d-flex justify-content-end mb-3'>
-        @can('tourism.manage')
-            <a class='btn btn-lokantara' href='{{ route('mitra.tourism.create') }}'>Tambah wisata</a>
-        @endcan
-    </div>
-    <x-table-wrapper title='Destinasi wisata'>
+    <x-table-wrapper title="Daftar Destinasi Wisata">
         @if ($items->isEmpty())
             <tbody>
                 <tr>
-                    <td><x-empty-state title='Belum ada destinasi' description='Buat draft destinasi pertama.' compact /></td>
+                    <td>
+                        <x-empty-state title="Belum ada destinasi wisata" description="Buat draft destinasi wisata pertama Anda untuk diajukan ke kurasi publik." compact />
+                    </td>
                 </tr>
-        </tbody>@else<thead>
+            </tbody>
+        @else
+            <thead>
                 <tr>
-                    <th>Nama</th>
+                    <th>Nama Destinasi</th>
+                    <th>Wilayah</th>
+                    <th>Kategori</th>
                     <th>Status</th>
                     <th>Diperbarui</th>
-                    <th></th>
+                    <th class="text-end">Aksi</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach ($items as $item)
                     <tr>
-                        <td>{{ $item->name }}</td>
-                        <td><x-status-badge :status='$item->status' /></td>
-                        <td>{{ $item->updated_at->diffForHumans() }}</td>
-                        <td><a class='btn btn-sm btn-outline-lokantara'
-                                href='{{ route('mitra.tourism.show', $item) }}'>Kelola</a></td>
+                        <td>
+                            <strong class="d-block text-dark">{{ $item->name }}</strong>
+                            <small class="text-muted d-inline-flex align-items-center gap-1">
+                                <i class="fa-solid fa-ticket text-secondary" style="font-size: 11px;"></i>
+                                {{ $item->offers->count() }} Paket Tiket
+                            </small>
+                        </td>
+                        <td>
+                            <span class="badge text-bg-light border">
+                                <i class="fa-solid fa-location-dot text-danger me-1"></i>
+                                {{ $item->region?->name ?? 'Tegal' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="badge bg-secondary-subtle text-secondary border">
+                                <i class="fa-solid fa-umbrella-beach me-1"></i>
+                                {{ $item->category?->name ?? 'Wisata' }}
+                            </span>
+                        </td>
+                        <td><x-status-badge :status="$item->status" /></td>
+                        <td>
+                            <small class="text-muted d-inline-flex align-items-center gap-1">
+                                <i class="fa-regular fa-clock" style="font-size: 11px;"></i>
+                                {{ $item->updated_at->diffForHumans() }}
+                            </small>
+                        </td>
+                        <td class="text-end">
+                            <a class="btn btn-sm btn-outline-lokantara fw-semibold rounded-pill px-3"
+                               href="{{ route('mitra.tourism.show', $item) }}">
+                                <i class="fa-solid fa-gear me-1"></i> Kelola
+                            </a>
+                        </td>
                     </tr>
                 @endforeach
             </tbody>

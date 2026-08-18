@@ -119,7 +119,47 @@ class EventController extends Controller
             $event->event->ticketTypes()->create($d + ['catalog_offer_id' => $offer->id]);
         });
 
-        return back();
+        return back()->with('status', 'Tipe tiket event berhasil ditambahkan.');
+    }
+
+    public function updateTicketType(Request $r, CatalogEntity $event, EventTicketType $type): RedirectResponse
+    {
+        $this->owned($r, $event);
+        abort_unless($type->event_id === $event->event->id, 404);
+        $d = $r->validate([
+            'name' => 'required|string|max:150',
+            'price' => 'required|numeric|min:0',
+            'quota' => 'required|integer|min:1',
+            'sale_starts_at' => 'nullable|date',
+            'sale_ends_at' => 'nullable|date|after:sale_starts_at',
+        ]);
+
+        DB::transaction(function () use ($type, $d) {
+            $type->update([
+                'name' => $d['name'],
+                'quota' => $d['quota'],
+                'sale_starts_at' => $d['sale_starts_at'] ?? null,
+                'sale_ends_at' => $d['sale_ends_at'] ?? null,
+            ]);
+            $type->offer->update([
+                'name' => $d['name'],
+                'price' => $d['price'],
+            ]);
+        });
+
+        return back()->with('status', 'Tiket event berhasil diperbarui.');
+    }
+
+    public function destroyTicketType(Request $r, CatalogEntity $event, EventTicketType $type): RedirectResponse
+    {
+        $this->owned($r, $event);
+        abort_unless($type->event_id === $event->event->id, 404);
+        DB::transaction(function () use ($type) {
+            $type->offer()->delete();
+            $type->delete();
+        });
+
+        return back()->with('status', 'Tiket event berhasil dihapus.');
     }
 
     public function issue(Request $r, CatalogEntity $event, EventTicketType $type, IssueEventTicket $a): RedirectResponse

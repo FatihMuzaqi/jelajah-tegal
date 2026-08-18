@@ -21,8 +21,8 @@ class SaveTourismDestination
         abort_unless($mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists(), 403);
         if ($entity) {
             abort_unless($entity->mitra_id === $mitra->id, 403);
-            if (! in_array($entity->status, [CatalogStatus::Draft->value, CatalogStatus::Rejected->value], true)) {
-                throw ValidationException::withMessages(['status' => 'Hanya draft atau konten ditolak yang dapat diubah.']);
+            if (! in_array($entity->status, [CatalogStatus::Draft->value, CatalogStatus::Rejected->value, CatalogStatus::Published->value, CatalogStatus::Submitted->value, CatalogStatus::UnderReview->value], true)) {
+                throw ValidationException::withMessages(['status' => 'Destinasi dengan status saat ini tidak dapat diubah.']);
             }
         }
 
@@ -30,7 +30,7 @@ class SaveTourismDestination
             $before = $entity?->toArray() ?? [];
             $entity ??= new CatalogEntity(['mitra_id' => $mitra->id, 'service_type_id' => $service->id]);
             $entity->fill(Arr::only($data, ['category_id', 'region_id', 'name', 'slug', 'description', 'address', 'is_featured']));
-            $entity->status = CatalogStatus::Draft->value;
+            $entity->status = $entity->status ?? CatalogStatus::Draft->value;
             $entity->save();
             $entity->tourism()->updateOrCreate([], Arr::only($data, ['destination_type', 'visit_duration_minutes', 'badge', 'is_hidden_gem']));
             if (isset($data['latitude'], $data['longitude'])) {

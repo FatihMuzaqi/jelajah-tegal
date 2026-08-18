@@ -103,7 +103,41 @@ class RentalController extends Controller
             $rental->rentalVehicle->rates()->create($d + ['catalog_offer_id' => $offer->id]);
         });
 
-        return back();
+        return back()->with('status', 'Tarif sewa rental berhasil ditambahkan.');
+    }
+
+    public function updateRate(Request $r, CatalogEntity $rental, \App\Models\RentalRate $rate): RedirectResponse
+    {
+        $this->owned($r, $rental);
+        abort_unless($rate->rental_vehicle_id === $rental->rentalVehicle->id, 404);
+        $d = $r->validate([
+            'drive_mode' => 'required|in:self_drive,with_driver',
+            'price' => 'required|numeric|min:0',
+        ]);
+
+        DB::transaction(function () use ($rate, $d) {
+            $rate->update([
+                'drive_mode' => $d['drive_mode'],
+            ]);
+            $rate->offer->update([
+                'name' => $d['drive_mode'] . ' ' . $rate->duration_value . ' ' . $rate->duration_unit,
+                'price' => $d['price'],
+            ]);
+        });
+
+        return back()->with('status', 'Tarif sewa rental berhasil diperbarui.');
+    }
+
+    public function destroyRate(Request $r, CatalogEntity $rental, \App\Models\RentalRate $rate): RedirectResponse
+    {
+        $this->owned($r, $rental);
+        abort_unless($rate->rental_vehicle_id === $rental->rentalVehicle->id, 404);
+        DB::transaction(function () use ($rate) {
+            $rate->offer()->delete();
+            $rate->delete();
+        });
+
+        return back()->with('status', 'Tarif sewa rental berhasil dihapus.');
     }
 
     public function availability(Request $r, CatalogEntity $rental): RedirectResponse
