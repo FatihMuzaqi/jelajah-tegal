@@ -98,7 +98,7 @@ class TourAssistantCheckoutController extends Controller
                 ]);
 
                 // Order Item
-                $order->items()->create([
+                $orderItem = $order->items()->create([
                     'mitra_id' => $mitra->id,
                     'catalog_offer_id' => $offer->id,
                     'resource_type' => $item['type'],
@@ -121,6 +121,76 @@ class TourAssistantCheckoutController extends Controller
                         'catalog_entity_id' => $entity->id,
                     ]
                 ]);
+
+                // Buat Reservasi Kuota & Holds Sesuai Tipe Layanan
+                if (in_array($item['type'], ['tourism', 'tourism_ticket_package'])) {
+                    $date = $start->toDateString();
+                    $availability = \App\Models\Availability::where('catalog_offer_id', $offer->id)
+                        ->whereDate('service_date', $date)
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (!$availability) {
+                        $ticketPackage = \App\Models\TourismTicketPackage::where('catalog_offer_id', $offer->id)->first();
+                        $availability = \App\Models\Availability::create([
+                            'mitra_id' => $mitra->id,
+                            'catalog_offer_id' => $offer->id,
+                            'service_date' => $date,
+                            'capacity' => $ticketPackage?->quota_per_day ?? 100,
+                            'reserved_quantity' => 0,
+                            'status' => 'available',
+                        ]);
+                    }
+                    $availability->increment('reserved_quantity', $quantity);
+                    $orderItem->holds()->create([
+                        'resource_type' => 'availability',
+                        'resource_id' => $availability->id,
+                        'service_date' => $date,
+                        'quantity' => $quantity,
+                        'status' => 'active',
+                    ]);
+                } elseif (in_array($item['type'], ['event', 'event_ticket_type'])) {
+                    $ticketType = \App\Models\EventTicketType::where('catalog_offer_id', $offer->id)
+                        ->lockForUpdate()
+                        ->first();
+                    if ($ticketType) {
+                        $ticketType->increment('reserved_quantity', $quantity);
+                        $orderItem->holds()->create([
+                            'resource_type' => 'event_ticket_type',
+                            'resource_id' => $ticketType->id,
+                            'service_date' => $start->toDateString(),
+                            'quantity' => $quantity,
+                            'status' => 'active',
+                        ]);
+                    }
+                } elseif (in_array($item['type'], ['accommodation', 'accommodation_room'])) {
+                    for ($d = $start->copy(); $d->lt($end); $d->addDay()) {
+                        $dateStr = $d->toDateString();
+                        $availability = \App\Models\Availability::where('catalog_offer_id', $offer->id)
+                            ->whereDate('service_date', $dateStr)
+                            ->lockForUpdate()
+                            ->first();
+                        if (!$availability) {
+                            $room = \App\Models\AccommodationRoom::where('catalog_offer_id', $offer->id)->first();
+                            $availability = \App\Models\Availability::create([
+                                'mitra_id' => $mitra->id,
+                                'catalog_offer_id' => $offer->id,
+                                'service_date' => $dateStr,
+                                'capacity' => $room?->total_units ?? 10,
+                                'reserved_quantity' => 0,
+                                'status' => 'available',
+                            ]);
+                        }
+                        $availability->increment('reserved_quantity', $quantity);
+                        $orderItem->holds()->create([
+                            'resource_type' => 'availability',
+                            'resource_id' => $availability->id,
+                            'service_date' => $dateStr,
+                            'quantity' => $quantity,
+                            'status' => 'active',
+                        ]);
+                    }
+                }
 
                 // Payment record per order
                 $order->payments()->create([
