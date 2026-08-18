@@ -16,9 +16,10 @@ Route::get('/', [PublicPortalController::class, 'home'])->name('home');
 
 Route::prefix('tour-assistant')->name('tour-assistant.')->group(function () {
     Route::get('/', [\App\Http\Controllers\Public\TourAssistantController::class, 'index'])->name('index');
-    Route::post('/generate', [\App\Http\Controllers\Public\TourAssistantController::class, 'generate'])->name('generate');
+    Route::match(['get', 'post'], '/generate', [\App\Http\Controllers\Public\TourAssistantController::class, 'generate'])->name('generate');
     Route::post('/checkout', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'process'])->name('checkout')->middleware(['auth', 'verified', 'active.user']);
     Route::get('/invoice/{invoice_number}', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'showInvoice'])->name('invoice.show')->middleware(['auth', 'verified', 'active.user']);
+    Route::post('/invoice/{invoice_number}/snap', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'snap'])->name('invoice.snap')->middleware(['auth', 'verified', 'active.user']);
     Route::post('/invoice/{invoice_number}/confirm-direct', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'confirmDirect'])->name('invoice.confirm-direct')->middleware(['auth', 'verified', 'active.user']);
 });
 
@@ -29,6 +30,7 @@ Route::get('/kebijakan-privasi', [PublicPortalController::class, 'privacy'])->na
 Route::get('/syarat-ketentuan', [PublicPortalController::class, 'terms'])->name('public.terms');
 Route::get('/mitra/activation/{token}', [MitraActivationController::class, 'show'])->name('mitra.activation.show');
 Route::post('/mitra/activation/{token}', [MitraActivationController::class, 'store'])->name('mitra.activation.store')->middleware('throttle:6,1');
+Route::get('/mitra', [PublicMitraController::class, 'index'])->name('public.mitra.index');
 Route::get('/mitra-profil/{slug}', [PublicMitraController::class, 'show'])->name('public.mitra.show');
 
 // Smart AI Chatbot Assistant Endpoint
@@ -79,6 +81,6 @@ Route::middleware(['auth', 'verified', 'active.user'])->group(function () {
     Route::get('/unfinish', fn (\Illuminate\Http\Request $r) => redirect()->route('consumer.orders.index', $r->query()));
     Route::get('/error', fn (\Illuminate\Http\Request $r) => redirect()->route('consumer.orders.index', $r->query()));
 });
-foreach (['consumer', 'mitra', 'gatekeeper', 'admin', 'super-admin'] as $routes) {
+foreach (['consumer', 'mitra', 'gatekeeper', 'dinas', 'admin', 'super-admin'] as $routes) {
     require __DIR__.'/'.$routes.'.php';
 }

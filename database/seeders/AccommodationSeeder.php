@@ -52,15 +52,7 @@ class AccommodationSeeder extends Seeder
 
         $accommodationsData = [
             [
-                'mitra' => [
-                    'slug' => 'guci-pine-resort',
-                    'legal_name' => 'PT Guci Pine Resort Indonesia',
-                    'display_name' => 'PT Guci Pine Resort Indonesia',
-                    'contact_email' => 'pineresort@example.test',
-                    'contact_phone' => '081234567890',
-                    'address' => 'Jl. Raya Guci Km 5, Bumijawa, Tegal',
-                    'region_id' => $regionGuci->id,
-                ],
+                'mitra_slug' => 'uptd-wisata-guci-tegal',
                 'media' => [
                     'object_key' => 'media/guci_pine_resort.jpg',
                     'original_name' => 'guci_pine_resort.jpg',
@@ -106,15 +98,7 @@ class AccommodationSeeder extends Seeder
                 ],
             ],
             [
-                'mitra' => [
-                    'slug' => 'diana-hospitality-tegal',
-                    'legal_name' => 'PT Diana Hospitality Tegal',
-                    'display_name' => 'PT Diana Hospitality Tegal',
-                    'contact_email' => 'granddiana@example.test',
-                    'contact_phone' => '081398765432',
-                    'address' => 'Jl. A. Yani No. 12, Slawi, Tegal',
-                    'region_id' => $regionSlawi->id,
-                ],
+                'mitra_slug' => 'mitra-utama-tegal',
                 'media' => [
                     'object_key' => 'media/grand_diana_hotel.jpg',
                     'original_name' => 'grand_diana_hotel.jpg',
@@ -160,15 +144,7 @@ class AccommodationSeeder extends Seeder
                 ],
             ],
             [
-                'mitra' => [
-                    'slug' => 'kancil-hill-tegal',
-                    'legal_name' => 'CV Pesona Kancil Hill Tegal',
-                    'display_name' => 'CV Pesona Kancil Hill Tegal',
-                    'contact_email' => 'kancilhill@example.test',
-                    'contact_phone' => '081512344321',
-                    'address' => 'Desa Tuwel, Bumijawa, Tegal',
-                    'region_id' => $regionGuci->id,
-                ],
+                'mitra_slug' => 'achmad-fatich-muzaqi',
                 'media' => [
                     'object_key' => 'media/kancil_hill_glamping.jpg',
                     'original_name' => 'kancil_hill_glamping.jpg',
@@ -214,15 +190,7 @@ class AccommodationSeeder extends Seeder
                 ],
             ],
             [
-                'mitra' => [
-                    'slug' => 'carlita-homestay',
-                    'legal_name' => 'Pokdarwis Carlita Homestay Slawi',
-                    'display_name' => 'Pokdarwis Carlita Homestay Slawi',
-                    'contact_email' => 'carlitahomestay@example.test',
-                    'contact_phone' => '085711223344',
-                    'address' => 'Jl. Dr. Soetomo No. 45, Slawi, Tegal',
-                    'region_id' => $regionSlawi->id,
-                ],
+                'mitra_slug' => 'uptd-waduk-cacaban',
                 'media' => [
                     'object_key' => 'media/carlita_homestay.jpg',
                     'original_name' => 'carlita_homestay.jpg',
@@ -270,21 +238,11 @@ class AccommodationSeeder extends Seeder
         ];
 
         foreach ($accommodationsData as $data) {
-            // 1. Create / Update Mitra
-            $mitra = Mitra::updateOrCreate(
-                ['slug' => $data['mitra']['slug']],
-                [
-                    'owner_user_id' => $ownerUser->id,
-                    'region_id' => $data['mitra']['region_id'],
-                    'legal_name' => $data['mitra']['legal_name'],
-                    'display_name' => $data['mitra']['display_name'],
-                    'status' => 'active',
-                    'approved_at' => now(),
-                    'contact_email' => $data['mitra']['contact_email'],
-                    'contact_phone' => $data['mitra']['contact_phone'],
-                    'address' => $data['mitra']['address'],
-                ]
-            );
+            // 1. Get Mitra (Must be one of the official 5)
+            $mitra = Mitra::where('slug', $data['mitra_slug'])->first() ?? Mitra::first();
+            if (! $mitra) {
+                continue;
+            }
 
             // Enable feature
             MitraFeature::updateOrCreate(

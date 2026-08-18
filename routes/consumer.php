@@ -9,7 +9,9 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(['auth', 'verified', 'active.user'])->prefix('consumer')->name('consumer.')->group(function () {
+    Route::get('/', fn () => redirect()->route('consumer.dashboard'));
     Route::get('/dashboard', [DashboardController::class, 'consumer'])->name('dashboard');
+    Route::get('/rute-destinasi', [\App\Http\Controllers\Consumer\TripNavigatorController::class, 'index'])->name('trip-navigator.index');
     Route::get('/renter-documents', [RenterDocumentController::class, 'index'])->name('renter-documents.index');
     Route::post('/renter-documents', [RenterDocumentController::class, 'store'])->name('renter-documents.store');
     Route::get('/renter-documents/{document}/download', [RenterDocumentController::class, 'download'])->name('renter-documents.download');
@@ -20,5 +22,7 @@ Route::middleware(['auth', 'verified', 'active.user'])->prefix('consumer')->name
     Route::post('/orders/{order}/confirm-direct', [CheckoutController::class, 'confirmDirect'])->name('orders.confirm-direct');
     Route::get('/tickets/{ticket}/qr', [TicketController::class, 'qr'])->name('tickets.qr');
     Route::get('/invoices/{invoice}', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'showInvoice'])->name('invoices.show');
+    Route::post('/invoices/{invoice}/payment/snap', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'snap'])->name('invoices.payment.snap');
+    Route::post('/invoices/{invoice}/confirm-direct', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'confirmDirect'])->name('invoices.confirm-direct');
     Route::post('/vouchers/claim', [VoucherController::class, 'claim'])->name('vouchers.claim');
 });

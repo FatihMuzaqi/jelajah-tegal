@@ -48,14 +48,24 @@ class EventController extends Controller
     {
         $this->owned($r, $event);
 
-        return view('mitra.catalog-domain.show', ['item' => $event->load(['event.schedules', 'event.ticketTypes.offer', 'event.ticketTypes.tickets', 'media', 'facilities', 'moderationReports.actions']), 'title' => 'Event', 'routePrefix' => 'mitra.event', 'domain' => 'event']);
+        return view('mitra.catalog-domain.show', [
+            'item' => $event->load(['event.schedules', 'event.ticketTypes.offer', 'event.ticketTypes.tickets', 'location', 'media', 'facilities', 'moderationReports.actions']),
+            'title' => 'Event',
+            'routePrefix' => 'mitra.event',
+            'domain' => 'event'
+        ]);
     }
 
     public function edit(Request $r, CatalogEntity $event): View
     {
         $this->owned($r, $event);
 
-        return view('mitra.catalog-domain.form', $this->refs() + ['item' => $event->load('event'), 'title' => 'Event', 'routePrefix' => 'mitra.event', 'domain' => 'event']);
+        return view('mitra.catalog-domain.form', $this->refs() + [
+            'item' => $event->load(['event', 'location']),
+            'title' => 'Event',
+            'routePrefix' => 'mitra.event',
+            'domain' => 'event'
+        ]);
     }
 
     public function update(SaveEventRequest $r, CatalogEntity $event, SaveEvent $a): RedirectResponse

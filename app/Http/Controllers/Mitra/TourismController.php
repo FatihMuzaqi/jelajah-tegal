@@ -75,7 +75,9 @@ class TourismController extends Controller
     {
         $this->owned($request, $tourism);
 
-        return view('mitra.tourism.form', $this->references() + compact('tourism'));
+        return view('mitra.tourism.form', $this->references() + [
+            'tourism' => $tourism->load(['tourism', 'location', 'facilities']),
+        ]);
     }
 
     public function update(SaveTourismRequest $request, CatalogEntity $tourism, SaveTourismDestination $action): RedirectResponse

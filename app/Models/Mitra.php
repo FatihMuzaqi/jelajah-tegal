@@ -15,13 +15,42 @@ class Mitra extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
 
-    protected $fillable = ['owner_user_id', 'legal_name', 'display_name', 'slug', 'registration_number', 'tax_number_encrypted', 'status', 'description', 'contact_email', 'contact_phone', 'region_id', 'address', 'logo_media_id', 'banner_media_id', 'approved_by', 'approved_at', 'suspended_at'];
+    protected $fillable = [
+        'owner_user_id',
+        'category',
+        'legal_name',
+        'display_name',
+        'slug',
+        'registration_number',
+        'tax_number_encrypted',
+        'status',
+        'description',
+        'contact_email',
+        'contact_phone',
+        'region_id',
+        'address',
+        'logo_media_id',
+        'banner_media_id',
+        'approved_by',
+        'approved_at',
+        'suspended_at'
+    ];
 
     protected $hidden = ['tax_number_encrypted'];
 
     protected function casts(): array
     {
         return ['tax_number_encrypted' => 'encrypted', 'approved_at' => 'datetime', 'suspended_at' => 'datetime'];
+    }
+
+    public function isDinas(): bool
+    {
+        return $this->category === 'dinas';
+    }
+
+    public function getCategoryLabelAttribute(): string
+    {
+        return $this->category === 'dinas' ? 'Dinas (Pemerintah)' : 'Non-Dinas (Swasta / Umum)';
     }
 
     public function scopePubliclyVisible(Builder $query): Builder
@@ -111,6 +140,11 @@ class Mitra extends Model
         return $this->hasMany(MitraInvitation::class);
     }
 
+    public function tickets(): HasMany
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
     public function operatingHours(): HasMany
     {
         return $this->hasMany(MitraOperatingHour::class);
@@ -123,4 +157,5 @@ class Mitra extends Model
 
     public function orders(): HasMany { return $this->hasMany(Order::class); }
     public function vouchers(): HasMany { return $this->hasMany(Voucher::class); }
+    public function ledgerJournals(): HasMany { return $this->hasMany(LedgerJournal::class); }
 }

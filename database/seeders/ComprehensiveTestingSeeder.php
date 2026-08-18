@@ -79,6 +79,9 @@ class ComprehensiveTestingSeeder extends Seeder
         $accounts = [
             ['email' => 'admin@example.test', 'name' => 'Administrator Platform', 'role' => 'admin'],
             ['email' => 'superadmin@example.test', 'name' => 'Super Admin System', 'role' => 'super-admin'],
+            ['email' => 'supervisor.dinas@tegalkab.go.id', 'name' => 'Dr. H. Ahmad Rasyid, M.Si (Kepala Bidang Pariwisata)', 'role' => 'dinas-supervisor'],
+            ['email' => 'admin1@jelajahtegal.com', 'name' => 'Admin 1 (Budi Santoso)', 'role' => 'admin'],
+            ['email' => 'admin2@jelajahtegal.com', 'name' => 'Admin 2 (Siti Rahmawati)', 'role' => 'admin'],
             ['email' => 'owner@example.test', 'name' => 'Budi Susanto (Owner Utama)', 'role' => 'mitra-owner'],
             ['email' => 'staff@example.test', 'name' => 'Siti Rahma (Staff Mitra)', 'role' => 'mitra-staff'],
             ['email' => 'gatekeeper@example.test', 'name' => 'Joko Gatekeeper (Petugas QR)', 'role' => 'gatekeeper'],
@@ -187,89 +190,95 @@ class ComprehensiveTestingSeeder extends Seeder
         );
 
         // 4. Media Assets Dummy
-        $mediaPai = MediaAsset::create([
-            'owner_user_id' => $ownerUser->id,
-            'disk' => 'local',
-            'object_key' => 'media/pai_cover.jpg',
-            'original_name' => 'pai_cover.jpg',
-            'mime_type' => 'image/jpeg',
-            'size_bytes' => 256000,
-            'checksum_sha256' => hash('sha256', 'media_pai_content'),
-            'visibility' => 'public',
-            'purpose' => 'catalog_cover',
-            'status' => 'attached',
-            'uploaded_at' => now(),
-        ]);
+        $mediaPai = MediaAsset::updateOrCreate(
+            ['disk' => 'local', 'object_key' => 'media/pai_cover.jpg'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'original_name' => 'pai_cover.jpg',
+                'mime_type' => 'image/jpeg',
+                'size_bytes' => 256000,
+                'checksum_sha256' => hash('sha256', 'media_pai_content'),
+                'visibility' => 'public',
+                'purpose' => 'catalog_cover',
+                'status' => 'attached',
+                'uploaded_at' => now(),
+            ]
+        );
 
-        $mediaGuci = MediaAsset::create([
-            'owner_user_id' => $ownerUser->id,
-            'disk' => 'local',
-            'object_key' => 'media/guci_cover.jpg',
-            'original_name' => 'guci_cover.jpg',
-            'mime_type' => 'image/jpeg',
-            'size_bytes' => 312000,
-            'checksum_sha256' => hash('sha256', 'media_guci_content'),
-            'visibility' => 'public',
-            'purpose' => 'catalog_cover',
-            'status' => 'attached',
-            'uploaded_at' => now(),
-        ]);
+        $mediaGuci = MediaAsset::updateOrCreate(
+            ['disk' => 'local', 'object_key' => 'media/guci_cover.jpg'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'original_name' => 'guci_cover.jpg',
+                'mime_type' => 'image/jpeg',
+                'size_bytes' => 312000,
+                'checksum_sha256' => hash('sha256', 'media_guci_content'),
+                'visibility' => 'public',
+                'purpose' => 'catalog_cover',
+                'status' => 'attached',
+                'uploaded_at' => now(),
+            ]
+        );
 
-        $mediaCurug = MediaAsset::create([
-            'owner_user_id' => $ownerUser->id,
-            'disk' => 'local',
-            'object_key' => 'media/curug_putri_cover.jpg',
-            'original_name' => 'curug_putri_cover.jpg',
-            'mime_type' => 'image/jpeg',
-            'size_bytes' => 312000,
-            'checksum_sha256' => hash('sha256', 'media_curug_content'),
-            'visibility' => 'public',
-            'purpose' => 'catalog_cover',
-            'status' => 'attached',
-            'uploaded_at' => now(),
-        ]);
+        $mediaCurug = MediaAsset::updateOrCreate(
+            ['disk' => 'local', 'object_key' => 'media/curug_putri_cover.jpg'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'original_name' => 'curug_putri_cover.jpg',
+                'mime_type' => 'image/jpeg',
+                'size_bytes' => 312000,
+                'checksum_sha256' => hash('sha256', 'media_curug_content'),
+                'visibility' => 'public',
+                'purpose' => 'catalog_cover',
+                'status' => 'attached',
+                'uploaded_at' => now(),
+            ]
+        );
 
-        $mediaBeko = MediaAsset::create([
-            'owner_user_id' => $ownerUser->id,
-            'disk' => 'local',
-            'object_key' => 'media/danau_beko_cover.jpg',
-            'original_name' => 'danau_beko_cover.jpg',
-            'mime_type' => 'image/jpeg',
-            'size_bytes' => 312000,
-            'checksum_sha256' => hash('sha256', 'media_beko_content'),
-            'visibility' => 'public',
-            'purpose' => 'catalog_cover',
-            'status' => 'attached',
-            'uploaded_at' => now(),
-        ]);
+        $mediaBeko = MediaAsset::updateOrCreate(
+            ['disk' => 'local', 'object_key' => 'media/danau_beko_cover.jpg'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'original_name' => 'danau_beko_cover.jpg',
+                'mime_type' => 'image/jpeg',
+                'size_bytes' => 312000,
+                'checksum_sha256' => hash('sha256', 'media_beko_content'),
+                'visibility' => 'public',
+                'purpose' => 'catalog_cover',
+                'status' => 'attached',
+                'uploaded_at' => now(),
+            ]
+        );
 
-        $mediaBahari = MediaAsset::create([
-            'owner_user_id' => $ownerUser->id,
-            'disk' => 'local',
-            'object_key' => 'media/bahari_inn_cover.jpg',
-            'original_name' => 'bahari_inn_cover.jpg',
-            'mime_type' => 'image/jpeg',
-            'size_bytes' => 312000,
-            'checksum_sha256' => hash('sha256', 'media_bahari_content'),
-            'visibility' => 'public',
-            'purpose' => 'catalog_cover',
-            'status' => 'attached',
-            'uploaded_at' => now(),
-        ]);
+        $mediaBahari = MediaAsset::updateOrCreate(
+            ['disk' => 'local', 'object_key' => 'media/bahari_inn_cover.jpg'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'original_name' => 'bahari_inn_cover.jpg',
+                'mime_type' => 'image/jpeg',
+                'size_bytes' => 312000,
+                'checksum_sha256' => hash('sha256', 'media_bahari_content'),
+                'visibility' => 'public',
+                'purpose' => 'catalog_cover',
+                'status' => 'attached',
+                'uploaded_at' => now(),
+            ]
+        );
 
-        $mediaSate = MediaAsset::create([
-            'owner_user_id' => $ownerUser->id,
-            'disk' => 'local',
-            'object_key' => 'media/sate_wendy_cover.jpg',
-            'original_name' => 'sate_wendy_cover.jpg',
-            'mime_type' => 'image/jpeg',
-            'size_bytes' => 312000,
-            'checksum_sha256' => hash('sha256', 'media_sate_content'),
-            'visibility' => 'public',
-            'purpose' => 'catalog_cover',
-            'status' => 'attached',
-            'uploaded_at' => now(),
-        ]);
+        $mediaSate = MediaAsset::updateOrCreate(
+            ['disk' => 'local', 'object_key' => 'media/sate_wendy_cover.jpg'],
+            [
+                'owner_user_id' => $ownerUser->id,
+                'original_name' => 'sate_wendy_cover.jpg',
+                'mime_type' => 'image/jpeg',
+                'size_bytes' => 312000,
+                'checksum_sha256' => hash('sha256', 'media_sate_content'),
+                'visibility' => 'public',
+                'purpose' => 'catalog_cover',
+                'status' => 'attached',
+                'uploaded_at' => now(),
+            ]
+        );
 
         // 5. KYC & Rekening Bank Mitra
         $mitra->kycDocuments()->updateOrCreate(
@@ -314,73 +323,54 @@ class ComprehensiveTestingSeeder extends Seeder
             ]
         );
 
-        // Mitra 2: PT Guci Natural Resort Tegal
-        $regionGuci = \App\Models\Region::where('code', 'TGL-KAB-GUCI')->first() ?? $firstRegion;
-        $mitraGuci = Mitra::updateOrCreate(
-            ['slug' => 'guci-resort-tegal'],
-            [
-                'owner_user_id' => $ownerUser->id,
-                'region_id' => $regionGuci->id,
-                'legal_name' => 'PT Guci Natural Resort Tegal',
-                'display_name' => 'PT Guci Natural Resort Tegal',
-                'status' => 'active',
-                'approved_at' => now(),
-                'contact_email' => 'guciresort@example.test',
-                'contact_phone' => '081299887766',
-                'address' => 'Jl. Raya Guci No. 88, Bumijawa, Tegal',
-            ]
+        // Mitra 2 (Non-Dinas): Mitra Usaha Achmad Fatich Muzaqi
+        $fatihUser = User::updateOrCreate(
+            ['email' => 'fatih.muzaqi123@gmail.com'],
+            ['name' => 'Achmad Fatich Muzaqi', 'status' => 'active', 'email_verified_at' => now()]
         );
-        // Mitra 3: CV Pesona Alam Bumijawa
-        $mitraCurug = Mitra::updateOrCreate(
-            ['slug' => 'pesona-alam-bumijawa'],
+        $fatihUser->credential()->updateOrCreate(['user_id' => $fatihUser->id], ['password_hash' => Hash::make('password')]);
+        $fatihUser->profile()->updateOrCreate(['user_id' => $fatihUser->id], ['notification_preferences' => ['in_app' => true, 'email' => true]]);
+
+        $mitraFatih = Mitra::updateOrCreate(
+            ['slug' => 'achmad-fatich-muzaqi'],
             [
-                'owner_user_id' => $ownerUser->id,
-                'region_id' => $regionGuci->id,
-                'legal_name' => 'CV Pesona Alam Bumijawa',
-                'display_name' => 'CV Pesona Alam Bumijawa',
+                'category' => 'non_dinas',
+                'owner_user_id' => $fatihUser->id,
+                'region_id' => $firstRegion?->id,
+                'legal_name' => 'PT Muzaqi Berkah Wisata',
+                'display_name' => 'Mitra Usaha Achmad Fatich Muzaqi',
                 'status' => 'active',
                 'approved_at' => now(),
-                'contact_email' => 'pesonaalam@example.test',
-                'contact_phone' => '081344556677',
-                'address' => 'Desa Tuwel, Bumijawa, Tegal',
+                'contact_email' => 'fatih.muzaqi123@gmail.com',
+                'contact_phone' => '081234567804',
+                'address' => 'Jl. Pemuda No. 10, Tegal',
             ]
         );
 
-        // Mitra 4: Pokdarwis Danau Beko Margasari
-        $regionMargasari = \App\Models\Region::where('code', 'TGL-KAB-MARGASARI')->first() ?? $firstRegion;
-        $mitraBeko = Mitra::updateOrCreate(
-            ['slug' => 'pokdarwis-danau-beko'],
-            [
-                'owner_user_id' => $ownerUser->id,
-                'region_id' => $regionMargasari->id,
-                'legal_name' => 'Pokdarwis Danau Beko Margasari',
-                'display_name' => 'Pokdarwis Danau Beko Margasari',
-                'status' => 'active',
-                'approved_at' => now(),
-                'contact_email' => 'danaubeko@example.test',
-                'contact_phone' => '081566778899',
-                'address' => 'Jatilaba, Margasari, Tegal',
-            ]
-        );
+        $mitraFatih->members()->updateOrCreate(['user_id' => $fatihUser->id], ['status' => 'active', 'joined_at' => now()]);
+        setPermissionsTeamId($mitraFatih->id);
+        $fatihUser->syncRoles(['mitra-owner']);
+        setPermissionsTeamId(null);
 
         foreach ([$tourismType, $accommType, $culinaryType, $eventType, $rentalType] as $type) {
             if ($type) {
-                MitraFeature::updateOrCreate(['mitra_id' => $mitraGuci->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
-                MitraFeature::updateOrCreate(['mitra_id' => $mitraCurug->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
-                MitraFeature::updateOrCreate(['mitra_id' => $mitraBeko->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
+                MitraFeature::updateOrCreate(['mitra_id' => $mitraFatih->id, 'service_type_id' => $type->id], ['status' => 'enabled', 'enabled_at' => now()]);
             }
         }
 
         // 6. DOMAIN TOURISM (Katalog Destinasi Wisata)
         $categoryTourism = Category::firstOrCreate([
             'service_type_id' => $tourismType->id,
-            'name' => 'Wisata Alam & Pantai',
             'slug' => 'wisata-alam-pantai',
+        ], [
+            'name' => 'Wisata Alam & Pantai',
         ]);
+
+        $regionGuci = \App\Models\Region::where('code', 'TGL-KAB-GUCI')->first() ?? $firstRegion;
 
         // 6a. Guci Hot Spring
         $entityGuci = CatalogEntity::create([
-            'mitra_id' => $mitraGuci->id,
+            'mitra_id' => $mitra->id,
             'service_type_id' => $tourismType->id,
             'category_id' => $categoryTourism->id,
             'region_id' => $regionGuci->id,
@@ -405,7 +395,7 @@ class ComprehensiveTestingSeeder extends Seeder
         ]);
         $offerGuci = CatalogOffer::create([
             'catalog_entity_id' => $entityGuci->id,
-            'mitra_id' => $mitraGuci->id,
+            'mitra_id' => $mitra->id,
             'offer_type' => 'ticket',
             'name' => 'Tiket Masuk Utama Guci',
             'sku' => 'GUC-REGULER',
@@ -952,13 +942,105 @@ class ComprehensiveTestingSeeder extends Seeder
             'status' => 'published',
         ]);
 
-        AuditLog::create([
-            'mitra_id' => $mitra->id,
-            'actor_user_id' => $ownerUser->id,
-            'event' => 'mitra.onboarding_completed',
-            'ip_address' => '127.0.0.1',
-            'user_agent' => 'Lokantara Testing Suite',
-            'created_at' => now(),
-        ]);
+        // 15. MITRA KATEGORI DINAS & TRANSAKSI TIKET RETRIBUSI PAD
+        $dinasSupervisor = $users['supervisor.dinas@tegalkab.go.id'];
+
+        $mitraGuci = Mitra::updateOrCreate(
+            ['slug' => 'uptd-wisata-guci-tegal'],
+            [
+                'category' => 'dinas',
+                'owner_user_id' => $dinasSupervisor->id,
+                'region_id' => $firstRegion?->id,
+                'legal_name' => 'UPTD Pengelolaan Objek Wisata Guci & Cacaban',
+                'display_name' => 'Taman Wisata Air Panas Guci',
+                'status' => 'active',
+                'approved_at' => now(),
+                'contact_email' => 'uptd.guci@tegalkab.go.id',
+                'contact_phone' => '0283-911223',
+                'address' => 'Jl. Objek Wisata Guci, Bumijawa, Kabupaten Tegal',
+                'description' => 'Destinasi wisata pemandian air panas alami di lereng Gunung Slamet yang dikelola resmi oleh Dinas Pariwisata Pemkab Tegal.',
+            ]
+        );
+
+        $mitraPai = Mitra::updateOrCreate(
+            ['slug' => 'uptd-pantai-alam-indah'],
+            [
+                'category' => 'dinas',
+                'owner_user_id' => $dinasSupervisor->id,
+                'region_id' => $firstRegion?->id,
+                'legal_name' => 'UPTD Balai Wisata Bahari Kota Tegal',
+                'display_name' => 'Pantai Alam Indah (PAI) Tegal',
+                'status' => 'active',
+                'approved_at' => now(),
+                'contact_email' => 'pai.tegal@tegalkota.go.id',
+                'contact_phone' => '0283-356789',
+                'address' => 'Jl. Sangir No. 1, Mintaragen, Kota Tegal',
+                'description' => 'Destinasi wisata bahari pesisir pantai utara dengan fasilitas anjungan dan museum bahari milik Pemkot Tegal.',
+            ]
+        );
+
+        // Feature and Gates for Dinas Mitras
+        foreach ([$mitraGuci, $mitraPai] as $dinasM) {
+            MitraFeature::updateOrCreate(['mitra_id' => $dinasM->id, 'service_type_id' => $tourismType->id], ['status' => 'enabled', 'enabled_at' => now()]);
+            $gkDinas = $dinasM->members()->updateOrCreate(['user_id' => $gatekeeperUser->id], ['status' => 'active', 'joined_at' => now()]);
+            GatekeeperAssignment::updateOrCreate(
+                ['mitra_id' => $dinasM->id, 'member_id' => $gkDinas->id],
+                [
+                    'scope_type' => 'mitra',
+                    'valid_from' => now()->subMonth(),
+                    'valid_until' => now()->addYear(),
+                    'assigned_by' => $dinasSupervisor->id,
+                    'revoked_at' => null,
+                ]
+            );
+        }
+
+        // Seed Sample Paid Orders and Tickets for Dinas PAD Analytics
+        $samplePrices = [20000, 25000, 15000, 30000];
+        $sampleMitras = [$mitraGuci, $mitraPai];
+
+        for ($i = 1; $i <= 15; $i++) {
+            $m = $sampleMitras[$i % 2];
+            $price = $samplePrices[$i % 4];
+            $orderDate = now()->subDays($i * 2);
+
+            $dinasOrder = Order::create([
+                'order_number' => 'ORD-DINAS-'.now()->format('Ymd').'-'.sprintf('%04d', $i),
+                'mitra_id' => $m->id,
+                'user_id' => ($i % 2 === 0) ? $consumerUser->id : $users['consumer2@example.test']->id,
+                'total_amount' => $price * 2,
+                'status' => 'paid',
+                'paid_at' => $orderDate,
+                'payment_method' => 'qris',
+                'user_snapshot' => [
+                    'name' => ($i % 2 === 0) ? $consumerUser->name : 'Rina Wisatawan',
+                    'email' => ($i % 2 === 0) ? $consumerUser->email : 'consumer2@example.test',
+                ],
+                'created_at' => $orderDate,
+            ]);
+
+            $dinasOrderItem = OrderItem::create([
+                'order_id' => $dinasOrder->id,
+                'item_name' => 'Tiket Masuk Retribusi '.$m->display_name,
+                'unit_price' => $price,
+                'quantity' => 2,
+                'subtotal' => $price * 2,
+                'service_type_id' => $tourismType->id,
+            ]);
+
+            for ($t = 1; $t <= 2; $t++) {
+                $isCheckedIn = ($i % 3 !== 0); // 2/3 are checked in
+                Ticket::create([
+                    'order_item_id' => $dinasOrderItem->id,
+                    'mitra_id' => $m->id,
+                    'ticket_code' => 'TKT-PAD-'.now()->format('ymd').'-'.strtoupper(str()->random(6)),
+                    'status' => $isCheckedIn ? 'used' : 'unused',
+                    'used_at' => $isCheckedIn ? $orderDate->copy()->addHours(2) : null,
+                    'valid_from' => $orderDate->copy()->startOfDay(),
+                    'valid_until' => $orderDate->copy()->addDays(7)->endOfDay(),
+                    'created_at' => $orderDate,
+                ]);
+            }
+        }
     }
 }

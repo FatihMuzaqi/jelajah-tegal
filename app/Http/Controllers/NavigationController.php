@@ -9,7 +9,14 @@ use Illuminate\View\View;
 
 class NavigationController extends Controller
 {
-    private array $map = ['super-admin' => 'super-admin.dashboard', 'admin' => 'admin.dashboard', 'gatekeeper' => 'mitra.select', 'mitra' => 'mitra.select', 'consumer' => 'consumer.dashboard'];
+    private array $map = [
+        'super-admin' => 'super-admin.dashboard',
+        'admin' => 'admin.dashboard',
+        'dinas' => 'dinas.dashboard',
+        'gatekeeper' => 'mitra.select',
+        'mitra' => 'mitra.select',
+        'consumer' => 'consumer.dashboard'
+    ];
 
     public function redirect(Request $r): RedirectResponse
     {
@@ -56,6 +63,10 @@ class NavigationController extends Controller
                 return redirect()->route('mitra.select');
             }
 
+            if ($roleSurface === 'dinas') {
+                return redirect()->route('dinas.dashboard');
+            }
+
             if ($roleSurface === 'admin') {
                 return redirect()->route('admin.dashboard');
             }
@@ -94,6 +105,10 @@ class NavigationController extends Controller
 
         if ($s === 'super-admin') {
             return redirect()->route('super-admin.dashboard');
+        }
+
+        if ($s === 'dinas') {
+            return redirect()->route('dinas.dashboard');
         }
 
         if ($s === 'gatekeeper') {
@@ -208,13 +223,22 @@ class NavigationController extends Controller
             }
         }
 
-        // Super Admin & Admin secara otomatis memiliki akses Master Switch ke Mitra & Gatekeeper
+        // Super Admin & Admin secara otomatis memiliki akses Master Switch ke Mitra, Gatekeeper, dan Dinas
         if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
             if (! in_array('mitra', $out)) {
                 $out[] = 'mitra';
             }
             if (! in_array('gatekeeper', $out)) {
                 $out[] = 'gatekeeper';
+            }
+            if (! in_array('dinas', $out)) {
+                $out[] = 'dinas';
+            }
+        }
+
+        if ($r->user()->hasRole('dinas-supervisor')) {
+            if (! in_array('dinas', $out)) {
+                $out[] = 'dinas';
             }
         }
 

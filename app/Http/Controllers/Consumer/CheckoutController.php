@@ -43,9 +43,24 @@ class CheckoutController extends Controller
         return view('consumer.orders.index', compact('invoices', 'standaloneOrders'));
     }
 
-    public function show(Request $r, Order $order): View
+    public function show(Request $r, Order $order, \App\Services\Payments\MidtransClient $midtrans, \App\Actions\Payments\ProcessMidtransNotification $orderProcessor): View
     {
         abort_unless($order->user_id === $r->user()->id, 403);
+
+        if ($order->status->value === 'pending_payment') {
+            try {
+                $statusPayload = $midtrans->status($order->order_number);
+                $status = strtolower((string) ($statusPayload['transaction_status'] ?? ''));
+                $fraud = strtolower((string) ($statusPayload['fraud_status'] ?? 'accept'));
+                if ((in_array($status, ['settlement', 'capture']) && $fraud === 'accept') || in_array($status, ['expire', 'cancel', 'deny'])) {
+                    $orderProcessor->execute($statusPayload, 'view_sync', false);
+                    $order->refresh();
+                }
+            } catch (\Throwable $e) {
+                // proceed
+            }
+        }
+
         return view('consumer.orders.show', [
             'order' => $order->load(['items.tickets', 'payments', 'voucher'])
         ]);

@@ -57,9 +57,13 @@
                         <strong>📍 Alamat:</strong> {{ $item->address ?: 'Belum diisi' }}
                     </div>
                     @if ($item->location)
-                        <div>
-                            <strong>🌐 Koordinat GPS:</strong> {{ $item->location->latitude }},
-                            {{ $item->location->longitude }}
+                        <div class='mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2'>
+                            <div>
+                                <strong>🌐 Koordinat GPS:</strong> {{ $item->location->latitude }}, {{ $item->location->longitude }}
+                            </div>
+                            <a href="https://www.google.com/maps?q={{ $item->location->latitude }},{{ $item->location->longitude }}" target="_blank" rel="noopener noreferrer" class="badge text-bg-light border text-decoration-none py-1.5 px-2">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-emerald me-1"></i> Buka di Google Maps
+                            </a>
                         </div>
                     @endif
                 </div>

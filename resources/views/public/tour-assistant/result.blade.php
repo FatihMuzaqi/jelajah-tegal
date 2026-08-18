@@ -148,6 +148,20 @@
 
                             <ul class="list-unstyled mb-4 flex-grow-1">
                                 @foreach($option['items'] as $item)
+                                    @php
+                                        $offer = $item['offer'] ?? null;
+                                        $entityName = $item['name'] ?? null;
+                                        if (!$entityName) {
+                                            if (is_object($offer)) {
+                                                $entityName = $offer->catalogEntity?->name ?? $offer->name ?? 'Layanan Mitra';
+                                            } elseif (is_array($offer)) {
+                                                $entityName = $offer['catalog_entity']['name'] ?? $offer['name'] ?? 'Layanan Mitra';
+                                            } else {
+                                                $entityName = 'Layanan Mitra';
+                                            }
+                                        }
+                                        $offerPrice = $item['unit_price'] ?? (is_object($offer) ? ($offer->price ?? 0) : ($offer['price'] ?? 0));
+                                    @endphp
                                     <li class="d-flex align-items-start gap-3 mb-3 pb-3 border-bottom border-light">
                                         <div class="ta-item-icon-box" style="background: 
                                             @if($item['type'] === 'accommodation') #3b82f6
@@ -169,7 +183,7 @@
                                         </div>
                                         <div class="flex-grow-1">
                                             <div class="d-flex justify-content-between align-items-start">
-                                                <strong class="text-dark text-sm">{{ $item['offer']->catalogEntity->name }}</strong>
+                                                <strong class="text-dark text-sm">{{ $entityName }}</strong>
                                                 <span class="fw-bold text-dark text-sm ms-2">Rp {{ number_format($item['subtotal'], 0, ',', '.') }}</span>
                                             </div>
                                             <div class="text-muted small mt-0.5">
@@ -178,7 +192,7 @@
                                                 @elseif($item['type'] === 'rental')
                                                     {{ $item['quantity'] }} Kendaraan &times; {{ $item['days'] }} Hari
                                                 @elseif($item['type'] === 'culinary')
-                                                    {{ $item['quantity'] }} Voucher Makan (@ Rp {{ number_format($item['offer']->price, 0, ',', '.') }})
+                                                    {{ $item['quantity'] }} Voucher Makan (@ Rp {{ number_format($offerPrice, 0, ',', '.') }})
                                                 @elseif($item['type'] === 'event')
                                                     {{ $item['quantity'] }} Tiket Event Masuk
                                                 @else

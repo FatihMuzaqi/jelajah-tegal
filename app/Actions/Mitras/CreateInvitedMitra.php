@@ -20,6 +20,7 @@ class CreateInvitedMitra
             );
             $mitra = Mitra::create([
                 'owner_user_id' => $owner->id,
+                'category' => $data['category'] ?? 'non_dinas',
                 'legal_name' => $data['legal_name'],
                 'display_name' => $data['display_name'],
                 'slug' => $data['slug'],

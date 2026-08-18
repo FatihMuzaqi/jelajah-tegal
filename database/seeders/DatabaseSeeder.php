@@ -16,5 +16,6 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(ComprehensiveTestingSeeder::class);
         $this->call(AccommodationSeeder::class);
+        $this->call(DinasSeeder::class);
     }
 }

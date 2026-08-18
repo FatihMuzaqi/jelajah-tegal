@@ -56,10 +56,16 @@
                     <div class='mb-2'>
                         <strong>📍 Alamat:</strong> {{ $tourism->address ?: 'Belum diisi' }}
                     </div>
-                    <div>
-                        <strong>🌐 Koordinat GPS:</strong> {{ $tourism->location?->latitude ?? '-' }},
-                        {{ $tourism->location?->longitude ?? '-' }}
-                    </div>
+                    @if ($tourism->location)
+                        <div class='mt-2 pt-2 border-top d-flex align-items-center justify-content-between flex-wrap gap-2'>
+                            <div>
+                                <strong>🌐 Koordinat GPS:</strong> {{ $tourism->location->latitude }}, {{ $tourism->location->longitude }}
+                            </div>
+                            <a href="https://www.google.com/maps?q={{ $tourism->location->latitude }},{{ $tourism->location->longitude }}" target="_blank" rel="noopener noreferrer" class="badge text-bg-light border text-decoration-none py-1.5 px-2">
+                                <i class="fa-solid fa-arrow-up-right-from-square text-emerald me-1"></i> Buka di Google Maps
+                            </a>
+                        </div>
+                    @endif
                 </div>
 
                 <strong class='d-block mb-2' style='font-size: 13px;'>Fasilitas Tersedia:</strong>

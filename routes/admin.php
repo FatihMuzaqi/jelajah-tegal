@@ -25,6 +25,9 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.admin',
     Route::get('/mitras', [MitraController::class, 'index'])->name('mitras.index');
     Route::get('/mitras/create', [MitraController::class, 'create'])->name('mitras.create');
     Route::post('/mitras', [MitraController::class, 'store'])->name('mitras.store');
+    Route::get('/mitras/{mitra}', [MitraController::class, 'show'])->name('mitras.show');
+    Route::get('/mitras/{mitra}/edit', [MitraController::class, 'edit'])->name('mitras.edit');
+    Route::put('/mitras/{mitra}', [MitraController::class, 'update'])->name('mitras.update');
     Route::patch('/mitras/{mitra}/status', [MitraController::class, 'status'])->name('mitras.status');
     Route::get('/kyc', [KycReviewController::class, 'index'])->name('kyc.index');
     Route::patch('/kyc/{document}', [KycReviewController::class, 'update'])->name('kyc.update');

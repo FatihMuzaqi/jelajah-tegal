@@ -21,7 +21,41 @@ class DashboardController extends Controller
     {
         $u = $r->user();
 
-        return $this->view('consumer', $r, [['label' => 'Mitra aktif', 'value' => $u->mitraMemberships()->where('status', 'active')->count(), 'tone' => 'primary'], ['label' => 'Notifikasi belum dibaca', 'value' => $u->notifications()->whereNull('read_at')->count(), 'tone' => 'info']], $u->notifications()->latest()->limit(5)->get(), null, [], $u->mitraMemberships()->with('mitra')->where('status', 'active')->limit(8)->get());
+        // 1. Consumer Real Metrics
+        $totalOrders = \App\Models\Order::where('user_id', $u->id)->count();
+        $paidOrdersCount = \App\Models\Order::where('user_id', $u->id)
+            ->where(function ($q) {
+                $q->whereIn('payment_status', ['paid', 'settlement', 'capture'])
+                  ->orWhereIn('status', ['paid', 'confirmed', 'completed']);
+            })->count();
+
+        $aiPackagesCount = \App\Models\Invoice::where('user_id', $u->id)->count();
+        $renterDocsCount = \App\Models\RenterDocument::where('user_id', $u->id)->count();
+
+        // 2. Recent orders (max 5)
+        $recentOrders = \App\Models\Order::where('user_id', $u->id)
+            ->with(['mitra', 'items.tickets'])
+            ->latest()
+            ->limit(5)
+            ->get();
+
+        // 3. Recommended tourism items in Tegal
+        $popularTourism = CatalogEntity::whereHas('serviceType', fn ($q) => $q->where('code', 'tourism'))
+            ->where('status', 'published')
+            ->with(['region', 'category', 'media', 'location'])
+            ->latest()
+            ->limit(4)
+            ->get();
+
+        return view('consumer.dashboard', compact(
+            'u',
+            'totalOrders',
+            'paidOrdersCount',
+            'aiPackagesCount',
+            'renterDocsCount',
+            'recentOrders',
+            'popularTourism'
+        ));
     }
 
     public function mitra(Request $r)

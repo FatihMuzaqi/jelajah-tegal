@@ -19,13 +19,37 @@
         content='{{ trim($__env->yieldContent('meta-description', 'Temukan Mitra dan layanan lokal wisata, penginapan, kuliner, dan event yang telah tersedia di Jelajah Tegal.')) }}'>
     <meta property='og:url' content='{{ url()->current() }}'>
     <meta property='og:image' content='{{ asset('images/logo.png') }}'>
+    <!-- Anti-Flicker & Theme Synchronization Script -->
+    <script>
+        (function() {
+            const theme = localStorage.getItem('lokantara-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            document.documentElement.dataset.theme = theme;
+        })();
+    </script>
+
     <!-- Icon Libraries: Font Awesome 6 & Bootstrap Icons -->
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
         crossorigin="anonymous">
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+
+    <style>
+        .public-header {
+            min-height: 72px;
+            background: #ffffff !important;
+            contain: layout;
+        }
+        .public-navbar {
+            min-height: 72px;
+        }
+        .public-navbar .nav-link {
+            transition: color 0.15s ease, background-color 0.15s ease !important;
+        }
+    </style>
 </head>
 
 <body class='public-body'>
@@ -33,11 +57,11 @@
     <header class='public-header sticky-top bg-white border-bottom shadow-sm'>
         <nav class='navbar navbar-expand-lg public-navbar py-2' aria-label='Navigasi publik'>
             <div class='container public-container'>
-                <a href='{{ route('home') }}'
+                <a href='{{ route('home') }}' wire:navigate
                     class='brand-mark public-brand d-flex align-items-center gap-2 text-decoration-none'
                     aria-label='Jelajah Tegal beranda'>
-                    <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal'
-                        style='height:42px; width:auto; object-fit:contain; border-radius:8px;'>
+                    <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal' width="42" height="42"
+                        style='height:42px; width:42px; object-fit:contain; border-radius:8px;' fetchpriority="high">
                     <div class="d-flex flex-column">
                         <span class='brand-text-title fw-extrabold text-dark fs-5 lh-1'>Jelajah Tegal</span>
                         <small class="text-muted fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Jelajah •
@@ -51,31 +75,27 @@
                     <ul class='navbar-nav mx-auto gap-1 gap-lg-2 fw-semibold my-2 my-lg-0'>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('home') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('home') }}'>Beranda</a>
+                                href='{{ route('home') }}' wire:navigate>Beranda</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('tourism.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('tourism.index') }}'>Wisata</a>
+                                href='{{ route('tourism.index') }}' wire:navigate>Wisata</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('accommodation.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('accommodation.index') }}'>Penginapan</a>
-                        </li>
-                        <li class='nav-item'>
-                            <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('tour-assistant.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('tour-assistant.index') }}'>Tour AI</a>
+                                href='{{ route('accommodation.index') }}' wire:navigate>Penginapan</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('culinary.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('culinary.index') }}'>Kuliner</a>
+                                href='{{ route('culinary.index') }}' wire:navigate>Kuliner</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('event.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('event.index') }}'>Event</a>
+                                href='{{ route('event.index') }}' wire:navigate>Event</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('rental.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('rental.index') }}'>Rental</a>
+                                href='{{ route('rental.index') }}' wire:navigate>Rental</a>
                         </li>
                         <li class='nav-item dropdown'>
                             <a class='nav-link dropdown-toggle px-3 py-2 rounded-3 d-flex align-items-center gap-1'
@@ -83,11 +103,11 @@
                                 Informasi
                             </a>
                             <ul class='dropdown-menu border-0 shadow-sm rounded-3 mt-1'>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}'><i
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}' wire:navigate><i
                                             class="fa-solid fa-circle-info text-success me-2"></i>Tentang</a></li>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}'><i
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}' wire:navigate><i
                                             class="fa-solid fa-circle-question text-info me-2"></i>FAQ</a></li>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}'><i
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}' wire:navigate><i
                                             class="fa-solid fa-envelope text-warning me-2"></i>Kontak</a></li>
                             </ul>
                         </li>
@@ -134,6 +154,12 @@
                                         </div>
                                     </li>
                                     <li>
+                                        <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center gap-2" href="{{ route('consumer.trip-navigator.index') }}">
+                                            <i class="fa-solid fa-map-location-dot" style="width: 16px; color: #4f46e5;"></i>
+                                            <span>Rute Destinasi Terbayar</span>
+                                        </a>
+                                    </li>
+                                    <li>
                                         <a class="dropdown-item py-2 px-3 rounded-2 d-flex align-items-center gap-2" href="{{ route('consumer.orders.index') }}">
                                             <i class="fa-solid fa-ticket text-emerald" style="width: 16px;"></i>
                                             <span>Pesanan & Tiket Saya</span>
@@ -174,8 +200,8 @@
 
     {{-- Floating Toast Notification (Tidak Mengganggu Navbar) --}}
     @if (session('status') || session('success') || session('error') || session('info'))
-        <div class="position-fixed" style="top: 85px; right: 24px; z-index: 1060; max-width: 420px; animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);">
-            <div class="toast show border-0 shadow-lg rounded-4 overflow-hidden" role="alert" aria-live="assertive" aria-atomic="true" id="floating-alert-toast" style="background: #ffffff;">
+        <div class="position-fixed jt-floating-toast-wrap">
+            <div class="toast show border-0 shadow-lg rounded-4 overflow-hidden w-100" role="alert" aria-live="assertive" aria-atomic="true" id="floating-alert-toast" style="background: #ffffff;">
                 <div class="d-flex align-items-center p-3 border-start border-4 {{ session('error') ? 'border-danger' : 'border-success' }}">
                     <div class="me-3 fs-4 {{ session('error') ? 'text-danger' : 'text-success' }}">
                         <i class="fa-solid {{ session('error') ? 'fa-circle-exclamation' : 'fa-circle-check' }}"></i>
@@ -193,6 +219,21 @@
             </div>
         </div>
         <style>
+            .jt-floating-toast-wrap {
+                top: 85px;
+                right: 24px;
+                z-index: 1060;
+                max-width: 420px;
+                animation: slideInToast 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+            }
+            @media (max-width: 576px) {
+                .jt-floating-toast-wrap {
+                    top: 70px;
+                    right: 12px;
+                    left: 12px;
+                    max-width: none;
+                }
+            }
             @keyframes slideInToast {
                 from { transform: translateX(100%); opacity: 0; }
                 to { transform: translateX(0); opacity: 1; }
@@ -223,7 +264,7 @@
                     wilayah Tegal.</p>
             </div>
             <div>
-                <h2>Informasi</h2><a href='{{ route('public.about') }}'>Tentang</a><a
+                <h2>Informasi</h2><a href='{{ route('public.mitra.index') }}'>Direktori Mitra</a><a href='{{ route('public.about') }}'>Tentang</a><a
                     href='{{ route('public.faq') }}'>FAQ</a><a href='{{ route('public.contact') }}'>Kontak</a>
             </div>
             <div>

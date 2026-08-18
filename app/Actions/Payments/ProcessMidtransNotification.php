@@ -44,7 +44,10 @@ class ProcessMidtransNotification
             if (! hash_equals($existing->payload_hash, $hash)) {
                 throw ValidationException::withMessages(['provider_event_id' => 'Provider event ID telah digunakan oleh payload berbeda.']);
             }
-            return $existing;
+            if ($existing->processed_at !== null && $payment->status->value === 'paid') {
+                return $existing;
+            }
+            $event = $existing;
         }
 
         try {

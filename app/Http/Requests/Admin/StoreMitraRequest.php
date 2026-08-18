@@ -17,6 +17,7 @@ class StoreMitraRequest extends FormRequest
         return [
             'owner_name' => ['required', 'string', 'max:191'],
             'owner_email' => ['required', 'email:rfc', 'max:191'],
+            'category' => ['required', 'string', Rule::in(['dinas', 'non_dinas'])],
             'legal_name' => ['required', 'string', 'max:191'],
             'display_name' => ['required', 'string', 'max:191'],
             'slug' => ['required', 'alpha_dash', 'max:191', Rule::unique('mitras', 'slug')],

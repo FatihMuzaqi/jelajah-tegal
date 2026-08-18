@@ -56,25 +56,90 @@
 }
 
 /* Hero Action Buttons (Rekomendasi AI & Pencarian) */
+.jt-hero-actions-wrap {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+.jt-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 14px 26px;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 1.3;
+    text-decoration: none;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
 .jt-hero-btn-ai {
     background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.25) !important;
-    box-shadow: 0 10px 25px rgba(5, 150, 105, 0.45) !important;
-    transition: all 0.3s ease;
+    color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, 0.3) !important;
+    box-shadow: 0 10px 25px rgba(5, 150, 105, 0.4) !important;
 }
 .jt-hero-btn-ai:hover {
     transform: translateY(-3px);
-    box-shadow: 0 14px 32px rgba(5, 150, 105, 0.65) !important;
+    box-shadow: 0 14px 32px rgba(5, 150, 105, 0.6) !important;
     color: #ffffff !important;
 }
 .jt-hero-btn-search {
-    transition: all 0.3s ease;
+    background: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.14) !important;
 }
 .jt-hero-btn-search:hover {
     transform: translateY(-3px);
     background: #f0fdf4 !important;
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2) !important;
     color: #047857 !important;
+}
+.jt-badge-tag {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border-radius: 999px;
+    background: #ffffff;
+    color: #047857;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    margin-left: 2px;
+}
+
+@media (max-width: 576px) {
+    .jt-hero-actions-wrap {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 12px;
+    }
+    .jt-hero-btn {
+        width: 100%;
+        padding: 13px 16px;
+        font-size: 14.5px;
+        white-space: normal;
+        text-align: center;
+    }
+    .jt-badge-tag {
+        font-size: 10px;
+        padding: 2px 8px;
+    }
+}
+@media (min-width: 577px) and (max-width: 768px) {
+    .jt-hero-btn {
+        padding: 12px 18px;
+        font-size: 14px;
+    }
+    .jt-badge-tag {
+        font-size: 10px;
+        padding: 2px 7px;
+    }
 }
 
 /* Quick Search Chips - Smooth Scroll on Mobile */
@@ -553,15 +618,13 @@
         </p>
 
         <!-- Dua Tombol Utama: Rekomendasi AI & Pencarian -->
-        <div class="d-flex align-items-center gap-3 flex-wrap mb-4 pt-2">
-            <a href="{{ route('tour-assistant.index') }}" class="btn btn-lg rounded-pill px-4 py-3 fw-bold text-white shadow-lg d-inline-flex align-items-center gap-2 jt-hero-btn-ai"
-               style="background: linear-gradient(135deg, #10b981 0%, #047857 100%); border: 1px solid rgba(255,255,255,0.3); font-size: 16px;">
+        <div class="jt-hero-actions-wrap mb-4 pt-2">
+            <a href="{{ route('tour-assistant.index') }}" class="btn jt-hero-btn jt-hero-btn-ai">
                 <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
                 <span>Rekomendasi AI</span>
-                <span class="badge bg-white text-emerald rounded-pill px-2.5 py-1 ms-1 fw-bold text-xs" style="color: #047857;">Pintar & Otomatis ✨</span>
+                <span class="jt-badge-tag">Pintar & Otomatis ✨</span>
             </a>
-            <a href="{{ route('tourism.index') }}" class="btn btn-lg btn-light rounded-pill px-4 py-3 fw-bold text-dark shadow-lg d-inline-flex align-items-center gap-2 jt-hero-btn-search"
-               style="font-size: 16px; background: #ffffff; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);">
+            <a href="{{ route('tourism.index') }}" class="btn jt-hero-btn jt-hero-btn-search">
                 <i class="fa-solid fa-magnifying-glass text-success fs-5"></i>
                 <span>Pencarian Wisata</span>
             </a>
@@ -802,9 +865,9 @@
                     <a href="{{ route('tourism.index') }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-compass text-emerald me-1"></i> Wisata</a>
                     <a href="{{ route('accommodation.index') }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-hotel text-primary me-1"></i> Penginapan</a>
                     <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-mitra-tab-pill"><i class="fa-solid fa-utensils text-warning me-1"></i> Kuliner</a>
-                    <a href="{{ route('home') }}#mitra-list-section" class="jt-mitra-tab-pill">Lainnya</a>
+                    <a href="{{ route('public.mitra.index') }}" class="jt-mitra-tab-pill">Lainnya</a>
                 </div>
-                <a href="{{ route('home') }}#mitra-list-section" class="fw-bold text-success text-decoration-none fs-8 d-flex align-items-center gap-1 flex-shrink-0">
+                <a href="{{ route('public.mitra.index') }}" class="fw-bold text-success text-decoration-none fs-8 d-flex align-items-center gap-1 flex-shrink-0">
                     Lihat Semua Mitra <i class="fa-solid fa-arrow-right fs-8"></i>
                 </a>
             </div>
@@ -905,7 +968,7 @@
                                 <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.8 <span class="text-muted fw-normal">(324 ulasan)</span></div>
                                 <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 1.2K+ pengunjung</div>
                             </div>
-                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
                         </div>
                     </div>
                 </div>
@@ -932,7 +995,7 @@
                                 <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.7 <span class="text-muted fw-normal">(218 ulasan)</span></div>
                                 <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 980+ pengunjung</div>
                             </div>
-                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
                         </div>
                     </div>
                 </div>
@@ -959,7 +1022,7 @@
                                 <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.9 <span class="text-muted fw-normal">(512 ulasan)</span></div>
                                 <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 2.3K+ pengunjung</div>
                             </div>
-                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
                         </div>
                     </div>
                 </div>
@@ -986,7 +1049,7 @@
                                 <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.6 <span class="text-muted fw-normal">(187 ulasan)</span></div>
                                 <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 750+ pengunjung</div>
                             </div>
-                            <a href="{{ route('home') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
+                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
                         </div>
                     </div>
                 </div>

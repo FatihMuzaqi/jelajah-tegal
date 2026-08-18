@@ -47,14 +47,24 @@ class RentalController extends Controller
     {
         $this->owned($r, $rental);
 
-        return view('mitra.catalog-domain.show', ['item' => $rental->load(['rentalVehicle.rates.offer', 'rentalVehicle.availability', 'rentalVehicle.bookings.documents', 'media', 'moderationReports.actions']), 'title' => 'Rental', 'routePrefix' => 'mitra.rental', 'domain' => 'rental']);
+        return view('mitra.catalog-domain.show', [
+            'item' => $rental->load(['rentalVehicle.rates.offer', 'rentalVehicle.availability', 'rentalVehicle.bookings.documents', 'location', 'media', 'moderationReports.actions']),
+            'title' => 'Rental',
+            'routePrefix' => 'mitra.rental',
+            'domain' => 'rental'
+        ]);
     }
 
     public function edit(Request $r, CatalogEntity $rental): View
     {
         $this->owned($r, $rental);
 
-        return view('mitra.catalog-domain.form', $this->refs() + ['item' => $rental->load('rentalVehicle'), 'title' => 'Rental', 'routePrefix' => 'mitra.rental', 'domain' => 'rental']);
+        return view('mitra.catalog-domain.form', $this->refs() + [
+            'item' => $rental->load(['rentalVehicle', 'location']),
+            'title' => 'Rental',
+            'routePrefix' => 'mitra.rental',
+            'domain' => 'rental'
+        ]);
     }
 
     public function update(SaveRentalVehicleRequest $r, CatalogEntity $rental, SaveRentalVehicle $a): RedirectResponse

@@ -20,7 +20,11 @@ class BankAccountController extends Controller
     {
         $mitra = $this->activeMitra($request);
         abort_unless($request->user()->can('bank-accounts.manage'), 403);
-        $accounts = $mitra->bankAccounts()->get()->map(fn ($account) => ['model' => $account, 'name' => $account->account_name_encrypted, 'masked' => '•••• '.substr($account->account_number_encrypted, -4)]);
+        $accounts = $mitra->bankAccounts()->get()->map(fn ($account) => [
+            'model' => $account,
+            'name' => $account->decrypted_account_name,
+            'masked' => $account->masked_number,
+        ]);
 
         return view('mitra.bank-accounts.index', compact('mitra', 'accounts'));
     }

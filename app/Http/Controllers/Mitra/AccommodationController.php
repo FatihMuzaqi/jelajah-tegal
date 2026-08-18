@@ -75,7 +75,9 @@ class AccommodationController extends Controller
     {
         $this->owned($request, $accommodation);
 
-        return view('mitra.accommodation.form', $this->references() + compact('accommodation'));
+        return view('mitra.accommodation.form', $this->references() + [
+            'accommodation' => $accommodation->load(['accommodation', 'location', 'facilities']),
+        ]);
     }
 
     public function update(SaveAccommodationRequest $request, CatalogEntity $accommodation, SaveAccommodation $action): RedirectResponse

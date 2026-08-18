@@ -26,4 +26,43 @@ class MitraBankAccount extends Model
     {
         return $this->belongsTo(User::class, 'verified_by');
     }
+
+    public function getDecryptedAccountNameAttribute(): string
+    {
+        $val = $this->account_name_encrypted;
+        while (is_string($val) && str_starts_with($val, 'eyJpdiI')) {
+            try {
+                $val = \Illuminate\Support\Facades\Crypt::decryptString($val);
+                if (is_string($val) && str_starts_with($val, 's:') && @unserialize($val) !== false) {
+                    $val = unserialize($val);
+                }
+            } catch (\Throwable) {
+                break;
+            }
+        }
+        return (string) $val;
+    }
+
+    public function getDecryptedAccountNumberAttribute(): string
+    {
+        $val = $this->account_number_encrypted;
+        while (is_string($val) && str_starts_with($val, 'eyJpdiI')) {
+            try {
+                $val = \Illuminate\Support\Facades\Crypt::decryptString($val);
+                if (is_string($val) && str_starts_with($val, 's:') && @unserialize($val) !== false) {
+                    $val = unserialize($val);
+                }
+            } catch (\Throwable) {
+                break;
+            }
+        }
+        return (string) $val;
+    }
+
+    public function getMaskedNumberAttribute(): string
+    {
+        $num = preg_replace('/\D+/', '', $this->decrypted_account_number);
+        $last4 = substr($num, -4);
+        return '•••• ' . ($last4 ?: '****');
+    }
 }

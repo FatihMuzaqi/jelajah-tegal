@@ -154,6 +154,38 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.08); }
 }
+
+/* Mobile Responsiveness for Order Page */
+@media (max-width: 576px) {
+    .order-tracker {
+        padding: 12px 6px;
+    }
+    .tracker-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 12px;
+    }
+    .tracker-step span {
+        font-size: 10px !important;
+    }
+    .tracker-step small {
+        display: none !important;
+    }
+    .tracker-line {
+        top: 28px;
+        left: 10%;
+        right: 10%;
+    }
+    .order-hero-card {
+        padding: 16px;
+    }
+    .order-card {
+        padding: 16px;
+    }
+    .boarding-pass-card {
+        padding: 16px;
+    }
+}
 </style>
 
 @if(session('status'))

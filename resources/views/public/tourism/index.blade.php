@@ -9,14 +9,17 @@
     background: linear-gradient(180deg, rgba(7, 30, 20, 0.75) 0%, rgba(10, 42, 28, 0.90) 100%), 
                 url('{{ asset('images/guci_hero.png') }}') center/cover no-repeat;
     color: #ffffff;
-    padding: 70px 0 80px;
+    padding: clamp(45px, 7vw, 75px) 0 clamp(55px, 8vw, 85px);
+}
+.jt-page-hero h1 {
+    font-size: clamp(24px, 5vw, 42px) !important;
 }
 .jt-filter-card {
     background: #ffffff;
-    border-radius: 16px;
-    padding: 20px 24px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    margin-top: -40px;
+    border-radius: 18px;
+    padding: clamp(16px, 3vw, 24px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.08);
+    margin-top: -35px;
     position: relative;
     z-index: 10;
 }
@@ -205,7 +208,7 @@
                     $regionName = $item->region?->name ?? 'Tegal';
                     $mitraName = $item->mitra?->display_name ?? 'Mitra Terverifikasi';
                 @endphp
-                <div class="col-lg-4 col-md-6">
+                <div class="col-12 col-sm-6 col-lg-4">
                     <article class="jt-tourism-card">
                         <div class="jt-tourism-img-wrap">
                             <img src="{{ $coverUrl }}" alt="{{ $item->name }}">

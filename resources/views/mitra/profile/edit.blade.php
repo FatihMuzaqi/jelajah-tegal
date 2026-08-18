@@ -47,6 +47,20 @@
                         <dd><x-status-badge :status='$mitra->status' /></dd>
                     </div>
                     <div>
+                        <dt>Kategori Tenant</dt>
+                        <dd>
+                            @if($mitra->category === 'dinas')
+                                <span class='badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-0.5 fs-8 fw-bold'>
+                                    <i class='fa-solid fa-building-columns me-1'></i> Dinas (Pemerintah)
+                                </span>
+                            @else
+                                <span class='badge bg-secondary-subtle text-secondary rounded-pill px-2.5 py-0.5 fs-8 fw-bold'>
+                                    <i class='fa-solid fa-store me-1'></i> Non-Dinas (Swasta/Umum)
+                                </span>
+                            @endif
+                        </dd>
+                    </div>
+                    <div>
                         <dt>Nama Legal</dt>
                         <dd>{{ $mitra->legal_name }}</dd>
                     </div>

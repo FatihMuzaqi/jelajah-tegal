@@ -53,28 +53,54 @@
             @endif
 
             @if($invoice->status === 'pending')
-                <!-- Box Pembayaran Saat Status Pending -->
-                <div class="p-4 p-md-5 bg-light rounded-4 border text-center mb-5">
-                    <div class="rounded-circle bg-warning text-dark d-inline-flex align-items-center justify-content-center mb-3" style="width: 56px; height: 56px; font-size: 24px;">
-                        <i class="fa-solid fa-wallet"></i>
+                <!-- Box Pembayaran Midtrans Saat Status Pending -->
+                <div class="p-4 p-md-5 rounded-4 border text-center mb-5" style="background: #f8fafc; border-color: #e2e8f0;">
+                    <div class="rounded-circle bg-emerald text-white d-inline-flex align-items-center justify-content-center mb-3 shadow-sm"
+                         style="width: 58px; height: 58px; font-size: 24px; background: linear-gradient(135deg, #059669 0%, #047857 100%);">
+                        <i class="fa-solid fa-credit-card"></i>
                     </div>
-                    <h5 class="fw-bold text-dark mb-2">Selesaikan Pembayaran Paket</h5>
-                    <p class="text-muted small mb-4 mx-auto" style="max-width: 550px;">
-                        Setelah pembayaran sebesar <strong>Rp {{ number_format($invoice->total_amount, 0, ',', '.') }}</strong> terkonfirmasi, seluruh E-Tiket, Voucher Resto, Reservasi Hotel, dan Rental Mobil akan langsung aktif dan QR Code barcode dapat digunakan di lokasi.
+                    <h4 class="fw-bold text-dark mb-2">Selesaikan Pembayaran Paket Liburan</h4>
+                    <p class="text-muted small mb-3 mx-auto" style="max-width: 580px;">
+                        Pembayaran diproses secara aman melalui <strong>Midtrans Payment Gateway</strong> (QRIS, GoPay, ShopeePay, Virtual Account BCA/Mandiri/BNI/BRI/Permata, Kartu Kredit).
                     </p>
 
-                    <div class="d-flex justify-content-center gap-3 flex-wrap">
-                        @if($invoice->payment_url)
-                            <a href="{{ $invoice->payment_url }}" class="btn btn-primary btn-lg rounded-pill px-5 fw-bold shadow-sm" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); border: none;">
-                                <i class="fa-solid fa-credit-card me-2"></i> Bayar via Midtrans
-                            </a>
-                        @endif
+                    <!-- Info Distribusi Saldo Otomatis ke Mitra -->
+                    <div class="p-3 rounded-4 bg-white border shadow-xs text-start mb-4 mx-auto" style="max-width: 650px;">
+                        <div class="fw-bold text-dark fs-7 mb-2 d-flex align-items-center gap-1.5">
+                            <i class="fa-solid fa-share-nodes text-emerald" style="color: #047857;"></i>
+                            Distribusi Saldo Pendapatan Otomatis ke Mitra:
+                        </div>
+                        <div class="row g-2 fs-8">
+                            @foreach($invoice->orders as $ord)
+                                <div class="col-12 col-sm-6">
+                                    <div class="p-2 rounded-3 bg-light d-flex justify-content-between align-items-center">
+                                        <div class="text-truncate me-2">
+                                            <strong class="text-dark d-block text-truncate">{{ $ord->mitra->display_name ?? 'Mitra' }}</strong>
+                                            <small class="text-muted">{{ $ord->items->first()?->item_name ?? 'Layanan' }}</small>
+                                        </div>
+                                        <span class="badge bg-success-subtle text-success font-monospace fw-bold">
+                                            Rp {{ number_format($ord->mitra_net_amount, 0, ',', '.') }}
+                                        </span>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
+                    <!-- Tombol Aksi Pembayaran -->
+                    <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                        <button type="button" id="btnPayMidtrans" onclick="payWithMidtrans()" class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow d-flex align-items-center gap-2"
+                                style="background: linear-gradient(135deg, #059669 0%, #047857 100%); border: none; font-size: 16px;">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            <span>Bayar Sekarang via Midtrans</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
 
                         @if(!config('midtrans.production'))
-                            <form action="{{ route('tour-assistant.invoice.confirm-direct', $invoice->invoice_number) }}" method="POST" class="d-inline">
+                            <form action="{{ route('consumer.invoices.confirm-direct', $invoice->invoice_number) }}" method="POST" class="d-inline">
                                 @csrf
-                                <button type="submit" class="btn btn-outline-success btn-lg rounded-pill px-4 fw-bold">
-                                    <i class="fa-solid fa-bolt me-1"></i> Simulasi Bayar Instan (Dev Mode)
+                                <button type="submit" class="btn btn-outline-secondary btn-lg rounded-pill px-4 fw-bold fs-7">
+                                    <i class="fa-solid fa-bolt me-1 text-warning"></i> Simulasi Bayar Instan (Dev Mode)
                                 </button>
                             </form>
                         @endif
@@ -148,11 +174,11 @@
                                                         data-bs-toggle="modal" data-bs-target="#{{ $uniqueId }}"
                                                         style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); border: none;">
                                                     <i class="fa-solid fa-qrcode"></i>
-                                                    <span>Lihat Barcode & E-Tiket</span>
+                                                    <span>Lihat Barcode QR ({{ $tickets->count() ?: 1 }})</span>
                                                 </button>
                                             @else
-                                                <span class="badge bg-secondary-subtle text-secondary px-3 py-1.5 rounded-pill">
-                                                    <i class="fa-solid fa-lock me-1"></i> QR Terkunci
+                                                <span class="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-1.5 rounded-pill fw-bold">
+                                                    Menunggu Pembayaran
                                                 </span>
                                             @endif
                                         </div>
@@ -161,40 +187,40 @@
                             </div>
                         </div>
 
-                        <!-- MODAL DETAIL BARCODE & QR CODE -->
+                        <!-- Modal QR Code / Barcode E-Tiket -->
                         @if($invoice->status === 'paid')
                             <div class="modal fade" id="{{ $uniqueId }}" tabindex="-1" aria-labelledby="{{ $uniqueId }}Label" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered modal-lg">
-                                    <div class="modal-content rounded-4 border-0 shadow-lg">
-                                        <div class="modal-header bg-dark text-white border-0 py-3 px-4 rounded-top-4">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <i class="fa-solid fa-qrcode text-warning fs-5"></i>
-                                                <h5 class="modal-title fw-bold text-white mb-0" id="{{ $uniqueId }}Label">E-Tiket & Barcode QR Code Resmi</h5>
+                                    <div class="modal-content border-0 rounded-4 shadow">
+                                        <div class="modal-header border-0 bg-light rounded-top-4 py-3 px-4">
+                                            <div>
+                                                <h5 class="modal-title fw-bold text-dark" id="{{ $uniqueId }}Label">
+                                                    <i class="fa-solid fa-qrcode text-primary me-2"></i> {{ $item->item_name }}
+                                                </h5>
+                                                <small class="text-muted">Tunjukkan QR Code / Barcode resmi ini kepada petugas / pengelola di lokasi.</small>
                                             </div>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
 
-                                        <div class="modal-body p-4 p-md-5">
-                                            <div class="text-center mb-4">
-                                                <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1 rounded-pill fw-bold small mb-2">
-                                                    <i class="fa-solid fa-circle-check me-1"></i> TIKET VALID & SIAP SCAN
-                                                </span>
-                                                <h4 class="fw-extrabold text-dark mb-1">{{ $item->item_name }}</h4>
-                                                <p class="text-muted small mb-0">Tunjukkan QR Code berikut di loket / resepsionis mitra saat tiba di lokasi.</p>
-                                            </div>
-
-                                            @if($tickets->isNotEmpty())
+                                        <div class="modal-body p-4">
+                                            @if($tickets && $tickets->count() > 0)
                                                 <div class="row g-4 justify-content-center">
                                                     @foreach($tickets as $tIndex => $ticket)
-                                                        <div class="col-md-{{ $tickets->count() > 1 ? '6' : '8' }}">
-                                                            <div class="p-4 rounded-4 text-center border-2 border-dashed bg-light">
-                                                                <span class="badge bg-primary text-white px-3 py-1 rounded-pill fw-bold text-xs mb-3">
-                                                                    TIKET #{{ $tIndex + 1 }}
+                                                        <div class="col-12 col-md-6 text-center">
+                                                            <div class="p-3 bg-white rounded-4 border shadow-sm">
+                                                                <span class="badge bg-secondary-subtle text-dark mb-2 px-2.5 py-1 rounded-pill fw-bold">
+                                                                    Tiket #{{ $tIndex + 1 }} dari {{ $tickets->count() }}
                                                                 </span>
 
-                                                                <!-- QR Code Image -->
-                                                                <div class="bg-white p-3 rounded-3 d-inline-block shadow-sm my-2 border">
-                                                                    <img src="{{ route('consumer.tickets.qr', $ticket) }}" alt="QR {{ $ticket->ticket_code }}" style="width: 170px; height: 170px;" class="d-block mx-auto">
+                                                                <!-- Barcode Visual Generator -->
+                                                                <div class="d-flex flex-column align-items-center my-3">
+                                                                    <div class="p-2 bg-white border rounded-3 shadow-xs">
+                                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($ticket->ticket_code) }}"
+                                                                             alt="QR Code Tiket" class="img-fluid rounded-2" style="width: 170px; height: 170px;">
+                                                                    </div>
+                                                                    <div class="mt-2 text-center" style="letter-spacing: 3px; font-family: monospace; font-size: 11px; color: #64748b;">
+                                                                        ||| | |||| | ||| |||| | |||
+                                                                    </div>
                                                                 </div>
 
                                                                 <!-- Kode Tiket -->
@@ -249,3 +275,66 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script type="text/javascript" src="{{ config('midtrans.production') ? 'https://app.midtrans.com/snap/snap.js' : 'https://app.sandbox.midtrans.com/snap/snap.js' }}" data-client-key="{{ config('midtrans.client_key') }}"></script>
+<script>
+    async function payWithMidtrans() {
+        let snapToken = "{{ $snapToken ?? '' }}";
+        const paymentUrl = "{{ $invoice->payment_url ?? '' }}";
+        const btn = document.getElementById('btnPayMidtrans');
+        
+        if (!snapToken) {
+            if (btn) {
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-2"></i> Menghubungkan ke Midtrans...';
+            }
+            try {
+                const response = await fetch("{{ route('consumer.invoices.payment.snap', $invoice->invoice_number) }}", {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    }
+                });
+                const data = await response.json();
+                if (data.token) {
+                    snapToken = data.token;
+                } else if (data.redirect_url) {
+                    window.location.href = data.redirect_url;
+                    return;
+                }
+            } catch (err) {
+                console.error('Snap token fetch error:', err);
+            } finally {
+                if (btn) {
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fa-solid fa-shield-halved"></i><span>Bayar Sekarang via Midtrans</span><i class="fa-solid fa-arrow-right"></i>';
+                }
+            }
+        }
+
+        if (typeof snap !== 'undefined' && snapToken) {
+            snap.pay(snapToken, {
+                onSuccess: function(result) {
+                    window.location.reload();
+                },
+                onPending: function(result) {
+                    window.location.reload();
+                },
+                onError: function(result) {
+                    alert('Pembayaran gagal atau dibatalkan.');
+                },
+                onClose: function() {
+                    console.log('Customer closed the popup without finishing the payment');
+                }
+            });
+        } else if (paymentUrl) {
+            window.location.href = paymentUrl;
+        } else {
+            alert('Koneksi pembayaran Midtrans sedang dipersiapkan, silakan coba beberapa saat lagi.');
+        }
+    }
+</script>
+@endpush

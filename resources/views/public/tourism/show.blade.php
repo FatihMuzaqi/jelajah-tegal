@@ -24,7 +24,7 @@
     position: relative;
     background: linear-gradient(135deg, #0d261e 0%, #174d3c 60%, #1f7a5c 100%);
     color: #ffffff;
-    padding: 60px 0 80px;
+    padding: clamp(35px, 6vw, 65px) 0 clamp(45px, 7vw, 85px);
     overflow: hidden;
 }
 .tourism-hero-bg {
@@ -43,6 +43,7 @@
 .tourism-breadcrumbs {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
     gap: 8px;
     font-size: 13px;
     color: rgba(255,255,255,0.75);
@@ -65,7 +66,7 @@
 .tourism-badge-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
+    gap: 8px;
     align-items: center;
     margin-bottom: 16px;
 }
@@ -73,7 +74,7 @@
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    padding: 6px 14px;
+    padding: 5px 12px;
     border-radius: 99px;
     font-size: 12px;
     font-weight: 700;
@@ -101,7 +102,7 @@
     box-shadow: 0 4px 12px rgba(128,90,213,0.35);
 }
 .tourism-main-title {
-    font-size: 40px;
+    font-size: clamp(26px, 5.5vw, 42px);
     font-weight: 800;
     line-height: 1.2;
     color: #ffffff;
@@ -112,14 +113,14 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 24px;
-    font-size: 14px;
+    gap: 16px;
+    font-size: 13px;
     color: rgba(255,255,255,0.9);
 }
 .meta-item {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 /* Quick Stats Bar */
@@ -127,21 +128,32 @@
     background: var(--lokantara-surface);
     border: 1px solid var(--lokantara-border);
     border-radius: 20px;
-    padding: 24px;
-    margin-top: -45px;
+    padding: clamp(16px, 3vw, 24px);
+    margin-top: -35px;
     position: relative;
     z-index: 10;
     box-shadow: 0 15px 35px rgba(17,26,24,0.08);
 }
 .quick-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 14px;
 }
 .quick-stat-box {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
+}
+@media (max-width: 576px) {
+    .quick-stats-card {
+        margin-top: -20px;
+    }
+    .detail-card {
+        padding: 20px 16px !important;
+    }
+    #tourismMap {
+        height: 260px !important;
+    }
 }
 .quick-stat-icon {
     width: 46px;

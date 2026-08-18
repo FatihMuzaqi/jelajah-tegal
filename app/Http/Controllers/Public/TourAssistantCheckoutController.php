@@ -21,7 +21,8 @@ class TourAssistantCheckoutController extends Controller
 {
     public function __construct(
         private MidtransClient $midtrans,
-        private CommercialTerms $terms
+        private CommercialTerms $terms,
+        private \App\Actions\Payments\ProcessMidtransInvoiceNotification $invoiceProcessor
     ) {}
 
     public function process(Request $request): RedirectResponse
@@ -53,7 +54,8 @@ class TourAssistantCheckoutController extends Controller
 
             // 2. Buat Order untuk setiap item di paket
             foreach ($package['items'] as $item) {
-                $offer = CatalogOffer::with('catalogEntity.mitra')->findOrFail($item['offer']['id']);
+                $offerId = is_array($item['offer']) ? $item['offer']['id'] : (is_object($item['offer']) ? $item['offer']->id : ($item['offer_id'] ?? null));
+                $offer = CatalogOffer::with('catalogEntity.mitra')->findOrFail($offerId);
                 $entity = $offer->catalogEntity;
                 $mitra = $entity->mitra;
                 
@@ -139,32 +141,98 @@ class TourAssistantCheckoutController extends Controller
             $invoice->update(['payment_url' => $snap['redirect_url']]);
             return redirect()->away($snap['redirect_url']);
         } catch (Throwable $e) {
-            return redirect()->route('tour-assistant.invoice.show', $invoice->invoice_number);
+            return redirect()->route('consumer.invoices.show', $invoice->invoice_number);
         }
     }
 
-    public function showInvoice(Request $request, string $invoiceNumber): View
+    public function showInvoice(Request $request, $invoice): View
     {
-        $invoice = Invoice::with(['orders.items.offer.catalogEntity', 'orders.mitra', 'orders.payments'])
-            ->where('invoice_number', $invoiceNumber)
-            ->firstOrFail();
+        if ($invoice instanceof Invoice) {
+            $invoiceObj = $invoice->load(['orders.items.offer.catalogEntity', 'orders.mitra', 'orders.payments', 'orders.items.tickets']);
+        } else {
+            $invoiceObj = Invoice::with(['orders.items.offer.catalogEntity', 'orders.mitra', 'orders.payments', 'orders.items.tickets'])
+                ->where('invoice_number', $invoice)
+                ->orWhere('id', $invoice)
+                ->firstOrFail();
+        }
 
-        abort_unless($invoice->user_id === $request->user()->id, 403);
+        abort_unless($invoiceObj->user_id === $request->user()->id, 403);
 
-        return view('public.tour-assistant.invoice', compact('invoice'));
+        // 1. Auto-sync status real-time dari Midtrans API jika status di DB masih pending
+        if ($invoiceObj->status === 'pending') {
+            try {
+                $statusPayload = $this->midtrans->status($invoiceObj->invoice_number);
+                $status = strtolower((string) ($statusPayload['transaction_status'] ?? ''));
+                $fraud = strtolower((string) ($statusPayload['fraud_status'] ?? 'accept'));
+                if ((in_array($status, ['settlement', 'capture']) && $fraud === 'accept') || in_array($status, ['expire', 'cancel', 'deny'])) {
+                    $this->invoiceProcessor->execute($statusPayload, 'view_sync', false);
+                    $invoiceObj->refresh();
+                    $invoiceObj->load(['orders.items.offer.catalogEntity', 'orders.mitra', 'orders.payments', 'orders.items.tickets']);
+                }
+            } catch (Throwable $e) {
+                // If not found yet on Midtrans or connection issue, proceed
+            }
+        }
+
+        $snapToken = null;
+        if ($invoiceObj->status === 'pending') {
+            try {
+                $snap = $this->midtrans->createSnapForInvoice($invoiceObj);
+                $snapToken = $snap['token'] ?? null;
+                if (!empty($snap['redirect_url']) && $invoiceObj->payment_url !== $snap['redirect_url']) {
+                    $invoiceObj->update(['payment_url' => $snap['redirect_url']]);
+                }
+            } catch (Throwable $e) {
+                // Keep existing payment_url if Midtrans request throws
+            }
+        }
+
+        return view('public.tour-assistant.invoice', [
+            'invoice' => $invoiceObj,
+            'snapToken' => $snapToken,
+        ]);
     }
 
-    public function confirmDirect(Request $request, string $invoiceNumber, CapturePayment $capture): RedirectResponse
+    public function snap(Request $request, $invoice): \Illuminate\Http\JsonResponse|RedirectResponse
     {
-        $invoice = Invoice::with('orders.payments')->where('invoice_number', $invoiceNumber)->firstOrFail();
-        abort_unless($invoice->user_id === $request->user()->id, 403);
+        if ($invoice instanceof Invoice) {
+            $invoiceObj = $invoice;
+        } else {
+            $invoiceObj = Invoice::where('invoice_number', $invoice)
+                ->orWhere('id', $invoice)
+                ->firstOrFail();
+        }
+
+        abort_unless($invoiceObj->user_id === $request->user()->id, 403);
+
+        $snap = $this->midtrans->createSnapForInvoice($invoiceObj);
+        $invoiceObj->update(['payment_url' => $snap['redirect_url']]);
+
+        if ($request->expectsJson() || $request->ajax()) {
+            return response()->json($snap);
+        }
+
+        return redirect()->away($snap['redirect_url']);
+    }
+
+    public function confirmDirect(Request $request, $invoice, CapturePayment $capture): RedirectResponse
+    {
+        if ($invoice instanceof Invoice) {
+            $invoiceObj = $invoice;
+        } else {
+            $invoiceObj = Invoice::with('orders.payments')->where('invoice_number', $invoice)
+                ->orWhere('id', $invoice)
+                ->firstOrFail();
+        }
+
+        abort_unless($invoiceObj->user_id === $request->user()->id, 403);
         abort_if(config('midtrans.production'), 403, 'Konfirmasi manual dinonaktifkan di mode production.');
 
-        if ($invoice->status !== 'paid') {
-            DB::transaction(function () use ($invoice, $capture) {
-                $invoice->update(['status' => 'paid', 'paid_at' => now()]);
+        if ($invoiceObj->status !== 'paid') {
+            DB::transaction(function () use ($invoiceObj, $capture) {
+                $invoiceObj->update(['status' => 'paid', 'paid_at' => now()]);
 
-                foreach ($invoice->orders as $order) {
+                foreach ($invoiceObj->orders as $order) {
                     $payment = $order->payments()->first();
                     if ($payment && $payment->status->value !== 'paid') {
                         $ref = 'TEST-INV-' . str()->upper(str()->random(10));
@@ -180,7 +248,7 @@ class TourAssistantCheckoutController extends Controller
             });
         }
 
-        return redirect()->route('tour-assistant.invoice.show', $invoice->invoice_number)
-            ->with('status', 'Pembayaran Invoice Tour Assistant berhasil dikonfirmasi!');
+        return redirect()->route('consumer.invoices.show', $invoiceObj->invoice_number)
+            ->with('status', 'Pembayaran Invoice Paket Tour Assistant berhasil dikonfirmasi! Saldo telah otomatis didistribusikan ke masing-masing mitra.');
     }
 }

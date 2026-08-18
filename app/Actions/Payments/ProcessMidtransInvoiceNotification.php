@@ -40,7 +40,10 @@ class ProcessMidtransInvoiceNotification
             if (! hash_equals($existing->payload_hash, $hash)) {
                 throw ValidationException::withMessages(['provider_event_id' => 'Provider event ID telah digunakan oleh payload berbeda.']);
             }
-            return $existing;
+            if ($existing->processed_at !== null && $invoice->status === 'paid') {
+                return $existing;
+            }
+            $event = $existing;
         }
 
         try {
@@ -61,8 +64,9 @@ class ProcessMidtransInvoiceNotification
                 // Cascade the webhook payload to every child order
                 foreach ($invoice->orders as $order) {
                     $childPayload = $payload;
-                    $childPayload['order_id'] = $order->order_number; // Fake the order_id for the child
-                    $childPayload['gross_amount'] = (string) $order->total_amount; // Adjust the gross amount for the child signature validation is skipped
+                    $childPayload['order_id'] = $order->order_number;
+                    $childPayload['transaction_id'] = ($payload['transaction_id'] ?? $payload['order_id']) . ':' . $order->order_number;
+                    $childPayload['gross_amount'] = (string) $order->total_amount;
                     
                     // We skip signature validation for the child payload because we modified it
                     $this->orderProcessor->execute($childPayload, 'invoice_cascade', false);

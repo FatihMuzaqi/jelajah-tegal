@@ -15,11 +15,11 @@ class ItineraryGeneratorService
         $nights = max(1, $start->diffInDays($end));
 
         $allData = [
-            'accommodations' => in_array('accommodation', $categories) ? CatalogOffer::whereHas('catalogEntity', fn ($q) => $q->publicDomain('accommodation'))->whereIn('status', ['active', 'published'])->get() : collect(),
-            'tourisms' => in_array('tourism', $categories) ? CatalogOffer::whereHas('catalogEntity', fn ($q) => $q->publicDomain('tourism'))->whereIn('status', ['active', 'published'])->get() : collect(),
-            'culinaries' => in_array('culinary', $categories) ? CatalogOffer::whereHas('catalogEntity', fn ($q) => $q->publicDomain('culinary'))->whereIn('status', ['active', 'published'])->get() : collect(),
-            'events' => in_array('event', $categories) ? CatalogOffer::whereHas('catalogEntity', fn ($q) => $q->publicDomain('event'))->whereIn('status', ['active', 'published'])->get() : collect(),
-            'rentals' => in_array('rental', $categories) ? CatalogOffer::whereHas('catalogEntity', fn ($q) => $q->publicDomain('rental'))->whereIn('status', ['active', 'published'])->get() : collect(),
+            'accommodations' => in_array('accommodation', $categories) ? CatalogOffer::with('catalogEntity')->whereHas('catalogEntity', fn ($q) => $q->publicDomain('accommodation'))->whereIn('status', ['active', 'published'])->get() : collect(),
+            'tourisms' => in_array('tourism', $categories) ? CatalogOffer::with('catalogEntity')->whereHas('catalogEntity', fn ($q) => $q->publicDomain('tourism'))->whereIn('status', ['active', 'published'])->get() : collect(),
+            'culinaries' => in_array('culinary', $categories) ? CatalogOffer::with('catalogEntity')->whereHas('catalogEntity', fn ($q) => $q->publicDomain('culinary'))->whereIn('status', ['active', 'published'])->get() : collect(),
+            'events' => in_array('event', $categories) ? CatalogOffer::with('catalogEntity')->whereHas('catalogEntity', fn ($q) => $q->publicDomain('event'))->whereIn('status', ['active', 'published'])->get() : collect(),
+            'rentals' => in_array('rental', $categories) ? CatalogOffer::with('catalogEntity')->whereHas('catalogEntity', fn ($q) => $q->publicDomain('rental'))->whereIn('status', ['active', 'published'])->get() : collect(),
         ];
 
         $options = [
