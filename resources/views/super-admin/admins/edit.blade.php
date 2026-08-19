@@ -27,15 +27,15 @@
                 </div>
                 <div class='col-md-6'>
                     <x-select name='status' label='Status Akun'>
-                        <option value='active' @selected(old('status', $admin->status) === 'active')>🟢 Aktif (Bisa Login & Bertugas)</option>
-                        <option value='suspended' @selected(old('status', $admin->status) === 'suspended')>🔴 Suspended (Akses Ditangguhkan Sementara)</option>
+                        <option value='active' @selected(old('status', $admin->status) === 'active')>Aktif (Bisa Login & Bertugas)</option>
+                        <option value='suspended' @selected(old('status', $admin->status) === 'suspended')>Suspended (Akses Ditangguhkan Sementara)</option>
                     </x-select>
                 </div>
                 @if(!$admin->hasRole('super-admin'))
                     <div class='col-md-6'>
                         <x-select name='role' label='Peran Akses (Role)'>
-                            <option value='admin' @selected(old('role', $admin->getRoleNames()->first()) === 'admin')>🛡️ Administrator Platform (Akses Operasional Penuh)</option>
-                            <option value='dinas-supervisor' @selected(old('role', $admin->getRoleNames()->first()) === 'dinas-supervisor')>🏛️ Dinas Supervisor (Monitoring PAD & Wisata Pemda)</option>
+                            <option value='admin' @selected(old('role', $admin->getRoleNames()->first()) === 'admin')>Administrator Platform (Akses Operasional Penuh)</option>
+                            <option value='dinas-supervisor' @selected(old('role', $admin->getRoleNames()->first()) === 'dinas-supervisor')>Dinas Supervisor (Monitoring PAD & Wisata Pemda)</option>
                         </x-select>
                     </div>
                 @endif
@@ -62,7 +62,7 @@
             </div>
 
             <div class='d-flex align-items-center gap-2 mt-4'>
-                <button type='submit' class='btn btn-lokantara fw-bold px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2'>
+                <button type='submit' class='btn btn-lokantara fw-bold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2'>
                     <i class='fa-solid fa-floppy-disk'></i>
                     <span>Simpan Perubahan</span>
                 </button>

@@ -150,4 +150,35 @@ class MitraController extends Controller
 
         return back()->with('status', 'Status Mitra diperbarui dan hak akses owner telah aktif.');
     }
+
+    public function resetOwnerPassword(Request $request, Mitra $mitra, AuditLogger $audit): RedirectResponse
+    {
+        abort_unless(auth()->user()->can('mitras.create'), 403);
+
+        $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
+
+        $owner = $mitra->owner;
+        if (! $owner) {
+            throw ValidationException::withMessages(['password' => 'Mitra ini belum memiliki akun owner terdaftar.']);
+        }
+
+        $owner->credential()->updateOrCreate([], [
+            'password_hash' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'failed_login_count' => 0,
+            'locked_until' => null,
+        ]);
+
+        $audit->record('admin.mitra_owner_password_reset', $mitra, [], [
+            'owner_id' => $owner->id,
+            'owner_email' => $owner->email,
+        ], $request->user());
+
+        return back()->with('status', "Kata sandi akun owner {$mitra->display_name} ({$owner->email}) berhasil direset.");
+    }
 }

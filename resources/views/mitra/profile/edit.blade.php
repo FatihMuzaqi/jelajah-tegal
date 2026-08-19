@@ -34,7 +34,75 @@
 
                 <x-textarea name='address'
                     label='Alamat Lengkap Kantor / Lokasi'>{{ old('address', $mitra->address) }}</x-textarea>
-                <button class='btn btn-lokantara fw-bold mt-2'>Simpan Profil</button>
+                <button class='btn btn-lokantara fw-bold mt-2 rounded-pill px-4'>
+                    <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Profil
+                </button>
+            </form>
+        </x-content-card>
+
+        <!-- Left Column: Security & Change Password Card -->
+        <x-content-card title='Keamanan & Ubah Kata Sandi' class='mt-3'>
+            <div class="alert alert-light border d-flex align-items-start gap-2 mb-3 py-2.5 px-3 rounded-3" style="font-size: 12px; background: #f8fafc;">
+                <i class="fa-solid fa-shield-halved text-success mt-0.5 flex-shrink-0"></i>
+                <div>
+                    Gunakan minimal 8 karakter dengan kombinasi huruf dan angka untuk memastikan keamanan akun Mitra Anda.
+                </div>
+            </div>
+
+            <form method='POST' action='{{ route('mitra.profile.password.update') }}'>
+                @csrf
+                @method('PUT')
+
+                <div class='mb-3'>
+                    <label class='form-label fw-bold text-dark' style='font-size: 13px;'>
+                        Kata Sandi Saat Ini <span class='text-danger'>*</span>
+                    </label>
+                    <div class='input-group'>
+                        <span class='input-group-text bg-white text-muted'><i class='fa-solid fa-lock'></i></span>
+                        <input type='password' name='current_password' id='input_curr_pwd' class='form-control @error('current_password') is-invalid @enderror' placeholder='Masukkan kata sandi lama...' required>
+                        <button class='btn btn-outline-secondary' type='button' onclick='togglePwdVisibility("input_curr_pwd", this)'>
+                            <i class='fa-regular fa-eye'></i>
+                        </button>
+                    </div>
+                    @error('current_password')
+                        <div class='text-danger small mt-1'>{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class='row g-3 mb-3'>
+                    <div class='col-md-6'>
+                        <label class='form-label fw-bold text-dark' style='font-size: 13px;'>
+                            Kata Sandi Baru <span class='text-danger'>*</span>
+                        </label>
+                        <div class='input-group'>
+                            <span class='input-group-text bg-white text-muted'><i class='fa-solid fa-key'></i></span>
+                            <input type='password' name='password' id='input_new_pwd' class='form-control @error('password') is-invalid @enderror' placeholder='Minimal 8 karakter' required>
+                            <button class='btn btn-outline-secondary' type='button' onclick='togglePwdVisibility("input_new_pwd", this)'>
+                                <i class='fa-regular fa-eye'></i>
+                            </button>
+                        </div>
+                        @error('password')
+                            <div class='text-danger small mt-1'>{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class='col-md-6'>
+                        <label class='form-label fw-bold text-dark' style='font-size: 13px;'>
+                            Ulangi Kata Sandi Baru <span class='text-danger'>*</span>
+                        </label>
+                        <div class='input-group'>
+                            <span class='input-group-text bg-white text-muted'><i class='fa-solid fa-check-double'></i></span>
+                            <input type='password' name='password_confirmation' id='input_conf_pwd' class='form-control' placeholder='Ulangi kata sandi baru...' required>
+                            <button class='btn btn-outline-secondary' type='button' onclick='togglePwdVisibility("input_conf_pwd", this)'>
+                                <i class='fa-regular fa-eye'></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button class='btn btn-lokantara fw-bold rounded-pill px-4'>
+                    <i class='fa-solid fa-key me-1'></i> Perbarui Kata Sandi
+                </button>
             </form>
         </x-content-card>
 
@@ -194,6 +262,20 @@
                     }
                 };
                 reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function togglePwdVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            const icon = btn.querySelector('i');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
             }
         }
     </script>

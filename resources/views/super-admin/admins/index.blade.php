@@ -2,10 +2,13 @@
 
 @section('title', 'Manajemen Administrator')
 @section('page-title', 'Kelola Tim Administrator')
-@section('page-description', 'Pusat pendaftaran, pemantauan status, dan tata kelola akun staf administrator platform Jelajah Tegal.')
+@section('page-description',
+    'Pusat pendaftaran, pemantauan status, dan tata kelola akun staf administrator platform
+    Jelajah Tegal.')
 
 @section('page-actions')
-    <a href="{{ route('super-admin.admins.create') }}" class="btn btn-lokantara fw-bold d-inline-flex align-items-center gap-2 shadow-sm px-3.5 py-2">
+    <a href="{{ route('super-admin.admins.create') }}"
+        class="btn btn-lokantara fw-bold d-inline-flex align-items-center gap-2 shadow-sm px-3.5 py-2">
         <i class="fa-solid fa-user-plus"></i>
         <span>Tambah Admin Baru</span>
     </a>
@@ -84,43 +87,45 @@
             <!-- Filter Pills / Tabs -->
             <div class="d-flex align-items-center gap-2 overflow-x-auto pb-1 pb-lg-0">
                 <a href="{{ route('super-admin.admins.index', array_merge(request()->except('status', 'role', 'page'), [])) }}"
-                   class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ !request('status') && !request('role') ? 'btn-dark' : 'btn-light border text-muted' }}">
+                    class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ !request('status') && !request('role') ? 'btn-dark' : 'btn-light border text-muted' }}">
                     Semua ({{ $counts['total'] }})
                 </a>
                 <a href="{{ route('super-admin.admins.index', array_merge(request()->except('status', 'role', 'page'), ['status' => 'active'])) }}"
-                   class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('status') === 'active' ? 'btn-success text-white' : 'btn-light border text-success' }}">
+                    class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('status') === 'active' ? 'btn-success text-white' : 'btn-light border text-success' }}">
                     <i class="fa-solid fa-circle-check me-1"></i> Aktif ({{ $counts['active'] }})
                 </a>
                 <a href="{{ route('super-admin.admins.index', array_merge(request()->except('status', 'role', 'page'), ['role' => 'admin'])) }}"
-                   class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('role') === 'admin' ? 'btn-primary' : 'btn-light border text-primary' }}">
+                    class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('role') === 'admin' ? 'btn-primary' : 'btn-light border text-primary' }}">
                     <i class="fa-solid fa-shield-halved me-1"></i> Administrator ({{ $counts['admins'] }})
                 </a>
                 <a href="{{ route('super-admin.admins.index', array_merge(request()->except('status', 'role', 'page'), ['role' => 'super-admin'])) }}"
-                   class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('role') === 'super-admin' ? 'btn-danger' : 'btn-light border text-danger' }}">
+                    class="btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('role') === 'super-admin' ? 'btn-danger' : 'btn-light border text-danger' }}">
                     <i class="fa-solid fa-crown me-1"></i> Super Admin ({{ $counts['super_admins'] }})
                 </a>
             </div>
 
             <!-- Search Form -->
             <form method="GET" action="{{ route('super-admin.admins.index') }}" class="d-flex align-items-center gap-2">
-                @if(request('status'))
+                @if (request('status'))
                     <input type="hidden" name="status" value="{{ request('status') }}">
                 @endif
-                @if(request('role'))
+                @if (request('role'))
                     <input type="hidden" name="role" value="{{ request('role') }}">
                 @endif
                 <div class="input-group input-group-sm">
                     <span class="input-group-text bg-light border-end-0 text-muted ps-3">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </span>
-                    <input type="text" name="q" value="{{ request('q') }}" class="form-control bg-light border-start-0 fs-8 py-2"
-                           placeholder="Cari admin1, nama staf, email...">
+                    <input type="text" name="q" value="{{ request('q') }}"
+                        class="form-control bg-light border-start-0 fs-8 py-2"
+                        placeholder="Cari admin1, nama staf, email...">
                 </div>
                 <button type="submit" class="btn btn-sm btn-primary fw-bold px-3 py-2 fs-8 rounded-3">
                     Cari
                 </button>
-                @if(request()->hasAny(['q', 'status', 'role']))
-                    <a href="{{ route('super-admin.admins.index') }}" class="btn btn-sm btn-light border text-muted px-2.5 py-2 rounded-3" title="Reset Filter">
+                @if (request()->hasAny(['q', 'status', 'role']))
+                    <a href="{{ route('super-admin.admins.index') }}"
+                        class="btn btn-sm btn-light border text-muted px-2.5 py-2 rounded-3" title="Reset Filter">
                         <i class="fa-solid fa-rotate-left"></i>
                     </a>
                 @endif
@@ -133,12 +138,14 @@
         <div class="card-header bg-white border-bottom p-3 p-md-4">
             <div class="d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-2.5">
-                    <div class="superadmin-icon-box bg-primary-subtle text-primary" style="width: 36px; height: 36px; min-width: 36px; font-size: 15px;">
+                    <div class="superadmin-icon-box bg-primary-subtle text-primary"
+                        style="width: 36px; height: 36px; min-width: 36px; font-size: 15px;">
                         <i class="fa-solid fa-users-gear"></i>
                     </div>
                     <div>
                         <h6 class="fw-bold text-dark mb-0 fs-6">Daftar Akun Administrator Platform</h6>
-                        <small class="text-muted fs-8">Seluruh staf admin memiliki akses penuh ke menu operasional platform</small>
+                        <small class="text-muted fs-8">Seluruh staf admin memiliki akses penuh ke menu operasional
+                            platform</small>
                     </div>
                 </div>
                 <span class="badge bg-light text-secondary border rounded-pill px-3 py-1 fs-8">
@@ -166,34 +173,38 @@
                             <td class="ps-3">
                                 <div class="d-flex align-items-center gap-2.5">
                                     <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold shadow-2xs"
-                                         style="width: 38px; height: 38px; min-width: 38px; font-size: 14px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: #ffffff;">
+                                        style="width: 38px; height: 38px; min-width: 38px; font-size: 14px; background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); color: #ffffff;">
                                         {{ strtoupper(substr($admin->name, 0, 1)) }}
                                     </div>
                                     <div>
                                         <div class="d-flex align-items-center gap-1.5 mb-0.5">
                                             <strong class="text-dark fs-7">{{ $admin->name }}</strong>
-                                            @if($isSelf)
-                                                <span class="badge bg-dark text-white rounded-pill px-2 py-0.5 fs-9 fw-bold">Anda</span>
+                                            @if ($isSelf)
+                                                <span
+                                                    class="badge bg-dark text-white rounded-pill px-2 py-0.5 fs-9 fw-bold">Anda</span>
                                             @endif
                                         </div>
                                         <small class="text-muted fs-8 font-monospace">{{ $admin->email }}</small>
-                                        @if($admin->phone)
+                                        @if ($admin->phone)
                                             <small class="text-muted fs-8 d-block">&middot; {{ $admin->phone }}</small>
                                         @endif
                                     </div>
                                 </div>
                             </td>
                             <td>
-                                @if($admin->hasRole('super-admin'))
-                                    <span class="superadmin-badge bg-danger-subtle text-danger border border-danger-subtle fs-8 fw-bold">
+                                @if ($admin->hasRole('super-admin'))
+                                    <span
+                                        class="superadmin-badge bg-danger-subtle text-danger border border-danger-subtle fs-8 fw-bold">
                                         <i class="fa-solid fa-crown"></i> Super Admin
                                     </span>
                                 @elseif($admin->hasRole('admin'))
-                                    <span class="superadmin-badge bg-primary-subtle text-primary border border-primary-subtle fs-8 fw-bold">
+                                    <span
+                                        class="superadmin-badge bg-primary-subtle text-primary border border-primary-subtle fs-8 fw-bold">
                                         <i class="fa-solid fa-shield-halved"></i> Administrator
                                     </span>
                                 @elseif($admin->hasRole('dinas-supervisor'))
-                                    <span class="superadmin-badge bg-info-subtle text-info-emphasis border border-info-subtle fs-8 fw-bold">
+                                    <span
+                                        class="superadmin-badge bg-info-subtle text-info-emphasis border border-info-subtle fs-8 fw-bold">
                                         <i class="fa-solid fa-building-columns"></i> Dinas Supervisor
                                     </span>
                                 @else
@@ -203,16 +214,19 @@
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if($admin->status === 'active')
-                                    <span class="superadmin-badge bg-success-subtle text-success border border-success-subtle fs-8 fw-bold">
+                                @if ($admin->status === 'active')
+                                    <span
+                                        class="superadmin-badge bg-success-subtle text-success border border-success-subtle fs-8 fw-bold">
                                         <i class="fa-solid fa-circle" style="font-size: 8px;"></i> Aktif
                                     </span>
                                 @elseif($admin->status === 'suspended')
-                                    <span class="superadmin-badge bg-danger-subtle text-danger border border-danger-subtle fs-8 fw-bold">
+                                    <span
+                                        class="superadmin-badge bg-danger-subtle text-danger border border-danger-subtle fs-8 fw-bold">
                                         <i class="fa-solid fa-ban"></i> Suspended
                                     </span>
                                 @else
-                                    <span class="superadmin-badge bg-warning-subtle text-warning border border-warning-subtle fs-8 fw-bold">
+                                    <span
+                                        class="superadmin-badge bg-warning-subtle text-warning border border-warning-subtle fs-8 fw-bold">
                                         {{ strtoupper($admin->status) }}
                                     </span>
                                 @endif
@@ -222,8 +236,9 @@
                                 <small class="text-muted fs-8">{{ $admin->created_at?->format('H:i') }} WIB</small>
                             </td>
                             <td>
-                                @if($admin->last_login_at)
-                                    <span class="text-dark d-block fs-8">{{ $admin->last_login_at->format('d M Y') }}</span>
+                                @if ($admin->last_login_at)
+                                    <span
+                                        class="text-dark d-block fs-8">{{ $admin->last_login_at->format('d M Y') }}</span>
                                     <small class="text-muted fs-8">{{ $admin->last_login_at->format('H:i') }} WIB</small>
                                 @else
                                     <span class="text-muted fs-8">Belum pernah login</span>
@@ -231,41 +246,134 @@
                             </td>
                             <td class="pe-3 text-end">
                                 <div class="d-flex justify-content-end align-items-center gap-1.5">
-                                    <!-- Edit & Reset Password Button -->
+                                    <!-- Reset Password Button -->
+                                    <button type="button"
+                                        class="btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fs-8 fw-semibold d-inline-flex align-items-center gap-1.5"
+                                        data-bs-toggle="modal" data-bs-target="#reset-admin-pw-{{ $admin->id }}"
+                                        title="Reset Password Akun Admin">
+                                        <i class="fa-solid fa-key"></i>
+                                    </button>
+
+                                    <!-- Edit Button -->
                                     <a href="{{ route('super-admin.admins.edit', $admin) }}"
-                                       class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fs-8 fw-semibold d-inline-flex align-items-center gap-1.5"
-                                       title="Edit Profil & Reset Password">
+                                        class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1 fs-8 fw-semibold d-inline-flex align-items-center gap-1.5"
+                                        title="Edit Profil">
                                         <i class="fa-solid fa-pen-to-square"></i>
-                                        <span>Edit</span>
                                     </a>
 
                                     <!-- Toggle Status Button (Exclude Self) -->
-                                    @if(!$isSelf)
-                                        <form method="POST" action="{{ route('super-admin.admins.toggle-status', $admin) }}" class="d-inline"
-                                              onsubmit="return confirm('Apakah Anda yakin ingin {{ $admin->status === 'active' ? 'menonaktifkan (suspend)' : 'mengaktifkan kembali' }} akun {{ $admin->name }}?');">
+                                    @if (!$isSelf)
+                                        <form method="POST"
+                                            action="{{ route('super-admin.admins.toggle-status', $admin) }}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('Apakah Anda yakin ingin {{ $admin->status === 'active' ? 'menonaktifkan (suspend)' : 'mengaktifkan kembali' }} akun {{ $admin->name }}?');">
                                             @csrf
                                             @method('PATCH')
-                                            @if($admin->status === 'active')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 fs-8" title="Suspend Akun">
+                                            @if ($admin->status === 'active')
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 fs-8"
+                                                    title="Suspend Akun">
                                                     <i class="fa-solid fa-ban"></i>
                                                 </button>
                                             @else
-                                                <button type="submit" class="btn btn-sm btn-success rounded-pill px-2.5 py-1 fs-8 fw-bold" title="Aktifkan Akun">
+                                                <button type="submit"
+                                                    class="btn btn-sm btn-success rounded-pill px-2.5 py-1 fs-8 fw-bold"
+                                                    title="Aktifkan Akun">
                                                     <i class="fa-solid fa-check"></i>
                                                 </button>
                                             @endif
                                         </form>
                                     @endif
                                 </div>
+
+                                <!-- Modal Reset Password Admin -->
+                                <div class="modal fade text-start" id="reset-admin-pw-{{ $admin->id }}"
+                                    tabindex="-1" aria-labelledby="resetAdminPwLabel{{ $admin->id }}"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content border-0 shadow-lg rounded-4">
+                                            <form method="POST"
+                                                action="{{ route('super-admin.admins.reset-password', $admin) }}">
+                                                @csrf
+                                                <div class="modal-header border-bottom py-3 px-4"
+                                                    style="background: #f8fafc;">
+                                                    <h6 class="modal-title fw-bold text-dark"
+                                                        id="resetAdminPwLabel{{ $admin->id }}">
+                                                        <i class="fa-solid fa-key text-primary me-1"></i> Reset Password
+                                                        Administrator
+                                                    </h6>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body p-4">
+                                                    <div class="p-3 rounded-3 mb-3"
+                                                        style="background: #f1f5f9; font-size: 13px;">
+                                                        <div class="mb-1"><strong>Nama Admin:</strong>
+                                                            {{ $admin->name }}</div>
+                                                        <div><strong>Email Login:</strong> <code>{{ $admin->email }}</code>
+                                                        </div>
+                                                        <div class="mt-1"><span
+                                                                class="badge bg-primary-subtle text-primary">{{ $admin->getRoleNames()->first() ?? 'Admin' }}</span>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <div
+                                                            class="d-flex justify-content-between align-items-center mb-1">
+                                                            <label class="form-label fw-bold text-dark mb-0"
+                                                                style="font-size: 13px;">
+                                                                Kata Sandi Baru <span class="text-danger">*</span>
+                                                            </label>
+                                                            <button type="button"
+                                                                class="btn btn-link btn-sm p-0 text-decoration-none"
+                                                                style="font-size: 11px;"
+                                                                onclick="generateAdminPwd('new_admin_pwd_{{ $admin->id }}', 'conf_admin_pwd_{{ $admin->id }}')">
+                                                                <i class="fa-solid fa-wand-magic-sparkles me-1"></i> Buat
+                                                                Acak
+                                                            </button>
+                                                        </div>
+                                                        <input type="text" name="password"
+                                                            id="new_admin_pwd_{{ $admin->id }}"
+                                                            class="form-control font-monospace"
+                                                            placeholder="Minimal 8 karakter" required>
+                                                    </div>
+
+                                                    <div class="mb-2">
+                                                        <label class="form-label fw-bold text-dark"
+                                                            style="font-size: 13px;">
+                                                            Ulangi Kata Sandi Baru <span class="text-danger">*</span>
+                                                        </label>
+                                                        <input type="text" name="password_confirmation"
+                                                            id="conf_admin_pwd_{{ $admin->id }}"
+                                                            class="form-control font-monospace"
+                                                            placeholder="Ulangi kata sandi baru" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer border-top py-2.5 px-4"
+                                                    style="background: #f8fafc;">
+                                                    <button type="button"
+                                                        class="btn btn-sm btn-secondary rounded-pill px-3"
+                                                        data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit"
+                                                        class="btn btn-sm btn-lokantara rounded-pill px-4 fw-bold">
+                                                        <i class="fa-solid fa-floppy-disk me-1"></i> Simpan Kata Sandi
+                                                    </button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
                             <td colspan="6" class="py-5 text-center text-muted fs-8">
-                                <div class="superadmin-icon-box bg-light text-muted mx-auto mb-2" style="width: 48px; height: 48px; font-size: 20px;">
+                                <div class="superadmin-icon-box bg-light text-muted mx-auto mb-2"
+                                    style="width: 48px; height: 48px; font-size: 20px;">
                                     <i class="fa-solid fa-users-gear"></i>
                                 </div>
-                                <p class="mb-0 fw-semibold">Tidak ada akun administrator yang cocok dengan filter saat ini.</p>
+                                <p class="mb-0 fw-semibold">Tidak ada akun administrator yang cocok dengan filter saat ini.
+                                </p>
                             </td>
                         </tr>
                     @endforelse
@@ -273,9 +381,11 @@
             </table>
         </div>
 
-        <div class="p-3 px-4 border-top d-flex justify-content-between align-items-center flex-wrap gap-2 bg-light bg-opacity-50">
+        <div
+            class="p-3 px-4 border-top d-flex justify-content-between align-items-center flex-wrap gap-2 bg-light bg-opacity-50">
             <small class="text-muted fs-8">
-                Menampilkan {{ $admins->firstItem() ?? 0 }} - {{ $admins->lastItem() ?? 0 }} dari total {{ $admins->total() }} akun administrator
+                Menampilkan {{ $admins->firstItem() ?? 0 }} - {{ $admins->lastItem() ?? 0 }} dari total
+                {{ $admins->total() }} akun administrator
             </small>
             <div>
                 {{ $admins->links() }}
@@ -285,12 +395,29 @@
 
     <!-- 4. Information Notice Card -->
     <div class="alert alert-light border rounded-4 p-3.5 mt-4 d-flex align-items-start gap-3 bg-white shadow-2xs">
-        <div class="superadmin-icon-box bg-primary-subtle text-primary mt-0.5" style="width: 36px; height: 36px; min-width: 36px; font-size: 15px;">
+        <div class="superadmin-icon-box bg-primary-subtle text-primary mt-0.5"
+            style="width: 36px; height: 36px; min-width: 36px; font-size: 15px;">
             <i class="fa-solid fa-shield-heart"></i>
         </div>
         <div class="fs-8 text-muted">
             <strong class="text-dark d-block mb-0.5 fs-7">Tata Kelola & Akuntabilitas Multi-Admin:</strong>
-            Setiap akun administrator yang dibuat memiliki hak akses penuh ke menu moderasi katalog, verifikasi KYC, persetujuan penarikan saldo mitra, dan pengelolaan voucher. Seluruh tindakan operasional staf akan otomatis dicatat di Audit Log Keamanan dengan identitas masing-masing staf.
+            Setiap akun administrator yang dibuat memiliki hak akses penuh ke menu moderasi katalog, verifikasi KYC,
+            persetujuan penarikan saldo mitra, dan pengelolaan voucher. Seluruh tindakan operasional staf akan otomatis
+            dicatat di Audit Log Keamanan dengan identitas masing-masing staf.
         </div>
     </div>
+
+    @push('scripts')
+        <script>
+            function generateAdminPwd(newId, confId) {
+                const chars = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%';
+                let pwd = '';
+                for (let i = 0; i < 10; i++) {
+                    pwd += chars.charAt(Math.floor(Math.random() * chars.length));
+                }
+                document.getElementById(newId).value = pwd;
+                document.getElementById(confId).value = pwd;
+            }
+        </script>
+    @endpush
 @endsection

@@ -11,6 +11,12 @@ return [
                 ['label' => 'Dokumen Sewa', 'route' => 'consumer.renter-documents.index', 'icon' => 'fa-solid fa-file-invoice', 'permission' => 'access.consumer'],
             ],
         ],
+        [
+            'category' => 'Pengaturan Akun',
+            'items' => [
+                ['label' => 'Profil & Keamanan', 'route' => 'consumer.profile.edit', 'icon' => 'fa-solid fa-user-gear', 'permission' => 'access.consumer'],
+            ],
+        ],
     ],
 
     'mitra' => [
@@ -56,6 +62,12 @@ return [
             'items' => [
                 ['label' => 'Dashboard', 'route' => 'gatekeeper.dashboard', 'icon' => 'fa-solid fa-gauge', 'permission' => 'access.gatekeeper'],
                 ['label' => 'Validasi Tiket QR', 'route' => 'gatekeeper.event-tickets.index', 'icon' => 'fa-solid fa-qrcode', 'permission' => 'tickets.validate'],
+            ],
+        ],
+        [
+            'category' => 'Akun Petugas',
+            'items' => [
+                ['label' => 'Profil & Keamanan', 'route' => 'gatekeeper.profile.edit', 'icon' => 'fa-solid fa-user-shield', 'permission' => 'access.gatekeeper'],
             ],
         ],
     ],

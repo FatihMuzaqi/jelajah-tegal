@@ -38,8 +38,8 @@
                 </div>
                 <div class='col-md-6'>
                     <x-select name='role' label='Peran Akses (Role)' hint='Secara default memiliki akses penuh ke dashboard operasional platform.'>
-                        <option value='admin' @selected(old('role', 'admin') === 'admin')>🛡️ Administrator Platform (Default - Akses Operasional Penuh)</option>
-                        <option value='dinas-supervisor' @selected(old('role') === 'dinas-supervisor')>🏛️ Dinas Supervisor (Monitoring PAD & Wisata Pemda)</option>
+                        <option value='admin' @selected(old('role', 'admin') === 'admin')>Administrator Platform (Default - Akses Operasional Penuh)</option>
+                        <option value='dinas-supervisor' @selected(old('role') === 'dinas-supervisor')>Dinas Supervisor (Monitoring PAD & Wisata Pemda)</option>
                     </x-select>
                 </div>
             </div>
@@ -67,7 +67,7 @@
             </div>
 
             <div class='d-flex align-items-center gap-2 mt-4'>
-                <button type='submit' class='btn btn-lokantara fw-bold px-4 py-2 shadow-sm d-inline-flex align-items-center gap-2'>
+                <button type='submit' class='btn btn-lokantara fw-bold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2'>
                     <i class='fa-solid fa-user-plus'></i>
                     <span>Buat Akun Administrator</span>
                 </button>

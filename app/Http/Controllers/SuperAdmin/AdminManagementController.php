@@ -161,4 +161,31 @@ class AdminManagementController extends Controller
 
         return back()->with('status', $msg);
     }
+
+    public function resetPassword(Request $request, User $admin, AuditLogger $audit): RedirectResponse
+    {
+        $user = $request->user() ?? auth()->user();
+        abort_unless($user && ($user->hasRole('super-admin') || $user->can('users.manage')), 403);
+
+        $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
+
+        $admin->credential()->updateOrCreate([], [
+            'password_hash' => Hash::make($request->password),
+            'failed_login_count' => 0,
+            'locked_until' => null,
+        ]);
+
+        $audit->record('superadmin.admin_password_reset', $admin, [], [
+            'admin_id' => $admin->id,
+            'admin_email' => $admin->email,
+        ], $user);
+
+        return back()->with('status', "Kata sandi Administrator {$admin->name} ({$admin->email}) berhasil direset.");
+    }
 }

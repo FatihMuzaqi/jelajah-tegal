@@ -13,6 +13,7 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.super-a
     Route::post('/admins', [\App\Http\Controllers\SuperAdmin\AdminManagementController::class, 'store'])->name('admins.store');
     Route::get('/admins/{admin}/edit', [\App\Http\Controllers\SuperAdmin\AdminManagementController::class, 'edit'])->name('admins.edit');
     Route::put('/admins/{admin}', [\App\Http\Controllers\SuperAdmin\AdminManagementController::class, 'update'])->name('admins.update');
+    Route::post('/admins/{admin}/reset-password', [\App\Http\Controllers\SuperAdmin\AdminManagementController::class, 'resetPassword'])->name('admins.reset-password');
     Route::patch('/admins/{admin}/toggle-status', [\App\Http\Controllers\SuperAdmin\AdminManagementController::class, 'toggleStatus'])->name('admins.toggle-status');
     Route::get('/roles', [RoleController::class, 'index'])->name('roles.index');
     Route::get('/permissions', [RoleController::class, 'permissions'])->name('permissions.index');

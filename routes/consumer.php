@@ -24,5 +24,8 @@ Route::middleware(['auth', 'verified', 'active.user'])->prefix('consumer')->name
     Route::get('/invoices/{invoice}', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'showInvoice'])->name('invoices.show');
     Route::post('/invoices/{invoice}/payment/snap', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'snap'])->name('invoices.payment.snap');
     Route::post('/invoices/{invoice}/confirm-direct', [\App\Http\Controllers\Public\TourAssistantCheckoutController::class, 'confirmDirect'])->name('invoices.confirm-direct');
+    Route::get('/profile', [\App\Http\Controllers\Consumer\ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [\App\Http\Controllers\Consumer\ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [\App\Http\Controllers\Consumer\ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::post('/vouchers/claim', [VoucherController::class, 'claim'])->name('vouchers.claim');
 });

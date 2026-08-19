@@ -71,7 +71,17 @@
         @if($surface === 'mitra')
           <a class='dropdown-item d-flex align-items-center gap-2' href='{{ route('mitra.profile.edit') }}'>
             <i class="fa-solid fa-store text-muted" style="width: 16px;"></i>
-            <span>Profil Mitra</span>
+            <span>Profil & Keamanan Mitra</span>
+          </a>
+        @elseif($surface === 'consumer')
+          <a class='dropdown-item d-flex align-items-center gap-2' href='{{ route('consumer.profile.edit') }}'>
+            <i class="fa-solid fa-user-gear text-muted" style="width: 16px;"></i>
+            <span>Profil & Keamanan</span>
+          </a>
+        @elseif($surface === 'gatekeeper')
+          <a class='dropdown-item d-flex align-items-center gap-2' href='{{ route('gatekeeper.profile.edit') }}'>
+            <i class="fa-solid fa-user-shield text-muted" style="width: 16px;"></i>
+            <span>Profil & Keamanan</span>
           </a>
         @endif
         <div class='dropdown-divider my-1'></div>

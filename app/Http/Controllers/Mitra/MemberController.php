@@ -53,4 +53,30 @@ class MemberController extends Controller
 
         return back()->with('status', 'Keanggotaan dicabut.');
     }
+
+    public function resetPassword(Request $request, MitraMember $member, AuditLogger $audit): RedirectResponse
+    {
+        abort_unless($request->user()->can('members.manage'), 403);
+        $mitra = $this->activeMitra($request);
+        abort_unless($member->mitra_id === $mitra->id, 404);
+
+        $request->validate([
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'password.required' => 'Kata sandi baru wajib diisi.',
+            'password.min' => 'Kata sandi minimal 8 karakter.',
+            'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
+        ]);
+
+        $targetUser = $member->user;
+        $targetUser->credential()->updateOrCreate([], [
+            'password_hash' => \Illuminate\Support\Facades\Hash::make($request->password),
+            'failed_login_count' => 0,
+            'locked_until' => null,
+        ]);
+
+        $audit->record('mitra.member_password_reset', $mitra, [], ['member_id' => $member->id, 'user_id' => $targetUser->id], $request->user());
+
+        return back()->with('status', "Kata sandi untuk anggota {$targetUser->name} ({$targetUser->email}) berhasil direset.");
+    }
 }

@@ -23,6 +23,7 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::get('/{mitra}/dashboard', [DashboardController::class, 'mitra'])->name('context.dashboard');
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
     Route::post('/profile/media/{type}', [ProfileController::class, 'media'])->name('profile.media');
     Route::put('/profile/operating-hours', [ProfileController::class, 'hours'])->name('profile.hours');
     Route::get('/kyc', [KycController::class, 'index'])->name('kyc.index');
@@ -30,6 +31,7 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::get('/kyc/{document}/download', [KycController::class, 'download'])->name('kyc.download');
     Route::get('/members', [MemberController::class, 'index'])->name('members.index');
     Route::post('/members', [MemberController::class, 'store'])->name('members.store');
+    Route::post('/members/{member}/reset-password', [MemberController::class, 'resetPassword'])->name('members.reset-password');
     Route::delete('/members/{member}', [MemberController::class, 'destroy'])->name('members.destroy');
     Route::get('/features', [FeatureRequestController::class, 'index'])->name('features.index');
     Route::post('/features/requests', [FeatureRequestController::class, 'store'])->name('features.store');
