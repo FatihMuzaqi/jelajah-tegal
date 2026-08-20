@@ -39,7 +39,7 @@ class SaveTourismDestination
                 DB::table('catalog_locations')->updateOrInsert(
                     ['catalog_entity_id' => $entity->id],
                     [
-                        'location' => DB::raw("ST_GeomFromText('POINT({$lng} {$lat})')"),
+                        'location' => DB::raw("ST_GeomFromText('POINT({$lng} {$lat})', 4326)"),
                         'latitude' => $lat,
                         'longitude' => $lng,
                         'updated_at' => now(),
