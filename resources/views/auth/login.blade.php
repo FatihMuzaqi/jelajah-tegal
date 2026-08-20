@@ -166,26 +166,6 @@
                     <div class="auth-footer-prompt">
                         Belum memiliki akun Lokantara? <a href="{{ route('register') }}">Daftar Akun Baru</a>
                     </div>
-
-                    <!-- Testing Helper / Quick Credentials Hint -->
-                    <details class="testing-hints-box">
-                        <summary>💡 Kredensial Pengujian Lokal (Akses Cepat)</summary>
-                        <p class="m-0 mb-2">Pilih atau gunakan akun berikut untuk menguji permukaan peran:</p>
-                        <div class="testing-hints-grid">
-                            <button type="button" class="hint-badge text-start btn border text-truncate"
-                                onclick="fillCredentials('admin@example.test', 'password')">
-                                <strong>Admin</strong><br><small>admin@example.test</small>
-                            </button>
-                            <button type="button" class="hint-badge text-start btn border text-truncate"
-                                onclick="fillCredentials('owner@example.test', 'password')">
-                                <strong>Mitra Owner</strong><br><small>owner@example.test</small>
-                            </button>
-                            <button type="button" class="hint-badge text-start btn border text-truncate"
-                                onclick="fillCredentials('consumer@example.test', 'password')">
-                                <strong>Consumer</strong><br><small>consumer@example.test</small>
-                            </button>
-                        </div>
-                    </details>
                 </div>
             </div>
         </div>
@@ -202,11 +182,6 @@
                 passwordInput.type = 'password';
                 toggleIcon.textContent = '👁️';
             }
-        }
-
-        function fillCredentials(email, password) {
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = password;
         }
     </script>
 @endsection
