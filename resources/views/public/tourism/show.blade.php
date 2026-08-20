@@ -482,6 +482,28 @@
 <!-- Main Content & Sidebar Grid -->
 <section class="public-section pt-4">
     <div class="container public-container">
+        @php
+            $activeOffersList = $tourism->offers->whereIn('status', ['active', 'published']);
+            $allOffersSoldOutToday = $activeOffersList->isNotEmpty() && $activeOffersList->every(function($offer) {
+                $todayAvail = $offer->availabilities->where('service_date', now()->format('Y-m-d'))->first();
+                $capacity = $todayAvail?->capacity ?? ($offer->ticketPackage?->quota_per_day ?? 100);
+                $reserved = $todayAvail?->reserved_quantity ?? 0;
+                return ($todayAvail && $todayAvail->status !== 'available') || (max(0, $capacity - $reserved) <= 0);
+            });
+        @endphp
+
+        @if ($allOffersSoldOutToday)
+            <div class="alert alert-danger border-0 shadow-sm rounded-4 p-3.5 mb-4 d-flex align-items-center gap-3" role="alert">
+                <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center flex-shrink-0" style="width: 44px; height: 44px; font-size: 20px;">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1 text-danger">Pemberitahuan: Kuota Tiket Masuk Hari Ini Telah Habis (Sold Out)</h6>
+                    <p class="mb-0 text-muted fs-8">Seluruh tiket masuk untuk hari ini telah terjual habis. Anda tetap dapat melakukan pemesanan tiket untuk tanggal kunjungan berikutnya melalui tombol pemesanan di bawah.</p>
+                </div>
+            </div>
+        @endif
+
         <div class="row g-4">
             <!-- Left Main Column (8 Cols) -->
             <div class="col-lg-8">
@@ -656,9 +678,18 @@
                             <p class="text-muted mb-3" style="font-size: 12px;">{{ $offer->description ?: 'Tiket akses masuk destinasi wisata per orang/kunjungan.' }}</p>
                             
                             @if ($isSoldOut)
-                                <button type="button" class="btn btn-secondary w-100 fw-bold py-2 disabled" disabled>
+                                <button type="button" class="btn btn-secondary w-100 fw-bold py-2 disabled mb-2" disabled>
                                     <i class="fa-solid fa-ban me-1"></i> Tiket Habis Hari Ini
                                 </button>
+                                @auth
+                                    <button type="button" class="btn btn-outline-success w-100 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#bookModal-{{ $offer->id }}">
+                                        <i class="fa-solid fa-calendar-day me-1"></i> Pesan untuk Tanggal Lain
+                                    </button>
+                                @else
+                                    <a href="{{ route('login') }}" class="btn btn-outline-success w-100 fw-bold py-2">
+                                        Masuk untuk Pilih Tanggal Lain
+                                    </a>
+                                @endauth
                             @else
                                 @auth
                                     <button type="button" class="btn btn-lokantara w-100 fw-bold py-2" data-bs-toggle="modal" data-bs-target="#bookModal-{{ $offer->id }}">
@@ -852,23 +883,32 @@ document.addEventListener('DOMContentLoaded', function() {
                             <!-- Tanggal Kunjungan -->
                             <div class="mb-3">
                                 <label class="form-label fw-bold fs-7 text-dark">Tanggal Kunjungan <span class="text-danger">*</span></label>
-                                <input type="date" name="service_date" class="form-control rounded-3" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
+                                <input type="date" id="serviceDate-{{ $offer->id }}" name="service_date" class="form-control rounded-3" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" onchange="updateDateQuota_{{ $offer->id }}(this.value)" required>
+                            </div>
+
+                            <!-- Sold Out Alert for Selected Date -->
+                            <div id="soldOutAlert-{{ $offer->id }}" class="alert alert-danger py-2 px-3 rounded-3 fs-8 fw-bold d-none mb-3" role="alert">
+                                <i class="fa-solid fa-ban me-1"></i> Maaf, kuota tiket pada tanggal ini telah habis (Sold Out). Silakan pilih tanggal lain.
                             </div>
 
                             <!-- Jumlah Tiket -->
                             <div class="mb-3">
                                 <div class="d-flex align-items-center justify-content-between mb-1">
                                     <label class="form-label fw-bold fs-7 text-dark mb-0">Jumlah Tiket <span class="text-danger">*</span></label>
-                                    @if ($remModal <= 10)
-                                        <small class="text-danger fw-bold"><i class="fa-solid fa-fire me-1"></i>Sisa {{ $remModal }} tiket untuk hari ini</small>
-                                    @else
-                                        <small class="text-success fw-semibold"><i class="fa-solid fa-circle-check me-1"></i>Slot tersedia</small>
-                                    @endif
+                                    <span id="stockInfo-{{ $offer->id }}">
+                                        @if ($remModal <= 0)
+                                            <small class="text-danger fw-bold"><i class="fa-solid fa-ban me-1"></i>Tiket Habis (Sold Out)</small>
+                                        @elseif ($remModal <= 10)
+                                            <small class="text-danger fw-bold"><i class="fa-solid fa-fire me-1"></i>Sisa {{ $remModal }} tiket</small>
+                                        @else
+                                            <small class="text-success fw-semibold"><i class="fa-solid fa-circle-check me-1"></i>Slot tersedia</small>
+                                        @endif
+                                    </span>
                                 </div>
                                 <div class="input-group">
                                     <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); if(parseInt(q.value) > 1) { q.value = parseInt(q.value) - 1; calcTotal{{ $offer->id }}(); }">-</button>
-                                    <input type="number" id="qty-{{ $offer->id }}" name="quantity" class="form-control text-center fw-bold" value="1" min="1" max="{{ $maxBookable }}" onchange="calcTotal{{ $offer->id }}()" required>
-                                    <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); if(parseInt(q.value || 0) < {{ $maxBookable }}) { q.value = parseInt(q.value || 0) + 1; calcTotal{{ $offer->id }}(); }">+</button>
+                                    <input type="number" id="qty-{{ $offer->id }}" name="quantity" class="form-control text-center fw-bold" value="{{ $remModal > 0 ? 1 : 0 }}" min="1" max="{{ $maxBookable }}" onchange="calcTotal{{ $offer->id }}()" {{ $remModal <= 0 ? 'disabled' : '' }} required>
+                                    <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('qty-{{ $offer->id }}'); let max = parseInt(q.max) || 10; if(parseInt(q.value || 0) < max) { q.value = parseInt(q.value || 0) + 1; calcTotal{{ $offer->id }}(); }">+</button>
                                 </div>
                             </div>
 
@@ -889,7 +929,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                         <div class="modal-footer border-top-0 pt-0">
                             <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Batal</button>
-                            <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold text-white">
+                            <button type="submit" id="submitBtn-{{ $offer->id }}" class="btn btn-success rounded-pill px-4 fw-bold text-white" {{ $remModal <= 0 ? 'disabled' : '' }}>
                                 Lanjutkan Pembayaran <i class="fa-solid fa-arrow-right ms-1"></i>
                             </button>
                         </div>
@@ -899,12 +939,71 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
 
         <script>
+            const availabilities_{{ $offer->id }} = @json($offer->availabilities->mapWithKeys(fn($a) => [
+                $a->service_date instanceof \Carbon\CarbonInterface ? $a->service_date->toDateString() : (string)$a->service_date => [
+                    'capacity' => (int) $a->capacity,
+                    'reserved' => (int) $a->reserved_quantity,
+                    'status' => $a->status
+                ]
+            ]));
+            const defaultQuota_{{ $offer->id }} = {{ (int) ($offer->ticketPackage?->quota_per_day ?? 100) }};
+
+            function updateDateQuota_{{ $offer->id }}(dateVal) {
+                let avail = availabilities_{{ $offer->id }}[dateVal];
+                let cap = avail ? avail.capacity : defaultQuota_{{ $offer->id }};
+                let res = avail ? avail.reserved : 0;
+                let status = avail ? avail.status : (cap > 0 ? 'available' : 'sold_out');
+                let rem = (status === 'available') ? Math.max(0, cap - res) : 0;
+                
+                let infoElem = document.getElementById('stockInfo-{{ $offer->id }}');
+                let qtyInput = document.getElementById('qty-{{ $offer->id }}');
+                let submitBtn = document.getElementById('submitBtn-{{ $offer->id }}');
+                let soldOutAlert = document.getElementById('soldOutAlert-{{ $offer->id }}');
+                
+                if (rem <= 0) {
+                    if (infoElem) infoElem.innerHTML = '<small class="text-danger fw-bold"><i class="fa-solid fa-ban me-1"></i>Tiket Habis (Sold Out)</small>';
+                    if (soldOutAlert) soldOutAlert.classList.remove('d-none');
+                    if (qtyInput) { qtyInput.disabled = true; qtyInput.value = 0; }
+                    if (submitBtn) submitBtn.disabled = true;
+                } else {
+                    if (soldOutAlert) soldOutAlert.classList.add('d-none');
+                    if (qtyInput) {
+                        qtyInput.disabled = false;
+                        qtyInput.max = Math.min(10, rem);
+                        if (parseInt(qtyInput.value) <= 0 || parseInt(qtyInput.value) > rem) {
+                            qtyInput.value = 1;
+                        }
+                    }
+                    if (submitBtn) submitBtn.disabled = false;
+                    
+                    if (infoElem) {
+                        if (rem <= 10) {
+                            infoElem.innerHTML = `<small class="text-danger fw-bold"><i class="fa-solid fa-fire me-1"></i>Sisa ${rem} tiket</small>`;
+                        } else {
+                            infoElem.innerHTML = `<small class="text-success fw-semibold"><i class="fa-solid fa-circle-check me-1"></i>Slot tersedia (${rem} tiket)</small>`;
+                        }
+                    }
+                }
+                calcTotal{{ $offer->id }}();
+            }
+
             function calcTotal{{ $offer->id }}() {
                 let price = {{ $offer->price }};
-                let qty = parseInt(document.getElementById('qty-{{ $offer->id }}').value) || 1;
+                let qtyInput = document.getElementById('qty-{{ $offer->id }}');
+                let qty = qtyInput && !qtyInput.disabled ? (parseInt(qtyInput.value) || 0) : 0;
                 let total = price * qty;
-                document.getElementById('totalDisplay-{{ $offer->id }}').innerText = 'Rp ' + total.toLocaleString('id-ID');
+                let display = document.getElementById('totalDisplay-{{ $offer->id }}');
+                if (display) {
+                    display.innerText = 'Rp ' + total.toLocaleString('id-ID');
+                }
             }
+
+            document.addEventListener('DOMContentLoaded', function() {
+                let dateInput = document.getElementById('serviceDate-{{ $offer->id }}');
+                if (dateInput && dateInput.value) {
+                    updateDateQuota_{{ $offer->id }}(dateInput.value);
+                }
+            });
         </script>
     @endforeach
 @endauth

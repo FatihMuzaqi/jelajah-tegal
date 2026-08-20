@@ -26,7 +26,12 @@ class ReleaseOrder
                     if ($hold->resource_type === 'availability') {
                         $resource = Availability::lockForUpdate()->find($hold->resource_id);
                         if ($resource) {
-                            $resource->update(['reserved_quantity' => max(0, $resource->reserved_quantity - $hold->quantity)]);
+                            $newReserved = max(0, $resource->reserved_quantity - $hold->quantity);
+                            $newStatus = ($newReserved < $resource->capacity && $resource->status === 'sold_out') ? 'available' : $resource->status;
+                            $resource->update([
+                                'reserved_quantity' => $newReserved,
+                                'status' => $newStatus,
+                            ]);
                         }
                     } elseif ($hold->resource_type === 'event_ticket_type') {
                         $resource = EventTicketType::lockForUpdate()->find($hold->resource_id);

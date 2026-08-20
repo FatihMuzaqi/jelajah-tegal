@@ -52,6 +52,13 @@ class CapturePayment
                         }
                         $type->decrement('reserved_quantity', $hold->quantity);
                         $type->increment('issued_quantity', $hold->quantity);
+                    } elseif ($hold->resource_type === 'availability') {
+                        $availability = \App\Models\Availability::lockForUpdate()->find($hold->resource_id);
+                        if ($availability) {
+                            if ($availability->reserved_quantity >= $availability->capacity) {
+                                $availability->update(['status' => 'sold_out']);
+                            }
+                        }
                     }
                     $hold->update(['status' => 'converted']);
                 }

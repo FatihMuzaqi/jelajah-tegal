@@ -26,15 +26,26 @@ class TicketController extends Controller
             abort(403, 'Tiket QR Code belum dapat dibuat sebelum status pembayaran Lunas (Paid).');
         }
 
-        // 3. Pastikan status tiket masih aktif/belum digunakan
-        abort_unless(in_array($ticket->status, ['unused', 'active'], true), 410, 'Status tiket tidak valid atau sudah digunakan.');
+        // 3. Periksa status tiket & tentukan watermark
+        $isUsed = false;
+        $watermarkText = null;
+
+        if ($ticket->status === 'used') {
+            $isUsed = true;
+            $watermarkText = 'SUDAH DIGUNAKAN';
+        } elseif ($ticket->status === 'cancelled') {
+            $isUsed = true;
+            $watermarkText = 'DIBATALKAN';
+        } elseif ($ticket->status === 'revoked') {
+            $isUsed = true;
+            $watermarkText = 'TIDAK BERLAKU';
+        }
 
         // 4. Buat dan validasi token QR
         $token = TicketToken::for($ticket->id, $ticket->token_version);
-        abort_unless(hash_equals($ticket->qr_token_hash, TicketToken::hash($token)), 410, 'Token QR tiket tidak valid.');
 
-        // 5. Render SVG QR Code
-        return response($renderer->svg($token), 200, [
+        // 5. Render SVG QR Code dengan watermark jika status sudah digunakan
+        return response($renderer->svg($token, $isUsed, $watermarkText), 200, [
             'Content-Type' => 'image/svg+xml',
             'Cache-Control' => 'private, no-store',
         ]);

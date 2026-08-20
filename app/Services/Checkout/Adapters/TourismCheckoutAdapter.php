@@ -34,18 +34,23 @@ class TourismCheckoutAdapter implements CheckoutAdapter
             ->first();
 
         if (! $availability) {
+            $capacity = (int) ($package->quota_per_day ?? 100);
             $availability = Availability::create([
                 'mitra_id' => $entity->mitra_id,
                 'catalog_offer_id' => $package->catalog_offer_id,
                 'service_date' => $date,
-                'capacity' => $package->quota_per_day ?? 100,
+                'capacity' => $capacity,
                 'reserved_quantity' => 0,
-                'status' => 'available',
+                'status' => $capacity > 0 ? 'available' : 'sold_out',
             ]);
         }
 
-        if ($availability->status !== 'available' || $availability->reserved_quantity + $quantity > $availability->capacity) {
-            throw ValidationException::withMessages(['quantity' => 'Kuota wisata tidak tersedia pada tanggal tersebut.']);
+        $remaining = max(0, $availability->capacity - $availability->reserved_quantity);
+        if ($availability->status !== 'available' || $remaining < $quantity) {
+            $msg = $remaining <= 0
+                ? "Maaf, kuota tiket {$package->name} untuk tanggal {$date} telah habis (Sold Out)."
+                : "Maaf, sisa kuota tiket {$package->name} untuk tanggal {$date} hanya tersisa {$remaining} tiket (Anda memilih {$quantity} tiket).";
+            throw ValidationException::withMessages(['quantity' => $msg]);
         }
 
         $availability->increment('reserved_quantity', $quantity);

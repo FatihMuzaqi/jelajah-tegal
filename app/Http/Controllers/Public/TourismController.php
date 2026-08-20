@@ -22,7 +22,7 @@ class TourismController extends Controller
     {
         abort_unless($this->flags->enabled('public-tourism'), 404);
         $data = $request->validate(['q' => 'nullable|string|max:100', 'category' => 'nullable|string|max:191', 'region' => 'nullable|integer', 'featured' => 'nullable|boolean', 'hidden_gem' => 'nullable|boolean', 'latitude' => 'nullable|numeric|between:-90,90', 'longitude' => 'nullable|numeric|between:-180,180', 'radius' => 'nullable|numeric|min:1|max:100']);
-        $query = CatalogEntity::query()->publicTourism()->with(['category', 'region', 'tourism', 'media', 'mitra']);
+        $query = CatalogEntity::query()->publicTourism()->with(['category', 'region', 'tourism', 'media', 'mitra', 'offers.ticketPackage', 'offers.availabilities']);
         if ($q = $data['q'] ?? null) {
             $query->where(fn ($x) => $x->where('name', 'like', '%'.$q.'%')->orWhere('description', 'like', '%'.$q.'%'));
         }

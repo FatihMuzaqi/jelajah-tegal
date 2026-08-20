@@ -206,33 +206,56 @@
                                             @if($tickets && $tickets->count() > 0)
                                                 <div class="row g-4 justify-content-center">
                                                     @foreach($tickets as $tIndex => $ticket)
+                                                        @php
+                                                            $isTicketUsed = $ticket->status === 'used';
+                                                        @endphp
                                                         <div class="col-12 col-md-6 text-center">
-                                                            <div class="p-3 bg-white rounded-4 border shadow-sm">
-                                                                <span class="badge bg-secondary-subtle text-dark mb-2 px-2.5 py-1 rounded-pill fw-bold">
-                                                                    Tiket #{{ $tIndex + 1 }} dari {{ $tickets->count() }}
-                                                                </span>
+                                                            <div class="p-3 bg-white rounded-4 border shadow-sm {{ $isTicketUsed ? 'border-danger-subtle bg-light-subtle' : '' }}">
+                                                                <div class="d-flex align-items-center justify-content-between mb-2">
+                                                                    <span class="badge {{ $isTicketUsed ? 'bg-secondary' : 'bg-success' }} text-white px-2.5 py-1 rounded-pill fw-bold">
+                                                                        Tiket #{{ $tIndex + 1 }} dari {{ $tickets->count() }}
+                                                                    </span>
+                                                                    @if($isTicketUsed)
+                                                                        <span class="badge bg-danger text-white border border-danger px-2.5 py-1 rounded-pill fw-bold" style="font-size: 10px;">
+                                                                            <i class="fa-solid fa-circle-check me-0.5"></i> SUDAH DIGUNAKAN
+                                                                        </span>
+                                                                    @endif
+                                                                </div>
 
-                                                                <!-- Barcode Visual Generator -->
-                                                                <div class="d-flex flex-column align-items-center my-3">
-                                                                    <div class="p-2 bg-white border rounded-3 shadow-xs">
-                                                                        <img src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data={{ urlencode($ticket->ticket_code) }}"
-                                                                             alt="QR Code Tiket" class="img-fluid rounded-2" style="width: 170px; height: 170px;">
+                                                                <!-- QR Code Container with Watermark Overlay -->
+                                                                <div class="d-flex flex-column align-items-center my-3 position-relative">
+                                                                    <div class="p-2 bg-white border rounded-3 shadow-xs {{ $isTicketUsed ? 'border-danger-subtle' : '' }}">
+                                                                        <img src="{{ route('consumer.tickets.qr', $ticket) }}"
+                                                                             alt="QR Code Tiket" class="img-fluid rounded-2" style="width: 170px; height: 170px; {{ $isTicketUsed ? 'filter: grayscale(100%) opacity(0.4);' : '' }}">
                                                                     </div>
-                                                                    <div class="mt-2 text-center" style="letter-spacing: 3px; font-family: monospace; font-size: 11px; color: #64748b;">
-                                                                        ||| | |||| | ||| |||| | |||
-                                                                    </div>
+                                                                    @if($isTicketUsed)
+                                                                        <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-18deg); background: rgba(220, 38, 38, 0.95); color: #fff; padding: 5px 12px; border-radius: 6px; border: 2px dashed #fff; box-shadow: 0 4px 12px rgba(220,38,38,0.35); text-align: center; pointer-events: none; white-space: nowrap; z-index: 5;">
+                                                                            <div style="font-size: 12px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase;">
+                                                                                <i class="fa-solid fa-stamp me-1"></i> SUDAH DIGUNAKAN
+                                                                            </div>
+                                                                            @if($ticket->used_at)
+                                                                                <div style="font-size: 9px; font-weight: 700; opacity: 0.9; margin-top: 1px;">{{ $ticket->used_at->translatedFormat('d M Y, H:i') }} WIB</div>
+                                                                            @endif
+                                                                        </div>
+                                                                    @endif
                                                                 </div>
 
                                                                 <!-- Kode Tiket -->
-                                                                <div class="my-2 p-2 bg-white rounded-3 border d-flex align-items-center justify-content-center gap-2">
-                                                                    <code class="fw-bold fs-6 text-dark font-mono">{{ $ticket->ticket_code }}</code>
+                                                                <div class="my-2 p-2 {{ $isTicketUsed ? 'bg-danger-subtle text-danger' : 'bg-white text-dark' }} rounded-3 border d-flex align-items-center justify-content-center gap-2">
+                                                                    <code class="fw-bold fs-6 font-mono {{ $isTicketUsed ? 'text-danger' : 'text-dark' }}">{{ $ticket->ticket_code }}</code>
                                                                     <button type="button" class="btn btn-sm btn-light border-0" onclick="navigator.clipboard.writeText('{{ $ticket->ticket_code }}'); alert('Kode tiket disalin!');" title="Salin Kode">
                                                                         <i class="fa-regular fa-copy"></i>
                                                                     </button>
                                                                 </div>
 
+                                                                @if($isTicketUsed)
+                                                                    <p class="text-danger fw-semibold fs-8 mb-2">
+                                                                        <i class="fa-solid fa-circle-check me-1"></i> Tiket telah digunakan pada {{ $ticket->used_at ? $ticket->used_at->translatedFormat('d M Y, H:i') : 'hari ini' }} WIB.
+                                                                    </p>
+                                                                @endif
+
                                                                 <div class="d-flex gap-2 mt-3">
-                                                                    <a href="{{ route('consumer.tickets.qr', $ticket) }}" target="_blank" class="btn btn-sm btn-outline-primary rounded-pill w-100 fw-bold">
+                                                                    <a href="{{ route('consumer.tickets.qr', $ticket) }}" target="_blank" class="btn btn-sm {{ $isTicketUsed ? 'btn-outline-secondary' : 'btn-outline-primary' }} rounded-pill w-100 fw-bold">
                                                                         <i class="fa-solid fa-expand me-1"></i> Buka Fullscreen
                                                                     </a>
                                                                     <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-secondary rounded-pill px-3" title="Cetak">

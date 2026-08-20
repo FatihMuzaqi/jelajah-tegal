@@ -133,6 +133,39 @@
     display: inline-block;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
+.qr-frame-used {
+    border-color: #fca5a5 !important;
+    background: #fef2f2 !important;
+}
+.qr-watermark-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-18deg);
+    background: rgba(220, 38, 38, 0.95);
+    color: #ffffff;
+    padding: 6px 14px;
+    border-radius: 8px;
+    border: 2px dashed #ffffff;
+    box-shadow: 0 4px 15px rgba(220, 38, 38, 0.4);
+    text-align: center;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 5;
+}
+.qr-watermark-text {
+    font-size: 13px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    line-height: 1.2;
+    text-transform: uppercase;
+}
+.qr-watermark-sub {
+    font-size: 9.5px;
+    font-weight: 700;
+    opacity: 0.9;
+    margin-top: 2px;
+}
 
 /* Copy Button */
 .btn-copy {
@@ -383,40 +416,69 @@
             </div>
 
             @if ($order->status->value === 'paid')
-                @php($allTickets = $order->items->flatMap->tickets)
+                @php
+                    $allTickets = $order->items->flatMap->tickets;
+                @endphp
                 @if ($allTickets->isNotEmpty())
                     <div class="row g-4">
                         @foreach ($allTickets as $index => $ticket)
+                            @php
+                                $isTicketUsed = $ticket->status === 'used';
+                            @endphp
                             <div class="col-md-6">
-                                <div class="boarding-pass-card text-center">
+                                <div class="boarding-pass-card text-center {{ $isTicketUsed ? 'border-danger-subtle bg-light-subtle' : '' }}">
                                     <div class="d-flex align-items-center justify-content-between mb-2">
-                                        <span class="badge bg-success text-white px-2.5 py-1 rounded-pill fs-8 fw-bold">
+                                        <span class="badge {{ $isTicketUsed ? 'bg-secondary' : 'bg-success' }} text-white px-2.5 py-1 rounded-pill fs-8 fw-bold">
                                             TIKET #{{ $index + 1 }}
                                         </span>
-                                        <x-status-badge :status="$ticket->status" />
+                                        @if($isTicketUsed)
+                                            <span class="badge bg-danger text-white border border-danger px-2.5 py-1 rounded-pill fs-8 fw-bold shadow-sm">
+                                                <i class="fa-solid fa-circle-check me-1"></i> SUDAH DIGUNAKAN
+                                            </span>
+                                        @else
+                                            <x-status-badge :status="$ticket->status" />
+                                        @endif
                                     </div>
 
                                     <h6 class="fw-extrabold text-dark mb-2">{{ $order->items->first()?->item_name }}</h6>
                                     
-                                    <!-- QR Code Image -->
-                                    <div class="qr-frame my-2">
-                                        <img src="{{ route('consumer.tickets.qr', $ticket) }}" alt="QR Code {{ $ticket->ticket_code }}" style="width: 155px; height: 155px;" class="d-block mx-auto">
+                                    <!-- QR Code Image with Watermark Container -->
+                                    <div class="position-relative d-inline-block my-2">
+                                        <div class="qr-frame {{ $isTicketUsed ? 'qr-frame-used' : '' }}">
+                                            <img src="{{ route('consumer.tickets.qr', $ticket) }}" alt="QR Code {{ $ticket->ticket_code }}" style="width: 155px; height: 155px; {{ $isTicketUsed ? 'filter: grayscale(100%) opacity(0.4);' : '' }}" class="d-block mx-auto">
+                                        </div>
+                                        @if($isTicketUsed)
+                                            <div class="qr-watermark-badge">
+                                                <div class="qr-watermark-text">
+                                                    <i class="fa-solid fa-stamp me-1"></i> SUDAH DIGUNAKAN
+                                                </div>
+                                                @if($ticket->used_at)
+                                                    <div class="qr-watermark-sub">{{ $ticket->used_at->translatedFormat('d M Y, H:i') }} WIB</div>
+                                                @endif
+                                            </div>
+                                        @endif
                                     </div>
 
                                     <!-- Ticket Code with Copy -->
-                                    <div class="my-2 p-2 bg-light rounded-3 d-flex align-items-center justify-content-center gap-2">
-                                        <code class="fw-bold fs-6 text-dark font-mono">{{ $ticket->ticket_code }}</code>
+                                    <div class="my-2 p-2 {{ $isTicketUsed ? 'bg-danger-subtle text-danger' : 'bg-light text-dark' }} rounded-3 d-flex align-items-center justify-content-center gap-2">
+                                        <code class="fw-bold fs-6 font-mono {{ $isTicketUsed ? 'text-danger' : 'text-dark' }}">{{ $ticket->ticket_code }}</code>
                                         <button type="button" class="btn-copy" onclick="copyToClipboard('{{ $ticket->ticket_code }}', this)" title="Salin Kode Tiket">
                                             <i class="fa-regular fa-copy"></i>
                                         </button>
                                     </div>
 
-                                    <p class="text-muted fs-8 mb-3">
-                                        <i class="fa-solid fa-camera-retro me-1"></i> Tunjukkan QR Code ini langsung di layar HP Anda kepada petugas loket pintu masuk.
-                                    </p>
+                                    @if($isTicketUsed)
+                                        <p class="text-danger fw-semibold fs-8 mb-3">
+                                            <i class="fa-solid fa-circle-check me-1"></i> Tiket telah divalidasi & digunakan masuk pada {{ $ticket->used_at ? $ticket->used_at->translatedFormat('d F Y, H:i') : 'hari ini' }} WIB.
+                                        </p>
+                                    @else
+                                        <p class="text-muted fs-8 mb-3">
+                                            <i class="fa-solid fa-camera-retro me-1"></i> Tunjukkan QR Code ini langsung di layar HP Anda kepada petugas loket pintu masuk.
+                                        </p>
+                                    @endif
 
                                     <div class="d-flex gap-2">
-                                        <a href="{{ route('consumer.tickets.qr', $ticket) }}" target="_blank" class="btn btn-sm btn-outline-success rounded-pill w-100 fw-bold">
+                                        <a href="{{ route('consumer.tickets.qr', $ticket) }}" target="_blank" class="btn btn-sm {{ $isTicketUsed ? 'btn-outline-secondary' : 'btn-outline-success' }} rounded-pill w-100 fw-bold">
                                             <i class="fa-solid fa-expand me-1"></i> Layar Penuh
                                         </a>
                                         <button type="button" onclick="window.print()" class="btn btn-sm btn-outline-secondary rounded-pill px-3" title="Cetak E-Tiket">

@@ -303,9 +303,14 @@
                             @if($tickets->isNotEmpty())
                                 <div class="d-flex flex-column gap-1 pt-2 border-top">
                                     @foreach($tickets as $t)
-                                        <div class="d-flex align-items-center justify-content-between bg-light p-1.5 rounded-2">
-                                            <span class="fs-8 fw-bold font-monospace text-dark">#{{ $t->ticket_code }}</span>
-                                            <a href="{{ route('consumer.tickets.qr', $t->id) }}" target="_blank" class="btn btn-xs btn-outline-dark rounded-pill px-2 py-0.5 fs-8">
+                                        <div class="d-flex align-items-center justify-content-between p-1.5 rounded-2 {{ $t->status === 'used' ? 'bg-danger-subtle border border-danger-subtle' : 'bg-light' }}">
+                                            <div>
+                                                <span class="fs-8 fw-bold font-monospace {{ $t->status === 'used' ? 'text-danger' : 'text-dark' }}">#{{ $t->ticket_code }}</span>
+                                                @if($t->status === 'used')
+                                                    <span class="badge bg-danger text-white ms-1 px-1.5 py-0.5" style="font-size: 9px;"><i class="fa-solid fa-circle-check me-0.5"></i> Terpakai</span>
+                                                @endif
+                                            </div>
+                                            <a href="{{ route('consumer.tickets.qr', $t->id) }}" target="_blank" class="btn btn-xs {{ $t->status === 'used' ? 'btn-outline-danger' : 'btn-outline-dark' }} rounded-pill px-2 py-0.5 fs-8">
                                                 <i class="fa-solid fa-qrcode me-1"></i> Buka QR
                                             </a>
                                         </div>

@@ -207,6 +207,26 @@
                     $rating = $item->rating_average > 0 ? number_format($item->rating_average, 1) : '4.8';
                     $regionName = $item->region?->name ?? 'Tegal';
                     $mitraName = $item->mitra?->display_name ?? 'Mitra Terverifikasi';
+
+                    $activeOffers = $item->offers->whereIn('status', ['active', 'published']);
+                    $isSoldOut = false;
+                    $isLowStock = false;
+                    if ($activeOffers->isNotEmpty()) {
+                        $totalRem = 0;
+                        foreach ($activeOffers as $off) {
+                            $avail = $off->availabilities->where('service_date', now()->format('Y-m-d'))->first();
+                            $cap = $avail?->capacity ?? ($off->ticketPackage?->quota_per_day ?? 100);
+                            $res = $avail?->reserved_quantity ?? 0;
+                            if (!$avail || $avail->status === 'available') {
+                                $totalRem += max(0, $cap - $res);
+                            }
+                        }
+                        if ($totalRem <= 0) {
+                            $isSoldOut = true;
+                        } elseif ($totalRem <= 10) {
+                            $isLowStock = true;
+                        }
+                    }
                 @endphp
                 <div class="col-12 col-sm-6 col-lg-4">
                     <article class="jt-tourism-card">
@@ -218,6 +238,15 @@
                             <span class="jt-category-badge">
                                 {{ $item->category?->name ?? 'Wisata' }}
                             </span>
+                            @if($isSoldOut)
+                                <span class="badge bg-danger text-white position-absolute bottom-0 start-0 m-3 px-3 py-1.5 rounded-pill fw-bold shadow-sm" style="z-index: 2; font-size: 11px;">
+                                    <i class="fa-solid fa-ban me-1"></i> Tiket Hari Ini Habis
+                                </span>
+                            @elseif($isLowStock)
+                                <span class="badge bg-warning text-dark position-absolute bottom-0 start-0 m-3 px-3 py-1.5 rounded-pill fw-bold shadow-sm" style="z-index: 2; font-size: 11px;">
+                                    <i class="fa-solid fa-fire text-danger me-1"></i> Kuota Menipis
+                                </span>
+                            @endif
                         </div>
 
                         <div class="jt-tourism-body">
