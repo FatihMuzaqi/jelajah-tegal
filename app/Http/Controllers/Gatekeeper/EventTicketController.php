@@ -15,7 +15,13 @@ class EventTicketController extends Controller
     {
         abort_unless($r->user()->can('tickets.validate'), 403);
 
-        return view('gatekeeper.event-tickets.index');
+        $recentLogs = \App\Models\TicketValidationLog::where('gatekeeper_user_id', $r->user()->id)
+            ->with(['ticket.orderItem', 'ticket.holderUser'])
+            ->latest('scanned_at')
+            ->limit(10)
+            ->get();
+
+        return view('gatekeeper.event-tickets.index', compact('recentLogs'));
     }
 
     public function validateTicket(Request $r, ValidateEventTicket $a): RedirectResponse

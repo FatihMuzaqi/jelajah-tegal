@@ -781,64 +781,11 @@
                     </div>
                 @endforeach
             @else
-                <!-- Fallback Mockup Cards -->
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-popular-card">
-                        <div class="jt-pop-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop" alt="Guci Hot Spring">
-                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.8</span>
-                            <span class="jt-pop-category-pill">Alam</span>
-                        </div>
-                        <div class="jt-pop-body">
-                            <h3>Guci Hot Spring</h3>
-                            <div class="jt-pop-location">Bumijawa, Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: PT Guci Natural Resort Tegal</span></div>
-                            <p>Pemandian air panas alami dengan pemandangan indah dan udara sejuk.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-popular-card">
-                        <div class="jt-pop-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1519046904884-53103b34b206?q=80&w=800&auto=format&fit=crop" alt="Pantai Alam Indah">
-                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.6</span>
-                            <span class="jt-pop-category-pill" style="background: #0d9488;">Pantai</span>
-                        </div>
-                        <div class="jt-pop-body">
-                            <h3>Pantai Alam Indah</h3>
-                            <div class="jt-pop-location">Kota Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: Mitra Wisata Utama Tegal</span></div>
-                            <p>Pantai indah dengan pasir luas dan berbagai wahana menarik.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-popular-card">
-                        <div class="jt-pop-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=800&auto=format&fit=crop" alt="Curug Putri">
-                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.7</span>
-                            <span class="jt-pop-category-pill">Curug</span>
-                        </div>
-                        <div class="jt-pop-body">
-                            <h3>Curug Putri</h3>
-                            <div class="jt-pop-location">Bumijawa, Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: CV Pesona Alam Bumijawa</span></div>
-                            <p>Air terjun yang menawan dengan suasana alami yang asri.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-popular-card">
-                        <div class="jt-pop-img-wrap">
-                            <img src="https://images.unsplash.com/photo-1476514525535-ce74f45814de?q=80&w=800&auto=format&fit=crop" alt="Danau Beko">
-                            <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>4.5</span>
-                            <span class="jt-pop-category-pill" style="background: #0284c7;">Keluarga</span>
-                        </div>
-                        <div class="jt-pop-body">
-                            <h3>Danau Beko</h3>
-                            <div class="jt-pop-location">Margasari, Tegal <span class="text-muted d-block fw-normal fs-8">Oleh: Pokdarwis Danau Beko Margasari</span></div>
-                            <p>Tempat rekreasi keluarga dengan danau buatan yang menyenangkan.</p>
-                        </div>
+                <div class="col-12 text-center py-5">
+                    <div class="p-4 rounded-4 bg-light text-muted border-0 shadow-sm mx-auto" style="max-width: 500px;">
+                        <i class="fa-solid fa-mountain-sun fs-2 mb-2 d-block text-secondary opacity-50"></i>
+                        <h6 class="fw-bold text-dark mb-1">Belum Ada Destinasi</h6>
+                        <p class="small text-muted mb-0">Belum ada destinasi wisata yang terdaftar saat ini.</p>
                     </div>
                 </div>
             @endif
@@ -945,112 +892,11 @@
                     </div>
                 @endforeach
             @else
-                <!-- Mockup Cards matching the user's reference image exactly -->
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-mitra-ref-card">
-                        <div class="jt-mitra-ref-cover">
-                            <img src="https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop" alt="Purwahamba Indah">
-                            <div class="jt-mitra-ref-verified">
-                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
-                            </div>
-                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="jt-mitra-ref-body">
-                            <div class="jt-mitra-ref-header-row">
-                                <div class="jt-mitra-ref-logo-fallback" style="background:#0284c7;">P</div>
-                                <div class="jt-mitra-ref-title-wrap">
-                                    <h3 class="jt-mitra-ref-title">Purwahamba Indah</h3>
-                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-compass fs-8"></i> Destinasi Wisata Alam</div>
-                                </div>
-                            </div>
-                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Kramat, Kabupaten Tegal</div>
-                            <div class="jt-mitra-ref-stats">
-                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.8 <span class="text-muted fw-normal">(324 ulasan)</span></div>
-                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 1.2K+ pengunjung</div>
-                            </div>
-                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-mitra-ref-card">
-                        <div class="jt-mitra-ref-cover">
-                            <img src="https://images.unsplash.com/photo-1566073771259-6a8506099945?q=80&w=800&auto=format&fit=crop" alt="Hotel Grand Diana">
-                            <div class="jt-mitra-ref-verified">
-                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
-                            </div>
-                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="jt-mitra-ref-body">
-                            <div class="jt-mitra-ref-header-row">
-                                <div class="jt-mitra-ref-logo-fallback" style="background:#1e293b;">GD</div>
-                                <div class="jt-mitra-ref-title-wrap">
-                                    <h3 class="jt-mitra-ref-title">Hotel Grand Diana</h3>
-                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-hotel fs-8"></i> Hotel & Penginapan</div>
-                                </div>
-                            </div>
-                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Slawi, Kabupaten Tegal</div>
-                            <div class="jt-mitra-ref-stats">
-                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.7 <span class="text-muted fw-normal">(218 ulasan)</span></div>
-                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 980+ pengunjung</div>
-                            </div>
-                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-mitra-ref-card">
-                        <div class="jt-mitra-ref-cover">
-                            <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" alt="Sate Kambing Muda H. Taslim">
-                            <div class="jt-mitra-ref-verified">
-                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
-                            </div>
-                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="jt-mitra-ref-body">
-                            <div class="jt-mitra-ref-header-row">
-                                <div class="jt-mitra-ref-logo-fallback" style="background:#b91c1c;">HT</div>
-                                <div class="jt-mitra-ref-title-wrap">
-                                    <h3 class="jt-mitra-ref-title">Sate Kambing Muda H. Taslim</h3>
-                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-utensils fs-8"></i> Kuliner Khas Tegal</div>
-                                </div>
-                            </div>
-                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Slawi, Kabupaten Tegal</div>
-                            <div class="jt-mitra-ref-stats">
-                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.9 <span class="text-muted fw-normal">(512 ulasan)</span></div>
-                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 2.3K+ pengunjung</div>
-                            </div>
-                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="col-12 col-sm-6 col-lg-3">
-                    <div class="jt-mitra-ref-card">
-                        <div class="jt-mitra-ref-cover">
-                            <img src="https://images.unsplash.com/photo-1582719508461-905c673771fd?q=80&w=800&auto=format&fit=crop" alt="d'Pine Resort">
-                            <div class="jt-mitra-ref-verified">
-                                <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
-                            </div>
-                            <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan"><i class="fa-regular fa-heart"></i></button>
-                        </div>
-                        <div class="jt-mitra-ref-body">
-                            <div class="jt-mitra-ref-header-row">
-                                <div class="jt-mitra-ref-logo-fallback" style="background:#064e3b;">DP</div>
-                                <div class="jt-mitra-ref-title-wrap">
-                                    <h3 class="jt-mitra-ref-title">d'Pine Resort</h3>
-                                    <div class="jt-mitra-ref-category"><i class="fa-solid fa-tree fs-8"></i> Resort & Penginapan</div>
-                                </div>
-                            </div>
-                            <div class="jt-mitra-ref-location"><i class="fa-solid fa-location-dot text-secondary"></i> Guci, Kabupaten Tegal</div>
-                            <div class="jt-mitra-ref-stats">
-                                <div class="jt-mitra-ref-rating"><i class="fa-solid fa-star"></i> 4.6 <span class="text-muted fw-normal">(187 ulasan)</span></div>
-                                <div class="jt-mitra-ref-visitors"><i class="fa-solid fa-users fs-8"></i> 750+ pengunjung</div>
-                            </div>
-                            <a href="{{ route('public.mitra.index') }}" class="jt-mitra-ref-btn">Lihat Profil Mitra <i class="fa-solid fa-arrow-right fs-8"></i></a>
-                        </div>
+                <div class="col-12 text-center py-5">
+                    <div class="p-4 rounded-4 bg-white text-muted border-0 shadow-sm mx-auto" style="max-width: 500px;">
+                        <i class="fa-solid fa-handshake fs-2 mb-2 d-block text-secondary opacity-50"></i>
+                        <h6 class="fw-bold text-dark mb-1">Belum Ada Mitra</h6>
+                        <p class="small text-muted mb-0">Belum ada data mitra terverifikasi yang terdaftar saat ini.</p>
                     </div>
                 </div>
             @endif

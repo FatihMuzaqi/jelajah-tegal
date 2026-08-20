@@ -31,12 +31,22 @@ class Ticket extends Model
         return $this->belongsTo(User::class, 'holder_user_id');
     }
 
+    public function holderUser(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'holder_user_id');
+    }
+
     public function mitra(): BelongsTo
     {
         return $this->belongsTo(Mitra::class);
     }
 
     public function validations(): HasMany
+    {
+        return $this->hasMany(TicketValidationLog::class);
+    }
+
+    public function validationLogs(): HasMany
     {
         return $this->hasMany(TicketValidationLog::class);
     }
