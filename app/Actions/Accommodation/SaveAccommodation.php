@@ -33,7 +33,18 @@ class SaveAccommodation
             $entity->save();
             $entity->accommodation()->updateOrCreate([], Arr::only($data, ['property_type', 'check_in_time', 'check_out_time', 'star_rating']));
             if (isset($data['latitude'], $data['longitude'])) {
-                DB::statement('INSERT INTO catalog_locations (catalog_entity_id, location, latitude, longitude, created_at, updated_at) VALUES (?, ST_PointFromText(CONCAT("POINT(", ?, " ", ?, ")"), 4326), ?, ?, NOW(), NOW()) ON DUPLICATE KEY UPDATE location = VALUES(location), latitude = VALUES(latitude), longitude = VALUES(longitude), updated_at = NOW()', [$entity->id, $data['longitude'], $data['latitude'], $data['latitude'], $data['longitude']]);
+                $lat = (float) $data['latitude'];
+                $lng = (float) $data['longitude'];
+                DB::table('catalog_locations')->updateOrInsert(
+                    ['catalog_entity_id' => $entity->id],
+                    [
+                        'location' => DB::raw("ST_GeomFromText('POINT({$lng} {$lat})')"),
+                        'latitude' => $lat,
+                        'longitude' => $lng,
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]
+                );
             }
             $entity->facilities()->sync($data['facilities'] ?? []);
             $this->audit->record($before ? 'accommodation.updated' : 'accommodation.created', $entity, $before, $entity->fresh()->toArray(), $actor);
