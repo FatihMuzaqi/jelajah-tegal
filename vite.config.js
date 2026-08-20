@@ -9,7 +9,9 @@ export default defineConfig({
         }),
     ],
     css: {
-        postcss: {},
+        postcss: {
+            plugins: [],
+        },
     },
     server: {
         host: '127.0.0.1',
