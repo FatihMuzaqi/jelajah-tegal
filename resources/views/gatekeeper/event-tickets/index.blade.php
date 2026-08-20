@@ -1,217 +1,171 @@
 @extends('layouts.gatekeeper')
 
-@section('title', 'Validasi Tiket QR - Gatekeeper')
-@section('page-title', 'Scanner Loket & Validasi Tiket')
-@section('page-description', 'Pindai QR Code atau Barcode pengunjung untuk check-in masuk wahana/event. Sistem otomatis mencegah pemindaian ganda (duplicate-scan protection).')
+@section('title', 'Scanner QR Tiket - Gatekeeper')
+@section('page-title', 'Scanner QR Tiket Pengunjung')
+@section('page-description', 'Pindai QR Code atau Barcode pengunjung untuk memvalidasi tiket masuk. Pop-up verifikasi otomatis muncul saat tiket terdeteksi.')
 
 @section('content')
-<!-- HTML5 QR Code Scanner Library & SweetAlert2 for Toast Notifications -->
+<!-- HTML5 QR Code Scanner Library & SweetAlert2 -->
 <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-    .scanner-main-card {
+    .scanner-hero-card {
         background: #ffffff;
         border: 1px solid #e2e8f0;
-        border-radius: 20px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        border-radius: 24px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         overflow: hidden;
     }
-    .scanner-viewfinder-box {
+    .scanner-viewport-wrapper {
+        position: relative;
         width: 100%;
-        max-width: 480px;
+        max-width: 520px;
         margin: 0 auto;
-        border-radius: 16px;
+        border-radius: 20px;
         overflow: hidden;
-        border: 2px dashed #047857;
-        background: #000000;
+        background: #090d16;
+        border: 2px solid #047857;
+        box-shadow: 0 8px 25px rgba(4, 120, 87, 0.15);
+    }
+    #qr-reader {
+        width: 100%;
+        border: none !important;
+    }
+    #qr-reader video {
+        border-radius: 18px;
+        object-fit: cover;
+    }
+    .scan-laser-line {
+        position: absolute;
+        top: 20%;
+        left: 5%;
+        right: 5%;
+        height: 3px;
+        background: linear-gradient(90deg, transparent, #10b981, #34d399, transparent);
+        box-shadow: 0 0 12px #10b981;
+        animation: scanAnimation 2.2s infinite ease-in-out;
+        z-index: 10;
+        pointer-events: none;
+    }
+    @keyframes scanAnimation {
+        0% { top: 15%; opacity: 0.8; }
+        50% { top: 85%; opacity: 1; }
+        100% { top: 15%; opacity: 0.8; }
     }
     .scan-status-pill {
         display: inline-flex;
         align-items: center;
-        gap: 6px;
-        padding: 6px 14px;
+        gap: 8px;
+        padding: 8px 18px;
         border-radius: 99px;
         font-size: 13px;
         font-weight: 700;
+        letter-spacing: 0.3px;
     }
-    .result-badge-verified {
-        background: #ecfdf5;
-        color: #065f46;
-        border: 1px solid #a7f3d0;
+    .pulse-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 1.5s infinite;
     }
-    .result-badge-rejected {
-        background: #fef2f2;
-        color: #991b1b;
-        border: 1px solid #fecaca;
+    @keyframes pulse {
+        0% { transform: scale(0.9); opacity: 1; }
+        50% { transform: scale(1.4); opacity: 0.5; }
+        100% { transform: scale(0.9); opacity: 1; }
     }
 </style>
 
-<div class="row g-4">
-    <!-- Left Column: Camera Scanner (Live) -->
-    <div class="col-lg-7">
-        <div class="scanner-main-card p-4">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="rounded-3 bg-emerald text-white d-flex align-items-center justify-content-center" style="width: 38px; height: 38px; background: #047857;">
-                        <i class="fa-solid fa-camera fs-6"></i>
+<div class="row justify-content-center g-4">
+    <!-- Main Center Column: Full Camera Scanner -->
+    <div class="col-lg-9 col-xl-8">
+        <div class="scanner-hero-card p-4 p-md-5 text-center">
+            
+            <!-- Top Status Indicator -->
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-4">
+                <div class="d-flex align-items-center gap-2 text-start">
+                    <div class="rounded-3 text-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #047857;">
+                        <i class="fa-solid fa-qrcode fs-5"></i>
                     </div>
                     <div>
                         <h5 class="fw-bold mb-0 text-dark">Pemindai Kamera Live</h5>
-                        <small class="text-muted">Arahkan kamera ke QR Code e-tiket pengunjung</small>
+                        <small class="text-muted">Arahkan kamera ke QR Code smartphone pengunjung</small>
                     </div>
                 </div>
                 <span id="camera-status" class="scan-status-pill bg-secondary text-white">
-                    <i class="fa-solid fa-video-slash"></i> Kamera Nonaktif
+                    <span class="pulse-dot"></span> Kamera Nonaktif
                 </span>
             </div>
 
-            <!-- Video Viewfinder -->
-            <div id="qr-reader" class="scanner-viewfinder-box mb-3" style="display: none;"></div>
+            <!-- Viewfinder Area -->
+            <div id="scanner-container" class="scanner-viewport-wrapper mb-4" style="display: none;">
+                <div class="scan-laser-line"></div>
+                <div id="qr-reader"></div>
+            </div>
 
-            <div class="d-flex flex-wrap gap-2">
-                <button type="button" id="start-scanner-btn" class="btn btn-primary rounded-pill fw-bold px-4 py-2.5 shadow-sm d-inline-flex align-items-center gap-2"
+            <!-- Initial Camera Placeholder / Illustration -->
+            <div id="camera-idle-placeholder" class="p-5 rounded-4 border mb-4 text-center" style="background: #f8fafc; border-style: dashed !important; border-width: 2px !important;">
+                <div class="rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 76px; height: 76px; background: #ecfdf5; color: #047857;">
+                    <i class="fa-solid fa-camera fs-2"></i>
+                </div>
+                <h5 class="fw-bold text-dark mb-1">Kamera Belum Aktif</h5>
+                <p class="text-muted small mb-0" style="max-width: 380px; margin: 0 auto;">
+                    Klik tombol hijau di bawah untuk menyalakan kamera. Pop-up rincian tiket akan langsung muncul saat QR Code terdeteksi.
+                </p>
+            </div>
+
+            <!-- Controls -->
+            <div class="d-flex justify-content-center flex-wrap gap-3 mb-4">
+                <button type="button" id="start-scanner-btn" class="btn btn-primary rounded-pill fw-bold px-5 py-3 shadow d-inline-flex align-items-center gap-2 fs-6"
                         style="background: #047857; border: none;" onclick="startScanner()">
                     <i class="fa-solid fa-camera"></i>
-                    <span>Aktifkan Kamera Scanner</span>
+                    <span>Nyalakan Kamera Scanner</span>
                 </button>
-                <button type="button" id="stop-scanner-btn" class="btn btn-outline-danger rounded-pill fw-bold px-4 py-2.5"
+                <button type="button" id="stop-scanner-btn" class="btn btn-outline-danger rounded-pill fw-bold px-4 py-3"
                         style="display: none;" onclick="stopScanner()">
                     <i class="fa-solid fa-stop"></i>
                     <span>Matikan Kamera</span>
                 </button>
             </div>
 
-            <!-- Live Scan Feedback Alert Box -->
-            <div id="scan-feedback" class="alert mt-3 rounded-3" style="display: none;"></div>
-
-            <!-- Interactive Result Card (AJAX Dynamic Result) -->
-            <div id="scan-result-card" class="mt-3 p-4 rounded-4 border shadow-sm" style="display: none;">
-                <div class="d-flex align-items-start gap-3">
-                    <div id="result-icon-box" class="rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 54px; height: 54px; font-size: 24px;"></div>
-                    <div class="flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-center mb-1">
-                            <h5 id="result-title" class="fw-bold mb-0"></h5>
-                            <span id="result-badge" class="badge rounded-pill px-3 py-1 fw-bold fs-7"></span>
-                        </div>
-                        <p id="result-message" class="mb-3 small"></p>
-
-                        <div id="result-ticket-details" class="p-3 bg-white rounded-3 border mb-3" style="font-size: 13px;">
-                            <div class="row g-2">
-                                <div class="col-sm-6">
-                                    <span class="text-muted d-block small">Kode Tiket:</span>
-                                    <strong id="res-ticket-code" class="text-dark font-mono fs-6"></strong>
-                                </div>
-                                <div class="col-sm-6">
-                                    <span class="text-muted d-block small">Layanan / Wahana:</span>
-                                    <strong id="res-ticket-service" class="text-dark"></strong>
-                                </div>
-                                <div class="col-sm-6">
-                                    <span class="text-muted d-block small">Nama Pengunjung:</span>
-                                    <strong id="res-ticket-holder" class="text-dark"></strong>
-                                </div>
-                                <div class="col-sm-6">
-                                    <span class="text-muted d-block small">Waktu Check-In:</span>
-                                    <strong id="res-ticket-time" class="text-dark"></strong>
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="button" class="btn btn-sm btn-dark rounded-pill px-4 py-2 fw-bold" onclick="resetAndScanAgain()">
-                            <i class="fa-solid fa-rotate-right me-1"></i> Pindai Tiket Selanjutnya
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Right Column: Manual Input & Device Reference -->
-    <div class="col-lg-5">
-        <div class="scanner-main-card p-4 mb-4">
-            <div class="d-flex align-items-center gap-2 mb-3">
-                <div class="rounded-3 bg-light text-dark d-flex align-items-center justify-content-center" style="width: 38px; height: 38px;">
-                    <i class="fa-solid fa-keyboard fs-6"></i>
-                </div>
-                <div>
-                    <h5 class="fw-bold mb-0 text-dark">Input Manual / Barcode Gun</h5>
-                    <small class="text-muted">Ketik kode tiket atau scan dengan barcode scanner USB</small>
-                </div>
-            </div>
-
-            <!-- Server Flash Messages -->
-            @if(session('status'))
-                <div class="alert alert-success alert-dismissible fade show rounded-3 p-3 mb-3 d-flex align-items-start gap-2" role="alert">
-                    <i class="fa-solid fa-circle-check fs-5 text-success mt-0.5"></i>
-                    <div>
-                        <strong>Berhasil Check-In!</strong>
-                        <div class="small mt-0.5">{{ session('status') }}</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            @if($errors->has('token'))
-                <div class="alert alert-danger alert-dismissible fade show rounded-3 p-3 mb-3 d-flex align-items-start gap-2" role="alert">
-                    <i class="fa-solid fa-circle-xmark fs-5 text-danger mt-0.5"></i>
-                    <div>
-                        <strong>Validasi Gagal!</strong>
-                        <div class="small mt-0.5">{{ $errors->first('token') }}</div>
-                    </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            @endif
-
-            <form id="validate-ticket-form" method="POST" action="{{ route('gatekeeper.tickets.validate') }}">
-                @csrf
-                <div class="mb-3">
-                    <label for="ticket-token-input" class="form-label fw-bold" style="font-size: 13px;">
-                        Token / Kode Tiket (TKT-xxxx) <span class="text-danger">*</span>
-                    </label>
-                    <div class="input-group">
-                        <span class="input-group-text bg-white"><i class="fa-solid fa-barcode"></i></span>
-                        <input id="ticket-token-input" class="form-control form-control-lg font-mono fw-bold text-dark" 
-                               name="token" value="{{ old('token') }}"
-                               placeholder="Contoh: TKT-ABC12345 atau tempel token..." required autofocus>
-                    </div>
-                </div>
-
-                <div class="mb-3">
-                    <label class="form-label text-muted" style="font-size: 12px;">Pos / Loket Gerbang (Opsional)</label>
-                    <input class="form-control form-control-sm" name="device_reference"
-                        placeholder="Contoh: Pintu Utama Barat / Gerbang 1" value="{{ old('device_reference') }}">
-                </div>
-
-                <button type="submit" class="btn btn-primary w-100 fw-bold py-2.5 rounded-pill shadow-sm"
-                        style="background: #047857; border: none;">
-                    <i class="fa-solid fa-check-double me-1"></i> Validasi & Check-In Tiket
+            <!-- Optional Collapsible Manual Input -->
+            <div class="pt-3 border-top text-start">
+                <button class="btn btn-link text-muted text-decoration-none p-0 small fw-semibold d-inline-flex align-items-center gap-1.5"
+                        type="button" data-bs-toggle="collapse" data-bs-target="#manualInputCollapse" aria-expanded="false">
+                    <i class="fa-solid fa-keyboard"></i>
+                    <span>Kamera bermasalah? Klik di sini untuk input kode manual</span>
                 </button>
-            </form>
 
-            <hr class="my-4">
-
-            <div class="p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0; font-size: 12px;">
-                <strong class="text-dark d-flex align-items-center gap-1.5 mb-1.5">
-                    <i class="fa-solid fa-shield-halved text-emerald" style="color: #047857;"></i> Perlindungan Anti Double-Scan:
-                </strong>
-                <ul class="ps-3 mb-0 text-muted" style="line-height: 1.6;">
-                    <li>Tiket hanya berlaku untuk <strong>1 kali pemindaian (Single-Use)</strong>.</li>
-                    <li>Tiket yang sudah pernah dicheck-in akan otomatis <strong>ditolak merah</strong>.</li>
-                    <li>Waktu check-in dan identitas petugas scanner dicatat permanen ke log audit.</li>
-                </ul>
+                <div class="collapse mt-3" id="manualInputCollapse">
+                    <div class="p-3 bg-light rounded-3 border">
+                        <form id="manual-ticket-form" onsubmit="handleManualSubmit(event)">
+                            <label class="form-label fw-bold small">Masukkan Kode Tiket (Contoh: TKT-xxxx):</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white"><i class="fa-solid fa-barcode"></i></span>
+                                <input type="text" id="manual-token-input" class="form-control font-mono fw-bold" placeholder="TKT-ABC12345 atau tempel token..." required>
+                                <button type="submit" class="btn btn-primary fw-bold px-4" style="background: #047857; border: none;">
+                                    <i class="fa-solid fa-check me-1"></i> Periksa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </div>
 
-<!-- 3. Recent Scans Table Section -->
-<div class="scanner-main-card p-4 mt-4">
-    <div class="d-flex align-items-center justify-content-between mb-3">
+<!-- Recent Scans Table Section -->
+<div class="scanner-hero-card p-4 mt-5">
+    <div class="d-flex align-items-center justify-content-between mb-3 flex-wrap gap-2">
         <div class="d-flex align-items-center gap-2">
             <i class="fa-solid fa-clock-rotate-left text-secondary fs-5"></i>
-            <h5 class="fw-bold mb-0 text-dark">Riwayat Pemindaian Terakhir Anda</h5>
+            <h5 class="fw-bold mb-0 text-dark">Riwayat 10 Pemindaian Terakhir</h5>
         </div>
         <span class="badge bg-light text-dark border px-3 py-1.5 rounded-pill small fw-bold">
-            10 Aktivitas Terakhir
+            Log Aktivitas Validator
         </span>
     </div>
 
@@ -227,7 +181,7 @@
                     <th class="pe-3">Status Tiket</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="recent-logs-tbody">
                 @if(isset($recentLogs) && $recentLogs->isNotEmpty())
                     @foreach($recentLogs as $log)
                         <tr>
@@ -284,26 +238,57 @@
     </div>
 </div>
 
-<!-- JavaScript for Camera QR Scanning & Realtime Validation -->
+<!-- JavaScript for Camera QR Scanning & SweetAlert2 Pop-up -->
 <script>
     let html5QrCode = null;
     let isProcessing = false;
+    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    // Web Audio Chime Synthesizer
+    function playBeep(isSuccess = true) {
+        try {
+            const ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+
+            if (isSuccess) {
+                // High double chime
+                osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5
+                osc.frequency.setValueAtTime(880, ctx.currentTime + 0.12); // A5
+                gain.gain.setValueAtTime(0.3, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.35);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.35);
+            } else {
+                // Low buzz
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(220, ctx.currentTime); // A3
+                osc.frequency.setValueAtTime(164.81, ctx.currentTime + 0.15); // E3
+                gain.gain.setValueAtTime(0.35, ctx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+                osc.start(ctx.currentTime);
+                osc.stop(ctx.currentTime + 0.4);
+            }
+        } catch (e) {
+            // Audio context not allowed before interaction
+        }
+    }
 
     function startScanner() {
-        const readerElement = document.getElementById('qr-reader');
+        const container = document.getElementById('scanner-container');
+        const idlePlaceholder = document.getElementById('camera-idle-placeholder');
         const startBtn = document.getElementById('start-scanner-btn');
         const stopBtn = document.getElementById('stop-scanner-btn');
         const statusBadge = document.getElementById('camera-status');
-        const feedback = document.getElementById('scan-feedback');
-        const resultCard = document.getElementById('scan-result-card');
 
-        readerElement.style.display = 'block';
+        container.style.display = 'block';
+        idlePlaceholder.style.display = 'none';
         startBtn.style.display = 'none';
         stopBtn.style.display = 'inline-flex';
         statusBadge.className = 'scan-status-pill bg-success text-white';
-        statusBadge.innerHTML = '<i class="fa-solid fa-video"></i> Kamera Aktif (Siap Scan)';
-        feedback.style.display = 'none';
-        resultCard.style.display = 'none';
+        statusBadge.innerHTML = '<span class="pulse-dot"></span> Kamera Aktif (Scanning...)';
         isProcessing = false;
 
         html5QrCode = new Html5Qrcode("qr-reader");
@@ -311,8 +296,8 @@
         const config = {
             fps: 15,
             qrbox: {
-                width: 250,
-                height: 250
+                width: 260,
+                height: 260
             }
         };
 
@@ -325,34 +310,32 @@
             console.error("Camera start error: ", err);
             statusBadge.className = 'scan-status-pill bg-danger text-white';
             statusBadge.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i> Gagal Akses Kamera';
-            feedback.className = 'alert alert-danger mt-3';
-            feedback.innerHTML = 'Gagal mengakses kamera. Pastikan browser diberikan izin akses kamera (Camera Permission) atau gunakan input manual.';
-            feedback.style.display = 'block';
+            
+            Swal.fire({
+                icon: 'warning',
+                title: 'Akses Kamera Ditolak',
+                text: 'Pastikan browser telah diberikan izin akses kamera, atau gunakan input manual di bawah.',
+                confirmButtonColor: '#047857'
+            });
             stopScanner();
         });
     }
 
-    function onScanSuccess(decodedText, decodedResult) {
+    function onScanSuccess(decodedText) {
         if (isProcessing) return;
         isProcessing = true;
 
         console.log("QR Decoded: ", decodedText);
 
-        // Pause scanner
+        // Pause / Stop camera immediately
         stopScanner();
 
-        // Show validating feedback
-        const feedback = document.getElementById('scan-feedback');
-        feedback.className = 'alert alert-info mt-3 d-flex align-items-center gap-2';
-        feedback.innerHTML = '<div class="spinner-border spinner-border-sm text-primary" role="status"></div> <div><strong>QR Code Terdeteksi!</strong> Memvalidasi tiket ke server...</div>';
-        feedback.style.display = 'flex';
-
-        // Send AJAX request for instant check without reload
-        validateTokenAjax(decodedText);
+        // Process validation with SweetAlert2 popup
+        validateTicketToken(decodedText);
     }
 
     function onScanFailure(error) {
-        // Silent frame loop
+        // Frame loop
     }
 
     function stopScanner() {
@@ -362,23 +345,33 @@
             }).catch(err => console.error(err));
         }
 
-        document.getElementById('qr-reader').style.display = 'none';
+        document.getElementById('scanner-container').style.display = 'none';
+        document.getElementById('camera-idle-placeholder').style.display = 'block';
         document.getElementById('start-scanner-btn').style.display = 'inline-flex';
         document.getElementById('stop-scanner-btn').style.display = 'none';
         const statusBadge = document.getElementById('camera-status');
         statusBadge.className = 'scan-status-pill bg-secondary text-white';
-        statusBadge.innerHTML = '<i class="fa-solid fa-video-slash"></i> Kamera Nonaktif';
+        statusBadge.innerHTML = '<span class="pulse-dot"></span> Kamera Nonaktif';
     }
 
-    function validateTokenAjax(token) {
-        const csrfToken = document.querySelector('input[name="_token"]')?.value || '{{ csrf_token() }}';
-        const feedback = document.getElementById('scan-feedback');
-        const resultCard = document.getElementById('scan-result-card');
-        const iconBox = document.getElementById('result-icon-box');
-        const titleEl = document.getElementById('result-title');
-        const badgeEl = document.getElementById('result-badge');
-        const msgEl = document.getElementById('result-message');
-        const detailsBox = document.getElementById('result-ticket-details');
+    function handleManualSubmit(e) {
+        e.preventDefault();
+        const input = document.getElementById('manual-token-input');
+        const token = input.value.trim();
+        if (!token) return;
+
+        validateTicketToken(token);
+        input.value = '';
+    }
+
+    function validateTicketToken(token) {
+        // Show Loading Swal
+        Swal.fire({
+            title: 'Memvalidasi Tiket...',
+            html: '<div class="spinner-border text-success my-2" role="status"></div><p class="text-muted small mt-2">Memeriksa keaslian dan status tiket di server...</p>',
+            showConfirmButton: false,
+            allowOutsideClick: false,
+        });
 
         fetch('{{ route("gatekeeper.tickets.validate") }}', {
             method: 'POST',
@@ -392,64 +385,93 @@
         })
         .then(async response => {
             const data = await response.json();
-            feedback.style.display = 'none';
-            resultCard.style.display = 'block';
 
             if (response.ok && data.success) {
                 // 🟢 SUKSES
-                resultCard.style.background = '#f0fdf4';
-                resultCard.style.borderColor = '#86efac';
-                iconBox.style.background = '#22c55e';
-                iconBox.style.color = '#ffffff';
-                iconBox.innerHTML = '<i class="fa-solid fa-check"></i>';
-                
-                titleEl.textContent = 'CHECK-IN BERHASIL (VALID)';
-                titleEl.className = 'fw-bold mb-0 text-success';
-                badgeEl.className = 'badge bg-success text-white rounded-pill px-3 py-1 fw-bold fs-7';
-                badgeEl.textContent = 'TIKET AKTIF / USED';
+                playBeep(true);
 
-                msgEl.textContent = data.message;
-                msgEl.className = 'mb-3 small text-success';
+                Swal.fire({
+                    icon: 'success',
+                    title: '<span style="color:#047857; font-weight:800; font-size:22px;">TIKET TERVERIFIKASI!</span>',
+                    html: `
+                        <div style="text-align:left; background:#f0fdf4; border:1.5px solid #a7f3d0; border-radius:14px; padding:18px; margin-top:14px; font-size:14px; color:#064e3b; box-shadow: 0 4px 12px rgba(4,120,87,0.08);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #d1fae5; padding-bottom:8px;">
+                                <span style="font-size:12px; color:#047857; font-weight:bold; text-transform:uppercase;">Hasil Validasi:</span>
+                                <span style="background:#047857; color:#ffffff; padding:3px 12px; border-radius:99px; font-weight:bold; font-size:11px;">CHECK-IN SUKSES</span>
+                            </div>
+                            <div style="margin-bottom:8px;">
+                                <span style="color:#065f46; font-size:12px; display:block;">Kode Tiket:</span>
+                                <code style="background:#ffffff; padding:3px 8px; border-radius:6px; font-weight:bold; font-size:16px; color:#047857; border:1px solid #a7f3d0;">${data.ticket.code}</code>
+                            </div>
+                            <div style="margin-bottom:8px;">
+                                <span style="color:#065f46; font-size:12px; display:block;">Destinasi / Layanan:</span>
+                                <strong style="font-size:15px; color:#0f172a;">${data.ticket.service}</strong>
+                            </div>
+                            <div style="margin-bottom:8px;">
+                                <span style="color:#065f46; font-size:12px; display:block;">Nama Pengunjung:</span>
+                                <strong style="font-size:14px; color:#0f172a;">${data.ticket.holder}</strong>
+                            </div>
+                            <div style="margin-bottom:8px;">
+                                <span style="color:#065f46; font-size:12px; display:block;">Waktu Check-In:</span>
+                                <span style="font-size:13px; color:#334155;">${data.ticket.scanned_at}</span>
+                            </div>
+                            <div style="margin-top:12px; padding:8px 12px; background:#ecfdf5; border-radius:8px; font-size:12px; color:#047857; font-weight:600; border:1px dashed #6ee7b7;">
+                                <i class="fa-solid fa-lock me-1"></i> Tiket telah berstatus <strong>USED (Digunakan)</strong> dan tidak dapat di-scan lagi.
+                            </div>
+                        </div>
+                    `,
+                    confirmButtonText: '<i class="fa-solid fa-camera me-1"></i> Pindai Tiket Selanjutnya',
+                    confirmButtonColor: '#047857',
+                    allowOutsideClick: false,
+                    showCloseButton: true,
+                }).then(() => {
+                    startScanner();
+                });
 
-                detailsBox.style.display = 'block';
-                document.getElementById('res-ticket-code').textContent = data.ticket.code;
-                document.getElementById('res-ticket-service').textContent = data.ticket.service;
-                document.getElementById('res-ticket-holder').textContent = data.ticket.holder;
-                document.getElementById('res-ticket-time').textContent = data.ticket.scanned_at;
             } else {
                 // 🔴 GAGAL / SUDAH DIGUNAKAN
-                resultCard.style.background = '#fef2f2';
-                resultCard.style.borderColor = '#fca5a5';
-                iconBox.style.background = '#ef4444';
-                iconBox.style.color = '#ffffff';
-                iconBox.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                playBeep(false);
 
-                titleEl.textContent = 'TIKET DITOLAK / TIDAK DAPAT DIGUNAKAN';
-                titleEl.className = 'fw-bold mb-0 text-danger';
-                badgeEl.className = 'badge bg-danger text-white rounded-pill px-3 py-1 fw-bold fs-7';
-                badgeEl.textContent = 'DITOLAK / INVALID';
-
-                msgEl.textContent = data.message || 'Tiket tidak valid atau sudah pernah digunakan.';
-                msgEl.className = 'mb-3 small text-danger fw-semibold';
-
-                detailsBox.style.display = 'none';
+                Swal.fire({
+                    icon: 'error',
+                    title: '<span style="color:#dc2626; font-weight:800; font-size:22px;">TIKET DITOLAK!</span>',
+                    html: `
+                        <div style="text-align:left; background:#fef2f2; border:1.5px solid #fecaca; border-radius:14px; padding:18px; margin-top:14px; font-size:14px; color:#991b1b; box-shadow: 0 4px 12px rgba(220,38,38,0.08);">
+                            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; border-bottom:1px solid #fee2e2; padding-bottom:8px;">
+                                <span style="font-size:12px; color:#dc2626; font-weight:bold; text-transform:uppercase;">Status Tiket:</span>
+                                <span style="background:#dc2626; color:#ffffff; padding:3px 12px; border-radius:99px; font-weight:bold; font-size:11px;">INVALID / DITOLAK</span>
+                            </div>
+                            <div style="font-weight:bold; font-size:14px; margin-bottom:6px; color:#7f1d1d;">Peringatan Sistem:</div>
+                            <div style="line-height:1.6; font-size:13.5px; color:#b91c1c; background:#ffffff; padding:12px; border-radius:8px; border:1px solid #fca5a5;">
+                                ${data.message || 'Tiket tidak valid atau sudah pernah digunakan sebelumnya.'}
+                            </div>
+                        </div>
+                    `,
+                    confirmButtonText: '<i class="fa-solid fa-rotate-right me-1"></i> Coba Pindai Ulang',
+                    confirmButtonColor: '#dc2626',
+                    allowOutsideClick: false,
+                    showCloseButton: true,
+                }).then(() => {
+                    startScanner();
+                });
             }
         })
         .catch(err => {
             console.error(err);
-            feedback.className = 'alert alert-danger mt-3';
-            feedback.innerHTML = 'Terjadi kesalahan jaringan atau server saat validasi tiket. Silakan coba lagi.';
-            feedback.style.display = 'block';
+            playBeep(false);
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Gangguan Jaringan',
+                text: 'Terjadi kesalahan komunikasi dengan server. Silakan coba lagi.',
+                confirmButtonColor: '#047857',
+            }).then(() => {
+                startScanner();
+            });
         })
         .finally(() => {
             isProcessing = false;
         });
-    }
-
-    function resetAndScanAgain() {
-        document.getElementById('scan-result-card').style.display = 'none';
-        document.getElementById('scan-feedback').style.display = 'none';
-        startScanner();
     }
 </script>
 @endsection

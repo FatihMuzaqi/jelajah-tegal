@@ -1,6 +1,6 @@
 @extends('layouts.gatekeeper')
 
-@section('title', 'Profil & Keamanan Petugas Loket')
+@section('title', 'Profil & Keamanan Petugas Gatekeeper')
 @section('page-title', 'Profil & Keamanan Petugas')
 @section('page-description', 'Informasi akun petugas lapangan dan pembaruan kata sandi untuk keamanan operasional scanning tiket.')
 
@@ -8,7 +8,7 @@
     <div class="row g-4 justify-content-center">
         <div class="col-lg-8">
             <!-- Informasi Akun -->
-            <x-content-card title="Informasi Akun Petugas Loket">
+            <x-content-card title="Informasi Akun Petugas Gatekeeper">
                 <div class="p-3 rounded-3 mb-4" style="background: #f8fafc; border: 1px solid #e2e8f0; font-size: 13px;">
                     <div class="row g-2">
                         <div class="col-sm-6">

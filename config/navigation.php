@@ -59,10 +59,9 @@ return [
 
     'gatekeeper' => [
         [
-            'category' => 'Operasional Loket',
+            'category' => 'Operasional Scanner',
             'items' => [
-                ['label' => 'Dashboard', 'route' => 'gatekeeper.dashboard', 'icon' => 'fa-solid fa-gauge', 'permission' => 'access.gatekeeper'],
-                ['label' => 'Validasi Tiket QR', 'route' => 'gatekeeper.event-tickets.index', 'icon' => 'fa-solid fa-qrcode', 'permission' => 'tickets.validate'],
+                ['label' => 'Scanner QR Tiket', 'route' => 'gatekeeper.dashboard', 'icon' => 'fa-solid fa-qrcode', 'permission' => 'tickets.validate'],
             ],
         ],
         [
