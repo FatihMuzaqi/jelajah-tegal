@@ -114,7 +114,7 @@ class NavigationController extends Controller
         if ($s === 'gatekeeper') {
             session(['target_tenant_surface' => 'gatekeeper']);
 
-            if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
+            if ($r->user()->hasGlobalRole(['super-admin', 'admin'])) {
                 return redirect()->route('mitra.select');
             }
 
@@ -129,7 +129,7 @@ class NavigationController extends Controller
         if ($s === 'mitra') {
             session(['target_tenant_surface' => 'mitra']);
 
-            if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
+            if ($r->user()->hasGlobalRole(['super-admin', 'admin'])) {
                 return redirect()->route('mitra.select');
             }
 
@@ -146,7 +146,7 @@ class NavigationController extends Controller
 
     public function mitras(Request $r)
     {
-        $isSuperAdmin = $r->user()->hasRole('super-admin') || $r->user()->hasRole('admin');
+        $isSuperAdmin = $r->user()->hasGlobalRole(['super-admin', 'admin']);
         $targetSurface = session('target_tenant_surface', 'mitra');
 
         if ($isSuperAdmin) {
@@ -185,7 +185,7 @@ class NavigationController extends Controller
     public function chooseMitra(Request $r): RedirectResponse
     {
         $id = $r->validate(['mitra_id' => 'required|exists:mitras,id'])['mitra_id'];
-        $isSuperAdmin = $r->user()->hasRole('super-admin') || $r->user()->hasRole('admin');
+        $isSuperAdmin = $r->user()->hasGlobalRole(['super-admin', 'admin']);
         $targetSurface = $r->input('target_surface', session('target_tenant_surface', 'mitra'));
 
         if (! $isSuperAdmin) {
@@ -224,7 +224,7 @@ class NavigationController extends Controller
         }
 
         // Super Admin & Admin secara otomatis memiliki akses Master Switch ke Mitra, Gatekeeper, dan Dinas
-        if ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin')) {
+        if ($r->user()->hasGlobalRole(['super-admin', 'admin'])) {
             if (! in_array('mitra', $out)) {
                 $out[] = 'mitra';
             }

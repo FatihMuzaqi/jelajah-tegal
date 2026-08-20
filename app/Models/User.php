@@ -92,4 +92,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function orders(): HasMany { return $this->hasMany(Order::class); }
     public function voucherClaims(): HasMany { return $this->hasMany(VoucherClaim::class); }
+
+    public function hasGlobalRole(string|array $roles): bool
+    {
+        $roles = is_array($roles) ? $roles : [$roles];
+
+        return \Illuminate\Support\Facades\DB::table('model_has_roles as mr')
+            ->join('roles as r', 'r.id', '=', 'mr.role_id')
+            ->where('mr.model_type', get_class($this))
+            ->where('mr.model_id', $this->id)
+            ->whereNull('mr.mitra_id')
+            ->whereIn('r.name', $roles)
+            ->exists();
+    }
 }

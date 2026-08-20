@@ -18,6 +18,7 @@ class Invoice extends Model
         'total_amount',
         'status',
         'payment_url',
+        'metadata',
         'paid_at',
         'expires_at',
         'cancelled_at'
@@ -25,6 +26,7 @@ class Invoice extends Model
 
     protected $casts = [
         'total_amount' => 'decimal:2',
+        'metadata' => 'array',
         'paid_at' => 'datetime',
         'expires_at' => 'datetime',
         'cancelled_at' => 'datetime'
@@ -38,5 +40,20 @@ class Invoice extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->status === 'paid';
+    }
+
+    public function isItinerary(): bool
+    {
+        return !empty($this->metadata['days']) || !empty($this->metadata['package_name']);
+    }
+
+    public function getItineraryData(): ?array
+    {
+        return $this->isItinerary() ? $this->metadata : null;
     }
 }

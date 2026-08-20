@@ -11,6 +11,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified', 'active.user'])->prefix('consumer')->name('consumer.')->group(function () {
     Route::get('/', fn () => redirect()->route('consumer.dashboard'));
     Route::get('/dashboard', [DashboardController::class, 'consumer'])->name('dashboard');
+    Route::get('/itineraries', [\App\Http\Controllers\Consumer\ItineraryController::class, 'index'])->name('itineraries.index');
+    Route::get('/itineraries/{invoice}', [\App\Http\Controllers\Consumer\ItineraryController::class, 'show'])->name('itineraries.show');
+    Route::get('/itineraries/{invoice}/pdf', [\App\Http\Controllers\Consumer\ItineraryController::class, 'pdf'])->name('itineraries.pdf');
     Route::get('/rute-destinasi', [\App\Http\Controllers\Consumer\TripNavigatorController::class, 'index'])->name('trip-navigator.index');
     Route::get('/renter-documents', [RenterDocumentController::class, 'index'])->name('renter-documents.index');
     Route::post('/renter-documents', [RenterDocumentController::class, 'store'])->name('renter-documents.store');

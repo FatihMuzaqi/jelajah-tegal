@@ -30,6 +30,8 @@ class DashboardController extends Controller
             })->count();
 
         $aiPackagesCount = \App\Models\Invoice::where('user_id', $u->id)->count();
+        $paidItinerariesCount = \App\Models\Invoice::where('user_id', $u->id)->where('status', 'paid')->whereNotNull('metadata->days')->count();
+        $latestItinerary = \App\Models\Invoice::where('user_id', $u->id)->where('status', 'paid')->whereNotNull('metadata->days')->latest('paid_at')->first();
         $renterDocsCount = \App\Models\RenterDocument::where('user_id', $u->id)->count();
 
         // 2. Recent orders (max 5)
@@ -52,6 +54,8 @@ class DashboardController extends Controller
             'totalOrders',
             'paidOrdersCount',
             'aiPackagesCount',
+            'paidItinerariesCount',
+            'latestItinerary',
             'renterDocsCount',
             'recentOrders',
             'popularTourism'
@@ -82,10 +86,19 @@ class DashboardController extends Controller
     public function gatekeeper(Request $r)
     {
         $m = $this->activeMitra($r);
-        $members = $r->user()->mitraMemberships()->where('mitra_id', $m->id)->pluck('id');
-        $active = $m->gatekeeperAssignments()->whereIn('member_id', $members)->whereNull('revoked_at')->count();
+        $isSuperAdmin = $r->user()->hasGlobalRole(['super-admin', 'admin']);
+        $memberQuery = $r->user()->mitraMemberships()->where('mitra_id', $m->id);
 
-        return $this->view('gatekeeper', $r, [['label' => 'Assignment aktif', 'value' => $active, 'tone' => 'primary']], collect(), $m, [], $m->gatekeeperAssignments()->whereIn('member_id', $members)->latest()->limit(8)->get());
+        if ($isSuperAdmin && ! $memberQuery->exists()) {
+            $active = $m->gatekeeperAssignments()->whereNull('revoked_at')->count();
+            $assignments = $m->gatekeeperAssignments()->latest()->limit(8)->get();
+        } else {
+            $members = $memberQuery->pluck('id');
+            $active = $m->gatekeeperAssignments()->whereIn('member_id', $members)->whereNull('revoked_at')->count();
+            $assignments = $m->gatekeeperAssignments()->whereIn('member_id', $members)->latest()->limit(8)->get();
+        }
+
+        return $this->view('gatekeeper', $r, [['label' => 'Assignment aktif', 'value' => $active, 'tone' => 'primary']], collect(), $m, [], $assignments);
     }
 
     public function admin(Request $r)

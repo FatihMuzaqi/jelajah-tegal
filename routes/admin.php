@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\RegionController;
 use App\Http\Controllers\Admin\AccommodationModerationController;
 use App\Http\Controllers\Admin\CulinaryModerationController;
 use App\Http\Controllers\Admin\EventModerationController;
@@ -23,6 +25,10 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.admin',
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+
+    // Master Data Management (Kategori & Wilayah)
+    Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
+    Route::resource('regions', RegionController::class)->only(['index', 'store', 'update', 'destroy']);
     Route::get('/mitras', [MitraController::class, 'index'])->name('mitras.index');
     Route::get('/mitras/create', [MitraController::class, 'create'])->name('mitras.create');
     Route::post('/mitras', [MitraController::class, 'store'])->name('mitras.store');

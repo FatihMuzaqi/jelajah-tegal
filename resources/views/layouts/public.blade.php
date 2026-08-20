@@ -57,7 +57,7 @@
     <header class='public-header sticky-top bg-white border-bottom shadow-sm'>
         <nav class='navbar navbar-expand-lg public-navbar py-2' aria-label='Navigasi publik'>
             <div class='container public-container'>
-                <a href='{{ route('home') }}' wire:navigate
+                <a href='{{ route('home') }}'
                     class='brand-mark public-brand d-flex align-items-center gap-2 text-decoration-none'
                     aria-label='Jelajah Tegal beranda'>
                     <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal' width="42" height="42"
@@ -75,27 +75,27 @@
                     <ul class='navbar-nav mx-auto gap-1 gap-lg-2 fw-semibold my-2 my-lg-0'>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('home') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('home') }}' wire:navigate>Beranda</a>
+                                href='{{ route('home') }}'>Beranda</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('tourism.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('tourism.index') }}' wire:navigate>Wisata</a>
+                                href='{{ route('tourism.index') }}'>Wisata</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('accommodation.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('accommodation.index') }}' wire:navigate>Penginapan</a>
+                                href='{{ route('accommodation.index') }}'>Penginapan</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('culinary.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('culinary.index') }}' wire:navigate>Kuliner</a>
+                                href='{{ route('culinary.index') }}'>Kuliner</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('event.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('event.index') }}' wire:navigate>Event</a>
+                                href='{{ route('event.index') }}'>Event</a>
                         </li>
                         <li class='nav-item'>
                             <a class='nav-link px-3 py-2 rounded-3 {{ request()->routeIs('rental.*') ? 'active text-emerald fw-bold' : '' }}'
-                                href='{{ route('rental.index') }}' wire:navigate>Rental</a>
+                                href='{{ route('rental.index') }}'>Rental</a>
                         </li>
                         <li class='nav-item dropdown'>
                             <a class='nav-link dropdown-toggle px-3 py-2 rounded-3 d-flex align-items-center gap-1'
@@ -103,11 +103,11 @@
                                 Informasi
                             </a>
                             <ul class='dropdown-menu border-0 shadow-sm rounded-3 mt-1'>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}' wire:navigate><i
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}'><i
                                             class="fa-solid fa-circle-info text-success me-2"></i>Tentang</a></li>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}' wire:navigate><i
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}'><i
                                             class="fa-solid fa-circle-question text-info me-2"></i>FAQ</a></li>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}' wire:navigate><i
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}'><i
                                             class="fa-solid fa-envelope text-warning me-2"></i>Kontak</a></li>
                             </ul>
                         </li>
@@ -276,6 +276,8 @@
                 Tegal</span><span>Platform Digital Terpadu Pariwisata & Ekonomi Kreatif Tegal.</span></div>
     </footer>
     <x-chatbot-widget />
+    @stack('modals')
+    @stack('scripts')
     @livewireScripts
 </body>
 

@@ -236,15 +236,15 @@
             </div>
         </div>
 
-        <div class="stat-card-custom">
+        <a href="{{ route('consumer.itineraries.index') }}" class="stat-card-custom text-decoration-none">
             <div class="stat-icon-wrapper" style="background: #fef3c7; color: #d97706;">
-                <i class="fa-solid fa-suitcase-rolling"></i>
+                <i class="fa-solid fa-wand-magic-sparkles"></i>
             </div>
             <div>
-                <span class="text-muted d-block small fw-semibold">Paket Tour AI</span>
-                <h4 class="fw-bold text-dark mb-0">{{ $aiPackagesCount }}</h4>
+                <span class="text-muted d-block small fw-semibold">Rencana Liburan AI</span>
+                <h4 class="fw-bold text-dark mb-0">{{ $paidItinerariesCount }} <small class="text-success fs-8 fw-bold">Lunas</small></h4>
             </div>
-        </div>
+        </a>
 
         <div class="stat-card-custom">
             <div class="stat-icon-wrapper" style="background: #f0fdf4; color: #16a34a;">
@@ -276,20 +276,20 @@
             </div>
         </a>
 
-        <!-- Banner 2: AI Tour Assistant -->
-        <a href="{{ route('tour-assistant.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #065f46 0%, #047857 100%);">
+        <!-- Banner 2: AI Itinerary Active / Generator -->
+        <a href="{{ route('consumer.itineraries.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #065f46 0%, #047857 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">SMART ITINERARY</span>
-                    <h5 class="fw-bold text-white mb-1">AI Tour Assistant</h5>
-                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Susun rencana liburan otomatis all-in-one dengan kecerdasan buatan.</p>
+                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">AI ITINERARY</span>
+                    <h5 class="fw-bold text-white mb-1">Rencana Liburan AI</h5>
+                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Lihat jadwal jam-per-jam dan cetak dokumen PDF liburan Anda.</p>
                 </div>
                 <div class="rounded-circle d-grid place-items-center text-white" style="width: 42px; height: 42px; background: rgba(255,255,255,0.2); font-size: 18px;">
                     <i class="fa-solid fa-wand-magic-sparkles text-warning"></i>
                 </div>
             </div>
             <div class="fw-bold text-white small mt-3 d-inline-flex align-items-center gap-1">
-                Rencanakan Sekarang <i class="fa-solid fa-arrow-right"></i>
+                Buka Rencana Liburan <i class="fa-solid fa-arrow-right"></i>
             </div>
         </a>
 
@@ -310,6 +310,40 @@
             </div>
         </a>
     </div>
+
+    @if($latestItinerary)
+        @php
+            $lMeta = $latestItinerary->metadata ?? [];
+            $lDays = $lMeta['days'] ?? [];
+        @endphp
+        <!-- ACTIVE AI ITINERARY BANNER -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #022c22 0%, #064e3b 60%, #047857 100%); color: #ffffff;">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                <div>
+                    <div class="d-flex align-items-center gap-2 flex-wrap mb-1.5">
+                        <span class="badge bg-white text-dark rounded-pill px-2.5 py-1 fw-bold fs-8">
+                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> RENCANA LIBURAN AKTIF
+                        </span>
+                        <span class="badge bg-success bg-opacity-75 text-white border border-white border-opacity-50 rounded-pill px-2.5 py-1 fw-bold fs-8">
+                            <i class="fa-solid fa-circle-check me-1"></i> LUNAS
+                        </span>
+                    </div>
+                    <h5 class="fw-bold text-white mb-1">{{ $lMeta['headline'] ?? 'Liburan Eksplorasi Tegal' }}</h5>
+                    <p class="text-white-50 small mb-0">
+                        {{ \Carbon\Carbon::parse($lMeta['start_date'] ?? now())->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($lMeta['end_date'] ?? now())->translatedFormat('d M Y') }} &middot; {{ $lMeta['total_days'] ?? count($lDays) }} Hari ({{ $lMeta['pax'] ?? 1 }} Orang) &middot; Ref: #{{ $latestItinerary->invoice_number }}
+                    </p>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <a href="{{ route('consumer.itineraries.show', $latestItinerary->id) }}" class="btn btn-warning fw-bold px-3.5 py-2 rounded-pill shadow-sm" style="background: #facc15; color: #064e3b; border: none;">
+                        <i class="fa-solid fa-timeline me-1"></i> Buka Timeline Jam
+                    </a>
+                    <a href="{{ route('consumer.itineraries.pdf', $latestItinerary->id) }}" target="_blank" class="btn btn-outline-light fw-bold px-3 py-2 rounded-pill">
+                        <i class="fa-solid fa-file-pdf text-danger me-1"></i> Cetak Tabel PDF
+                    </a>
+                </div>
+            </div>
+        </div>
+    @endif
 
     <!-- 4. TWO-COLUMN RESPONSIVE LAYOUT -->
     <div class="dashboard-two-col">

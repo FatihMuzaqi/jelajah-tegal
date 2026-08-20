@@ -6,6 +6,7 @@ return [
             'category' => 'Aktivitas Saya',
             'items' => [
                 ['label' => 'Dashboard', 'route' => 'consumer.dashboard', 'icon' => 'fa-solid fa-house-user', 'permission' => 'access.consumer'],
+                ['label' => 'Rencana Liburan AI', 'route' => 'consumer.itineraries.index', 'icon' => 'fa-solid fa-wand-magic-sparkles', 'permission' => 'access.consumer'],
                 ['label' => 'Rute & Peta Destinasi', 'route' => 'consumer.trip-navigator.index', 'icon' => 'fa-solid fa-map-location-dot', 'permission' => 'access.consumer'],
                 ['label' => 'Pesanan & E-Tiket', 'route' => 'consumer.orders.index', 'icon' => 'fa-solid fa-ticket', 'permission' => 'access.consumer'],
                 ['label' => 'Dokumen Sewa', 'route' => 'consumer.renter-documents.index', 'icon' => 'fa-solid fa-file-invoice', 'permission' => 'access.consumer'],
@@ -114,6 +115,13 @@ return [
                 ['label' => 'Moderasi Rental', 'route' => 'admin.rental.index', 'icon' => 'fa-solid fa-car-side', 'permission' => 'rental.moderate'],
                 ['label' => 'Review Dokumen KYC', 'route' => 'admin.kyc.index', 'icon' => 'fa-solid fa-file-shield', 'permission' => 'kyc.review'],
                 ['label' => 'Request Fitur Mitra', 'route' => 'admin.features.index', 'icon' => 'fa-solid fa-layer-group', 'permission' => 'feature-requests.review'],
+            ],
+        ],
+        [
+            'category' => 'Master Data',
+            'items' => [
+                ['label' => 'Master Kategori', 'route' => 'admin.categories.index', 'icon' => 'fa-solid fa-tags', 'permission' => 'access.admin'],
+                ['label' => 'Master Wilayah', 'route' => 'admin.regions.index', 'icon' => 'fa-solid fa-map-location-dot', 'permission' => 'access.admin'],
             ],
         ],
         [

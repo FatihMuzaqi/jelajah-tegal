@@ -33,7 +33,7 @@ class AccommodationController extends Controller
         if (($data['sort'] ?? null) === 'distance' && ! (isset($data['latitude'], $data['longitude']) || isset($data['nearby_destination']))) {
             throw ValidationException::withMessages(['sort' => 'Pengurutan jarak memerlukan koordinat atau destinasi acuan.']);
         }
-        $query = CatalogEntity::query()->publicAccommodation()->with(['category', 'region', 'accommodation.rooms.offer', 'media']);
+        $query = CatalogEntity::query()->publicAccommodation()->with(['category', 'region', 'accommodation.rooms.offer', 'media', 'mitra']);
         if ($q = $data['q'] ?? null) {
             $query->where(fn ($x) => $x->where('name', 'like', '%'.$q.'%')->orWhere('description', 'like', '%'.$q.'%'));
         }

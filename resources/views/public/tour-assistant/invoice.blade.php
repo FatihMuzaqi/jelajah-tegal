@@ -267,9 +267,20 @@
                 <a href="{{ route('consumer.orders.index') }}" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">
                     <i class="fa-solid fa-arrow-left me-1"></i> Kembali ke Pesanan Saya
                 </a>
-                <a href="{{ route('tour-assistant.index') }}" class="btn btn-primary rounded-pill px-4 fw-bold" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); border: none;">
-                    <i class="fa-solid fa-plus me-1"></i> Buat Paket Rekomendasi Baru
-                </a>
+                
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    @if($invoice->status === 'paid' && $invoice->isItinerary())
+                        <a href="{{ route('consumer.itineraries.show', $invoice->id) }}" class="btn btn-emerald rounded-pill px-4 fw-bold text-white shadow-sm" style="background: #047857;">
+                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> Buka Rencana Liburan AI
+                        </a>
+                        <a href="{{ route('consumer.itineraries.pdf', $invoice->id) }}" target="_blank" class="btn btn-danger rounded-pill px-4 fw-bold text-white shadow-sm">
+                            <i class="fa-solid fa-file-pdf me-1"></i> Cetak Tabel PDF
+                        </a>
+                    @endif
+                    <a href="{{ route('tour-assistant.index') }}" class="btn btn-primary rounded-pill px-4 fw-bold" style="background: linear-gradient(135deg, #4f46e5 0%, #3b82f6 100%); border: none;">
+                        <i class="fa-solid fa-plus me-1"></i> Buat Paket Baru
+                    </a>
+                </div>
             </div>
         </div>
     </div>

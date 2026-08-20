@@ -14,7 +14,7 @@ class ActiveMitraContext
     {
         $m = $r->route('mitra') ?: $r->session()->get('active_mitra_id');
         $id = $m instanceof Mitra ? $m->getKey() : $m;
-        $isSuperAdmin = $r->user() && ($r->user()->hasRole('super-admin') || $r->user()->hasRole('admin'));
+        $isSuperAdmin = $r->user() && $r->user()->hasGlobalRole(['super-admin', 'admin']);
 
         if (! $id && $r->user()) {
             if ($isSuperAdmin) {

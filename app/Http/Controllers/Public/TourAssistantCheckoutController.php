@@ -42,13 +42,39 @@ class TourAssistantCheckoutController extends Controller
         $start = Carbon::parse($startDate);
         $end = Carbon::parse($endDate);
 
-        $invoice = DB::transaction(function () use ($user, $package, $start, $end) {
+        $invoice = DB::transaction(function () use ($user, $package, $start, $end, $request) {
+            $metadata = [
+                'package_name' => $package['name'] ?? 'Paket Rekomendasi AI',
+                'headline' => $package['headline'] ?? 'Liburan Eksplorasi Tegal',
+                'start_date' => $start->toDateString(),
+                'end_date' => $end->toDateString(),
+                'total_days' => $package['total_days'] ?? ($start->diffInDays($end) + 1),
+                'nights' => $package['nights'] ?? $start->diffInDays($end),
+                'pax' => (int) ($package['pax'] ?? $request->input('pax', 1)),
+                'budget' => (float) ($package['budget'] ?? $request->input('budget', 0)),
+                'total_cost' => (float) ($package['total_cost'] ?? 0),
+                'cost_per_pax' => (float) ($package['cost_per_pax'] ?? 0),
+                'remaining_budget' => (float) ($package['remaining_budget'] ?? 0),
+                'is_optimized' => (bool) ($package['is_optimized'] ?? true),
+                'days' => $package['days'] ?? [],
+                'items_summary' => array_map(function ($it) {
+                    return [
+                        'type' => $it['type'] ?? '',
+                        'title' => $it['title'] ?? '',
+                        'quantity' => $it['quantity'] ?? 1,
+                        'price' => $it['price'] ?? 0,
+                        'subtotal' => $it['subtotal'] ?? 0,
+                    ];
+                }, $package['items'] ?? [])
+            ];
+
             // 1. Buat Invoice Induk dengan Total yang Sesuai Rincian Paket
             $invoice = Invoice::create([
                 'invoice_number' => 'INV-' . now()->format('ymd') . '-' . str()->upper(str()->random(10)),
                 'user_id' => $user->id,
                 'total_amount' => $package['total_cost'],
                 'status' => 'pending',
+                'metadata' => $metadata,
                 'expires_at' => now()->addMinutes(30),
             ]);
 

@@ -1176,6 +1176,84 @@
     </div>
 </section>
 
+<!-- 4. Section AI Travel Planner Showcase Sesuai Referensi Gambar -->
+<section class="public-section py-5 my-2">
+    <div class="container public-container">
+        <div class="rounded-5 p-4 p-md-5 position-relative overflow-hidden shadow-lg" 
+             style="background: radial-gradient(circle at 85% 20%, #064e3b 0%, #062e24 45%, #081613 100%); color: #ffffff;">
+            
+            <div class="row align-items-center g-5 position-relative" style="z-index: 2;">
+                <!-- Left Column: Copywriting & CTA -->
+                <div class="col-12 col-lg-6 text-start">
+                    <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill mb-3" 
+                         style="background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.35); color: #34d399; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em;">
+                        <i class="fa-solid fa-wand-magic-sparkles"></i> AI Travel Planner
+                    </div>
+                    <h2 class="fw-bolder text-white mb-3" style="font-size: clamp(28px, 4.5vw, 44px); line-height: 1.18; letter-spacing: -0.02em;">
+                        Rancang Perjalanan Impian Anda Secara Instan
+                    </h2>
+                    <p class="text-white-50 mb-4 fs-6" style="line-height: 1.65; max-width: 520px;">
+                        Susun rencana perjalanan personal lengkap dengan rekomendasi tempat wisata terpopuler, kuliner favorit, dan rute hemat waktu yang dikonstruksi secara cerdas oleh AI kami.
+                    </p>
+                    <div>
+                        <a href="{{ route('tour-assistant.index') }}" class="btn btn-lg rounded-pill px-4 py-2.5 fw-bold fs-7 shadow d-inline-flex align-items-center gap-2" 
+                           style="background: #0284c7; color: #ffffff;">
+                            <span>Rencanakan Sekarang</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right Column: Interactive AI Card Mockup (Persis Sesuai Screenshot) -->
+                <div class="col-12 col-lg-6">
+                    <div class="ai-preview-card-dark">
+                        <!-- Header Card -->
+                        <div class="ai-card-dark-header">
+                            <h4 class="ai-card-dark-title">
+                                <strong>Tegal:</strong> <span>Budaya & Kuliner</span>
+                            </h4>
+                            <span class="ai-card-dark-badge">3 Hari</span>
+                        </div>
+
+                        <!-- Connected Vertical Timeline Sesuai Gambar -->
+                        <div class="ai-timeline-ring-wrap">
+                            <!-- Timeline Item 1 -->
+                            <div class="ai-timeline-ring-item">
+                                <div class="ai-timeline-ring-dot-dark"></div>
+                                <div class="ai-timeline-box-dark">
+                                    <div class="ai-timeline-box-time-mint">HARI 1 — 10:00 WIB</div>
+                                    <h5 class="ai-timeline-box-title-white">Tur Pemandian Air Panas Guci</h5>
+                                    <p class="ai-timeline-box-desc-muted">Eksplorasi mata air belerang alami lereng Gunung Slamet dengan pemandu lokal.</p>
+                                </div>
+                            </div>
+
+                            <!-- Timeline Item 2 -->
+                            <div class="ai-timeline-ring-item">
+                                <div class="ai-timeline-ring-dot-dark"></div>
+                                <div class="ai-timeline-box-dark">
+                                    <div class="ai-timeline-box-time-mint">HARI 1 — 13:00 WIB</div>
+                                    <h5 class="ai-timeline-box-title-white">Makan Siang Sate Kambing Wendy's</h5>
+                                    <p class="ai-timeline-box-desc-muted">Menikmati sate kambing muda empuk legendaris khas Tegal.</p>
+                                </div>
+                            </div>
+
+                            <!-- Timeline Item 3 -->
+                            <div class="ai-timeline-ring-item">
+                                <div class="ai-timeline-ring-dot-dark"></div>
+                                <div class="ai-timeline-box-dark">
+                                    <div class="ai-timeline-box-time-mint">HARI 1 — 16:30 WIB</div>
+                                    <h5 class="ai-timeline-box-title-white">Menikmati Sunset Pantai Alam Indah</h5>
+                                    <p class="ai-timeline-box-desc-muted">Menyaksikan pemandangan sunset memukau pesisir utara dari anjungan pantai.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
 <!-- 5. Section 4: Newsletter Footer Banner -->
 <div class="container public-container pb-5">
     <div class="jt-newsletter-banner-footer">
