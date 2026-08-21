@@ -71,12 +71,32 @@ class VirtualTourController extends Controller
             ]);
         }
 
-        // Intercept index.html to inject a global fix for Pano2VR iframe wheel scrolling
+        // Intercept index.html to inject a global fix for Pano2VR iframe wheel scrolling and remove watermark
         if ($path === 'index.html' || $path === '') {
             $content = File::get($fullPath);
             $script = "<script>
-                // Pano2VR intercepts mouse wheel events. This ensures iframes can still be scrolled.
-                setInterval(function() {
+                // Function to hide Pano2VR watermarks and context menu items
+                function hidePano2VRWatermark() {
+                    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, null, false);
+                    let node;
+                    while (node = walker.nextNode()) {
+                        if (node.nodeValue && node.nodeValue.includes('Created with')) {
+                            let parent = node.parentElement;
+                            if (parent && parent.style.display !== 'none') {
+                                parent.style.display = 'none';
+                            }
+                        }
+                    }
+                    document.querySelectorAll('[title*=\"Created with\"]').forEach(function(el) {
+                        el.style.display = 'none';
+                    });
+                }
+
+                // Use MutationObserver for instant removal without flickering (e.g. on right-click)
+                const observer = new MutationObserver(() => {
+                    hidePano2VRWatermark();
+                    
+                    // Also fix iframe scrolling dynamically as they are added
                     document.querySelectorAll('iframe').forEach(function(ifr) {
                         if (!ifr.dataset.scrollFixed) {
                             ifr.setAttribute('scrolling', 'yes');
@@ -87,7 +107,19 @@ class VirtualTourController extends Controller
                             ifr.dataset.scrollFixed = 'true';
                         }
                     });
-                }, 500);
+                });
+                
+                // Start observing immediately when body is available, or wait for DOMContentLoaded
+                document.addEventListener('DOMContentLoaded', () => {
+                    hidePano2VRWatermark();
+                    observer.observe(document.body, { childList: true, subtree: true });
+                });
+                
+                // Extra aggressive check on contextmenu to ensure it doesn't even flicker
+                document.addEventListener('contextmenu', () => {
+                    hidePano2VRWatermark();
+                    setTimeout(hidePano2VRWatermark, 10);
+                });
             </script>";
             $content = str_replace('</body>', $script . "\n</body>", $content);
             return response($content, 200, [
