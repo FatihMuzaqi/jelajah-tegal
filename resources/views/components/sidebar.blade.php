@@ -8,7 +8,10 @@
         <small class="text-muted" style="font-size: 10px; font-weight: 500;">Multi-Service Platform</small>
       </div>
     </a>
-    <button class='icon-button sidebar-collapse' type='button' data-sidebar-collapse aria-label='Ciutkan sidebar'>‹</button>
+    <button class='icon-button sidebar-collapse d-none d-lg-flex' type='button' data-sidebar-collapse aria-label='Ciutkan sidebar'>‹</button>
+    <button class='icon-button sidebar-mobile-close d-lg-none' type='button' data-sidebar-close aria-label='Tutup navigasi'>
+      <i class="fa-solid fa-xmark"></i>
+    </button>
   </div>
   
   <div class='sidebar-context'>

@@ -27,17 +27,43 @@ const bootDashboard = () => {
             localStorage.setItem('lokantara-sidebar', shell?.classList.contains('sidebar-collapsed') ? 'collapsed' : 'expanded');
         });
     });
+    const closeSidebarMobile = () => {
+        shell?.classList.remove('mobile-open');
+        document.body.classList.remove('sidebar-mobile-open');
+        document.querySelectorAll('[data-sidebar-open]').forEach(btn => btn.setAttribute('aria-expanded', 'false'));
+    };
+
+    const openSidebarMobile = () => {
+        shell?.classList.add('mobile-open');
+        document.body.classList.add('sidebar-mobile-open');
+        document.querySelectorAll('[data-sidebar-open]').forEach(btn => btn.setAttribute('aria-expanded', 'true'));
+    };
+
     document.querySelectorAll('[data-sidebar-open]:not([data-dashboard-bound])').forEach((button) => {
         button.dataset.dashboardBound = 'true';
-        button.addEventListener('click', () => {
-            shell?.classList.add('mobile-open'); button.setAttribute('aria-expanded', 'true');
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (shell?.classList.contains('mobile-open')) {
+                closeSidebarMobile();
+            } else {
+                openSidebarMobile();
+            }
         });
     });
+
     document.querySelectorAll('[data-sidebar-close]:not([data-dashboard-bound])').forEach((button) => {
         button.dataset.dashboardBound = 'true';
-        button.addEventListener('click', () => {
-            shell?.classList.remove('mobile-open'); document.querySelector('[data-sidebar-open]')?.setAttribute('aria-expanded', 'false');
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            closeSidebarMobile();
         });
+    });
+
+    // Close mobile sidebar on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && shell?.classList.contains('mobile-open')) {
+            closeSidebarMobile();
+        }
     });
 
     const charts = [...document.querySelectorAll('[data-chart]:not([data-chart-rendered])')].filter((element) => JSON.parse(element.dataset.series || '[]').length);
