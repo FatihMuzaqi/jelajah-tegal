@@ -711,7 +711,7 @@
                     <!-- Actions & Favorite -->
                     <div class="d-flex flex-column gap-2 mt-3">
                         @if($tourism->has_virtual_tour)
-                            <a href="{{ route('public.virtual-tour.serve', ['domain' => 'tourism', 'slug' => $tourism->slug]) }}" target="_blank" rel="noopener noreferrer" class="btn btn-lokantara w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" style="background: linear-gradient(135deg, #0f766e, #047857); border: none;">
+                            <a href="{{ route('public.virtual-tour.serve', ['domain' => 'tourism', 'slug' => $tourism->slug]) }}" rel="noopener noreferrer" class="btn btn-lokantara w-100 d-flex align-items-center justify-content-center gap-2 py-2 fw-bold" style="background: linear-gradient(135deg, #0f766e, #047857); border: none;">
                                 <i class="fa-solid fa-vr-cardboard"></i> Lihat Virtual Tour 360
                             </a>
                         @endif

@@ -27,7 +27,7 @@
                     Virtual Tour aktif dan publik.
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ $previewUrl }}" target="_blank" class="btn btn-outline-primary btn-sm text-nowrap d-flex align-items-center gap-2 rounded-pill px-3">
+                    <a href="{{ $previewUrl }}" class="btn btn-outline-primary btn-sm text-nowrap d-flex align-items-center gap-2 rounded-pill px-3">
                         <i class="fa-solid fa-eye"></i> Lihat
                     </a>
                     <button type="button" @click="deleteTour" :disabled="isDeleting" class="btn btn-outline-danger btn-sm text-nowrap d-flex align-items-center gap-2 rounded-pill px-3">
