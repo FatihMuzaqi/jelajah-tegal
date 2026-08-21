@@ -39,6 +39,9 @@ class VirtualTourProcessor
         // The prefix for the public URL
         $urlPrefix = "/{$domain}/{$slug}/virtual-tour/";
 
+        $entity = \App\Models\CatalogEntity::find($entityId);
+        $tourTitle = $entity ? htmlspecialchars($entity->name) . ' - Virtual Tour | Jelajah Tegal' : 'Virtual Tour | Jelajah Tegal';
+
         // Use Symfony Finder as an iterator to prevent memory exhaustion (std::bad_alloc)
         // when dealing with thousands of virtual tour files in FrankenPHP.
         $finder = new \Symfony\Component\Finder\Finder();
@@ -58,6 +61,18 @@ class VirtualTourProcessor
 
                 // For HTML files, inject base href if not present to ensure relative paths work regardless of trailing slash
                 if ($extension === 'html') {
+                    // Inject title
+                    if (str_contains(strtolower($content), '<title></title>')) {
+                        $content = str_ireplace('<title></title>', '<title>' . $tourTitle . '</title>', $content);
+                    } elseif (!str_contains(strtolower($content), '<title>')) {
+                        $content = preg_replace('/<head>/i', '<head><title>' . $tourTitle . '</title>', $content, 1);
+                    }
+
+                    // Inject favicon
+                    if (!str_contains(strtolower($content), 'rel="icon"')) {
+                        $content = preg_replace('/<head>/i', '<head><link rel="icon" type="image/png" href="/images/logo.png">', $content, 1);
+                    }
+
                     if (!str_contains(strtolower($content), '<base href=')) {
                         $content = preg_replace('/<head>/i', '<head><base href="' . $urlPrefix . '">', $content, 1);
                     }
