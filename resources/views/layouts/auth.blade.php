@@ -11,7 +11,14 @@
     <meta name="robots" content="{{ trim($__env->yieldContent('robots', 'noindex,nofollow')) }}">
     <link rel="canonical" href="{{ trim($__env->yieldContent('canonical', url()->current())) }}">
 
-    <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="icon" type="image/png" href="{{ asset('images/icon-192.png') }}">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#15803d">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Jelajah Tegal">
+    <link rel="apple-touch-icon" href="{{ asset('images/icon-192.png') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />

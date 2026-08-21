@@ -1,4 +1,4 @@
-<!-- PWA Android / Desktop Install Prompt Banner -->
+<!-- PWA Android / Chromium / Desktop Install Prompt Banner -->
 <div id="pwa-install-prompt" class="pwa-install-card d-none" role="dialog" aria-modal="true" aria-label="Pasang Aplikasi Jelajah Tegal">
     <div class="pwa-card-content">
         <div class="pwa-icon-box">
@@ -6,16 +6,16 @@
         </div>
         <div class="pwa-text-box">
             <strong class="pwa-title">Pasang Aplikasi Jelajah Tegal</strong>
-            <p class="pwa-desc">Akses tiket & panduan wisata offline lebih cepat langsung dari layar utama HP Anda.</p>
+            <p class="pwa-desc">Akses e-tiket & peta wisata lebih cepat langsung dari layar utama HP Anda.</p>
         </div>
         <button type="button" class="pwa-close-btn" id="pwa-dismiss-btn" aria-label="Tutup Banner">
             <i class="fa-solid fa-xmark"></i>
         </button>
     </div>
     <div class="pwa-actions-row">
-        <button type="button" class="pwa-btn-later" id="pwa-later-btn">Nanti Saja</button>
+        <button type="button" class="pwa-btn-later" id="pwa-later-btn">Nanti</button>
         <button type="button" class="pwa-btn-install" id="pwa-install-btn">
-            <i class="fa-solid fa-download me-1"></i> Pasang Aplikasi
+            <i class="fa-solid fa-download me-1"></i> Pasang
         </button>
     </div>
 </div>
@@ -27,8 +27,8 @@
             <img src="{{ asset('images/icon-192.png') }}" alt="Logo Jelajah Tegal" class="pwa-app-logo">
         </div>
         <div class="pwa-text-box">
-            <strong class="pwa-title">Pasang di Layar Utama iPhone</strong>
-            <p class="pwa-desc">Tekan tombol <i class="fa-solid fa-arrow-up-from-bracket text-primary"></i> <strong>Share</strong> lalu pilih <strong>"Tambah ke Layar Utama"</strong>.</p>
+            <strong class="pwa-title">Pasang di iPhone</strong>
+            <p class="pwa-desc">Tekan tombol <i class="fa-solid fa-arrow-up-from-bracket text-primary"></i> <strong>Share</strong> di Safari, lalu pilih <strong>"Tambah ke Layar Utama"</strong>.</p>
         </div>
         <button type="button" class="pwa-close-btn" id="pwa-ios-dismiss-btn" aria-label="Tutup Banner">
             <i class="fa-solid fa-xmark"></i>
@@ -48,8 +48,8 @@
     background: #ffffff;
     border: 1px solid #e2e8f0;
     border-radius: 18px;
-    padding: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12), 0 4px 6px rgba(0, 0, 0, 0.04);
+    padding: 14px 16px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.14), 0 4px 6px rgba(0, 0, 0, 0.04);
     z-index: 1050;
     animation: pwaSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -78,22 +78,24 @@
     min-width: 44px;
     border-radius: 12px;
     overflow: hidden;
-    background: #f1f5f9;
+    background: #ffffff;
     display: flex;
     align-items: center;
     justify-content: center;
     border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    flex-shrink: 0;
 }
 
 .pwa-app-logo {
     width: 100%;
     height: 100%;
-    object-fit: cover;
+    object-fit: contain;
 }
 
 .pwa-text-box {
     flex: 1;
-    padding-right: 24px;
+    padding-right: 20px;
 }
 
 .pwa-title {
@@ -123,13 +125,16 @@
     cursor: pointer;
     padding: 4px;
 }
+.pwa-close-btn:hover {
+    color: #0f172a;
+}
 
 .pwa-actions-row {
     display: flex;
     align-items: center;
     justify-content: flex-end;
     gap: 8px;
-    margin-top: 12px;
+    margin-top: 10px;
     padding-top: 10px;
     border-top: 1px solid #f1f5f9;
 }
@@ -138,7 +143,7 @@
     background: transparent;
     border: none;
     color: #64748b;
-    font-size: 12.5px;
+    font-size: 12px;
     font-weight: 600;
     padding: 6px 12px;
     border-radius: 8px;
@@ -151,7 +156,7 @@
     border: none;
     font-size: 12.5px;
     font-weight: 700;
-    padding: 7px 16px;
+    padding: 6px 16px;
     border-radius: 99px;
     cursor: pointer;
     box-shadow: 0 2px 6px rgba(21, 128, 61, 0.3);
@@ -173,11 +178,19 @@
     const laterBtn = document.getElementById('pwa-later-btn');
     const iosDismissBtn = document.getElementById('pwa-ios-dismiss-btn');
 
-    // Check if user previously dismissed within 7 days
-    const dismissedAt = localStorage.getItem('jt-pwa-dismissed-at');
-    const isDismissedRecently = dismissedAt && (Date.now() - parseInt(dismissedAt, 10)) < (7 * 24 * 60 * 60 * 1000);
+    // Check if user is ALREADY in installed PWA standalone mode
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || 
+                         window.navigator.standalone === true || 
+                         document.referrer.includes('android-app://');
 
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+    if (isStandalone) {
+        // App is already installed and running in standalone window -> do NOT show banner
+        return;
+    }
+
+    // Check if dismissed within the last 24 hours
+    const dismissedAt = localStorage.getItem('jt-pwa-dismissed-at');
+    const isDismissedRecently = dismissedAt && (Date.now() - parseInt(dismissedAt, 10)) < (24 * 60 * 60 * 1000);
 
     // Detect iOS Safari
     const isIos = () => {
@@ -190,24 +203,30 @@
         return isIos() && userAgent.includes('safari') && !userAgent.includes('crios');
     };
 
-    // Android / Chromium beforeinstallprompt event
+    // 1. Capture Chromium beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
 
-        if (!isStandalone && !isDismissedRecently && banner) {
-            setTimeout(() => {
-                banner.classList.remove('d-none');
-            }, 2500);
+        if (!isDismissedRecently && banner) {
+            banner.classList.remove('d-none');
         }
     });
 
-    // iOS Safari prompt
-    if (isSafari() && !isStandalone && !isDismissedRecently && iosBanner) {
+    // 2. Reliable Auto-Display for Mobile Browsers
+    window.addEventListener('DOMContentLoaded', () => {
+        if (isDismissedRecently) return;
+
         setTimeout(() => {
-            iosBanner.classList.remove('d-none');
-        }, 3000);
-    }
+            if (isSafari()) {
+                if (iosBanner) iosBanner.classList.remove('d-none');
+            } else {
+                if (banner && banner.classList.contains('d-none')) {
+                    banner.classList.remove('d-none');
+                }
+            }
+        }, 2000);
+    });
 
     function dismissBanner() {
         if (banner) banner.classList.add('d-none');
@@ -221,18 +240,18 @@
 
     if (installBtn) {
         installBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) {
-                // Fallback prompt jika browser belum men-trigger prompt native
-                alert('Untuk memasang aplikasi, buka menu browser (titik tiga ⋮ di kanan atas) lalu pilih "Pasang aplikasi" atau "Tambahkan ke Layar Utama".');
-                return;
+            if (deferredPrompt) {
+                banner.classList.add('d-none');
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    localStorage.removeItem('jt-pwa-dismissed-at');
+                }
+                deferredPrompt = null;
+            } else {
+                // Friendly guide if native prompt is deferred by browser
+                alert('📱 Cara Pasang Aplikasi:\n1. Tekan tombol menu titik tiga (⋮) di kanan atas browser Chrome.\n2. Pilih "Pasang aplikasi" atau "Tambahkan ke Layar Utama".');
             }
-            banner.classList.add('d-none');
-            deferredPrompt.prompt();
-            const { outcome } = await deferredPrompt.userChoice;
-            if (outcome === 'accepted') {
-                localStorage.removeItem('jt-pwa-dismissed-at');
-            }
-            deferredPrompt = null;
         });
     }
 
@@ -241,10 +260,10 @@
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('/sw.js')
                 .then((reg) => {
-                    console.log('Jelajah Tegal PWA ServiceWorker registered with scope:', reg.scope);
+                    console.log('Jelajah Tegal PWA SW active:', reg.scope);
                 })
                 .catch((err) => {
-                    console.warn('ServiceWorker registration failed:', err);
+                    console.warn('SW registration error:', err);
                 });
         });
     }
