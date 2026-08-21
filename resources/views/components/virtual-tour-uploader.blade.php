@@ -173,7 +173,37 @@
                 },
 
                 async deleteTour() {
-                    if (!confirm('Apakah Anda yakin ingin menghapus Virtual Tour ini?')) return;
+                    const confirmed = await new Promise((resolve) => {
+                        const modalElement = document.getElementById('confirm-modal');
+                        if (!modalElement || !window.bootstrap) {
+                            resolve(confirm('Apakah Anda yakin ingin menghapus Virtual Tour ini?'));
+                            return;
+                        }
+                        
+                        modalElement.querySelector('[data-confirm-message]').textContent = 'Apakah Anda yakin ingin menghapus Virtual Tour ini?';
+                        const acceptBtn = modalElement.querySelector('[data-confirm-accept]');
+                        
+                        const bsModal = window.bootstrap.Modal.getOrCreateInstance(modalElement);
+                        let isResolved = false;
+                        
+                        acceptBtn.onclick = () => {
+                            isResolved = true;
+                            bsModal.hide();
+                            resolve(true);
+                        };
+                        
+                        const hiddenHandler = () => {
+                            modalElement.removeEventListener('hidden.bs.modal', hiddenHandler);
+                            if (!isResolved) {
+                                resolve(false);
+                            }
+                        };
+                        modalElement.addEventListener('hidden.bs.modal', hiddenHandler);
+                        
+                        bsModal.show();
+                    });
+
+                    if (!confirmed) return;
                     
                     this.isDeleting = true;
                     try {
