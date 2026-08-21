@@ -390,12 +390,14 @@
 
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initTourAssistant() {
     const checkboxes = document.querySelectorAll('input[name="categories[]"]');
+    if (!checkboxes.length) return;
     
     // Initial sync state & Change listener
     checkboxes.forEach(cb => {
         const card = cb.closest('.ai-cat-card');
+        if (!card) return;
         
         const syncCard = () => {
             if (cb.checked) {
@@ -407,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         syncCard();
 
-        cb.addEventListener('change', function() {
+        cb.onchange = function() {
             const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
             if (!this.checked && checkedCount === 0) {
                 this.checked = true;
@@ -416,33 +418,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             syncCard();
-        });
+        };
     });
 
     // Form submit validation
     const form = document.getElementById('aiPlannerForm');
     if (form) {
-        form.addEventListener('submit', function(e) {
+        form.onsubmit = function(e) {
             const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
             if (checkedCount === 0) {
                 e.preventDefault();
                 alert('Silakan pilih minimal 1 jenis layanan terlebih dahulu.');
             }
-        });
+        };
     }
 
     // Validasi Tanggal Pulang >= Tanggal Berangkat
     const startInput = document.getElementById('startDate');
     const endInput = document.getElementById('endDate');
     if (startInput && endInput) {
-        startInput.addEventListener('change', function() {
+        startInput.onchange = function() {
             if (endInput.value < this.value) {
                 endInput.value = this.value;
             }
             endInput.min = this.value;
-        });
+        };
     }
-});
+}
+
+document.addEventListener('DOMContentLoaded', initTourAssistant);
+document.addEventListener('livewire:navigated', initTourAssistant);
 </script>
 @endpush
 @endsection

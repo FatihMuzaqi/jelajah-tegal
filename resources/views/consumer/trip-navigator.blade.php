@@ -356,7 +356,15 @@
 
 <!-- Trip Navigator JavaScript Engine -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+function initTripNavigator() {
+    const mapContainer = document.getElementById('navigator-map');
+    if (!mapContainer) return;
+
+    if (window.__jt_map) {
+        try { window.__jt_map.remove(); } catch(e) {}
+        window.__jt_map = null;
+    }
+
     const destinations = {!! $destinationsJson !!};
     
     // Default Map Center: Tegal City / Slawi
@@ -372,6 +380,8 @@ document.addEventListener('DOMContentLoaded', function() {
         zoomControl: true,
         attributionControl: false
     }).setView(defaultCenter, 12);
+
+    window.__jt_map = map;
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19
@@ -658,6 +668,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Start GPS detection on load
     requestUserGPS();
-});
+}
+
+document.addEventListener('DOMContentLoaded', initTripNavigator);
+document.addEventListener('livewire:navigated', initTripNavigator);
 </script>
 @endsection

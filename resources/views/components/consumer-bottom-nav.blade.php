@@ -9,7 +9,7 @@
 <nav class="consumer-bottom-nav d-lg-none" aria-label="Navigasi Bawah Mobile">
     <div class="bottom-nav-container">
         <!-- 1. Beranda -->
-        <a href="{{ route('home') }}" class="bottom-nav-item {{ $isHome ? 'active' : '' }}" aria-label="Beranda">
+        <a href="{{ route('home') }}" wire:navigate.hover class="bottom-nav-item {{ $isHome ? 'active' : '' }}" aria-label="Beranda">
             <div class="nav-icon-wrap">
                 <i class="fa-solid fa-house"></i>
             </div>
@@ -17,7 +17,7 @@
         </a>
 
         <!-- 2. Peta Destinasi -->
-        <a href="{{ auth()->check() ? route('consumer.trip-navigator.index') : route('tourism.index') }}" class="bottom-nav-item {{ $isMap ? 'active' : '' }}" aria-label="Peta Destinasi">
+        <a href="{{ auth()->check() ? route('consumer.trip-navigator.index') : route('tourism.index') }}" wire:navigate.hover class="bottom-nav-item {{ $isMap ? 'active' : '' }}" aria-label="Peta Destinasi">
             <div class="nav-icon-wrap">
                 <i class="fa-solid fa-map-location-dot"></i>
             </div>
@@ -25,7 +25,7 @@
         </a>
 
         <!-- 3. AI Planner (Center Highlight) -->
-        <a href="{{ route('tour-assistant.index') }}" class="bottom-nav-item nav-center-highlight {{ $isAiTrip ? 'active' : '' }}" aria-label="AI Planner">
+        <a href="{{ route('tour-assistant.index') }}" wire:navigate.hover class="bottom-nav-item nav-center-highlight {{ $isAiTrip ? 'active' : '' }}" aria-label="AI Planner">
             <div class="center-icon-btn">
                 <i class="fa-solid fa-wand-magic-sparkles"></i>
             </div>
@@ -33,15 +33,15 @@
         </a>
 
         <!-- 4. Tiket Saya -->
-        <a href="{{ auth()->check() ? route('consumer.orders.index') : route('login') }}" class="bottom-nav-item {{ $isTickets ? 'active' : '' }}" aria-label="Tiket Saya">
+        <a href="{{ auth()->check() ? route('consumer.orders.index') : route('login') }}" wire:navigate.hover class="bottom-nav-item {{ $isTickets ? 'active' : '' }}" aria-label="Tiket">
             <div class="nav-icon-wrap">
                 <i class="fa-solid fa-ticket"></i>
             </div>
-            <span class="nav-label">Tiket Saya</span>
+            <span class="nav-label">Tiket</span>
         </a>
 
         <!-- 5. Akun / Dashboard -->
-        <a href="{{ auth()->check() ? route('consumer.dashboard') : route('login') }}" class="bottom-nav-item {{ $isAccount ? 'active' : '' }}" aria-label="Akun Saya">
+        <a href="{{ auth()->check() ? route('consumer.dashboard') : route('login') }}" wire:navigate.hover class="bottom-nav-item {{ $isAccount ? 'active' : '' }}" aria-label="Akun">
             <div class="nav-icon-wrap">
                 <i class="fa-solid fa-user"></i>
             </div>
@@ -58,13 +58,12 @@
     left: 0;
     right: 0;
     z-index: 1040;
-    background: rgba(255, 255, 255, 0.94);
+    background: rgba(255, 255, 255, 0.96);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
     border-top: 1px solid rgba(226, 232, 240, 0.85);
     box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
     padding-bottom: max(env(safe-area-inset-bottom, 8px), 8px);
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .bottom-nav-container {
