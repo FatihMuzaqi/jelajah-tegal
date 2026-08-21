@@ -61,6 +61,7 @@
 
 <body class='public-body'>
     <a class='skip-link' href='#main-content'>Lewati ke konten</a>
+    @if(!request()->has('iframe'))
     <header class='public-header sticky-top bg-white border-bottom shadow-sm'>
         <nav class='navbar navbar-expand-lg public-navbar py-2' aria-label='Navigasi publik'>
             <div class='container public-container'>
@@ -204,6 +205,7 @@
             </div>
         </nav>
     </header>
+    @endif
 
     {{-- Floating Toast Notification (Tidak Mengganggu Navbar) --}}
     @if (session('status') || session('success') || session('error') || session('info'))
@@ -259,6 +261,7 @@
         </script>
     @endif
     <main id='main-content'>@yield('content')</main>
+    @if(!request()->has('iframe'))
     <footer class='public-footer'>
         <div class='container public-container footer-grid'>
             <div>
@@ -285,6 +288,7 @@
     <x-chatbot-widget />
     <x-consumer-bottom-nav />
     <x-pwa-install-banner />
+    @endif
     @stack('modals')
     @stack('scripts')
     @livewireScripts
