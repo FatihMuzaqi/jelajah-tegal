@@ -21,6 +21,8 @@
             document.documentElement.dataset.theme = theme;
         })();
     </script>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -34,16 +36,18 @@
         <div class='dashboard-main'>
             <x-topbar :surface='$surface' />
             <main class='dashboard-content' id='main-content'>
-                @php($breadcrumbItems = $breadcrumbs ?? ['Dashboard' => null])
-                <x-breadcrumb :items='$breadcrumbItems' />
-                <div class='page-heading'>
-                    <div>
-                        <p class='page-eyebrow'>{{ $surfaceLabel ?? str($surface)->headline() }}</p>
-                        <h1>@yield('page-title', 'Dashboard')</h1>
-                        <p class='page-description'>@yield('page-description', 'Ringkasan aktivitas dan status terbaru Lokantara.')</p>
+                @if(!request()->routeIs('consumer.dashboard'))
+                    @php($breadcrumbItems = $breadcrumbs ?? ['Dashboard' => null])
+                    <x-breadcrumb :items='$breadcrumbItems' />
+                    <div class='page-heading'>
+                        <div>
+                            <p class='page-eyebrow'>{{ $surfaceLabel ?? str($surface)->headline() }}</p>
+                            <h1>@yield('page-title', 'Dashboard')</h1>
+                            <p class='page-description'>@yield('page-description', 'Ringkasan aktivitas dan status terbaru Lokantara.')</p>
+                        </div>
+                        <div class='page-actions'>@yield('page-actions')</div>
                     </div>
-                    <div class='page-actions'>@yield('page-actions')</div>
-                </div>
+                @endif
                 @yield('content')
             </main>
         </div>

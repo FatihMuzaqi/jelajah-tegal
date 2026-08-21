@@ -58,6 +58,9 @@ body.dashboard-body {
     display: flex;
     flex-direction: column;
     z-index: 1030;
+}
+.dashboard-shell.sidebar-collapsed .dashboard-sidebar,
+.dashboard-shell.mobile-open .dashboard-sidebar {
     transition: width var(--transition), transform var(--transition);
 }
 

@@ -53,9 +53,17 @@
 
                 <!-- Right Side: Login Form Card -->
                 <div class="auth-form-side">
+                    <!-- Mobile Top Brand Logo -->
+                    <div class="auth-mobile-brand d-lg-none text-center mb-3">
+                        <a href="{{ route('home') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none">
+                            <img src="{{ asset('images/icon-192.png') }}" alt="Logo Jelajah Tegal" style="height: 38px; width: 38px; border-radius: 10px; box-shadow: 0 4px 10px rgba(21,128,61,0.2);">
+                            <span class="fw-bold text-dark fs-5" style="letter-spacing: -0.02em;">Jelajah Tegal</span>
+                        </a>
+                    </div>
+
                     <div class="auth-header">
                         <h2>Masuk ke Akun</h2>
-                        <p>Silakan masukkan kredensial Anda untuk mengakses portal Lokantara.</p>
+                        <p>Silakan masukkan email & kata sandi akun Anda.</p>
                     </div>
 
                     @if (session('status'))
@@ -164,7 +172,7 @@
 
                     <!-- Register Prompt -->
                     <div class="auth-footer-prompt">
-                        Belum memiliki akun Lokantara? <a href="{{ route('register') }}">Daftar Akun Baru</a>
+                        Belum punya akun? <a href="{{ route('register') }}">Daftar Sekarang</a>
                     </div>
                 </div>
             </div>

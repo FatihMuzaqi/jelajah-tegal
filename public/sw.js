@@ -1,7 +1,9 @@
-const CACHE_NAME = 'jelajahtegal-pwa-v1';
+const CACHE_NAME = 'jelajahtegal-pwa-v2';
 const PRECACHE_ASSETS = [
   '/',
   '/offline.html',
+  '/images/icon-192.png',
+  '/images/icon-512.png',
   '/images/logo.png',
   '/favicon.ico',
   '/manifest.json'
@@ -29,7 +31,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// 3. Fetch event: Network-first for HTML pages, cache-first for static assets
+// 3. Fetch event: Fast Network-first for HTML, Stale-while-revalidate for static assets
 self.addEventListener('fetch', (event) => {
   const request = event.request;
 
@@ -45,30 +47,21 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // HTML page navigation: Network first, fallback to cached page, then offline.html
+  // HTML page navigation: Network first, with fallback to offline.html
   if (request.mode === 'navigate' || request.headers.get('accept')?.includes('text/html')) {
     event.respondWith(
-      fetch(request)
-        .then((response) => {
-          // Cache a copy of the valid response
-          if (response.status === 200) {
-            const responseClone = response.clone();
-            caches.open(CACHE_NAME).then((cache) => cache.put(request, responseClone));
-          }
-          return response;
-        })
-        .catch(async () => {
-          const cachedResponse = await caches.match(request);
-          if (cachedResponse) {
-            return cachedResponse;
-          }
-          return caches.match('/offline.html');
-        })
+      fetch(request).catch(async () => {
+        const cachedResponse = await caches.match(request);
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        return caches.match('/offline.html');
+      })
     );
     return;
   }
 
-  // Static assets (images, css, js, fonts): Stale-while-revalidate
+  // Static assets (CSS, JS, Fonts, Images): Stale-while-revalidate for instant loading
   if (
     request.destination === 'style' ||
     request.destination === 'script' ||

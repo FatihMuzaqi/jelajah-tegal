@@ -251,7 +251,7 @@
              style="background: #f0fdf4; border: 1px solid #bbf7d0; font-size: 11.5px; color: #166534;">
             <div class="d-flex align-items-center gap-2">
                 <span class="pulse-dot"></span>
-                <span id="gps-status-text" class="fw-semibold">GPS Terhubung (Lokasi Terdeteksi)</span>
+                <span id="gps-status-text" class="fw-semibold">GPS Terhubung</span>
             </div>
             <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold" style="font-size: 11px; color: #047857;" onclick="requestUserGPS(true)">
                 <i class="fa-solid fa-arrows-rotate me-0.5"></i> Refresh
@@ -347,7 +347,7 @@
                    class="btn btn-sm btn-primary fw-bold px-3.5 py-2 shadow-sm d-flex align-items-center justify-content-center gap-1.5 rounded-pill flex-grow-1"
                    style="background: #047857; border: none; font-size: 12.5px;">
                     <i class="fa-solid fa-diamond-turn-right text-warning"></i>
-                    <span>Mulai Navigasi (Google Maps)</span>
+                    <span>Navigasi Maps</span>
                 </a>
             </div>
         </div>

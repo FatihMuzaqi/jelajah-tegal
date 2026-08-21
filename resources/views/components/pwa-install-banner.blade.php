@@ -1,7 +1,8 @@
+<!-- PWA Android / Desktop Install Prompt Banner -->
 <div id="pwa-install-prompt" class="pwa-install-card d-none" role="dialog" aria-modal="true" aria-label="Pasang Aplikasi Jelajah Tegal">
     <div class="pwa-card-content">
         <div class="pwa-icon-box">
-            <img src="{{ asset('images/logo.png') }}" alt="Logo" class="pwa-app-logo">
+            <img src="{{ asset('images/icon-192.png') }}" alt="Logo Jelajah Tegal" class="pwa-app-logo">
         </div>
         <div class="pwa-text-box">
             <strong class="pwa-title">Pasang Aplikasi Jelajah Tegal</strong>
@@ -15,6 +16,22 @@
         <button type="button" class="pwa-btn-later" id="pwa-later-btn">Nanti Saja</button>
         <button type="button" class="pwa-btn-install" id="pwa-install-btn">
             <i class="fa-solid fa-download me-1"></i> Pasang Aplikasi
+        </button>
+    </div>
+</div>
+
+<!-- iOS Safari Manual Install Prompt Banner -->
+<div id="pwa-ios-prompt" class="pwa-install-card d-none" role="dialog" aria-modal="true" aria-label="Pasang Aplikasi di iPhone">
+    <div class="pwa-card-content">
+        <div class="pwa-icon-box">
+            <img src="{{ asset('images/icon-192.png') }}" alt="Logo Jelajah Tegal" class="pwa-app-logo">
+        </div>
+        <div class="pwa-text-box">
+            <strong class="pwa-title">Pasang di Layar Utama iPhone</strong>
+            <p class="pwa-desc">Tekan tombol <i class="fa-solid fa-arrow-up-from-bracket text-primary"></i> <strong>Share</strong> lalu pilih <strong>"Tambah ke Layar Utama"</strong>.</p>
+        </div>
+        <button type="button" class="pwa-close-btn" id="pwa-ios-dismiss-btn" aria-label="Tutup Banner">
+            <i class="fa-solid fa-xmark"></i>
         </button>
     </div>
 </div>
@@ -150,40 +167,65 @@
 (function() {
     let deferredPrompt = null;
     const banner = document.getElementById('pwa-install-prompt');
+    const iosBanner = document.getElementById('pwa-ios-prompt');
     const installBtn = document.getElementById('pwa-install-btn');
     const dismissBtn = document.getElementById('pwa-dismiss-btn');
     const laterBtn = document.getElementById('pwa-later-btn');
+    const iosDismissBtn = document.getElementById('pwa-ios-dismiss-btn');
 
     // Check if user previously dismissed within 7 days
     const dismissedAt = localStorage.getItem('jt-pwa-dismissed-at');
     const isDismissedRecently = dismissedAt && (Date.now() - parseInt(dismissedAt, 10)) < (7 * 24 * 60 * 60 * 1000);
 
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+
+    // Detect iOS Safari
+    const isIos = () => {
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        return /iphone|ipad|ipod/.test(userAgent);
+    };
+
+    const isSafari = () => {
+        const userAgent = window.navigator.userAgent.toLowerCase();
+        return isIos() && userAgent.includes('safari') && !userAgent.includes('crios');
+    };
+
+    // Android / Chromium beforeinstallprompt event
     window.addEventListener('beforeinstallprompt', (e) => {
         e.preventDefault();
         deferredPrompt = e;
 
-        // Check if not standalone and not recently dismissed
-        const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
         if (!isStandalone && !isDismissedRecently && banner) {
             setTimeout(() => {
                 banner.classList.remove('d-none');
-            }, 3000); // Display 3 seconds after page load for smooth UX
+            }, 2500);
         }
     });
 
+    // iOS Safari prompt
+    if (isSafari() && !isStandalone && !isDismissedRecently && iosBanner) {
+        setTimeout(() => {
+            iosBanner.classList.remove('d-none');
+        }, 3000);
+    }
+
     function dismissBanner() {
-        if (banner) {
-            banner.classList.add('d-none');
-            localStorage.setItem('jt-pwa-dismissed-at', Date.now().toString());
-        }
+        if (banner) banner.classList.add('d-none');
+        if (iosBanner) iosBanner.classList.add('d-none');
+        localStorage.setItem('jt-pwa-dismissed-at', Date.now().toString());
     }
 
     if (dismissBtn) dismissBtn.addEventListener('click', dismissBanner);
     if (laterBtn) laterBtn.addEventListener('click', dismissBanner);
+    if (iosDismissBtn) iosDismissBtn.addEventListener('click', dismissBanner);
 
     if (installBtn) {
         installBtn.addEventListener('click', async () => {
-            if (!deferredPrompt) return;
+            if (!deferredPrompt) {
+                // Fallback prompt jika browser belum men-trigger prompt native
+                alert('Untuk memasang aplikasi, buka menu browser (titik tiga ⋮ di kanan atas) lalu pilih "Pasang aplikasi" atau "Tambahkan ke Layar Utama".');
+                return;
+            }
             banner.classList.add('d-none');
             deferredPrompt.prompt();
             const { outcome } = await deferredPrompt.userChoice;

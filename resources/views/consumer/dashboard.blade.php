@@ -260,32 +260,32 @@
 
 <div class="mb-4">
     <!-- 1. HERO WELCOME CARD -->
-    <div class="consumer-hero-card p-4 p-md-4 mb-4 shadow-sm">
+    <div class="consumer-hero-card p-3.5 p-md-4 mb-4 shadow-sm">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 position-relative" style="z-index: 1;">
             <div class="d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px; font-size: 22px; font-weight: 800; color: #047857 !important; flex-shrink: 0;">
+                <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px; font-size: 20px; font-weight: 800; color: #047857 !important; flex-shrink: 0;">
                     {{ str($u->name)->substr(0, 1)->upper() }}
                 </div>
                 <div>
                     <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
-                        <h4 class="fw-bold mb-0 text-white">{{ $u->name }}</h4>
-                        <span class="badge rounded-pill bg-white text-dark fw-bold px-2.5 py-1" style="font-size: 11px;">
-                            <i class="fa-solid fa-circle-check text-success me-1"></i> Wisatawan Terverifikasi
+                        <h4 class="fw-bold mb-0 text-white fs-5">{{ $u->name }}</h4>
+                        <span class="badge rounded-pill bg-white text-dark fw-bold px-2.5 py-0.5" style="font-size: 10.5px;">
+                            <i class="fa-solid fa-circle-check text-success me-1"></i> Terverifikasi
                         </span>
                     </div>
-                    <p class="text-white-50 small mb-0">{{ $u->email }} &middot; Jelajah Keindahan Wisata Kabupaten & Kota Tegal</p>
+                    <p class="text-white-50 small mb-0 fs-8">{{ $u->email }} &middot; Jelajah Wisata Tegal</p>
                 </div>
             </div>
 
             <!-- Quick Action Button in Header -->
             <div class="d-flex align-items-center gap-2 flex-wrap">
-                <a href="{{ route('consumer.trip-navigator.index') }}" class="btn btn-warning fw-bold px-3.5 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2" style="background: #facc15; color: #064e3b; border: none;">
+                <a href="{{ route('consumer.trip-navigator.index') }}" class="btn btn-warning fw-bold px-3 py-1.5 rounded-pill shadow-sm d-inline-flex align-items-center gap-1.5" style="background: #facc15; color: #064e3b; border: none; font-size: 13px;">
                     <i class="fa-solid fa-map-location-dot"></i>
-                    <span>Rute Destinasi GPS</span>
+                    <span>Rute GPS</span>
                 </a>
-                <a href="{{ route('tour-assistant.index') }}" class="btn btn-outline-light fw-semibold px-3 py-2 rounded-pill d-inline-flex align-items-center gap-1.5">
+                <a href="{{ route('tour-assistant.index') }}" class="btn btn-outline-light fw-semibold px-3 py-1.5 rounded-pill d-inline-flex align-items-center gap-1.5" style="font-size: 13px;">
                     <i class="fa-solid fa-wand-magic-sparkles text-warning"></i>
-                    <span>AI Assistant</span>
+                    <span>AI Trip</span>
                 </a>
             </div>
         </div>
@@ -303,7 +303,7 @@
             </div>
             <div class="stat-card-value">{{ $totalOrders }}</div>
             <div class="stat-card-footer">
-                <span>Tiket & Layanan</span>
+                <span>Pesanan</span>
                 <span class="badge-pill-soft badge-soft-emerald">Tercatat</span>
             </div>
         </a>
@@ -311,14 +311,14 @@
         <!-- Destinasi Terbayar -->
         <a href="{{ route('consumer.trip-navigator.index') }}" class="stat-card-clean">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="stat-card-label">DESTINASI TERBAYAR</span>
+                <span class="stat-card-label">DESTINASI</span>
                 <div class="stat-icon-clean stat-icon-indigo">
                     <i class="fa-solid fa-map-location-dot"></i>
                 </div>
             </div>
             <div class="stat-card-value text-indigo" style="color: #4f46e5;">{{ $paidOrdersCount }}</div>
             <div class="stat-card-footer">
-                <span>Siap Dikunjungi</span>
+                <span>Siap Kunjung</span>
                 <span class="badge-pill-soft badge-soft-indigo">Lunas</span>
             </div>
         </a>
@@ -326,14 +326,14 @@
         <!-- Rencana Liburan AI -->
         <a href="{{ route('consumer.itineraries.index') }}" class="stat-card-clean">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="stat-card-label">RENCANA LIBURAN AI</span>
+                <span class="stat-card-label">RENCANA AI</span>
                 <div class="stat-icon-clean stat-icon-amber">
                     <i class="fa-solid fa-wand-magic-sparkles"></i>
                 </div>
             </div>
             <div class="stat-card-value text-amber" style="color: #d97706;">{{ $paidItinerariesCount }}</div>
             <div class="stat-card-footer">
-                <span>Itinerary Tersimpan</span>
+                <span>Itinerary</span>
                 <span class="badge-pill-soft badge-soft-amber">AI Trip</span>
             </div>
         </a>
@@ -341,14 +341,14 @@
         <!-- Dokumen Sewa -->
         <a href="{{ route('consumer.renter-documents.index') }}" class="stat-card-clean">
             <div class="d-flex justify-content-between align-items-center mb-1">
-                <span class="stat-card-label">DOKUMEN SEWA</span>
+                <span class="stat-card-label">DOKUMEN</span>
                 <div class="stat-icon-clean stat-icon-sky">
                     <i class="fa-solid fa-file-shield"></i>
                 </div>
             </div>
             <div class="stat-card-value text-sky" style="color: #0284c7;">{{ $renterDocsCount }}</div>
             <div class="stat-card-footer">
-                <span>Verifikasi Rental</span>
+                <span>Rental Mobil</span>
                 <span class="badge-pill-soft badge-soft-sky">Tersimpan</span>
             </div>
         </a>
@@ -360,16 +360,16 @@
         <a href="{{ route('consumer.trip-navigator.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">NAVIGASI LIVE</span>
-                    <h5 class="fw-bold text-white mb-1">Peta & Rute Terbayar</h5>
-                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Panduan jalan langsung dari posisi Anda ke lokasi wisata & hotel.</p>
+                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">NAVIGASI</span>
+                    <h5 class="fw-bold text-white mb-1 fs-6">Peta & Rute Wisata</h5>
+                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Panduan jalan GPS langsung ke lokasi tujuan.</p>
                 </div>
                 <div class="action-banner-icon">
                     <i class="fa-solid fa-diamond-turn-right"></i>
                 </div>
             </div>
-            <div class="fw-bold text-warning small mt-3 d-inline-flex align-items-center gap-1">
-                Buka Peta Navigasi <i class="fa-solid fa-arrow-right"></i>
+            <div class="fw-bold text-warning small mt-2.5 d-inline-flex align-items-center gap-1">
+                Buka Peta <i class="fa-solid fa-arrow-right"></i>
             </div>
         </a>
 
@@ -377,16 +377,16 @@
         <a href="{{ route('consumer.itineraries.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">AI ITINERARY</span>
-                    <h5 class="fw-bold text-white mb-1">Rencana Liburan AI</h5>
-                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Lihat jadwal jam-per-jam dan cetak dokumen PDF liburan Anda.</p>
+                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">AI PLANNER</span>
+                    <h5 class="fw-bold text-white mb-1 fs-6">Rencana Liburan AI</h5>
+                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Jadwal jam-per-jam dan cetak dokumen PDF.</p>
                 </div>
                 <div class="action-banner-icon">
                     <i class="fa-solid fa-wand-magic-sparkles" style="color: #facc15;"></i>
                 </div>
             </div>
-            <div class="fw-bold text-white small mt-3 d-inline-flex align-items-center gap-1">
-                Buka Rencana Liburan <i class="fa-solid fa-arrow-right"></i>
+            <div class="fw-bold text-white small mt-2.5 d-inline-flex align-items-center gap-1">
+                Buka Rencana <i class="fa-solid fa-arrow-right"></i>
             </div>
         </a>
 
@@ -394,15 +394,15 @@
         <a href="{{ route('consumer.renter-documents.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
-                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">RENTAL MOBIL & MOTOR</span>
-                    <h5 class="fw-bold text-white mb-1">Dokumen Sewa</h5>
-                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Kelola KTP, SIM, dan syarat verifikasi rental kendaraan Anda.</p>
+                    <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">RENTAL</span>
+                    <h5 class="fw-bold text-white mb-1 fs-6">Dokumen Sewa</h5>
+                    <p class="text-white-50 small mb-0" style="font-size: 12px;">Kelola KTP, SIM, dan verifikasi sewa armada.</p>
                 </div>
                 <div class="action-banner-icon">
                     <i class="fa-solid fa-car"></i>
                 </div>
             </div>
-            <div class="fw-bold text-white small mt-3 d-inline-flex align-items-center gap-1">
+            <div class="fw-bold text-white small mt-2.5 d-inline-flex align-items-center gap-1">
                 Kelola Dokumen <i class="fa-solid fa-arrow-right"></i>
             </div>
         </a>
@@ -414,28 +414,28 @@
             $lDays = $lMeta['days'] ?? [];
         @endphp
         <!-- ACTIVE AI ITINERARY BANNER -->
-        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: linear-gradient(135deg, #022c22 0%, #064e3b 60%, #047857 100%); color: #ffffff;">
+        <div class="card border-0 shadow-sm rounded-4 p-3.5 p-md-4 mb-4" style="background: linear-gradient(135deg, #022c22 0%, #064e3b 60%, #047857 100%); color: #ffffff;">
             <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
                 <div>
                     <div class="d-flex align-items-center gap-2 flex-wrap mb-1.5">
-                        <span class="badge bg-white text-dark rounded-pill px-2.5 py-1 fw-bold fs-8">
-                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> RENCANA LIBURAN AKTIF
+                        <span class="badge bg-white text-dark rounded-pill px-2.5 py-0.5 fw-bold fs-8">
+                            <i class="fa-solid fa-wand-magic-sparkles text-warning me-1"></i> RENCANA AKTIF
                         </span>
-                        <span class="badge bg-success bg-opacity-75 text-white border border-white border-opacity-50 rounded-pill px-2.5 py-1 fw-bold fs-8">
+                        <span class="badge bg-success bg-opacity-75 text-white border border-white border-opacity-50 rounded-pill px-2.5 py-0.5 fw-bold fs-8">
                             <i class="fa-solid fa-circle-check me-1"></i> LUNAS
                         </span>
                     </div>
-                    <h5 class="fw-bold text-white mb-1">{{ $lMeta['headline'] ?? 'Liburan Eksplorasi Tegal' }}</h5>
-                    <p class="text-white-50 small mb-0">
-                        {{ \Carbon\Carbon::parse($lMeta['start_date'] ?? now())->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($lMeta['end_date'] ?? now())->translatedFormat('d M Y') }} &middot; {{ $lMeta['total_days'] ?? count($lDays) }} Hari ({{ $lMeta['pax'] ?? 1 }} Orang) &middot; Ref: #{{ $latestItinerary->invoice_number }}
+                    <h5 class="fw-bold text-white mb-1 fs-6">{{ $lMeta['headline'] ?? 'Liburan Eksplorasi Tegal' }}</h5>
+                    <p class="text-white-50 small mb-0 fs-8">
+                        {{ \Carbon\Carbon::parse($lMeta['start_date'] ?? now())->translatedFormat('d M') }} - {{ \Carbon\Carbon::parse($lMeta['end_date'] ?? now())->translatedFormat('d M Y') }} &middot; {{ $lMeta['total_days'] ?? count($lDays) }} Hari ({{ $lMeta['pax'] ?? 1 }} Orang)
                     </p>
                 </div>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <a href="{{ route('consumer.itineraries.show', $latestItinerary->id) }}" class="btn btn-warning fw-bold px-3.5 py-2 rounded-pill shadow-sm" style="background: #facc15; color: #064e3b; border: none;">
-                        <i class="fa-solid fa-timeline me-1"></i> Buka Timeline Jam
+                    <a href="{{ route('consumer.itineraries.show', $latestItinerary->id) }}" class="btn btn-warning fw-bold px-3 py-1.5 rounded-pill shadow-sm" style="background: #facc15; color: #064e3b; border: none; font-size: 12.5px;">
+                        <i class="fa-solid fa-timeline me-1"></i> Timeline Jam
                     </a>
-                    <a href="{{ route('consumer.itineraries.pdf', $latestItinerary->id) }}" target="_blank" class="btn btn-outline-light fw-bold px-3 py-2 rounded-pill">
-                        <i class="fa-solid fa-file-pdf text-danger me-1"></i> Cetak Tabel PDF
+                    <a href="{{ route('consumer.itineraries.pdf', $latestItinerary->id) }}" target="_blank" class="btn btn-outline-light fw-bold px-3 py-1.5 rounded-pill" style="font-size: 12.5px;">
+                        <i class="fa-solid fa-file-pdf text-danger me-1"></i> Cetak PDF
                     </a>
                 </div>
             </div>
@@ -448,12 +448,12 @@
         <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
             <div class="card-header bg-white p-3 p-md-3.5 border-bottom d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
-                    <div style="width: 32px; height: 32px; border-radius: 8px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                    <div style="width: 30px; height: 30px; border-radius: 8px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 13px;">
                         <i class="fa-solid fa-clock-rotate-left"></i>
                     </div>
-                    <h6 class="fw-bold mb-0 text-dark">Pesanan & E-Tiket Terbaru</h6>
+                    <h6 class="fw-bold mb-0 text-dark fs-7">Pesanan & E-Tiket</h6>
                 </div>
-                <a href="{{ route('consumer.orders.index') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold small text-primary">
+                <a href="{{ route('consumer.orders.index') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold small text-primary" style="font-size: 12px;">
                     Lihat Semua &rarr;
                 </a>
             </div>

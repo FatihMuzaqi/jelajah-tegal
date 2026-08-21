@@ -250,9 +250,9 @@
 
                     <!-- Tombol Submit Generate -->
                     <div class="col-12 text-center mt-4 pt-2">
-                        <button type="submit" class="btn btn-lokantara btn-lg rounded-pill px-5 py-3 fw-bold fs-6 shadow-sm d-inline-flex align-items-center gap-2">
+                        <button type="submit" class="btn btn-lokantara btn-lg rounded-pill px-4 px-md-5 py-2.5 py-md-3 fw-bold fs-6 shadow-sm d-inline-flex align-items-center gap-2">
                             <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
-                            <span>Generate Rencana Liburan AI</span>
+                            <span>Buat Rencana Liburan</span>
                             <i class="fa-solid fa-arrow-right"></i>
                         </button>
                         <p class="text-muted fs-8 mt-2 mb-0">
