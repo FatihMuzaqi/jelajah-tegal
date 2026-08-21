@@ -45,7 +45,7 @@
                     </div>
 
                     <div class="auth-visual-footer">
-                        <span>&copy; {{ now()->year }} Lokantara Monolith</span>
+                        <span>&copy; {{ now()->year }} Jelajah Tegal</span>
                         <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-1">100% Real
                             Database</span>
                     </div>

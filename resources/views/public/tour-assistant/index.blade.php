@@ -164,13 +164,16 @@
                             <!-- 1. Wisata -->
                             <div class="col-12 col-sm-6 col-md-4 col-lg">
                                 <label class="ai-cat-card active" for="cat_tourism">
-                                    <input type="checkbox" name="categories[]" value="tourism" id="cat_tourism" class="d-none" checked>
+                                    <input type="checkbox" name="categories[]" value="tourism" id="cat_tourism" class="ai-cat-checkbox" checked>
                                     <div class="ai-cat-icon">
                                         <i class="fa-solid fa-umbrella-beach"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-grow-1">
                                         <h6 class="fw-bold text-dark mb-0.5 fs-7">Wisata Alam</h6>
                                         <small class="text-muted fs-9 d-block">Pantai & Guci</small>
+                                    </div>
+                                    <div class="ai-cat-check-badge">
+                                        <i class="fa-solid fa-check"></i>
                                     </div>
                                 </label>
                             </div>
@@ -178,13 +181,16 @@
                             <!-- 2. Penginapan -->
                             <div class="col-12 col-sm-6 col-md-4 col-lg">
                                 <label class="ai-cat-card active" for="cat_accommodation">
-                                    <input type="checkbox" name="categories[]" value="accommodation" id="cat_accommodation" class="d-none" checked>
+                                    <input type="checkbox" name="categories[]" value="accommodation" id="cat_accommodation" class="ai-cat-checkbox" checked>
                                     <div class="ai-cat-icon">
                                         <i class="fa-solid fa-hotel"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-grow-1">
                                         <h6 class="fw-bold text-dark mb-0.5 fs-7">Penginapan</h6>
                                         <small class="text-muted fs-9 d-block">Hotel & Villa</small>
+                                    </div>
+                                    <div class="ai-cat-check-badge">
+                                        <i class="fa-solid fa-check"></i>
                                     </div>
                                 </label>
                             </div>
@@ -192,13 +198,16 @@
                             <!-- 3. Kuliner -->
                             <div class="col-12 col-sm-6 col-md-4 col-lg">
                                 <label class="ai-cat-card active" for="cat_culinary">
-                                    <input type="checkbox" name="categories[]" value="culinary" id="cat_culinary" class="d-none" checked>
+                                    <input type="checkbox" name="categories[]" value="culinary" id="cat_culinary" class="ai-cat-checkbox" checked>
                                     <div class="ai-cat-icon">
                                         <i class="fa-solid fa-utensils"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-grow-1">
                                         <h6 class="fw-bold text-dark mb-0.5 fs-7">Kuliner Khas</h6>
                                         <small class="text-muted fs-9 d-block">Sate & Kupat</small>
+                                    </div>
+                                    <div class="ai-cat-check-badge">
+                                        <i class="fa-solid fa-check"></i>
                                     </div>
                                 </label>
                             </div>
@@ -206,13 +215,16 @@
                             <!-- 4. Rental Kendaraan -->
                             <div class="col-12 col-sm-6 col-md-4 col-lg">
                                 <label class="ai-cat-card active" for="cat_rental">
-                                    <input type="checkbox" name="categories[]" value="rental" id="cat_rental" class="d-none" checked>
+                                    <input type="checkbox" name="categories[]" value="rental" id="cat_rental" class="ai-cat-checkbox" checked>
                                     <div class="ai-cat-icon">
                                         <i class="fa-solid fa-car"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-grow-1">
                                         <h6 class="fw-bold text-dark mb-0.5 fs-7">Rental Mobil</h6>
                                         <small class="text-muted fs-9 d-block">Armada Siap</small>
+                                    </div>
+                                    <div class="ai-cat-check-badge">
+                                        <i class="fa-solid fa-check"></i>
                                     </div>
                                 </label>
                             </div>
@@ -220,13 +232,16 @@
                             <!-- 5. Event & Budaya -->
                             <div class="col-12 col-sm-6 col-md-4 col-lg">
                                 <label class="ai-cat-card active" for="cat_event">
-                                    <input type="checkbox" name="categories[]" value="event" id="cat_event" class="d-none" checked>
+                                    <input type="checkbox" name="categories[]" value="event" id="cat_event" class="ai-cat-checkbox" checked>
                                     <div class="ai-cat-icon">
                                         <i class="fa-solid fa-masks-theater"></i>
                                     </div>
-                                    <div>
+                                    <div class="flex-grow-1">
                                         <h6 class="fw-bold text-dark mb-0.5 fs-7">Event Seni</h6>
                                         <small class="text-muted fs-9 d-block">Festival & Budaya</small>
+                                    </div>
+                                    <div class="ai-cat-check-badge">
+                                        <i class="fa-solid fa-check"></i>
                                     </div>
                                 </label>
                             </div>
@@ -303,31 +318,118 @@
     </div>
 </section>
 
+<style>
+/* Category Checkbox Card Styles */
+.ai-cat-card {
+    position: relative;
+    border: 2px solid #e2e8f0;
+    border-radius: 18px;
+    padding: 14px 12px;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    background: #ffffff;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    user-select: none;
+    height: 100%;
+}
+.ai-cat-checkbox {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+.ai-cat-card:hover {
+    border-color: #a7f3d0;
+    background: #f0fdf4;
+    transform: translateY(-2px);
+}
+.ai-cat-card:has(input:checked),
+.ai-cat-card.active {
+    border-color: #059669 !important;
+    background: #ecfdf5 !important;
+    box-shadow: 0 4px 14px rgba(5, 150, 105, 0.12);
+}
+.ai-cat-card .ai-cat-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    display: grid;
+    place-items: center;
+    font-size: 18px;
+    flex-shrink: 0;
+    background: #f1f5f9;
+    color: #64748b;
+    transition: all 0.2s ease;
+}
+.ai-cat-card:has(input:checked) .ai-cat-icon,
+.ai-cat-card.active .ai-cat-icon {
+    background: #059669 !important;
+    color: #ffffff !important;
+}
+.ai-cat-check-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 1.5px solid #cbd5e1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: transparent;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+.ai-cat-card:has(input:checked) .ai-cat-check-badge,
+.ai-cat-card.active .ai-cat-check-badge {
+    background: #059669;
+    border-color: #059669;
+    color: #ffffff;
+}
+</style>
+
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Interaktivitas Checkbox Kategori
-    const catCards = document.querySelectorAll('.ai-cat-card');
-    catCards.forEach(card => {
-        card.addEventListener('click', function(e) {
-            const checkbox = this.querySelector('input[type="checkbox"]');
-            if (e.target !== checkbox) {
-                checkbox.checked = !checkbox.checked;
-            }
-            if (checkbox.checked) {
-                this.classList.add('active');
+    const checkboxes = document.querySelectorAll('input[name="categories[]"]');
+    
+    // Initial sync state & Change listener
+    checkboxes.forEach(cb => {
+        const card = cb.closest('.ai-cat-card');
+        
+        const syncCard = () => {
+            if (cb.checked) {
+                card.classList.add('active');
             } else {
-                // Pastikan minimal 1 kategori terpilih
-                const anyChecked = Array.from(document.querySelectorAll('input[name="categories[]"]')).some(cb => cb.checked);
-                if (!anyChecked) {
-                    checkbox.checked = true;
-                    alert('Silakan pilih minimal 1 jenis layanan untuk rencana liburan Anda.');
-                    return;
-                }
-                this.classList.remove('active');
+                card.classList.remove('active');
             }
+        };
+
+        syncCard();
+
+        cb.addEventListener('change', function() {
+            const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
+            if (!this.checked && checkedCount === 0) {
+                this.checked = true;
+                alert('Silakan pilih minimal 1 jenis layanan untuk rencana liburan Anda.');
+                syncCard();
+                return;
+            }
+            syncCard();
         });
     });
+
+    // Form submit validation
+    const form = document.getElementById('aiPlannerForm');
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            const checkedCount = Array.from(checkboxes).filter(c => c.checked).length;
+            if (checkedCount === 0) {
+                e.preventDefault();
+                alert('Silakan pilih minimal 1 jenis layanan terlebih dahulu.');
+            }
+        });
+    }
 
     // Validasi Tanggal Pulang >= Tanggal Berangkat
     const startInput = document.getElementById('startDate');

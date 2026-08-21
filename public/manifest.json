@@ -1,0 +1,62 @@
+{
+  "name": "Jelajah Tegal — Eksplorasi Wisata & Budaya Tegal",
+  "short_name": "Jelajah Tegal",
+  "description": "Portal terpadu tiket wisata, akomodasi, kuliner, event, dan rental lokal Tegal.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#ffffff",
+  "theme_color": "#15803d",
+  "categories": ["travel", "tourism", "tickets", "lifestyle"],
+  "icons": [
+    {
+      "src": "/images/logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/images/logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Beranda",
+      "short_name": "Beranda",
+      "description": "Buka halaman utama Jelajah Tegal",
+      "url": "/",
+      "icons": [{ "src": "/images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Destinasi Wisata",
+      "short_name": "Wisata",
+      "description": "Jelajahi objek wisata di Tegal",
+      "url": "/wisata",
+      "icons": [{ "src": "/images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "AI Trip Planner",
+      "short_name": "AI Planner",
+      "description": "Rencanakan liburan otomatis dengan AI",
+      "url": "/tour-assistant",
+      "icons": [{ "src": "/images/logo.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Tiket & Pesanan Saya",
+      "short_name": "Tiket Saya",
+      "description": "Lihat e-tiket aktif dan riwayat pesanan",
+      "url": "/consumer/orders",
+      "icons": [{ "src": "/images/logo.png", "sizes": "192x192" }]
+    }
+  ]
+}

@@ -8,6 +8,13 @@
     <meta name='csrf-token' content='{{ csrf_token() }}'>
     <title>@yield('title', 'Consumer Dashboard') · Jelajah Tegal</title>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#15803d">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Jelajah Tegal">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
     <script>
         (function() {
             const theme = localStorage.getItem('lokantara-theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
@@ -43,6 +50,8 @@
     </div>
     <x-toast />
     <x-confirm-modal />
+    <x-consumer-bottom-nav />
+    <x-pwa-install-banner />
     @stack('modals')@stack('scripts')@livewireScripts
 </body>
 </html>

@@ -11,6 +11,13 @@
     <meta name='robots' content='{{ trim($__env->yieldContent('robots', 'index,follow')) }}'>
     <link rel='canonical' href='{{ trim($__env->yieldContent('canonical', url()->current())) }}'>
     <link rel="icon" type="image/png" href="{{ asset('images/logo.png') }}">
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#15803d">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Jelajah Tegal">
+    <link rel="apple-touch-icon" href="{{ asset('images/logo.png') }}">
     <meta property='og:type' content='website'>
     <meta property='og:site_name' content='Jelajah Tegal'>
     <meta property='og:title'
@@ -276,6 +283,8 @@
                 Tegal</span><span>Platform Digital Terpadu Pariwisata & Ekonomi Kreatif Tegal.</span></div>
     </footer>
     <x-chatbot-widget />
+    <x-consumer-bottom-nav />
+    <x-pwa-install-banner />
     @stack('modals')
     @stack('scripts')
     @livewireScripts

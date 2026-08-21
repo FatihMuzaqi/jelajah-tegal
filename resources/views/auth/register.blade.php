@@ -1,7 +1,8 @@
 @extends('layouts.auth')
 
 @section('title', 'Daftar Akun — Lokantara')
-@section('meta-description', 'Buat akun Lokantara baru untuk menikmati pemesanan tiket wisata, penginapan, reservasi
+@section('meta-description',
+    'Buat akun Lokantara baru untuk menikmati pemesanan tiket wisata, penginapan, reservasi
     kuliner, dan event lokal.')
 
 @section('content')
@@ -46,7 +47,7 @@
                     </div>
 
                     <div class="auth-visual-footer">
-                        <span>&copy; {{ now()->year }} Lokantara Monolith</span>
+                        <span>&copy; {{ now()->year }} Jelajah Tegal</span>
                         <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-1">Akun
                             Terverifikasi</span>
                     </div>

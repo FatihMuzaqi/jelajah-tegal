@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sedang Offline · Jelajah Tegal</title>
+    <link rel="icon" type="image/png" href="/images/logo.png">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+        body {
+            background-color: #f8fafc;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 24px;
+            text-align: center;
+        }
+        .offline-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 36px 24px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+        .offline-icon {
+            width: 68px;
+            height: 68px;
+            border-radius: 50%;
+            background: #fef2f2;
+            color: #ef4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 28px;
+            margin: 0 auto 20px;
+        }
+        h1 {
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+        p {
+            font-size: 14px;
+            color: #64748b;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+        .btn-retry {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            background: #15803d;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: none;
+            padding: 12px 24px;
+            border-radius: 99px;
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.15s ease;
+        }
+        .btn-retry:hover {
+            background: #166534;
+        }
+        .btn-orders {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #15803d;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-card">
+        <div class="offline-icon">📶</div>
+        <h1>Koneksi Internet Terputus</h1>
+        <p>Anda sedang offline atau berada di luar jangkauan sinyal. Jangan khawatir, tiket yang telah Anda buka sebelumnya tetap dapat diakses dari cache.</p>
+        <button class="btn-retry" onclick="window.location.reload()">
+            🔄 Muat Ulang Halaman
+        </button>
+        <a href="/consumer/orders" class="btn-orders">Buka Riwayat Tiket Saya &rarr;</a>
+    </div>
+</body>
+</html>

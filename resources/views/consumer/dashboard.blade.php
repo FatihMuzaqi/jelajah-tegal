@@ -6,179 +6,256 @@
 
 @section('content')
 <style>
-    /* Responsive Dashboard Container & Cards */
-    .consumer-hero-card {
-        background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%);
-        border-radius: 20px;
-        color: #ffffff;
-        position: relative;
-        overflow: hidden;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-    }
-    .consumer-hero-card::after {
-        content: '';
-        position: absolute;
-        right: -60px;
-        bottom: -60px;
-        width: 220px;
-        height: 220px;
-        background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
-        border-radius: 50%;
-        pointer-events: none;
-    }
+/* Clean & Professional Consumer Dashboard Styling */
+.consumer-hero-card {
+    background: linear-gradient(135deg, #064e3b 0%, #047857 50%, #059669 100%);
+    border-radius: 20px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 25px -5px rgba(6, 78, 59, 0.2);
+}
+.consumer-hero-card::after {
+    content: '';
+    position: absolute;
+    right: -40px;
+    bottom: -40px;
+    width: 200px;
+    height: 200px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+    border-radius: 50%;
+    pointer-events: none;
+}
 
-    /* Metric Cards Grid */
+/* 4 Stats Cards Grid */
+.consumer-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+@media (max-width: 1200px) {
     .consumer-stats-grid {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
+        grid-template-columns: repeat(2, 1fr);
     }
-    @media (max-width: 991.98px) {
-        .consumer-stats-grid {
-            grid-template-columns: repeat(2, 1fr);
-        }
-    }
-    @media (max-width: 575.98px) {
-        .consumer-stats-grid {
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-    }
-
-    .stat-card-custom {
-        background: #ffffff;
-        border: 1px solid var(--lokantara-border, #e2e8f0);
-        border-radius: 16px;
-        padding: 18px;
-        display: flex;
-        align-items: center;
-        gap: 16px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-    }
-    .stat-card-custom:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    }
-    .stat-icon-wrapper {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        display: grid;
-        place-items: center;
-        font-size: 20px;
-        flex-shrink: 0;
-    }
-
-    /* Action Banner Grid */
-    .action-banners-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        margin-bottom: 24px;
-    }
-    @media (max-width: 991.98px) {
-        .action-banners-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    .action-banner-card {
-        border-radius: 16px;
-        padding: 20px;
-        color: #ffffff;
-        position: relative;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        min-height: 150px;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
-        text-decoration: none;
-    }
-    .action-banner-card:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
-        color: #ffffff;
-    }
-
-    /* Main 2-Column Responsive Layout */
-    .dashboard-two-col {
-        display: grid;
-        grid-template-columns: 1.6fr 1fr;
-        gap: 20px;
-    }
-    @media (max-width: 991.98px) {
-        .dashboard-two-col {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    /* Responsive Table to Cards on Mobile */
-    @media (max-width: 767.98px) {
-        .table-responsive-cards thead {
-            display: none;
-        }
-        .table-responsive-cards, 
-        .table-responsive-cards tbody, 
-        .table-responsive-cards tr, 
-        .table-responsive-cards td {
-            display: block;
-            width: 100%;
-        }
-        .table-responsive-cards tr {
-            margin-bottom: 12px;
-            background: #ffffff;
-            border: 1px solid var(--lokantara-border, #e2e8f0);
-            border-radius: 12px;
-            padding: 12px 14px;
-        }
-        .table-responsive-cards td {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 6px 0;
-            border: none;
-            text-align: right;
-            font-size: 13px;
-        }
-        .table-responsive-cards td::before {
-            content: attr(data-label);
-            font-weight: 600;
-            color: #64748b;
-            text-align: left;
-            padding-right: 12px;
-        }
-        .table-responsive-cards td:last-child {
-            border-top: 1px dashed #e2e8f0;
-            margin-top: 6px;
-            padding-top: 10px;
-        }
-    }
-
-    /* Popular Destination Item */
-    .popular-dest-item {
-        display: flex;
-        align-items: center;
+}
+@media (max-width: 575.98px) {
+    .consumer-stats-grid {
+        grid-template-columns: 1fr;
         gap: 12px;
-        padding: 10px;
+    }
+}
+
+.stat-card-clean {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 130px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+    color: inherit;
+}
+.stat-card-clean:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.06);
+    color: inherit;
+}
+
+.stat-card-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #64748b;
+    text-transform: uppercase;
+}
+
+.stat-icon-clean {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    border-radius: 10px;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 16px !important;
+    line-height: 1 !important;
+    flex-shrink: 0;
+}
+.stat-icon-clean i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+}
+
+.stat-icon-emerald { background: #ecfdf5; color: #059669; }
+.stat-icon-indigo  { background: #eef2ff; color: #4f46e5; }
+.stat-icon-amber   { background: #fef3c7; color: #d97706; }
+.stat-icon-sky     { background: #f0f9ff; color: #0284c7; }
+
+.stat-card-value {
+    font-size: 26px;
+    font-weight: 800;
+    color: #0f172a;
+    line-height: 1.1;
+    margin: 8px 0 4px;
+}
+
+.stat-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #64748b;
+    padding-top: 8px;
+    border-top: 1px solid #f1f5f9;
+}
+
+.badge-pill-soft {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 99px;
+}
+.badge-soft-emerald { background: #ecfdf5; color: #059669; }
+.badge-soft-indigo  { background: #eef2ff; color: #4f46e5; }
+.badge-soft-amber   { background: #fef3c7; color: #d97706; }
+.badge-soft-sky     { background: #f0f9ff; color: #0284c7; }
+
+/* 3 Action Banners Grid */
+.action-banners-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+@media (max-width: 991.98px) {
+    .action-banners-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.action-banner-card {
+    border-radius: 18px;
+    padding: 22px;
+    color: #ffffff;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 155px;
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    text-decoration: none;
+}
+.action-banner-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px rgba(0, 0, 0, 0.15);
+    color: #ffffff;
+}
+
+.action-banner-icon {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.18);
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    font-size: 18px !important;
+    line-height: 1 !important;
+    flex-shrink: 0;
+}
+.action-banner-icon i {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    line-height: 1 !important;
+}
+
+/* 2-Column Responsive Layout */
+.dashboard-two-col {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: 20px;
+}
+@media (max-width: 991.98px) {
+    .dashboard-two-col {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Table Card Styling */
+@media (max-width: 767.98px) {
+    .table-responsive-cards thead {
+        display: none;
+    }
+    .table-responsive-cards, 
+    .table-responsive-cards tbody, 
+    .table-responsive-cards tr, 
+    .table-responsive-cards td {
+        display: block;
+        width: 100%;
+    }
+    .table-responsive-cards tr {
+        margin-bottom: 12px;
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
         border-radius: 12px;
-        transition: background 0.2s ease;
-        text-decoration: none;
-        color: inherit;
+        padding: 12px 14px;
     }
-    .popular-dest-item:hover {
-        background: #f8fafc;
+    .table-responsive-cards td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 6px 0;
+        border: none;
+        text-align: right;
+        font-size: 13px;
     }
-    .popular-dest-thumb {
-        width: 56px;
-        height: 56px;
-        border-radius: 10px;
-        object-fit: cover;
-        flex-shrink: 0;
-        background: #e2e8f0;
+    .table-responsive-cards td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #64748b;
+        text-align: left;
+        padding-right: 12px;
     }
+    .table-responsive-cards td:last-child {
+        border-top: 1px dashed #e2e8f0;
+        margin-top: 6px;
+        padding-top: 10px;
+    }
+}
+
+/* Popular Destination Item */
+.popular-dest-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 12px;
+    transition: background 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+}
+.popular-dest-item:hover {
+    background: #f8fafc;
+}
+.popular-dest-thumb {
+    width: 56px;
+    height: 56px;
+    border-radius: 10px;
+    object-fit: cover;
+    flex-shrink: 0;
+    background: #e2e8f0;
+}
 </style>
 
 <div class="mb-4">
@@ -186,7 +263,7 @@
     <div class="consumer-hero-card p-4 p-md-4 mb-4 shadow-sm">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 position-relative" style="z-index: 1;">
             <div class="d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px; font-size: 22px; font-weight: bold; color: #047857 !important; flex-shrink: 0;">
+                <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center shadow-sm" style="width: 56px; height: 56px; font-size: 22px; font-weight: 800; color: #047857 !important; flex-shrink: 0;">
                     {{ str($u->name)->substr(0, 1)->upper() }}
                 </div>
                 <div>
@@ -216,58 +293,78 @@
 
     <!-- 2. STAT METRICS GRID (4 CARDS) -->
     <div class="consumer-stats-grid">
-        <div class="stat-card-custom">
-            <div class="stat-icon-wrapper" style="background: #ecfdf5; color: #047857;">
-                <i class="fa-solid fa-ticket"></i>
+        <!-- Total Pesanan -->
+        <a href="{{ route('consumer.orders.index') }}" class="stat-card-clean">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="stat-card-label">TOTAL PESANAN</span>
+                <div class="stat-icon-clean stat-icon-emerald">
+                    <i class="fa-solid fa-ticket"></i>
+                </div>
             </div>
-            <div>
-                <span class="text-muted d-block small fw-semibold">Total Pesanan</span>
-                <h4 class="fw-bold text-dark mb-0">{{ $totalOrders }}</h4>
-            </div>
-        </div>
-
-        <div class="stat-card-custom">
-            <div class="stat-icon-wrapper" style="background: #eef2ff; color: #4f46e5;">
-                <i class="fa-solid fa-map-pin"></i>
-            </div>
-            <div>
-                <span class="text-muted d-block small fw-semibold">Destinasi Terbayar</span>
-                <h4 class="fw-bold text-dark mb-0" style="color: #4f46e5 !important;">{{ $paidOrdersCount }}</h4>
-            </div>
-        </div>
-
-        <a href="{{ route('consumer.itineraries.index') }}" class="stat-card-custom text-decoration-none">
-            <div class="stat-icon-wrapper" style="background: #fef3c7; color: #d97706;">
-                <i class="fa-solid fa-wand-magic-sparkles"></i>
-            </div>
-            <div>
-                <span class="text-muted d-block small fw-semibold">Rencana Liburan AI</span>
-                <h4 class="fw-bold text-dark mb-0">{{ $paidItinerariesCount }} <small class="text-success fs-8 fw-bold">Lunas</small></h4>
+            <div class="stat-card-value">{{ $totalOrders }}</div>
+            <div class="stat-card-footer">
+                <span>Tiket & Layanan</span>
+                <span class="badge-pill-soft badge-soft-emerald">Tercatat</span>
             </div>
         </a>
 
-        <div class="stat-card-custom">
-            <div class="stat-icon-wrapper" style="background: #f0fdf4; color: #16a34a;">
-                <i class="fa-solid fa-file-invoice"></i>
+        <!-- Destinasi Terbayar -->
+        <a href="{{ route('consumer.trip-navigator.index') }}" class="stat-card-clean">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="stat-card-label">DESTINASI TERBAYAR</span>
+                <div class="stat-icon-clean stat-icon-indigo">
+                    <i class="fa-solid fa-map-location-dot"></i>
+                </div>
             </div>
-            <div>
-                <span class="text-muted d-block small fw-semibold">Dokumen Sewa</span>
-                <h4 class="fw-bold text-dark mb-0">{{ $renterDocsCount }}</h4>
+            <div class="stat-card-value text-indigo" style="color: #4f46e5;">{{ $paidOrdersCount }}</div>
+            <div class="stat-card-footer">
+                <span>Siap Dikunjungi</span>
+                <span class="badge-pill-soft badge-soft-indigo">Lunas</span>
             </div>
-        </div>
+        </a>
+
+        <!-- Rencana Liburan AI -->
+        <a href="{{ route('consumer.itineraries.index') }}" class="stat-card-clean">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="stat-card-label">RENCANA LIBURAN AI</span>
+                <div class="stat-icon-clean stat-icon-amber">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+            </div>
+            <div class="stat-card-value text-amber" style="color: #d97706;">{{ $paidItinerariesCount }}</div>
+            <div class="stat-card-footer">
+                <span>Itinerary Tersimpan</span>
+                <span class="badge-pill-soft badge-soft-amber">AI Trip</span>
+            </div>
+        </a>
+
+        <!-- Dokumen Sewa -->
+        <a href="{{ route('consumer.renter-documents.index') }}" class="stat-card-clean">
+            <div class="d-flex justify-content-between align-items-center mb-1">
+                <span class="stat-card-label">DOKUMEN SEWA</span>
+                <div class="stat-icon-clean stat-icon-sky">
+                    <i class="fa-solid fa-file-shield"></i>
+                </div>
+            </div>
+            <div class="stat-card-value text-sky" style="color: #0284c7;">{{ $renterDocsCount }}</div>
+            <div class="stat-card-footer">
+                <span>Verifikasi Rental</span>
+                <span class="badge-pill-soft badge-soft-sky">Tersimpan</span>
+            </div>
+        </a>
     </div>
 
     <!-- 3. ACTION BANNERS GRID -->
     <div class="action-banners-grid">
         <!-- Banner 1: Rute Destinasi GPS -->
-        <a href="{{ route('consumer.trip-navigator.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #312e81 0%, #4338ca 100%);">
+        <a href="{{ route('consumer.trip-navigator.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">NAVIGASI LIVE</span>
                     <h5 class="fw-bold text-white mb-1">Peta & Rute Terbayar</h5>
                     <p class="text-white-50 small mb-0" style="font-size: 12px;">Panduan jalan langsung dari posisi Anda ke lokasi wisata & hotel.</p>
                 </div>
-                <div class="rounded-circle d-grid place-items-center text-white" style="width: 42px; height: 42px; background: rgba(255,255,255,0.2); font-size: 18px;">
+                <div class="action-banner-icon">
                     <i class="fa-solid fa-diamond-turn-right"></i>
                 </div>
             </div>
@@ -277,15 +374,15 @@
         </a>
 
         <!-- Banner 2: AI Itinerary Active / Generator -->
-        <a href="{{ route('consumer.itineraries.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #065f46 0%, #047857 100%);">
+        <a href="{{ route('consumer.itineraries.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #064e3b 0%, #047857 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">AI ITINERARY</span>
                     <h5 class="fw-bold text-white mb-1">Rencana Liburan AI</h5>
                     <p class="text-white-50 small mb-0" style="font-size: 12px;">Lihat jadwal jam-per-jam dan cetak dokumen PDF liburan Anda.</p>
                 </div>
-                <div class="rounded-circle d-grid place-items-center text-white" style="width: 42px; height: 42px; background: rgba(255,255,255,0.2); font-size: 18px;">
-                    <i class="fa-solid fa-wand-magic-sparkles text-warning"></i>
+                <div class="action-banner-icon">
+                    <i class="fa-solid fa-wand-magic-sparkles" style="color: #facc15;"></i>
                 </div>
             </div>
             <div class="fw-bold text-white small mt-3 d-inline-flex align-items-center gap-1">
@@ -294,14 +391,14 @@
         </a>
 
         <!-- Banner 3: Rental & Dokumen -->
-        <a href="{{ route('consumer.renter-documents.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);">
+        <a href="{{ route('consumer.renter-documents.index') }}" class="action-banner-card shadow-sm" style="background: linear-gradient(135deg, #0369a1 0%, #0284c7 100%);">
             <div class="d-flex align-items-start justify-content-between">
                 <div>
                     <span class="badge bg-white text-dark fw-bold mb-2" style="font-size: 10px;">RENTAL MOBIL & MOTOR</span>
                     <h5 class="fw-bold text-white mb-1">Dokumen Sewa</h5>
                     <p class="text-white-50 small mb-0" style="font-size: 12px;">Kelola KTP, SIM, dan syarat verifikasi rental kendaraan Anda.</p>
                 </div>
-                <div class="rounded-circle d-grid place-items-center text-white" style="width: 42px; height: 42px; background: rgba(255,255,255,0.2); font-size: 18px;">
+                <div class="action-banner-icon">
                     <i class="fa-solid fa-car"></i>
                 </div>
             </div>
@@ -348,10 +445,12 @@
     <!-- 4. TWO-COLUMN RESPONSIVE LAYOUT -->
     <div class="dashboard-two-col">
         <!-- LEFT: PESANAN & TIKET TERBARU -->
-        <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
             <div class="card-header bg-white p-3 p-md-3.5 border-bottom d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-primary"></i>
+                    <div style="width: 32px; height: 32px; border-radius: 8px; background: #eef2ff; color: #4f46e5; display: flex; align-items: center; justify-content: center; font-size: 14px;">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                    </div>
                     <h6 class="fw-bold mb-0 text-dark">Pesanan & E-Tiket Terbaru</h6>
                 </div>
                 <a href="{{ route('consumer.orders.index') }}" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold small text-primary">
@@ -427,10 +526,13 @@
         <!-- RIGHT: REKOMENDASI DESTINASI & PUSAT BANTUAN -->
         <div class="d-flex flex-column gap-3">
             <!-- Rekomendasi Destinasi Populer -->
-            <div class="card border-0 shadow-sm rounded-4 p-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
                 <div class="d-flex align-items-center justify-content-between mb-3">
                     <h6 class="fw-bold mb-0 text-dark d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-compass text-primary"></i> Destinasi Populer
+                        <div style="width: 28px; height: 28px; border-radius: 6px; background: #eff6ff; color: #3b82f6; display: flex; align-items: center; justify-content: center; font-size: 13px;">
+                            <i class="fa-solid fa-compass"></i>
+                        </div>
+                        <span>Destinasi Populer</span>
                     </h6>
                     <a href="{{ route('tourism.index') }}" class="small text-primary text-decoration-none fw-bold">Lihat Semua</a>
                 </div>
@@ -458,7 +560,7 @@
             <!-- Pusat Bantuan & Kontak Wisata -->
             <div class="card border-0 shadow-sm rounded-4 p-3 bg-light">
                 <div class="d-flex align-items-center gap-3">
-                    <div class="rounded-3 d-grid place-items-center text-white" style="width: 44px; height: 44px; background: #047857; font-size: 20px; flex-shrink: 0;">
+                    <div class="rounded-3 text-white d-flex align-items-center justify-content-center" style="width: 44px; height: 44px; background: #047857; font-size: 20px; flex-shrink: 0;">
                         <i class="fa-solid fa-headset"></i>
                     </div>
                     <div>
