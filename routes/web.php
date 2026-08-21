@@ -47,6 +47,9 @@ Route::get('/event', [EventController::class, 'index'])->name('event.index');
 Route::get('/event/{slug}', [EventController::class, 'show'])->name('event.show');
 Route::get('/rental', [RentalController::class, 'index'])->name('rental.index');
 Route::get('/rental/{slug}', [RentalController::class, 'show'])->name('rental.show');
+Route::get('/{domain}/{slug}/virtual-tour/{path?}', [\App\Http\Controllers\Public\VirtualTourController::class, 'serve'])
+    ->where('path', '.*')
+    ->name('public.virtual-tour.serve');
 Route::middleware(['auth', 'verified', 'active.user'])->group(function () {
     Route::post('/wisata/{slug}/favorite', [TourismController::class, 'favorite'])->name('tourism.favorite');
     Route::delete('/wisata/{slug}/favorite', [TourismController::class, 'unfavorite'])->name('tourism.unfavorite');

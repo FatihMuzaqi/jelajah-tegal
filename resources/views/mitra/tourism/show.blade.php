@@ -360,6 +360,18 @@
         </div>
     </div>
 
+    <!-- Virtual Tour Section -->
+    <div class='row mt-4'>
+        <div class='col-12'>
+            <x-virtual-tour-uploader 
+                :uploadUrl="route('mitra.catalog.virtual-tour.upload', ['domain' => 'tourism', 'entity' => $tourism])"
+                :deleteUrl="route('mitra.catalog.virtual-tour.destroy', ['domain' => 'tourism', 'entity' => $tourism])"
+                :previewUrl="route('public.virtual-tour.serve', ['domain' => 'tourism', 'slug' => $tourism->slug])"
+                :hasVirtualTour="$tourism->has_virtual_tour"
+            />
+        </div>
+    </div>
+
     <!-- Moderation History Card -->
     <x-content-card title='Riwayat Moderasi' class='mt-4'>
         @forelse($tourism->moderationReports as $report)

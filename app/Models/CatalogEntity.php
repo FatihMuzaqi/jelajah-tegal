@@ -17,11 +17,11 @@ class CatalogEntity extends Model
 {
     use BelongsToMitra, HasFactory, HasUlids, SoftDeletes;
 
-    protected $fillable = ['mitra_id', 'service_type_id', 'category_id', 'region_id', 'name', 'slug', 'description', 'address', 'status', 'is_featured', 'rating_average', 'rating_count', 'published_at', 'archived_at'];
+    protected $fillable = ['mitra_id', 'service_type_id', 'category_id', 'region_id', 'name', 'slug', 'description', 'address', 'status', 'is_featured', 'has_virtual_tour', 'rating_average', 'rating_count', 'published_at', 'archived_at'];
 
     protected function casts(): array
     {
-        return ['is_featured' => 'boolean', 'rating_average' => 'decimal:2', 'rating_count' => 'integer', 'published_at' => 'datetime', 'archived_at' => 'datetime'];
+        return ['is_featured' => 'boolean', 'has_virtual_tour' => 'boolean', 'rating_average' => 'decimal:2', 'rating_count' => 'integer', 'published_at' => 'datetime', 'archived_at' => 'datetime'];
     }
 
     public function scopePublicTourism(Builder $query): Builder

@@ -97,6 +97,8 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::post('/catalog/{domain}/{entity}/media', [CatalogResourceController::class, 'media'])->name('catalog.media');
     Route::put('/catalog/{domain}/{entity}/hours', [CatalogResourceController::class, 'hours'])->name('catalog.hours');
     Route::put('/catalog/{domain}/{entity}/reviews/{review}/reply', [CatalogResourceController::class, 'reply'])->name('catalog.reviews.reply');
+    Route::post('/catalog/{domain}/{entity}/virtual-tour/upload', [\App\Http\Controllers\Mitra\VirtualTourController::class, 'upload'])->name('catalog.virtual-tour.upload');
+    Route::delete('/catalog/{domain}/{entity}/virtual-tour', [\App\Http\Controllers\Mitra\VirtualTourController::class, 'destroy'])->name('catalog.virtual-tour.destroy');
     Route::get('/vouchers', [MitraVoucherController::class, 'index'])->name('vouchers.index');
     Route::get('/vouchers/create', [MitraVoucherController::class, 'create'])->name('vouchers.create');
     Route::post('/vouchers', [MitraVoucherController::class, 'store'])->name('vouchers.store');

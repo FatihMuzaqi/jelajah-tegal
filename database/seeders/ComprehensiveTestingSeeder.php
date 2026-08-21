@@ -454,7 +454,7 @@ class ComprehensiveTestingSeeder extends Seeder
 
         // 6c. Curug Putri Bumijawa
         $entityCurug = CatalogEntity::create([
-            'mitra_id' => $mitraCurug->id,
+            'mitra_id' => $mitra->id,
             'service_type_id' => $tourismType->id,
             'category_id' => $categoryTourism->id,
             'region_id' => $regionGuci->id,
@@ -479,7 +479,7 @@ class ComprehensiveTestingSeeder extends Seeder
         ]);
         $offerCurug = CatalogOffer::create([
             'catalog_entity_id' => $entityCurug->id,
-            'mitra_id' => $mitraCurug->id,
+            'mitra_id' => $mitra->id,
             'offer_type' => 'ticket',
             'name' => 'Tiket Masuk Curug Putri',
             'sku' => 'CRG-PUTRI',
@@ -496,10 +496,10 @@ class ComprehensiveTestingSeeder extends Seeder
 
         // 6d. Danau Beko Margasari
         $entityBeko = CatalogEntity::create([
-            'mitra_id' => $mitraBeko->id,
+            'mitra_id' => $mitra->id,
             'service_type_id' => $tourismType->id,
             'category_id' => $categoryTourism->id,
-            'region_id' => $regionMargasari->id,
+            'region_id' => $firstRegion->id,
             'name' => 'Danau Beko',
             'slug' => 'danau-beko-margasari',
             'description' => 'Tempat rekreasi keluarga dengan danau buatan tebing kapur yang unik dan menyenangkan.',
@@ -521,7 +521,7 @@ class ComprehensiveTestingSeeder extends Seeder
         ]);
         $offerBeko = CatalogOffer::create([
             'catalog_entity_id' => $entityBeko->id,
-            'mitra_id' => $mitraBeko->id,
+            'mitra_id' => $mitra->id,
             'offer_type' => 'ticket',
             'name' => 'Tiket Masuk Danau Beko',
             'sku' => 'BKO-REGULER',
@@ -1009,9 +1009,13 @@ class ComprehensiveTestingSeeder extends Seeder
                 'mitra_id' => $m->id,
                 'user_id' => ($i % 2 === 0) ? $consumerUser->id : $users['consumer2@example.test']->id,
                 'total_amount' => $price * 2,
+                'subtotal' => $price * 2,
                 'status' => 'paid',
                 'paid_at' => $orderDate,
-                'payment_method' => 'qris',
+                'mitra_snapshot' => [
+                    'id' => $m->id,
+                    'name' => $m->name,
+                ],
                 'user_snapshot' => [
                     'name' => ($i % 2 === 0) ? $consumerUser->name : 'Rina Wisatawan',
                     'email' => ($i % 2 === 0) ? $consumerUser->email : 'consumer2@example.test',
@@ -1019,13 +1023,18 @@ class ComprehensiveTestingSeeder extends Seeder
                 'created_at' => $orderDate,
             ]);
 
+            $offer = \App\Models\CatalogOffer::first();
             $dinasOrderItem = OrderItem::create([
                 'order_id' => $dinasOrder->id,
+                'mitra_id' => $m->id,
+                'catalog_offer_id' => $offer->id,
+                'resource_type' => 'ticket_package',
+                'reference_id' => \Illuminate\Support\Str::ulid(),
                 'item_name' => 'Tiket Masuk Retribusi '.$m->display_name,
                 'unit_price' => $price,
                 'quantity' => 2,
                 'subtotal' => $price * 2,
-                'service_type_id' => $tourismType->id,
+                'line_total' => $price * 2,
             ]);
 
             for ($t = 1; $t <= 2; $t++) {
@@ -1034,6 +1043,7 @@ class ComprehensiveTestingSeeder extends Seeder
                     'order_item_id' => $dinasOrderItem->id,
                     'mitra_id' => $m->id,
                     'ticket_code' => 'TKT-PAD-'.now()->format('ymd').'-'.strtoupper(str()->random(6)),
+                    'qr_token_hash' => hash('sha256', \Illuminate\Support\Str::random(40)),
                     'status' => $isCheckedIn ? 'used' : 'unused',
                     'used_at' => $isCheckedIn ? $orderDate->copy()->addHours(2) : null,
                     'valid_from' => $orderDate->copy()->startOfDay(),
