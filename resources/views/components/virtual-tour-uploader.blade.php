@@ -4,7 +4,7 @@
     <div class="card-header bg-transparent border-bottom-0 pt-3 pb-0 px-4 d-flex justify-content-between align-items-center">
         <div>
             <h6 class="mb-0 fw-bold text-dark">Virtual Tour 360</h6>
-            <p class="text-muted mb-0" style="font-size: 0.8rem;">Unggah file ZIP (Max 500MB)</p>
+            <p class="text-muted mb-0" style="font-size: 0.8rem;">Unggah file ZIP (Max 1GB)</p>
         </div>
         <div>
             <template x-if="hasVirtualTour">
