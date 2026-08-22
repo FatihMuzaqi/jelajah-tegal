@@ -71,6 +71,17 @@ class VirtualTourController extends Controller
             ]);
         }
 
+        // Return Blade view for the UI layout if not raw
+        if (($path === 'index.html' || $path === '') && !$request->has('raw')) {
+            return view('public.virtual-tour.show', [
+                'entity' => $entity,
+                'domain' => $domain,
+                'slug' => $slug,
+                'lat' => $entity->location?->latitude ?? -6.8730933,
+                'lng' => $entity->location?->longitude ?? 109.2541104,
+            ]);
+        }
+
         // Intercept index.html to inject a global fix for Pano2VR iframe wheel scrolling and remove watermark
         if ($path === 'index.html' || $path === '') {
             $content = File::get($fullPath);
