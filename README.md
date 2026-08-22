@@ -93,7 +93,7 @@ Sebelum memulai instalasi, pastikan komputer/server Anda telah terpasang:
 ### Langkah 1: Masuk ke Folder Proyek
 Buka terminal (PowerShell / Command Prompt / Git Bash) dan arahkan ke folder proyek Laravel:
 ```bash
-cd "lokantara-laravel"
+cd "jelajah-tegal"
 ```
 
 ---
@@ -208,7 +208,7 @@ Gunakan kredensial berikut untuk menguji masing-masing hak akses:
 ## 📂 7. Struktur Direktori Proyek
 
 ```text
-lokantara-laravel/
+jelajah-tegal/
 ├── app/
 │   ├── Actions/                  # Domain Business Actions (Tourism, Accommodation, Culinary, etc.)
 │   ├── Enums/                    # Status Enums (CatalogStatus, MitraStatus, etc.)
