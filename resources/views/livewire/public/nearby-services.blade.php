@@ -31,7 +31,7 @@
                     $coverUrl = $cover ? asset('storage/' . $cover->object_key) : asset('images/placeholder.jpg');
                     $route = route($service->serviceType->code . '.show', $service->slug);
                 @endphp
-                <a href="{{ $route }}" target="_blank" class="text-decoration-none text-dark d-block">
+                <a href="{{ $route }}" class="text-decoration-none text-dark d-block">
                     <div class="d-flex gap-3 align-items-start p-2 rounded-3" style="transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f8fafc';" onmouseout="this.style.backgroundColor='transparent';">
                         <!-- Thumbnail -->
                         <div class="flex-shrink-0">
