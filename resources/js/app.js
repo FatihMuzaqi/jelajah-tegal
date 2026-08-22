@@ -5,17 +5,33 @@ window.bootstrap = bootstrap;
 
 // Livewire 4 owns the Alpine.js runtime; importing Alpine again would duplicate it.
 
+const updateThemeIcons = (currentTheme) => {
+    const isDark = currentTheme === 'dark';
+    document.querySelectorAll('[data-theme-toggle]').forEach((btn) => {
+        const moonIcon = btn.querySelector('.theme-icon-moon');
+        const sunIcon = btn.querySelector('.theme-icon-sun');
+        const label = btn.querySelector('.theme-label-text');
+        
+        if (moonIcon) moonIcon.classList.toggle('d-none', isDark);
+        if (sunIcon) sunIcon.classList.toggle('d-none', !isDark);
+        if (label) label.textContent = isDark ? 'Terang' : 'Gelap';
+    });
+};
+
 const bootDashboard = () => {
     const root = document.documentElement;
     const shell = document.querySelector('[data-dashboard-shell]');
     const theme = localStorage.getItem('lokantara-theme') || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
     root.dataset.theme = theme;
+    updateThemeIcons(theme);
 
     document.querySelectorAll('[data-theme-toggle]:not([data-dashboard-bound])').forEach((button) => {
         button.dataset.dashboardBound = 'true';
         button.addEventListener('click', () => {
-        root.dataset.theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
-        localStorage.setItem('lokantara-theme', root.dataset.theme);
+            const nextTheme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+            root.dataset.theme = nextTheme;
+            localStorage.setItem('lokantara-theme', nextTheme);
+            updateThemeIcons(nextTheme);
         });
     });
 

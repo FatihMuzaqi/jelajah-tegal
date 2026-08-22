@@ -716,3 +716,231 @@
     top: 90px;
 }
 
+/* ==========================================================================
+   PUBLIC & LANDING PAGE DARK THEME OVERRIDES
+   ========================================================================== */
+[data-theme=dark] {
+    --lokantara-background: #091310;
+    --lokantara-surface: #11201b;
+    --lokantara-border: #1b3029;
+    --lokantara-text: #f0fdf4;
+    --lokantara-muted: #94a3b8;
+}
+
+[data-theme=dark] .public-body {
+    background-color: var(--lokantara-background) !important;
+    color: var(--lokantara-text) !important;
+}
+
+[data-theme=dark] .public-header {
+    background: rgba(17, 32, 27, 0.94) !important;
+    border-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .public-brand .brand-text-title {
+    color: #ffffff !important;
+}
+
+[data-theme=dark] .public-navbar .nav-link {
+    color: #e2e8f0 !important;
+}
+
+[data-theme=dark] .public-navbar .nav-link:hover,
+[data-theme=dark] .public-navbar .nav-link.active {
+    color: #34d399 !important;
+    background: rgba(52, 211, 153, 0.12) !important;
+}
+
+[data-theme=dark] .public-navbar .dropdown-menu {
+    background: var(--lokantara-surface) !important;
+    border: 1px solid var(--lokantara-border) !important;
+    box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme=dark] .public-navbar .dropdown-item {
+    color: #e2e8f0 !important;
+}
+
+[data-theme=dark] .public-navbar .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.08) !important;
+    color: #34d399 !important;
+}
+
+[data-theme=dark] .public-navbar .navbar-collapse {
+    background: var(--lokantara-surface) !important;
+    border-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .public-section {
+    background: transparent !important;
+}
+
+[data-theme=dark] .public-section:nth-of-type(even) {
+    background: rgba(17, 32, 27, 0.5) !important;
+}
+
+/* Landing Page Cards & Sections in Dark Mode */
+[data-theme=dark] .jt-explore-card,
+[data-theme=dark] .jt-mitra-ref-card,
+[data-theme=dark] .service-tile,
+[data-theme=dark] .benefit-grid article,
+[data-theme=dark] .platform-stats,
+[data-theme=dark] .public-accordion .accordion-item,
+[data-theme=dark] .document-list article,
+[data-theme=dark] .ai-activity-card,
+[data-theme=dark] .ai-summary-card,
+[data-theme=dark] .content-card,
+[data-theme=dark] .jt-cat-card,
+[data-theme=dark] .jt-event-card {
+    background: var(--lokantara-surface) !important;
+    border-color: var(--lokantara-border) !important;
+    color: var(--lokantara-text) !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme=dark] .jt-explore-card:hover,
+[data-theme=dark] .jt-mitra-ref-card:hover,
+[data-theme=dark] .service-tile:hover {
+    border-color: #059669 !important;
+    box-shadow: 0 16px 32px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme=dark] .jt-explore-card h5,
+[data-theme=dark] .jt-mitra-ref-name,
+[data-theme=dark] .service-tile strong,
+[data-theme=dark] .section-heading h2,
+[data-theme=dark] .jt-section-title-wrap h2,
+[data-theme=dark] .benefit-grid h3,
+[data-theme=dark] .public-accordion .accordion-button {
+    color: #f8fafc !important;
+}
+
+[data-theme=dark] .public-accordion .accordion-button {
+    background: var(--lokantara-surface) !important;
+}
+
+[data-theme=dark] .public-accordion .accordion-button:not(.collapsed) {
+    color: #34d399 !important;
+    background: rgba(5, 150, 105, 0.12) !important;
+}
+
+[data-theme=dark] .jt-section-subtext,
+[data-theme=dark] .service-tile small,
+[data-theme=dark] .benefit-grid p,
+[data-theme=dark] .ai-time-pill {
+    color: #94a3b8 !important;
+}
+
+/* Public Search Bar Dark Mode */
+[data-theme=dark] .public-search {
+    background: var(--lokantara-surface) !important;
+    border-color: var(--lokantara-border) !important;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5) !important;
+}
+
+[data-theme=dark] .search-field label {
+    color: #e2e8f0 !important;
+}
+
+[data-theme=dark] .search-field input,
+[data-theme=dark] .search-field select {
+    color: #ffffff !important;
+}
+
+[data-theme=dark] .search-field select option {
+    background: #11201b;
+    color: #ffffff;
+}
+
+/* General Bootstrap Helper Dark Overrides */
+[data-theme=dark] .bg-white {
+    background-color: var(--lokantara-surface) !important;
+    color: var(--lokantara-text) !important;
+}
+
+[data-theme=dark] .bg-light {
+    background-color: var(--lokantara-background) !important;
+    color: var(--lokantara-text) !important;
+}
+
+[data-theme=dark] .text-dark {
+    color: #f8fafc !important;
+}
+
+[data-theme=dark] .text-muted {
+    color: #94a3b8 !important;
+}
+
+[data-theme=dark] .border {
+    border-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .border-bottom {
+    border-bottom-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .border-top {
+    border-top-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .btn-light {
+    background-color: #1b3029 !important;
+    border-color: #27453b !important;
+    color: #f0fdf4 !important;
+}
+
+[data-theme=dark] .btn-outline-dark {
+    border-color: #475569 !important;
+    color: #e2e8f0 !important;
+}
+
+[data-theme=dark] .btn-outline-dark:hover {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+}
+
+[data-theme=dark] .public-footer {
+    background: #060e0c !important;
+    border-top: 1px solid var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .consumer-bottom-nav {
+    background: rgba(17, 32, 27, 0.96) !important;
+    border-top-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .consumer-bottom-nav .bottom-nav-item {
+    color: #94a3b8 !important;
+}
+
+[data-theme=dark] .consumer-bottom-nav .bottom-nav-item.active {
+    color: #34d399 !important;
+}
+
+[data-theme=dark] .consumer-bottom-nav .bottom-nav-item.active .nav-icon-wrap,
+[data-theme=dark] .consumer-bottom-nav .bottom-nav-item.active .nav-label {
+    color: #34d399 !important;
+}
+
+[data-theme=dark] .consumer-bottom-nav .bottom-nav-item.active::after {
+    background: #34d399 !important;
+}
+
+[data-theme=dark] .pwa-install-card {
+    background: var(--lokantara-surface) !important;
+    border-color: var(--lokantara-border) !important;
+}
+
+[data-theme=dark] .pwa-title {
+    color: #f8fafc !important;
+}
+
+[data-theme=dark] .pwa-desc {
+    color: #94a3b8 !important;
+}
+
+[data-theme=dark] .pwa-icon-box {
+    background: var(--lokantara-background) !important;
+    border-color: var(--lokantara-border) !important;
+}
+

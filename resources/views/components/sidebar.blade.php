@@ -2,13 +2,13 @@
 <aside class='dashboard-sidebar' id='dashboard-sidebar' aria-label='Navigasi utama'>
   <div class='sidebar-brand'>
     <a href='{{ route('post-login') }}' class='brand-mark d-flex align-items-center gap-2 text-decoration-none' aria-label='Jelajah Tegal'>
-      <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal' style='height:36px; width:auto; border-radius:8px;'>
-      <div class="d-flex flex-column">
-        <span class='brand-text fw-bold text-dark lh-sm' style="font-size: 15px;">Jelajah Tegal</span>
-        <small class="text-muted" style="font-size: 10px; font-weight: 500;">Multi-Service Platform</small>
+      <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal' class="brand-logo" width="36" height="36" style="width: 36px; height: 36px; object-fit: contain; border-radius: 8px; flex-shrink: 0;">
+      <div class="brand-copy d-flex flex-column">
+        <span class='brand-text fw-bold lh-sm' style="font-size: 15px;">Jelajah Tegal</span>
+        <small class="brand-subtitle text-muted" style="font-size: 10px; font-weight: 500;">Multi-Service Platform</small>
       </div>
     </a>
-    <button class='icon-button sidebar-collapse d-none d-lg-flex' type='button' data-sidebar-collapse aria-label='Ciutkan sidebar'>‹</button>
+    <button class='icon-button sidebar-collapse d-none d-lg-flex' type='button' data-sidebar-collapse aria-label='Ciutkan sidebar' title='Ciutkan sidebar'>‹</button>
     <button class='icon-button sidebar-mobile-close d-lg-none' type='button' data-sidebar-close aria-label='Tutup navigasi'>
       <i class="fa-solid fa-xmark"></i>
     </button>

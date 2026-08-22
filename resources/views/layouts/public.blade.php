@@ -47,7 +47,7 @@
     <style>
         .public-header {
             min-height: 72px;
-            background: #ffffff !important;
+            background: var(--lokantara-surface);
             contain: layout;
         }
         .public-navbar {
@@ -56,13 +56,32 @@
         .public-navbar .nav-link {
             transition: color 0.15s ease, background-color 0.15s ease !important;
         }
+        .theme-toggle-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            border: 1px solid var(--lokantara-border);
+            background: var(--lokantara-surface);
+            color: var(--lokantara-text);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .theme-toggle-btn:hover {
+            border-color: #059669;
+            color: #059669;
+            transform: scale(1.05);
+        }
     </style>
 </head>
 
 <body class='public-body'>
     <a class='skip-link' href='#main-content'>Lewati ke konten</a>
     @if(!request()->has('iframe'))
-    <header class='public-header sticky-top bg-white border-bottom shadow-sm'>
+    <header class='public-header sticky-top border-bottom shadow-sm'>
         <nav class='navbar navbar-expand-lg public-navbar py-2' aria-label='Navigasi publik'>
             <div class='container public-container'>
                 <a href='{{ route('home') }}'
@@ -71,7 +90,7 @@
                     <img src='{{ asset('images/logo.png') }}' alt='Logo Jelajah Tegal' width="42" height="42"
                         style='height:42px; width:42px; object-fit:contain; border-radius:8px;' fetchpriority="high">
                     <div class="d-flex flex-column">
-                        <span class='brand-text-title fw-extrabold text-dark fs-5 lh-1'>Jelajah Tegal</span>
+                        <span class='brand-text-title fw-extrabold fs-5 lh-1'>Jelajah Tegal</span>
                         <small class="text-muted fw-semibold" style="font-size: 10px; letter-spacing: 0.05em;">Jelajah •
                             Nikmati • Kenali</small>
                     </div>
@@ -121,13 +140,21 @@
                         </li>
                     </ul>
                     <div class='public-nav-actions d-flex align-items-center gap-2'>
-                        <div class="d-flex align-items-center justify-content-between w-100 d-lg-none mb-2">
-                            <span class="fs-8 text-muted fw-bold text-uppercase">Ubah Tema</span>
-                            <button class='icon-button' type='button' data-theme-toggle aria-label='Ubah tema'><span
-                                    aria-hidden='true'>◐</span></button>
+                        <div class="d-flex align-items-center justify-content-between w-100 d-lg-none mb-2 p-2 rounded-3" style="background: rgba(4,120,87,0.06); border: 1px solid var(--lokantara-border);">
+                            <span class="fs-7 fw-bold d-flex align-items-center gap-2">
+                                <i class="fa-solid fa-circle-half-stroke text-success"></i> <span>Mode Gelap / Terang</span>
+                            </span>
+                            <button class='btn btn-sm btn-light border rounded-pill px-3 fw-bold d-inline-flex align-items-center gap-1.5' type='button' data-theme-toggle aria-label='Ubah tema'>
+                                <i class="fa-solid fa-moon theme-icon-moon text-indigo"></i>
+                                <i class="fa-solid fa-sun theme-icon-sun text-warning d-none"></i>
+                                <span class="theme-label-text ms-1" style="font-size: 11.5px;">Gelap</span>
+                            </button>
                         </div>
-                        <button class='icon-button me-2 d-none d-lg-inline-flex' type='button' data-theme-toggle
-                            aria-label='Ubah tema'><span aria-hidden='true'>◐</span></button>
+                        <button class='theme-toggle-btn me-2 d-none d-lg-inline-flex' type='button' data-theme-toggle
+                            aria-label='Ubah tema' title='Mode Tampilan Gelap / Terang'>
+                            <i class="fa-solid fa-moon theme-icon-moon text-indigo"></i>
+                            <i class="fa-solid fa-sun theme-icon-sun text-warning d-none"></i>
+                        </button>
                         @guest
                             <a class='btn btn-outline-dark rounded-pill px-4 fw-bold text-center py-2'
                                 href='{{ route('login') }}'>
