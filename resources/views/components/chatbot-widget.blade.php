@@ -37,10 +37,8 @@
                 {{-- Welcome Message from Bot --}}
                 <div class="chat-msg bot">
                     <div class="chat-bubble">
-                        <p class="mb-1">Halo! 👋 Saya <strong>Asisten Cerdas Jelajah Tegal</strong> siap membantu
-                            liburan Anda!</p>
-                        <p class="mb-0 text-muted small">Anda bisa menanyakan rekomendasi wisata di Guci, kuliner sate
-                            kambing khas Tegal, hotel nyaman, tiket event, atau rental kendaraan.</p>
+                        <p class="mb-1">Halo! Saya <strong>Asisten Cerdas Jelajah Tegal</strong> siap membantu liburan Anda.</p>
+                        <p class="mb-0 text-muted small">Anda bisa menanyakan rekomendasi wisata di Guci, kuliner sate kambing khas Tegal, hotel nyaman, tiket event, atau rental kendaraan.</p>
                         <span class="chat-time">{{ date('H:i') }}</span>
                     </div>
                 </div>
@@ -49,16 +47,15 @@
             {{-- Quick Suggestion Chips --}}
             <div class="chatbot-chips">
                 <button type="button" class="chat-chip"
-                    data-question="Apa rekomendasi wisata hits di Tegal & Guci?">🏖️ Wisata Hits Guci</button>
+                    data-question="Apa rekomendasi wisata hits di Tegal & Guci?"><i class="fa-solid fa-mountain-sun text-success me-1"></i> Wisata Hits Guci</button>
                 <button type="button" class="chat-chip"
-                    data-question="Rekomendasi kuliner sate kambing & makanan khas Tegal yang wajib dicoba?">🍲 Kuliner
-                    Khas Tegal</button>
+                    data-question="Rekomendasi kuliner sate kambing & makanan khas Tegal yang wajib dicoba?"><i class="fa-solid fa-utensils text-warning me-1"></i> Kuliner Khas Tegal</button>
                 <button type="button" class="chat-chip"
-                    data-question="Cari penginapan atau hotel bagus dekat wisata Tegal?">🏨 Penginapan & Hotel</button>
+                    data-question="Cari penginapan atau hotel bagus dekat wisata Tegal?"><i class="fa-solid fa-hotel text-primary me-1"></i> Penginapan & Hotel</button>
                 <button type="button" class="chat-chip"
-                    data-question="Bagaimana cara sewa mobil atau motor di Tegal?">🚗 Rental Kendaraan</button>
+                    data-question="Bagaimana cara sewa mobil atau motor di Tegal?"><i class="fa-solid fa-car text-info me-1"></i> Rental Kendaraan</button>
                 <button type="button" class="chat-chip"
-                    data-question="Ada event festival atau acara seru apa di Tegal?">🎪 Event & Festival</button>
+                    data-question="Ada event festival atau acara seru apa di Tegal?"><i class="fa-solid fa-masks-theater text-danger me-1"></i> Event & Festival</button>
             </div>
 
             {{-- Input Bar --}}

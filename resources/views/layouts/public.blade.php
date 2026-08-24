@@ -34,6 +34,11 @@
         })();
     </script>
 
+    <!-- Curated Free Open-Source Google Fonts (OFL Licensed) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Kaushan+Script&family=Outfit:wght@600;700;800;900&family=Pacifico&family=Playfair+Display:ital,wght@1,600;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Satisfy&display=swap" rel="stylesheet">
+
     <!-- Icon Libraries: Font Awesome 6 & Bootstrap Icons -->
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -45,6 +50,13 @@
     @livewireStyles
 
     <style>
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
+            font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            letter-spacing: -0.025em;
+        }
         .public-header {
             min-height: 72px;
             background: var(--lokantara-surface);

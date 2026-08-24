@@ -6,14 +6,79 @@
 
 @section('content')
 <style>
-/* Modern Responsive Hero Styling with Real Photo Background */
+/* Modern Responsive Hero with Multi-Image Slideshow Background */
 .jt-hero-mockup {
     position: relative;
-    background: linear-gradient(180deg, rgba(7, 30, 20, 0.72) 0%, rgba(10, 42, 28, 0.88) 100%), 
-                url('{{ asset('images/guci_hero.png') }}') center/cover no-repeat;
     color: #ffffff;
-    padding: clamp(48px, 8vw, 95px) 0 clamp(60px, 9vw, 115px);
+    padding: clamp(52px, 9vw, 105px) 0 clamp(68px, 10vw, 125px);
     overflow: hidden;
+    min-height: 520px;
+    background: #061e14;
+}
+.jt-hero-slider {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    overflow: hidden;
+}
+.jt-hero-slide {
+    position: absolute;
+    inset: -15px;
+    background-size: cover;
+    background-position: center;
+    opacity: 0;
+    transform: scale(1.08);
+    transition: opacity 1.4s ease-in-out, transform 6.5s ease-out;
+    pointer-events: none;
+}
+.jt-hero-slide.active {
+    opacity: 1;
+    transform: scale(1);
+    z-index: 2;
+}
+.jt-hero-overlay {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    background: linear-gradient(180deg, rgba(6, 28, 18, 0.74) 0%, rgba(6, 38, 25, 0.86) 55%, rgba(3, 18, 12, 0.95) 100%);
+    pointer-events: none;
+}
+.jt-hero-content {
+    position: relative;
+    z-index: 5;
+}
+/* Slide Indicators */
+.jt-hero-slide-nav {
+    position: absolute;
+    bottom: 24px;
+    right: clamp(16px, 4vw, 48px);
+    z-index: 6;
+    display: flex;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.42);
+    padding: 8px 14px;
+    border-radius: 99px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+.jt-slide-dots-wrap {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+.jt-slide-dot {
+    width: 18px;
+    height: 4px;
+    border-radius: 99px;
+    background: rgba(255, 255, 255, 0.3);
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.jt-slide-dot.active {
+    width: 36px;
+    background: #34d399;
+    box-shadow: 0 0 10px rgba(52, 211, 153, 0.8);
 }
 .jt-hero-badge-pill {
     display: inline-flex;
@@ -33,16 +98,32 @@
     max-width: 100%;
 }
 .jt-hero-title-large {
-    font-size: clamp(28px, 6vw, 54px);
+    font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: clamp(32px, 6.2vw, 56px);
     font-weight: 900;
-    line-height: 1.15;
-    letter-spacing: -0.03em;
+    line-height: 1.14;
+    letter-spacing: -0.035em;
     color: #ffffff;
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     text-align: left;
+    text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
 }
 .jt-hero-title-large span {
-    color: #34d399;
+    font-family: 'Kaushan Script', 'Satisfy', cursive, sans-serif;
+    font-size: 1.18em;
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    line-height: 1.2;
+    background: linear-gradient(135deg, #34d399 0%, #6ee7b7 50%, #a7f3d0 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 18px rgba(52, 211, 153, 0.45));
+    display: inline-block;
+    padding-right: 28px;
+    margin-right: -28px;
+    padding-left: 0;
+    margin-left: -5px;
+    overflow: visible;
 }
 .jt-hero-subtitle {
     font-size: clamp(14px, 2.5vw, 18px);
@@ -178,24 +259,41 @@
     transform: translateY(-2px);
 }
 
-/* Section Header Leaf Styling */
+/* Section Header Styling */
 .jt-section-title-wrap {
     text-align: center;
-    margin-bottom: 35px;
+    margin-bottom: 36px;
 }
-.jt-eyebrow-leaf {
+.jt-section-heading-primary {
+    font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-weight: 800;
+    font-size: clamp(24px, 3.8vw, 32px);
+    color: #0f172a;
+    letter-spacing: -0.03em;
+    line-height: 1.25;
+    margin-bottom: 6px;
+}
+.jt-eyebrow-badge {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 99px;
+    background: rgba(4, 120, 87, 0.08);
     color: #047857;
+    border: 1px solid rgba(4, 120, 87, 0.2);
     font-weight: 800;
-    font-size: clamp(16px, 3.5vw, 19px);
-    margin-bottom: 6px;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 8px;
 }
 .jt-section-subtext {
     color: #64748b;
-    font-size: clamp(13px, 2vw, 15px);
-    margin: 0;
+    font-size: clamp(13.5px, 2vw, 15px);
+    margin: 0 auto;
+    max-width: 600px;
+    line-height: 1.55;
 }
 
 /* 4 Feature Exploration Cards with Overlapping Icons */
@@ -257,9 +355,11 @@
 .bg-icon-purple { background: #7c3aed; }
 
 .jt-explore-body h3 {
-    font-size: 18px;
+    font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif !important;
+    font-size: 19px;
     font-weight: 800;
     color: #0f172a;
+    letter-spacing: -0.02em;
     margin-bottom: 6px;
 }
 .jt-explore-body p {
@@ -602,9 +702,28 @@
 }
 </style>
 
-<!-- 1. Hero Section & Multi-Filter Search Bar -->
-<section class="jt-hero-mockup">
-    <div class="container public-container text-start">
+<!-- 1. Hero Section & Multi-Filter Search Bar with Multi-Image Slideshow Background -->
+<section class="jt-hero-mockup" id="hero-slider-section">
+    <!-- Hero Background Slider (Cross-Fade Transitions) -->
+    <div class="jt-hero-slider">
+        <div class="jt-hero-slide active" style="background-image: url('{{ asset('images/guci_hero.png') }}');" data-label="Pemandian Air Panas Guci"></div>
+        <div class="jt-hero-slide" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1920&auto=format&fit=crop');" data-label="Pantai Alam Indah Tegal"></div>
+        <div class="jt-hero-slide" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=85&w=1920&auto=format&fit=crop');" data-label="Pegunungan & Lembah Guci"></div>
+        <div class="jt-hero-slide" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=85&w=1920&auto=format&fit=crop');" data-label="Danau & Waduk Cacaban"></div>
+    </div>
+    <div class="jt-hero-overlay"></div>
+
+    <!-- Slide Indicators Only (Click Page / Dots to Change) -->
+    <div class="jt-hero-slide-nav" title="Klik area banner untuk ganti foto">
+        <div class="jt-slide-dots-wrap">
+            <span class="jt-slide-dot active" onclick="goToHeroSlide(0)" title="Wisata Alam Guci"></span>
+            <span class="jt-slide-dot" onclick="goToHeroSlide(1)" title="Pantai Alam Indah"></span>
+            <span class="jt-slide-dot" onclick="goToHeroSlide(2)" title="Lembah Gunung Slamet"></span>
+            <span class="jt-slide-dot" onclick="goToHeroSlide(3)" title="Waduk Cacaban"></span>
+        </div>
+    </div>
+
+    <div class="container public-container text-start jt-hero-content">
         <div class="jt-hero-badge-pill">
             <i class="fa-solid fa-compass text-warning me-1"></i> Portal Digital Resmi Pariwisata & Ekonomi Kreatif Tegal
         </div>
@@ -622,7 +741,7 @@
             <a href="{{ route('tour-assistant.index') }}" class="btn jt-hero-btn jt-hero-btn-ai">
                 <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
                 <span>Rekomendasi AI</span>
-                <span class="jt-badge-tag">Pintar & Otomatis ✨</span>
+                <span class="jt-badge-tag"><i class="fa-solid fa-bolt text-warning me-1"></i> Pintar & Otomatis</span>
             </a>
             <a href="{{ route('tourism.index') }}" class="btn jt-hero-btn jt-hero-btn-search">
                 <i class="fa-solid fa-magnifying-glass text-success fs-5"></i>
@@ -637,7 +756,7 @@
                 <i class="fa-solid fa-umbrella-beach text-warning me-1"></i> Purwahamba Indah
             </a>
             <a href="{{ route('tourism.index') }}" class="jt-chip-item">
-                <i class="fa-solid fa-water text-cyan me-1"></i> Guci & Curug
+                <i class="fa-solid fa-water text-info me-1"></i> Guci & Curug
             </a>
             <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-chip-item">
                 <i class="fa-solid fa-utensils text-warning me-1"></i> Sate Tegal
@@ -646,20 +765,21 @@
                 <i class="fa-solid fa-hotel text-info me-1"></i> Hotel Pilihan
             </a>
             <a href="{{ route('home', ['service' => 'event']) }}" class="jt-chip-item">
-                <i class="fa-solid fa-calendar-day text-danger me-1"></i> Event Budaya
+                <i class="fa-solid fa-calendar-days text-danger me-1"></i> Event Budaya
             </a>
         </div>
     </div>
 </section>
 
-<!-- 2. Section 1: Jelajahi Tegal (4 Cards) -->
+<!-- 2. Section 1: Jelajahi Tegal (Wisata, Kuliner, Penginapan, Event) -->
 <section class="public-section py-5">
     <div class="container public-container">
         <div class="jt-section-title-wrap">
-            <div class="jt-eyebrow-leaf">
-                <i class="fa-solid fa-leaf text-success"></i> Jelajahi Tegal <i class="fa-solid fa-leaf text-success"></i>
+            <div class="jt-eyebrow-badge">
+                <i class="fa-solid fa-compass"></i> Eksplorasi Layanan
             </div>
-            <p class="jt-section-subtext">Temukan berbagai hal menarik yang bisa kamu jelajahi di Tegal</p>
+            <h2 class="jt-section-heading-primary">Jelajahi Keberagaman Tegal</h2>
+            <p class="jt-section-subtext">Temukan wisata alam, penginapan nyaman, kuliner legendaris, dan agenda budaya dalam satu platform terpadu.</p>
         </div>
 
         <div class="row g-4">
@@ -742,9 +862,14 @@
 <section class="public-section py-4">
     <div class="container public-container">
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4">
-            <h2 class="fs-2 fw-extrabold text-dark m-0">Destinasi Populer</h2>
+            <div>
+                <div class="jt-eyebrow-badge mb-1">
+                    <i class="fa-solid fa-fire text-danger"></i> Rekomendasi Pilihan
+                </div>
+                <h2 class="jt-section-heading-primary m-0">Destinasi Wisata Populer</h2>
+            </div>
             <a href="{{ route('tourism.index') }}" class="btn btn-outline-dark rounded-pill px-4 fw-bold fs-8">
-                Lihat Semua Destinasi <i class="fa-solid fa-arrow-right ms-1"></i>
+                Lihat Semua Wisata <i class="fa-solid fa-arrow-right ms-1"></i>
             </a>
         </div>
 
@@ -799,10 +924,13 @@
         <!-- Header Row -->
         <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mb-4">
             <div>
-                <h2 class="fs-3 fw-extrabold text-dark m-0 d-flex align-items-center gap-2">
-                    <span class="fs-4">🤝</span> Mitra Paling Populer
+                <div class="jt-eyebrow-badge mb-1">
+                    <i class="fa-solid fa-store"></i> Partner Terverifikasi
+                </div>
+                <h2 class="jt-section-heading-primary m-0 d-flex align-items-center gap-2">
+                    <i class="fa-solid fa-handshake text-success me-1"></i> Mitra Usaha Terpopuler
                 </h2>
-                <p class="text-muted mb-0 fs-7" style="font-weight: 500;">Partner terpercaya pilihan wisatawan Jelajah Tegal</p>
+                <p class="text-muted mb-0 fs-7" style="font-weight: 500;">Partner resmi dan terpercaya pilihan wisatawan Jelajah Tegal</p>
             </div>
 
             <!-- Filter Tabs & Link -->
@@ -1127,5 +1255,65 @@
         </div>
     </div>
 </div>
+
+<!-- Hero Background Slider Script -->
+<script>
+    let currentHeroSlide = 0;
+    const heroSlides = document.querySelectorAll('.jt-hero-slide');
+    const heroDots = document.querySelectorAll('.jt-slide-dot');
+    let heroSliderTimer = null;
+
+    function showHeroSlide(index) {
+        if (!heroSlides.length) return;
+        if (index >= heroSlides.length) currentHeroSlide = 0;
+        else if (index < 0) currentHeroSlide = heroSlides.length - 1;
+        else currentHeroSlide = index;
+
+        heroSlides.forEach((slide, idx) => {
+            slide.classList.toggle('active', idx === currentHeroSlide);
+        });
+        heroDots.forEach((dot, idx) => {
+            dot.classList.toggle('active', idx === currentHeroSlide);
+        });
+    }
+
+    function nextHeroSlide() {
+        showHeroSlide(currentHeroSlide + 1);
+        resetHeroTimer();
+    }
+
+    function prevHeroSlide() {
+        showHeroSlide(currentHeroSlide - 1);
+        resetHeroTimer();
+    }
+
+    function goToHeroSlide(index) {
+        showHeroSlide(index);
+        resetHeroTimer();
+    }
+
+    function resetHeroTimer() {
+        if (heroSliderTimer) clearInterval(heroSliderTimer);
+        heroSliderTimer = setInterval(() => {
+            showHeroSlide(currentHeroSlide + 1);
+        }, 5500);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        resetHeroTimer();
+
+        // Mechanism: Click on the hero banner background to advance to the next slide
+        const heroSection = document.getElementById('hero-slider-section');
+        if (heroSection) {
+            heroSection.addEventListener('click', (e) => {
+                // If click originated on an interactive element (buttons, links, chips, inputs, or dots), do not trigger slide switch
+                if (e.target.closest('a, button, input, select, textarea, .jt-slide-dot, .jt-chips-wrapper, .jt-hero-actions-wrap, .jt-badge-tag')) {
+                    return;
+                }
+                nextHeroSlide();
+            });
+        }
+    });
+</script>
 
 @endsection
