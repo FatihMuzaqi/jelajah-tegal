@@ -12,6 +12,23 @@ class StoreMitraRequest extends FormRequest
         return $this->user()?->can('mitras.create') === true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('slug')) {
+            $this->merge([
+                'slug' => \Illuminate\Support\Str::slug($this->slug),
+            ]);
+        } elseif ($this->filled('display_name')) {
+            $this->merge([
+                'slug' => \Illuminate\Support\Str::slug($this->display_name),
+            ]);
+        } elseif ($this->filled('legal_name')) {
+            $this->merge([
+                'slug' => \Illuminate\Support\Str::slug($this->legal_name),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [

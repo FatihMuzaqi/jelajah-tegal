@@ -66,7 +66,7 @@
                 </div>
                 <div class='col-md-6'>
                     <x-form-input name='slug' label='Slug URL' placeholder='cth: wisata-bahari-tegal'
-                        hint='Huruf kecil, angka, dan tanda hubung (otomatis jadi alamat URL).' required />
+                        hint='Otomatis terisi dari Nama Tampil Publik (bisa diedit manual).' required />
                 </div>
                 <div class='col-md-6'>
                     <x-select name='region_id' label='Lokasi / Wilayah Kecamatan'>
@@ -102,4 +102,63 @@
             </div>
         </form>
     </x-content-card>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const legalNameInput = document.getElementById('legal_name');
+    const displayNameInput = document.getElementById('display_name');
+    const slugInput = document.getElementById('slug');
+
+    if (!slugInput) return;
+
+    let isManualSlug = slugInput.value.trim() !== '';
+
+    function slugify(text) {
+        return text.toString().toLowerCase()
+            .trim()
+            .replace(/\s+/g, '-')           // Ganti spasi dengan tanda hubung (-)
+            .replace(/[^\w\-]+/g, '')       // Hapus karakter non-alphanumeric kecuali tanda hubung
+            .replace(/\-\-+/g, '-')         // Ganti tanda hubung ganda dengan tanda hubung tunggal
+            .replace(/^-+/, '')             // Hapus tanda hubung di awal
+            .replace(/-+$/, '');            // Hapus tanda hubung di akhir
+    }
+
+    if (displayNameInput) {
+        displayNameInput.addEventListener('input', function() {
+            if (!isManualSlug) {
+                slugInput.value = slugify(this.value);
+            }
+        });
+    }
+
+    if (legalNameInput) {
+        legalNameInput.addEventListener('input', function() {
+            // Jika display_name masih kosong dan slug belum diubah manual, isi dari legal_name
+            if (displayNameInput && !displayNameInput.value.trim() && !isManualSlug) {
+                slugInput.value = slugify(this.value);
+            }
+        });
+    }
+
+    slugInput.addEventListener('input', function() {
+        if (this.value.trim() === '') {
+            isManualSlug = false;
+            if (displayNameInput && displayNameInput.value.trim() !== '') {
+                this.value = slugify(displayNameInput.value);
+            } else if (legalNameInput && legalNameInput.value.trim() !== '') {
+                this.value = slugify(legalNameInput.value);
+            }
+        } else {
+            isManualSlug = true;
+        }
+    });
+
+    // Auto-generate pada initial load jika slug kosong namun display_name sudah ada (misal browser auto-fill)
+    if (!slugInput.value.trim() && displayNameInput && displayNameInput.value.trim()) {
+        slugInput.value = slugify(displayNameInput.value);
+    }
+});
+</script>
+@endpush
 @endsection
