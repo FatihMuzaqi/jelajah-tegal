@@ -4,6 +4,10 @@
 @section('meta-description', 'Temukan destinasi wisata terbaik, penginapan nyaman, kuliner khas, dan event seru di Kabupaten & Kota Tegal dalam satu platform terpadu Jelajah Tegal.')
 @if(request()->hasAny(['q','region','service'])) @section('robots','noindex,follow') @endif
 
+@push('head-extra')
+<link rel="preload" as="image" href="{{ asset('images/guci_hero.webp') }}" fetchpriority="high">
+@endpush
+
 @section('content')
 <style>
 /* Modern Responsive Hero with Multi-Image Slideshow Background */
@@ -30,6 +34,15 @@
     transform: scale(1.08);
     transition: opacity 1.4s ease-in-out, transform 6.5s ease-out;
     pointer-events: none;
+}
+/* First slide uses <img> for LCP discoverability */
+.jt-hero-slide-img {
+    position: absolute;
+    inset: -15px;
+    width: calc(100% + 30px);
+    height: calc(100% + 30px);
+    object-fit: cover;
+    object-position: center;
 }
 .jt-hero-slide.active {
     opacity: 1;
@@ -706,7 +719,17 @@
 <section class="jt-hero-mockup" id="hero-slider-section">
     <!-- Hero Background Slider (Cross-Fade Transitions) -->
     <div class="jt-hero-slider">
-        <div class="jt-hero-slide active" style="background-image: url('{{ asset('images/guci_hero.png') }}');" data-label="Pemandian Air Panas Guci"></div>
+        <!-- Slide 1: Real <img> for LCP discoverability -->
+        <div class="jt-hero-slide active" data-label="Pemandian Air Panas Guci">
+            <img
+                src="{{ asset('images/guci_hero.webp') }}"
+                alt="Pemandian Air Panas Guci Tegal"
+                class="jt-hero-slide-img"
+                width="1920" height="1080"
+                fetchpriority="high"
+                decoding="sync"
+            >
+        </div>
         <div class="jt-hero-slide" style="background-image: url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=85&w=1920&auto=format&fit=crop');" data-label="Pantai Alam Indah Tegal"></div>
         <div class="jt-hero-slide" style="background-image: url('https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=85&w=1920&auto=format&fit=crop');" data-label="Pegunungan & Lembah Guci"></div>
         <div class="jt-hero-slide" style="background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=85&w=1920&auto=format&fit=crop');" data-label="Danau & Waduk Cacaban"></div>
@@ -787,7 +810,7 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=800&auto=format&fit=crop" alt="Wisata Tegal">
+                        <img src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?q=80&w=600&auto=format&fit=crop" alt="Wisata Tegal" loading="lazy" decoding="async">
                     </div>
                     <div class="jt-explore-body">
                         <div class="jt-floating-icon-circle bg-icon-green">
@@ -806,7 +829,7 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=800&auto=format&fit=crop" alt="Kuliner Tegal">
+                        <img src="https://images.unsplash.com/photo-1555939594-58d7cb561ad1?q=80&w=600&auto=format&fit=crop" alt="Kuliner Tegal" loading="lazy" decoding="async">
                     </div>
                     <div class="jt-explore-body">
                         <div class="jt-floating-icon-circle bg-icon-orange">
@@ -825,7 +848,7 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=800&auto=format&fit=crop" alt="Penginapan Tegal">
+                        <img src="https://images.unsplash.com/photo-1618773928121-c32242e63f39?q=80&w=600&auto=format&fit=crop" alt="Penginapan Tegal" loading="lazy" decoding="async">
                     </div>
                     <div class="jt-explore-body">
                         <div class="jt-floating-icon-circle bg-icon-blue">
@@ -844,7 +867,7 @@
             <div class="col-12 col-sm-6 col-lg-3">
                 <div class="jt-explore-card">
                     <div class="jt-explore-img-wrap">
-                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=800&auto=format&fit=crop" alt="Event Tegal">
+                        <img src="https://images.unsplash.com/photo-1514525253161-7a46d19cd819?q=80&w=600&auto=format&fit=crop" alt="Event Tegal" loading="lazy" decoding="async">
                     </div>
                     <div class="jt-explore-body">
                         <div class="jt-floating-icon-circle bg-icon-purple">
@@ -886,7 +909,7 @@
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="jt-popular-card">
                             <div class="jt-pop-img-wrap">
-                                <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}">
+                                <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}" loading="lazy" decoding="async">
                                 <span class="jt-pop-rating-badge"><i class="fa-solid fa-star text-warning me-1"></i>{{ $rating }}</span>
                                 <span class="jt-pop-category-pill">{{ $tourism->category?->name ?? 'Wisata' }}</span>
                             </div>
@@ -969,7 +992,7 @@
                         <div class="jt-mitra-ref-card">
                             <!-- Cover Photo -->
                             <div class="jt-mitra-ref-cover">
-                                <img src="{{ $coverUrl }}" alt="{{ $mitra->display_name }}">
+                                <img src="{{ $coverUrl }}" alt="{{ $mitra->display_name }}" loading="lazy" decoding="async">
                                 <div class="jt-mitra-ref-verified">
                                     <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
                                 </div>
@@ -1050,17 +1073,17 @@
 
                     <div class="jt-ai-thumbs-grid">
                         <a href="{{ route('tourism.index') }}" class="jt-ai-thumb-item">
-                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=400&auto=format&fit=crop" alt="Bukit Bintang">
+                            <img src="https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=350&auto=format&fit=crop" alt="Bukit Bintang" loading="lazy" decoding="async">
                             <h5>Bukit Bintang</h5>
                             <span>Bumijawa</span>
                         </a>
                         <a href="{{ route('tourism.index') }}" class="jt-ai-thumb-item">
-                            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=400&auto=format&fit=crop" alt="Waduk Cacaban">
+                            <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?q=80&w=350&auto=format&fit=crop" alt="Waduk Cacaban" loading="lazy" decoding="async">
                             <h5>Waduk Cacaban</h5>
                             <span>Lebaksiu</span>
                         </a>
                         <a href="{{ route('tourism.index') }}" class="jt-ai-thumb-item">
-                            <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=400&auto=format&fit=crop" alt="Pagaralang">
+                            <img src="https://images.unsplash.com/photo-1501785888041-af3ef285b470?q=80&w=350&auto=format&fit=crop" alt="Pagaralang" loading="lazy" decoding="async">
                             <h5>Pagaralang</h5>
                             <span>Tegal</span>
                         </a>
@@ -1083,7 +1106,7 @@
 
                     <div class="jt-event-list">
                         <div class="jt-event-item">
-                            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=400&auto=format&fit=crop" alt="Karnaval Budaya Tegal">
+                            <img src="https://images.unsplash.com/photo-1533105079780-92b9be482077?q=80&w=350&auto=format&fit=crop" alt="Karnaval Budaya Tegal" loading="lazy" decoding="async">
                             <div>
                                 <h5>Karnaval Budaya Tegal</h5>
                                 <p>18 Agustus 2026</p>
@@ -1092,7 +1115,7 @@
                         </div>
 
                         <div class="jt-event-item">
-                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=400&auto=format&fit=crop" alt="Festival Kuliner Tegal">
+                            <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?q=80&w=350&auto=format&fit=crop" alt="Festival Kuliner Tegal" loading="lazy" decoding="async">
                             <div>
                                 <h5>Festival Kuliner Tegal</h5>
                                 <p>25–27 Agustus 2026</p>
@@ -1101,7 +1124,7 @@
                         </div>
 
                         <div class="jt-event-item">
-                            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=400&auto=format&fit=crop" alt="Larung Sesaji Pantai">
+                            <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?q=80&w=350&auto=format&fit=crop" alt="Larung Sesaji Pantai" loading="lazy" decoding="async">
                             <div>
                                 <h5>Larung Sesaji Pantai</h5>
                                 <p>30 Agustus 2026</p>
@@ -1128,15 +1151,15 @@
 
                     <div class="jt-kuliner-circles">
                         <div class="jt-kuliner-circle-item">
-                            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=300&auto=format&fit=crop" alt="Sate Kambing">
+                            <img src="https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?q=80&w=300&auto=format&fit=crop" alt="Sate Kambing" loading="lazy" decoding="async">
                             <h5>Sate Kambing</h5>
                         </div>
                         <div class="jt-kuliner-circle-item">
-                            <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=300&auto=format&fit=crop" alt="Tahu Aci">
+                            <img src="https://images.unsplash.com/photo-1541544741938-0af808871cc0?q=80&w=300&auto=format&fit=crop" alt="Tahu Aci" loading="lazy" decoding="async">
                             <h5>Tahu Aci</h5>
                         </div>
                         <div class="jt-kuliner-circle-item">
-                            <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=300&auto=format&fit=crop" alt="Teh Poci">
+                            <img src="https://images.unsplash.com/photo-1576092768241-dec231879fc3?q=80&w=300&auto=format&fit=crop" alt="Teh Poci" loading="lazy" decoding="async">
                             <h5>Teh Poci</h5>
                         </div>
                     </div>

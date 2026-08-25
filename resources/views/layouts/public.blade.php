@@ -34,20 +34,17 @@
         })();
     </script>
 
-    <!-- Curated Free Open-Source Google Fonts (OFL Licensed) -->
+    <!-- Non-blocking Google Fonts (Inter, Kaushan Script, Plus Jakarta Sans) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Caveat:wght@600;700&family=Inter:wght@400;500;600;700&family=Kaushan+Script&family=Outfit:wght@600;700;800;900&family=Pacifico&family=Playfair+Display:ital,wght@1,600;1,700;1,800&family=Plus+Jakarta+Sans:wght@600;700;800;900&family=Satisfy&display=swap" rel="stylesheet">
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kaushan+Script&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kaushan+Script&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet"></noscript>
 
-    <!-- Icon Libraries: Font Awesome 6 & Bootstrap Icons -->
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-        crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-        crossorigin="anonymous">
+
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    @stack('head-extra')
 
     <style>
         body {

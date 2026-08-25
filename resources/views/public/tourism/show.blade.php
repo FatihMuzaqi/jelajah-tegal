@@ -4,7 +4,6 @@
 @section('meta-description', str($tourism->description ?: 'Eksplorasi destinasi wisata ' . $tourism->name . ' di Tegal. Dapatkan informasi lokasi, tiket, jam buka, dan ulasan.')->limit(155))
 @section('canonical', route('tourism.show', $tourism->slug))
 
-@section('content')
 @php
     $coverMedia = $tourism->media->where('pivot.role', 'cover')->first() ?? $tourism->media->first();
     $coverUrl = $coverMedia ? asset('storage/' . $coverMedia->object_key) : null;
@@ -15,8 +14,14 @@
     $todayHours = $tourism->operatingHours->where('weekday', $dayOfWeek)->first();
 @endphp
 
-<!-- Leaflet.js CSS for Interactive Map -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+@if($coverUrl)
+@push('head-extra')
+<link rel="preload" as="image" href="{{ $coverUrl }}" fetchpriority="high">
+@endpush
+@endif
+
+@section('content')
+
 
 <style>
 /* Custom Tourism Detail Styles */
@@ -30,10 +35,17 @@
 .tourism-hero-bg {
     position: absolute;
     inset: 0;
+    overflow: hidden;
+}
+/* Real img-based LCP element replacing CSS background */
+.tourism-hero-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
     opacity: 0.22;
-    background-size: cover;
-    background-position: center;
     filter: blur(8px) scale(1.05);
+    transform: scale(1.05);
 }
 .tourism-hero-overlay {
     position: absolute;
@@ -363,7 +375,16 @@
 <!-- Hero Banner Header -->
 <section class="tourism-hero-section">
     @if ($coverUrl)
-        <div class="tourism-hero-bg" style="background-image: url('{{ $coverUrl }}');"></div>
+        <div class="tourism-hero-bg">
+            <img
+                src="{{ $coverUrl }}"
+                alt="{{ $tourism->name }}"
+                width="1280" height="720"
+                fetchpriority="high"
+                decoding="sync"
+                loading="eager"
+            >
+        </div>
     @endif
     <div class="tourism-hero-overlay"></div>
 
@@ -429,7 +450,7 @@
             @if ($coverUrl)
                 <div class="col-lg-4 text-center">
                     <div style="border-radius: 20px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.4); border: 3px solid rgba(255,255,255,0.2); max-height: 260px;">
-                        <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}" style="width: 100%; height: 260px; object-fit: cover;">
+                        <img src="{{ $coverUrl }}" alt="{{ $tourism->name }}" style="width: 100%; height: 260px; object-fit: cover;" loading="lazy" decoding="async" width="600" height="260">
                     </div>
                 </div>
             @endif
@@ -533,7 +554,7 @@
                     <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-map-location-dot text-info"></i></span> Lokasi & Peta Interaktif</h2>
                     
                     <!-- Leaflet Map Container -->
-                    <div id="tourismMap"></div>
+                    <div id="tourismMap" style="height: 380px; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; background: #e9ecef; z-index: 1; border: 1px solid var(--lokantara-border);"></div>
 
                     <!-- Address & Direct Google Maps Action -->
                     <div class="map-address-box">
@@ -773,82 +794,41 @@
     </div>
 </section>
 
-<!-- Leaflet.js Interactive Map Script -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Leaflet.js: Lazy-loaded only when map comes into viewport -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     const lat = {{ $lat }};
     const lng = {{ $lng }};
     const destinationTitle = "{{ addslashes($tourism->name) }}";
     const address = "{{ addslashes($tourism->address ?: 'Kawasan Wisata ' . $tourism->name) }}";
 
-    // Initialize Leaflet Map
-    const map = L.map('tourismMap', {
-        center: [lat, lng],
-        zoom: 15,
-        zoomControl: true,
-        scrollWheelZoom: false
-    });
+    function initLeafletMap() {
+        if (typeof window.initLokantaraMap === 'function') {
+            if (window._mapInitialized) return;
+            window._mapInitialized = true;
+            window.initLokantaraMap('tourismMap', lat, lng, destinationTitle, address, 'tourism');
+        } else {
+            setTimeout(initLeafletMap, 50);
+        }
+    }
 
-    // Add Tile Layer (OpenStreetMap CartoDB Voyager for clean, modern look)
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
-
-    // Custom Marker Icon
-    const customIcon = L.divIcon({
-        className: 'custom-map-pin',
-        html: `
-            <div style="
-                background: linear-gradient(135deg, #1f7a5c, #13352c);
-                width: 38px;
-                height: 38px;
-                border-radius: 50% 50% 50% 0;
-                transform: rotate(-45deg);
-                border: 3px solid #ffffff;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            ">
-                <span style="transform: rotate(45deg); font-size: 16px; color: #ffffff;">🏖️</span>
-            </div>
-        `,
-        iconSize: [38, 38],
-        iconAnchor: [19, 38],
-        popupAnchor: [0, -38]
-    });
-
-    // Add Marker & Popup
-    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
-    
-    const popupContent = `
-        <div style="font-family: inherit; padding: 4px;">
-            <strong style="font-size: 14px; color: #174d3c; display: block; margin-bottom: 4px;">${destinationTitle}</strong>
-            <p style="font-size: 12px; color: #4a5568; margin: 0 0 8px;">${address}</p>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="
-                display: inline-block;
-                background: #1f7a5c;
-                color: #ffffff;
-                padding: 6px 12px;
-                border-radius: 8px;
-                font-size: 11px;
-                font-weight: bold;
-                text-decoration: none;
-            ">Petunjuk Arah &rarr;</a>
-        </div>
-    `;
-
-    marker.bindPopup(popupContent).openPopup();
-
-    // Invalidate map size after render to prevent tile clipping
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 400);
-});
+    // Observe map container - load Leaflet only when it enters viewport
+    const mapEl = document.getElementById('tourismMap');
+    if (mapEl && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) {
+                observer.disconnect();
+                initLeafletMap();
+            }
+        }, { rootMargin: '200px' });
+        observer.observe(mapEl);
+    } else if (mapEl) {
+        // Fallback for browsers without IntersectionObserver
+        initLeafletMap();
+    }
+})();
 </script>
+
 
 @auth
     @foreach ($tourism->offers->whereIn('status', ['active', 'published']) as $offer)

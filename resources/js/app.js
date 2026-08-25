@@ -83,12 +83,18 @@ const bootDashboard = () => {
     });
 
     const charts = [...document.querySelectorAll('[data-chart]:not([data-chart-rendered])')].filter((element) => JSON.parse(element.dataset.series || '[]').length);
-    if (charts.length) import('apexcharts').then(({default: ApexCharts}) => charts.forEach((element) => {
-        element.dataset.chartRendered = 'true';
-        const labels = JSON.parse(element.dataset.labels || '[]');
-        const series = JSON.parse(element.dataset.series || '[]');
-        new ApexCharts(element, {chart:{type:'donut',height:280,toolbar:{show:false}},labels,series,colors:['#1f7a5c','#2d8ca8','#f2a93b','#3b82f6','#dc4c64'],legend:{position:'bottom'},dataLabels:{enabled:false},stroke:{width:3,colors:[getComputedStyle(root).getPropertyValue('--lokantara-surface').trim()]}}).render();
-    }));
+    if (charts.length) {
+        import('apexcharts').then(({default: ApexCharts}) => {
+            requestAnimationFrame(() => {
+                charts.forEach((element) => {
+                    element.dataset.chartRendered = 'true';
+                    const labels = JSON.parse(element.dataset.labels || '[]');
+                    const series = JSON.parse(element.dataset.series || '[]');
+                    new ApexCharts(element, {chart:{type:'donut',height:280,toolbar:{show:false}},labels,series,colors:['#1f7a5c','#2d8ca8','#f2a93b','#3b82f6','#dc4c64'],legend:{position:'bottom'},dataLabels:{enabled:false},stroke:{width:3,colors:[getComputedStyle(root).getPropertyValue('--lokantara-surface').trim()]}}).render();
+                });
+            });
+        });
+    }
 
     document.querySelectorAll('[data-file-uploader] input:not([data-dashboard-bound])').forEach((input) => {
         input.dataset.dashboardBound = 'true';
@@ -113,3 +119,48 @@ const bootDashboard = () => {
 
 document.addEventListener('DOMContentLoaded', bootDashboard);
 document.addEventListener('livewire:navigated', bootDashboard);
+
+// Dynamic Map Initializer using Code Splitting
+window.initLokantaraMap = async (containerId, lat, lng, title, address, type = 'tourism') => {
+    // Dynamically import Leaflet and its CSS (Vite will chunk this)
+    const L = (await import('leaflet')).default;
+    await import('leaflet/dist/leaflet.css');
+
+    const map = L.map(containerId, {
+        center: [lat, lng],
+        zoom: 15,
+        zoomControl: true,
+        scrollWheelZoom: false
+    });
+
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+        subdomains: 'abcd',
+        maxZoom: 19
+    }).addTo(map);
+
+    let iconHtml = '📍';
+    let iconColors = ['#1f7a5c', '#13352c'];
+    
+    if (type === 'tourism') {
+        iconHtml = '🏖️';
+    } else if (type === 'hotel') {
+        iconHtml = '🏨';
+        iconColors = ['#1b634b', '#0d261e'];
+    }
+
+    const customIcon = L.divIcon({
+        className: 'custom-map-pin',
+        html: `<div style="background:linear-gradient(135deg,${iconColors[0]},${iconColors[1]});width:38px;height:38px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 15px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;"><span style="transform:rotate(45deg);font-size:16px;color:#fff;">${iconHtml}</span></div>`,
+        iconSize: [38, 38],
+        iconAnchor: [19, 38],
+        popupAnchor: [0, -38]
+    });
+
+    const popupContent = `<div style="font-family:inherit;padding:4px"><strong style="font-size:14px;color:${iconColors[0]};display:block;margin-bottom:4px">${title}</strong><p style="font-size:12px;color:#4a5568;margin:0 0 8px">${address}</p><a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="display:inline-block;background:${iconColors[0]};color:#fff;padding:6px 12px;border-radius:8px;font-size:11px;font-weight:bold;text-decoration:none">Petunjuk Arah &rarr;</a></div>`;
+
+    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
+    marker.bindPopup(popupContent).openPopup();
+    
+    setTimeout(() => map.invalidateSize(), 400);
+};

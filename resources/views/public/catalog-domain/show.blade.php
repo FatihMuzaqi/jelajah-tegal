@@ -5,10 +5,6 @@
 @section('canonical', route($routePrefix . '.show', $item->slug))
 
 @section('content')
-<!-- Leaflet Map Assets -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
 <style>
 /* Hero Header */
 .cd-hero-section {
@@ -341,7 +337,7 @@
                     @endphp
 
                     <!-- Interactive Map Container -->
-                    <div id="cd-interactive-map" class="mb-3"></div>
+                    <div id="cd-interactive-map" class="mb-3" style="height: 380px; width: 100%; border-radius: 16px; overflow: hidden; background: #e9ecef; z-index: 1; border: 1px solid var(--lokantara-border);"></div>
 
                     <div class="mb-3">
                         <strong class="d-block" style="font-size: 12px; color: var(--lokantara-muted); text-transform: uppercase;"><i class="fa-solid fa-location-dot text-danger me-1"></i> Alamat:</strong>
@@ -371,19 +367,29 @@
     </div>
 </section>
 
-<!-- Leaflet Map Script -->
+<!-- Leaflet Map: Lazy-loaded when map enters viewport -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     const lat = {{ $lat }};
     const lng = {{ $lng }};
-    const map = L.map('cd-interactive-map').setView([lat, lng], 14);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(map);
-
-    const marker = L.marker([lat, lng]).addTo(map);
-    marker.bindPopup("<b>{{ addslashes($item->name) }}</b><br>{{ addslashes($item->address ?? 'Tegal') }}").openPopup();
-});
+    function initMap() {
+        const name = "{{ addslashes($item->name) }}";
+        const address = "{{ addslashes($item->address ?? 'Tegal') }}";
+        if (typeof window.initLokantaraMap === 'function') {
+            if (window._cdMapInitialized) return;
+            window._cdMapInitialized = true;
+            window.initLokantaraMap('cd-interactive-map', lat, lng, name, address, 'tourism');
+        } else {
+            setTimeout(initMap, 50);
+        }
+    }
+    const mapEl = document.getElementById('cd-interactive-map');
+    if (mapEl && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) { observer.disconnect(); initMap(); }
+        }, { rootMargin: '200px' });
+        observer.observe(mapEl);
+    } else if (mapEl) { initMap(); }
+})();
 </script>
 @endsection

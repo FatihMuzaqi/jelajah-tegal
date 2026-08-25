@@ -14,9 +14,6 @@
     $minPrice = $accommodation->accommodation->rooms->min('offer.price') ?? 0;
 @endphp
 
-<!-- Leaflet.js CSS for Interactive Map -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
 <style>
 /* Custom Accommodation Detail Styles */
 .hotel-hero-section {
@@ -498,7 +495,7 @@
                 <!-- Interactive Map Card -->
                 <div class="hotel-card">
                     <h2 class="hotel-card-title"><span class="title-icon"><i class="fa-solid fa-map-location-dot text-info"></i></span> Lokasi & Peta Arah</h2>
-                    <div id="hotelMap"></div>
+                    <div id="hotelMap" style="height: 380px; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; background: #e9ecef; z-index: 1; border: 1px solid var(--lokantara-border);"></div>
 
                     <div class="hotel-map-address-box">
                         <div style="flex: 1; min-width: 240px;">
@@ -629,79 +626,33 @@
     </div>
 </section>
 
-<!-- Leaflet.js Interactive Map Script -->
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<!-- Leaflet.js: Lazy-loaded only when map enters viewport -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
     const lat = {{ $lat }};
     const lng = {{ $lng }};
     const hotelTitle = "{{ addslashes($accommodation->name) }}";
     const address = "{{ addslashes($accommodation->address ?: 'Kawasan ' . $accommodation->name) }}";
 
-    // Initialize Leaflet Map
-    const map = L.map('hotelMap', {
-        center: [lat, lng],
-        zoom: 15,
-        zoomControl: true,
-        scrollWheelZoom: false
-    });
+    function initLeafletMap() {
+        if (typeof window.initLokantaraMap === 'function') {
+            if (window._hotelMapInitialized) return;
+            window._hotelMapInitialized = true;
+            window.initLokantaraMap('hotelMap', lat, lng, hotelTitle, address, 'hotel');
+        } else {
+            setTimeout(initLeafletMap, 50);
+        }
+    }
 
-    // Add Tile Layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-        subdomains: 'abcd',
-        maxZoom: 19
-    }).addTo(map);
-
-    // Custom Hotel Marker Icon
-    const customIcon = L.divIcon({
-        className: 'custom-map-pin',
-        html: `
-            <div style="
-                background: linear-gradient(135deg, #1b634b, #0d261e);
-                width: 38px;
-                height: 38px;
-                border-radius: 50% 50% 50% 0;
-                transform: rotate(-45deg);
-                border: 3px solid #ffffff;
-                box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-            ">
-                <span style="transform: rotate(45deg); font-size: 16px; color: #ffffff;">🏨</span>
-            </div>
-        `,
-        iconSize: [38, 38],
-        iconAnchor: [19, 38],
-        popupAnchor: [0, -38]
-    });
-
-    // Add Marker & Popup
-    const marker = L.marker([lat, lng], { icon: customIcon }).addTo(map);
-    
-    const popupContent = `
-        <div style="font-family: inherit; padding: 4px;">
-            <strong style="font-size: 14px; color: #154737; display: block; margin-bottom: 4px;">${hotelTitle}</strong>
-            <p style="font-size: 12px; color: #4a5568; margin: 0 0 8px;">${address}</p>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}" target="_blank" style="
-                display: inline-block;
-                background: #1b634b;
-                color: #ffffff;
-                padding: 6px 12px;
-                border-radius: 8px;
-                font-size: 11px;
-                font-weight: bold;
-                text-decoration: none;
-            ">Petunjuk Arah &rarr;</a>
-        </div>
-    `;
-
-    marker.bindPopup(popupContent).openPopup();
-
-    setTimeout(() => {
-        map.invalidateSize();
-    }, 400);
-});
+    const mapEl = document.getElementById('hotelMap');
+    if (mapEl && 'IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) { observer.disconnect(); initLeafletMap(); }
+        }, { rootMargin: '200px' });
+        observer.observe(mapEl);
+    } else if (mapEl) {
+        initLeafletMap();
+    }
+})();
 </script>
 @endsection

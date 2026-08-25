@@ -12,6 +12,7 @@ use App\Models\Region;
 use App\Models\ServiceType;
 use App\Support\FeatureFlags;
 use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Cache;
 
 class PublicPortalController extends Controller
 {
@@ -49,15 +50,19 @@ class PublicPortalController extends Controller
             ->paginate(9)
             ->withQueryString();
 
-        $services = ServiceType::query()->orderBy('sort_order')->get(['id', 'code', 'name']);
-        $categories = Category::query()->where('is_active', true)->with('serviceType:id,code,name')->orderBy('name')->get(['id', 'service_type_id', 'name', 'slug']);
-        $regions = Region::query()->whereHas('mitras', fn ($query) => $query->publiclyVisible())->orderBy('name')->get(['id', 'name']);
-        $visibleMitraQuery = Mitra::query()->publiclyVisible();
-        $stats = [
-            ['label' => 'Mitra aktif', 'value' => (clone $visibleMitraQuery)->count()],
-            ['label' => 'Lokasi tersedia', 'value' => (clone $visibleMitraQuery)->whereNotNull('region_id')->distinct()->count('region_id')],
-            ['label' => 'Layanan aktif', 'value' => ServiceType::query()->whereHas('categories', fn ($query) => $query->where('is_active', true))->count()],
-        ];
+        $services = Cache::remember('home_services', 300, fn() => ServiceType::query()->orderBy('sort_order')->get(['id', 'code', 'name']));
+        $categories = Cache::remember('home_categories', 300, fn() => Category::query()->where('is_active', true)->with('serviceType:id,code,name')->orderBy('name')->get(['id', 'service_type_id', 'name', 'slug']));
+        $allRegions = Cache::remember('home_all_regions', 300, fn() => Region::orderBy('name')->get(['id', 'name', 'code']));
+        
+        $stats = Cache::remember('home_stats', 300, function() {
+            $visibleMitraQuery = Mitra::query()->publiclyVisible();
+            return [
+                ['label' => 'Mitra aktif', 'value' => (clone $visibleMitraQuery)->count()],
+                ['label' => 'Lokasi tersedia', 'value' => (clone $visibleMitraQuery)->whereNotNull('region_id')->distinct()->count('region_id')],
+                ['label' => 'Layanan aktif', 'value' => ServiceType::query()->whereHas('categories', fn ($query) => $query->where('is_active', true))->count()],
+            ];
+        });
+
         $featuredTourisms = CatalogEntity::publicTourism()
             ->with(['region', 'category', 'media', 'tourism', 'mitra', 'offers'])
             ->orderByDesc('is_featured')
@@ -85,8 +90,6 @@ class PublicPortalController extends Controller
             ->orderBy('display_name')
             ->limit(6)
             ->get();
-
-        $allRegions = Region::orderBy('name')->get(['id', 'name', 'code']);
 
         return view('public.home', [
             'mitras' => $mitras,

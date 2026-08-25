@@ -1,4 +1,3 @@
-import axios from 'axios';
-window.axios = axios;
+// Bootstrap script - Axios has been removed to optimize performance.
+// If you need to make AJAX requests, consider using the native fetch() API.
 
-window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
