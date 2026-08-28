@@ -99,49 +99,49 @@ class ComprehensiveTestingSeeder extends Seeder
 
         // Kategori Wisata
         $tourCategories = [
-            ['code' => 'TR-ALAM', 'name' => 'Wisata Alam & Pegunungan'],
-            ['code' => 'TR-PANTAI', 'name' => 'Wisata Pantai & Bahari'],
-            ['code' => 'TR-SEJARAH', 'name' => 'Wisata Sejarah & Budaya'],
-            ['code' => 'TR-BUATAN', 'name' => 'Taman Rekreasi Buatan'],
+            ['slug' => 'tr-alam', 'name' => 'Wisata Alam & Pegunungan'],
+            ['slug' => 'tr-pantai', 'name' => 'Wisata Pantai & Bahari'],
+            ['slug' => 'tr-sejarah', 'name' => 'Wisata Sejarah & Budaya'],
+            ['slug' => 'tr-buatan', 'name' => 'Taman Rekreasi Buatan'],
         ];
         foreach ($tourCategories as $tc) {
-            Category::updateOrCreate(['code' => $tc['code']], ['service_type_id' => $tourismType?->id, 'name' => $tc['name']]);
+            Category::updateOrCreate(['slug' => $tc['slug']], ['service_type_id' => $tourismType?->id, 'name' => $tc['name']]);
         }
 
         // Kategori Penginapan
         $accCategories = [
-            ['code' => 'AC-HOTEL', 'name' => 'Hotel Berbintang'],
-            ['code' => 'AC-VILLA', 'name' => 'Villa & Resort'],
-            ['code' => 'AC-HOMESTAY', 'name' => 'Homestay & Guesthouse'],
-            ['code' => 'AC-GLAMPING', 'name' => 'Glamping & Camp'],
+            ['slug' => 'ac-hotel', 'name' => 'Hotel Berbintang'],
+            ['slug' => 'ac-villa', 'name' => 'Villa & Resort'],
+            ['slug' => 'ac-homestay', 'name' => 'Homestay & Guesthouse'],
+            ['slug' => 'ac-glamping', 'name' => 'Glamping & Camp'],
         ];
         foreach ($accCategories as $ac) {
-            Category::updateOrCreate(['code' => $ac['code']], ['service_type_id' => $accommType?->id, 'name' => $ac['name']]);
+            Category::updateOrCreate(['slug' => $ac['slug']], ['service_type_id' => $accommType?->id, 'name' => $ac['name']]);
         }
 
         // Kategori Kuliner
         $culCategories = [
-            ['code' => 'CU-RESTO', 'name' => 'Restoran Keluarga'],
-            ['code' => 'CU-CAFE', 'name' => 'Cafe & Nongkrong'],
-            ['code' => 'CU-LOKAL', 'name' => 'Warung Khas Lokal'],
-            ['code' => 'CU-SEAFOOD', 'name' => 'Seafood & Bakar'],
+            ['slug' => 'cu-resto', 'name' => 'Restoran Keluarga'],
+            ['slug' => 'cu-cafe', 'name' => 'Cafe & Nongkrong'],
+            ['slug' => 'cu-lokal', 'name' => 'Warung Khas Lokal'],
+            ['slug' => 'cu-seafood', 'name' => 'Seafood & Bakar'],
         ];
         foreach ($culCategories as $cc) {
-            Category::updateOrCreate(['code' => $cc['code']], ['service_type_id' => $culinaryType?->id, 'name' => $cc['name']]);
+            Category::updateOrCreate(['slug' => $cc['slug']], ['service_type_id' => $culinaryType?->id, 'name' => $cc['name']]);
         }
         
         // Fasilitas Umum
         $facilities = [
-            ['code' => 'F-PARKIR', 'name' => 'Area Parkir Luas', 'icon' => 'fa-square-parking'],
-            ['code' => 'F-TOILET', 'name' => 'Toilet Bersih', 'icon' => 'fa-restroom'],
-            ['code' => 'F-MUSHOLA', 'name' => 'Mushola', 'icon' => 'fa-mosque'],
-            ['code' => 'F-WIFI', 'name' => 'WiFi Gratis', 'icon' => 'fa-wifi'],
-            ['code' => 'F-KANTIN', 'name' => 'Kantin / Foodcourt', 'icon' => 'fa-utensils'],
-            ['code' => 'F-MEDIS', 'name' => 'Ruang Medis', 'icon' => 'fa-briefcase-medical'],
-            ['code' => 'F-KOLAM', 'name' => 'Kolam Renang', 'icon' => 'fa-person-swimming'],
+            ['slug' => 'f-parkir', 'name' => 'Area Parkir Luas'],
+            ['slug' => 'f-toilet', 'name' => 'Toilet Bersih'],
+            ['slug' => 'f-mushola', 'name' => 'Mushola'],
+            ['slug' => 'f-wifi', 'name' => 'WiFi Gratis'],
+            ['slug' => 'f-kantin', 'name' => 'Kantin / Foodcourt'],
+            ['slug' => 'f-medis', 'name' => 'Ruang Medis'],
+            ['slug' => 'f-kolam', 'name' => 'Kolam Renang'],
         ];
         foreach ($facilities as $fac) {
-            Facility::updateOrCreate(['code' => $fac['code']], ['name' => $fac['name'], 'icon' => $fac['icon']]);
+            Facility::updateOrCreate(['slug' => $fac['slug']], ['service_type_id' => $tourismType?->id, 'name' => $fac['name']]);
         }
         
     }
