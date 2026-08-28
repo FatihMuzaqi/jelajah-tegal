@@ -133,7 +133,7 @@
                                 </div>
 
                                 <h3 class="fs-5 fw-bold mb-2">
-                                    <a href="{{ route($routePrefix . '.show', $item->slug) }}" class="text-decoration-none text-dark">
+                                    <a href="{{ route($routePrefix . '.show', $item->slug) }}" class="text-decoration-none text-dark stretched-link">
                                         {{ $item->name }}
                                     </a>
                                 </h3>

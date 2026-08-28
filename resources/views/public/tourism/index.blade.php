@@ -255,7 +255,7 @@
                             </div>
 
                             <h2 class="jt-tourism-title">
-                                <a href="{{ route('tourism.show', $item->slug) }}">
+                                <a href="{{ route('tourism.show', $item->slug) }}" class="text-decoration-none stretched-link text-dark">
                                     {{ $item->name }}
                                 </a>
                             </h2>

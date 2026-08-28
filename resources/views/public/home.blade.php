@@ -915,7 +915,7 @@
                             </div>
                             <div class="jt-pop-body">
                                 <h3>
-                                    <a href="{{ route('tourism.show', $tourism->slug) }}" class="text-decoration-none text-dark">
+                                    <a href="{{ route('tourism.show', $tourism->slug) }}" class="text-decoration-none text-dark stretched-link">
                                         {{ $tourism->name }}
                                     </a>
                                 </h3>

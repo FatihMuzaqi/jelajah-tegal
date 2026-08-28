@@ -125,7 +125,7 @@
                                 <i class="fa-solid fa-location-dot me-1"></i> {{ $item->region?->name ?? 'Tegal' }}
                             </div>
                             <h3 class="fs-6 fw-bold mb-2">
-                                <a href="{{ route('accommodation.show', $item->slug) }}" class="text-dark text-decoration-none">
+                                <a href="{{ route('accommodation.show', $item->slug) }}" class="text-dark text-decoration-none stretched-link">
                                     {{ $item->name }}
                                 </a>
                             </h3>
