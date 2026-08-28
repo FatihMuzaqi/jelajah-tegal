@@ -27,13 +27,45 @@ class ProfileController extends Controller
             'name' => ['required', 'string', 'max:120'],
             'phone' => ['nullable', 'string', 'max:20'],
             'preferred_locale' => ['nullable', 'string', 'in:id,en'],
+            'avatar' => ['nullable', 'image', 'max:3072'], // Max 3MB
         ], [
             'name.required' => 'Nama lengkap wajib diisi.',
             'name.max' => 'Nama lengkap maksimal 120 karakter.',
+            'avatar.image' => 'File harus berupa gambar.',
+            'avatar.max' => 'Ukuran foto profil maksimal 3MB.',
         ]);
 
         $before = $user->only(['name', 'phone', 'preferred_locale']);
-        $user->update($validated);
+        $user->update([
+            'name' => $validated['name'],
+            'phone' => $validated['phone'],
+            'preferred_locale' => $validated['preferred_locale'] ?? 'id',
+        ]);
+
+        if ($request->hasFile('avatar')) {
+            $file = $request->file('avatar');
+            $mime = $file->getMimeType();
+            $path = $file->store('public/avatars');
+            
+            $media = \App\Models\MediaAsset::create([
+                'owner_user_id' => $user->id,
+                'disk' => 'local',
+                'object_key' => str_replace('public/', '', $path),
+                'original_name' => $file->getClientOriginalName(),
+                'mime_type' => $mime,
+                'size_bytes' => $file->getSize(),
+                'checksum_sha256' => hash_file('sha256', $file->getRealPath()),
+                'visibility' => 'public',
+                'purpose' => 'avatar',
+                'status' => 'ready',
+                'uploaded_at' => now(),
+            ]);
+
+            $user->profile()->updateOrCreate(
+                ['user_id' => $user->id],
+                ['avatar_media_id' => $media->id]
+            );
+        }
 
         $audit->record('consumer.profile_updated', $user, $before, $validated, $user);
 

@@ -9,9 +9,29 @@
         <!-- Kolom Kiri: Informasi Data Diri -->
         <div class="col-lg-6">
             <x-content-card title="Data Diri Wisatawan">
-                <form method="POST" action="{{ route('consumer.profile.update') }}">
+                <form method="POST" action="{{ route('consumer.profile.update') }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
+
+                    <div class="mb-4 text-center">
+                        <div class="position-relative d-inline-block">
+                            @if($user->profile?->avatar)
+                                <img src="{{ asset('storage/' . $user->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle border" style="width: 100px; height: 100px; object-fit: cover;">
+                            @else
+                                <div class="rounded-circle border bg-light d-flex align-items-center justify-content-center text-muted fw-bold" style="width: 100px; height: 100px; font-size: 36px;">
+                                    {{ str($user->name)->substr(0, 1)->upper() }}
+                                </div>
+                            @endif
+                            <label for="avatar_upload" class="position-absolute bottom-0 end-0 bg-white border rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 32px; height: 32px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                                <i class="fa-solid fa-camera fs-7"></i>
+                            </label>
+                            <input type="file" name="avatar" id="avatar_upload" class="d-none" accept="image/*" onchange="previewAvatar(this)">
+                        </div>
+                        <div class="small text-muted mt-2">Format: JPG, PNG. Maksimal 3 MB.</div>
+                        @error('avatar')
+                            <div class="text-danger small mt-1">{{ $message }}</div>
+                        @enderror
+                    </div>
 
                     <div class="mb-3">
                         <label class="form-label fw-bold text-dark fs-7">
@@ -155,6 +175,26 @@
                 input.type = 'password';
                 icon.classList.remove('fa-eye-slash');
                 icon.classList.add('fa-eye');
+            }
+        }
+
+        function previewAvatar(input) {
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    const container = input.closest('.position-relative');
+                    let img = container.querySelector('img');
+                    if (!img) {
+                        const placeholder = container.querySelector('.bg-light');
+                        if (placeholder) placeholder.remove();
+                        img = document.createElement('img');
+                        img.className = 'rounded-circle border';
+                        img.style = 'width: 100px; height: 100px; object-fit: cover;';
+                        container.insertBefore(img, container.querySelector('label'));
+                    }
+                    img.src = e.target.result;
+                }
+                reader.readAsDataURL(input.files[0]);
             }
         }
     </script>

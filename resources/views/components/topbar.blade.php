@@ -50,7 +50,11 @@
 
     <div class='dropdown'>
       <button class='profile-trigger d-flex align-items-center gap-2' data-bs-toggle='dropdown' aria-expanded='false'>
-        <span class='profile-avatar'>{{ str(auth()->user()?->name ?? 'U')->substr(0,1)->upper() }}</span>
+        @if(auth()->user()?->profile?->avatar)
+          <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="Avatar" class="profile-avatar object-fit-cover">
+        @else
+          <span class='profile-avatar'>{{ str(auth()->user()?->name ?? 'U')->substr(0,1)->upper() }}</span>
+        @endif
         <span class='profile-copy text-start d-none d-sm-flex'>
           <strong>{{ auth()->user()?->name ?? 'Pengguna' }}</strong>
           <small>{{ str($surface)->headline() }}</small>
