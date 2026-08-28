@@ -45,12 +45,12 @@ class ProfileController extends Controller
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
             $mime = $file->getMimeType();
-            $path = $file->store('public/avatars');
+            $path = $file->store('avatars', 'public');
             
             $media = \App\Models\MediaAsset::create([
                 'owner_user_id' => $user->id,
-                'disk' => 'local',
-                'object_key' => str_replace('public/', '', $path),
+                'disk' => 'public',
+                'object_key' => $path,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $mime,
                 'size_bytes' => $file->getSize(),
