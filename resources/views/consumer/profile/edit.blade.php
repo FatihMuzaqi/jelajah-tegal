@@ -16,20 +16,22 @@
                     <div class="mb-4 text-center">
                         <div class="position-relative d-inline-block">
                             @if($user->profile?->avatar)
-                                <img src="{{ asset('storage/' . $user->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle border" style="width: 100px; height: 100px; object-fit: cover;">
+                                <img src="{{ asset('storage/' . $user->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle border border-3 border-white shadow-sm" style="width: 104px; height: 104px; object-fit: cover;">
                             @else
-                                <div class="rounded-circle border bg-light d-flex align-items-center justify-content-center text-muted fw-bold" style="width: 100px; height: 100px; font-size: 36px;">
+                                <div class="rounded-circle border border-3 border-white shadow-sm d-flex align-items-center justify-content-center text-white fw-bold" style="width: 104px; height: 104px; font-size: 38px; background: linear-gradient(135deg, #047857 0%, #10b981 100%);">
                                     {{ str($user->name)->substr(0, 1)->upper() }}
                                 </div>
                             @endif
-                            <label for="avatar_upload" class="position-absolute bottom-0 end-0 bg-white border rounded-circle d-flex align-items-center justify-content-center text-primary" style="width: 32px; height: 32px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-                                <i class="fa-solid fa-camera fs-7"></i>
+                            <label for="avatar_upload" class="position-absolute bottom-0 end-0 bg-white border border-2 border-white rounded-circle d-flex align-items-center justify-content-center text-primary shadow-sm" style="width: 36px; height: 36px; cursor: pointer; transition: transform 0.15s ease;" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform='scale(1)'" title="Ubah Foto Profil">
+                                <i class="fa-solid fa-camera fs-7 text-success"></i>
                             </label>
                             <input type="file" name="avatar" id="avatar_upload" class="d-none" accept="image/*" onchange="previewAvatar(this)">
                         </div>
-                        <div class="small text-muted mt-2">Format: JPG, PNG. Maksimal 3 MB.</div>
+                        <div class="small text-muted mt-2 fw-semibold" style="font-size: 11.5px;">
+                            <i class="fa-solid fa-arrow-up-from-bracket me-1 text-primary"></i> Klik ikon kamera untuk memilih foto (Maks. 3 MB)
+                        </div>
                         @error('avatar')
-                            <div class="text-danger small mt-1">{{ $message }}</div>
+                            <div class="text-danger small mt-1 fw-semibold">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -80,8 +82,8 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" class="btn btn-lokantara fw-bold rounded-pill px-4">
-                            <i class="fa-solid fa-floppy-disk me-1.5"></i> Simpan Profil
+                        <button type="submit" class="btn btn-lokantara fw-bold rounded-pill px-4 py-2.5 w-100 w-sm-auto shadow-sm">
+                            <i class="fa-solid fa-floppy-disk me-1.5"></i> Simpan Perubahan Profil
                         </button>
                     </div>
                 </form>
@@ -153,7 +155,7 @@
                     </div>
 
                     <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" class="btn btn-lokantara fw-bold rounded-pill px-4">
+                        <button type="submit" class="btn btn-lokantara fw-bold rounded-pill px-4 py-2.5 w-100 w-sm-auto shadow-sm">
                             <i class="fa-solid fa-key me-1.5"></i> Perbarui Kata Sandi
                         </button>
                     </div>

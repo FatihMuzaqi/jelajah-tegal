@@ -28,6 +28,33 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    <style>
+        /* Mobile & Desktop UX Enhancements for Consumer Panel */
+        @media (max-width: 991.98px) {
+            .dashboard-content {
+                padding-bottom: 96px !important; /* Ensures fixed bottom-nav never overlaps cards, forms, or buttons */
+                padding-left: 16px !important;
+                padding-right: 16px !important;
+            }
+            .page-heading {
+                margin-bottom: 16px !important;
+            }
+            .page-heading h1 {
+                font-size: 1.45rem !important;
+            }
+            .page-description {
+                font-size: 12px !important;
+            }
+        }
+        @media (min-width: 992px) {
+            .dashboard-content {
+                padding: 28px 36px 48px !important;
+            }
+            .page-heading {
+                margin-bottom: 22px;
+            }
+        }
+    </style>
 </head>
 <body class='dashboard-body' data-surface='{{ $surface }}'>
     <div class='mobile-backdrop' data-sidebar-close></div>

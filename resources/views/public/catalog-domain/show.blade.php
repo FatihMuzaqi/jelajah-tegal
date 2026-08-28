@@ -305,16 +305,24 @@
                         <div class="p-3 rounded-3 mb-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                             <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
                                 <div class="d-flex align-items-center gap-2.5">
-                                    <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--lokantara-primary), var(--lokantara-accent)); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 14px; flex-shrink: 0;">
-                                        {{ strtoupper(substr($review->user?->name ?? 'P', 0, 1)) }}
-                                    </div>
+                                    @if($review->user?->profile?->avatar)
+                                        <img src="{{ asset('storage/' . $review->user->profile->avatar->object_key) }}" alt="{{ $review->user->name }}" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 40px; height: 40px; object-fit: cover;">
+                                    @else
+                                        <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #047857 0%, #10b981 100%); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 15px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(4,120,87,0.2);">
+                                            {{ strtoupper(substr($review->user?->name ?? 'P', 0, 1)) }}
+                                        </div>
+                                    @endif
                                     <div>
                                         <strong class="fs-7 text-dark">{{ $review->user?->name ?? 'Pengunjung' }}</strong>
-                                        <div class="text-warning" style="font-size: 12px;">
-                                            @for ($i = 1; $i <= 5; $i++)
-                                                <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted opacity-25' }}"></i>
-                                            @endfor
-                                            <span class="text-muted ms-1" style="font-size: 11px;">({{ $review->rating }}/5)</span>
+                                        <div class="d-flex align-items-center gap-1 mt-0.5">
+                                            <div class="text-warning" style="font-size: 12px;">
+                                                @for ($i = 1; $i <= 5; $i++)
+                                                    <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted opacity-25' }}"></i>
+                                                @endfor
+                                            </div>
+                                            <span class="badge bg-warning-subtle text-warning-emphasis fw-bold rounded-pill px-2 py-0.5" style="font-size: 10px;">
+                                                {{ $review->rating }}.0
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
@@ -324,15 +332,22 @@
                             @if ($review->title)
                                 <h6 class="fw-bold mb-1 fs-7" style="color: var(--lokantara-text);">{{ $review->title }}</h6>
                             @endif
-                            <p class="text-muted mb-2" style="font-size: 13.5px; line-height: 1.6;">{{ $review->body }}</p>
+                            <p class="text-secondary mb-2" style="font-size: 13.5px; line-height: 1.6;">{{ $review->body }}</p>
 
                             <!-- Nested Replies List -->
                             @if ($review->replies->isNotEmpty())
                                 <div class="mt-3 pt-2.5 border-top d-flex flex-column gap-2" style="border-color: rgba(0,0,0,0.06) !important;">
                                     @foreach ($review->replies as $reply)
-                                        <div class="p-2.5 rounded-3 ms-3" style="background: rgba(255,255,255,0.7); border: 1px solid var(--lokantara-border);">
+                                        <div class="p-2.5 rounded-3 ms-2 ms-md-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                                             <div class="d-flex align-items-center justify-content-between mb-1">
                                                 <div class="d-flex align-items-center gap-2">
+                                                    @if($reply->author?->profile?->avatar)
+                                                        <img src="{{ asset('storage/' . $reply->author->profile->avatar->object_key) }}" alt="{{ $reply->author->name }}" class="rounded-circle border" style="width: 24px; height: 24px; object-fit: cover;">
+                                                    @else
+                                                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 24px; height: 24px; font-size: 10px; background: #047857;">
+                                                            {{ strtoupper(substr($reply->author?->name ?? 'P', 0, 1)) }}
+                                                        </div>
+                                                    @endif
                                                     <strong class="fs-8 text-dark">{{ $reply->author?->name ?? 'Pengguna' }}</strong>
                                                     @if ($reply->mitra_id)
                                                         <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size: 9.5px;">
@@ -354,27 +369,33 @@
 
                             <!-- Action: Reply Toggle & Form -->
                             <div class="mt-2.5 pt-2 d-flex align-items-center justify-content-between">
-                                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 text-primary fw-semibold" style="font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#replyBox-cd-{{ $review->id }}" aria-expanded="false">
-                                    <i class="fa-solid fa-reply me-1"></i> Balas ({{ $review->replies->count() }})
+                                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 text-primary fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#replyBox-cd-{{ $review->id }}" aria-expanded="false">
+                                    <i class="fa-solid fa-reply"></i>
+                                    <span>Balas Ulasan ({{ $review->replies->count() }})</span>
                                 </button>
                             </div>
 
                             <div class="collapse mt-2.5" id="replyBox-cd-{{ $review->id }}">
                                 @auth
-                                    <form method="POST" action="{{ route('public.reviews.replies.store', $review->id) }}" class="p-2.5 rounded-3 bg-white border">
+                                    <form method="POST" action="{{ route('public.reviews.replies.store', $review->id) }}" class="p-3 rounded-3 bg-white border shadow-sm">
                                         @csrf
+                                        <div class="d-flex align-items-center gap-2 mb-2">
+                                            @if(auth()->user()->profile?->avatar)
+                                                <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle border" style="width: 26px; height: 26px; object-fit: cover;">
+                                            @endif
+                                            <small class="fw-bold text-dark fs-8">Tulis tanggapan sebagai {{ auth()->user()->name }}:</small>
+                                        </div>
                                         <div class="mb-2">
-                                            <label class="form-label mb-1 text-muted" style="font-size: 11px; font-weight: 600;">Tulis Balasan:</label>
-                                            <textarea name="body" class="form-control form-control-sm" rows="2" placeholder="Tulis tanggapan atau balasan Anda..." required style="font-size: 12.5px;"></textarea>
+                                            <textarea name="body" class="form-control form-control-sm" rows="2" placeholder="Tulis tanggapan atau pengalaman Anda..." required style="font-size: 12.5px; border-radius: 8px;"></textarea>
                                         </div>
                                         <div class="d-flex justify-content-end gap-2">
-                                            <button type="button" class="btn btn-sm btn-light py-1 px-2.5 border" style="font-size: 11.5px;" data-bs-toggle="collapse" data-bs-target="#replyBox-cd-{{ $review->id }}">Batal</button>
-                                            <button type="submit" class="btn btn-sm btn-lokantara py-1 px-3" style="font-size: 11.5px;">Kirim Balasan</button>
+                                            <button type="button" class="btn btn-sm btn-light py-1 px-3 border rounded-pill" style="font-size: 11.5px;" data-bs-toggle="collapse" data-bs-target="#replyBox-cd-{{ $review->id }}">Batal</button>
+                                            <button type="submit" class="btn btn-sm btn-lokantara py-1 px-3 rounded-pill fw-bold" style="font-size: 11.5px;">Kirim Balasan</button>
                                         </div>
                                     </form>
                                 @else
-                                    <div class="p-2 rounded-3 bg-white border text-center" style="font-size: 12px;">
-                                        <a href="{{ route('login') }}" class="text-primary fw-bold text-decoration-none">Masuk (Login)</a> untuk menulis balasan ulasan ini.
+                                    <div class="p-2.5 rounded-3 bg-light border text-center" style="font-size: 12px;">
+                                        <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none"><i class="fa-regular fa-user me-1"></i>Masuk (Login)</a> untuk menulis balasan ulasan ini.
                                     </div>
                                 @endauth
                             </div>
@@ -383,28 +404,10 @@
                         <x-empty-state title="Belum Ada Ulasan" description="Jadilah yang pertama memberikan ulasan setelah berkunjung." compact />
                     @endforelse
 
-                    @auth
-                        <hr class="my-4">
-                        <h4 class="fs-6 fw-bold mb-2">Tulis Ulasan Anda</h4>
-                        <form method="POST" action="{{ route($routePrefix . '.reviews.store', $item->slug) }}">
-                            @csrf
-                            <div class="row g-2 mb-2">
-                                <div class="col-md-3">
-                                    <select class="form-select form-select-sm" name="rating" required>
-                                        <option value="5">★ 5 (Sangat Bagus)</option>
-                                        <option value="4">★ 4 (Bagus)</option>
-                                        <option value="3">★ 3 (Cukup)</option>
-                                        <option value="2">★ 2 (Kurang)</option>
-                                        <option value="1">★ 1 (Buruk)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-9">
-                                    <textarea class="form-control form-control-sm" name="body" rows="2" placeholder="Ceritakan pengalaman Anda..." required></textarea>
-                                </div>
-                            </div>
-                            <button class="btn btn-sm btn-lokantara fw-bold">Kirim Ulasan</button>
-                        </form>
-                    @endauth
+                    <!-- Review Form Box -->
+                    <div class="mt-4 pt-3 border-top">
+                        <x-review-form :action="route($routePrefix . '.reviews.store', $item->slug)" :itemType="$serviceType->name ?? 'layanan'" />
+                    </div>
                 </div>
             </div>
 

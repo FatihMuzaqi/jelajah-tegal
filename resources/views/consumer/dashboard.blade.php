@@ -42,8 +42,30 @@
 }
 @media (max-width: 575.98px) {
     .consumer-stats-grid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+    .stat-card-clean {
+        padding: 12px 14px !important;
+        min-height: 112px !important;
+        border-radius: 14px !important;
+    }
+    .stat-card-value {
+        font-size: 20px !important;
+        margin: 4px 0 !important;
+    }
+    .stat-icon-clean {
+        width: 32px !important;
+        height: 32px !important;
+        min-width: 32px !important;
+        font-size: 13px !important;
+    }
+    .stat-card-label {
+        font-size: 10px !important;
+    }
+    .stat-card-footer {
+        font-size: 11px !important;
+        padding-top: 6px !important;
     }
 }
 
@@ -57,13 +79,14 @@
     justify-content: space-between;
     min-height: 130px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
-    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s ease;
     text-decoration: none;
     color: inherit;
 }
 .stat-card-clean:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.06);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 24px -5px rgba(0, 0, 0, 0.08);
+    border-color: #cbd5e1;
     color: inherit;
 }
 
@@ -263,9 +286,13 @@
     <div class="consumer-hero-card p-3.5 p-md-4 mb-4 shadow-sm">
         <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3 position-relative" style="z-index: 1;">
             <div class="d-flex align-items-center gap-3">
-                <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center shadow-sm" style="width: 52px; height: 52px; font-size: 20px; font-weight: 800; color: #047857 !important; flex-shrink: 0;">
-                    {{ str($u->name)->substr(0, 1)->upper() }}
-                </div>
+                @if($u->profile?->avatar)
+                    <img src="{{ asset('storage/' . $u->profile->avatar->object_key) }}" alt="{{ $u->name }}" class="rounded-circle border border-2 border-white shadow-sm flex-shrink-0" style="width: 56px; height: 56px; object-fit: cover;">
+                @else
+                    <div class="rounded-circle bg-white text-dark d-flex align-items-center justify-content-center shadow-sm flex-shrink-0" style="width: 56px; height: 56px; font-size: 22px; font-weight: 800; color: #047857 !important;">
+                        {{ str($u->name)->substr(0, 1)->upper() }}
+                    </div>
+                @endif
                 <div>
                     <div class="d-flex align-items-center gap-2 flex-wrap mb-1">
                         <h4 class="fw-bold mb-0 text-white fs-5">{{ $u->name }}</h4>
