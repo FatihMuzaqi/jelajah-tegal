@@ -34,24 +34,44 @@
         })();
     </script>
 
-    <!-- Non-blocking Google Fonts (Inter, Kaushan Script, Plus Jakarta Sans) -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kaushan+Script&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Kaushan+Script&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet"></noscript>
-
-
+    <!-- Preload Critical Local Web Fonts (Zero Remote Latency, Zero FOUT, Zero Swap) -->
+    <link rel="preload" href="{{ asset('fonts/PlusJakartaSans-Variable.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/KaushanScript-Regular.woff2') }}" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="{{ asset('fonts/Inter-Variable.woff2') }}" as="font" type="font/woff2" crossorigin>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     @stack('head-extra')
 
     <style>
-        body {
+        /* Local High-Performance Font Definitions */
+        @font-face {
+            font-family: 'Plus Jakarta Sans';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: block;
+            src: url('{{ asset("fonts/PlusJakartaSans-Variable.woff2") }}') format('woff2');
+        }
+        @font-face {
+            font-family: 'Kaushan Script';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: block;
+            src: url('{{ asset("fonts/KaushanScript-Regular.woff2") }}') format('woff2');
+        }
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 100 900;
+            font-display: block;
+            src: url('{{ asset("fonts/Inter-Variable.woff2") }}') format('woff2');
+        }
+
+        body.public-body, body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
         }
         h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 {
-            font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
             letter-spacing: -0.025em;
         }
         .public-header {

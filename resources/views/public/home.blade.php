@@ -111,7 +111,7 @@
     max-width: 100%;
 }
 .jt-hero-title-large {
-    font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
     font-size: clamp(32px, 6.2vw, 56px);
     font-weight: 900;
     line-height: 1.14;
@@ -122,9 +122,9 @@
     text-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
 }
 .jt-hero-title-large span {
-    font-family: 'Kaushan Script', 'Satisfy', cursive, sans-serif;
+    font-family: 'Kaushan Script', cursive, sans-serif;
     font-size: 1.18em;
-    font-weight: 700;
+    font-weight: 400;
     letter-spacing: 0.015em;
     line-height: 1.2;
     background: linear-gradient(135deg, #34d399 0%, #6ee7b7 50%, #a7f3d0 100%);
@@ -278,7 +278,7 @@
     margin-bottom: 36px;
 }
 .jt-section-heading-primary {
-    font-family: 'Plus Jakarta Sans', 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-weight: 800;
     font-size: clamp(24px, 3.8vw, 32px);
     color: #0f172a;
@@ -368,7 +368,7 @@
 .bg-icon-purple { background: #7c3aed; }
 
 .jt-explore-body h3 {
-    font-family: 'Plus Jakarta Sans', 'Outfit', sans-serif !important;
+    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif !important;
     font-size: 19px;
     font-weight: 800;
     color: #0f172a;
