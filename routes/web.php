@@ -68,6 +68,7 @@ Route::middleware(['auth', 'verified', 'active.user'])->group(function () {
     Route::delete('/rental/{slug}/favorite', [RentalController::class, 'unfavorite'])->name('rental.unfavorite');
     Route::post('/rental/{slug}/reviews', [RentalController::class, 'review'])->name('rental.reviews.store');
     Route::post('/rental/{slug}/book', [RentalController::class, 'book'])->name('rental.book');
+    Route::post('/reviews/{review}/replies', [\App\Http\Controllers\Public\PublicReviewReplyController::class, 'store'])->name('public.reviews.replies.store');
 });
 require __DIR__.'/auth.php';
 Route::middleware(['auth', 'verified', 'active.user'])->group(function () {

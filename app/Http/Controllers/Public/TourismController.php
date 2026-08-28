@@ -52,7 +52,11 @@ class TourismController extends Controller
     public function show(string $slug): View
     {
         abort_unless($this->flags->enabled('public-tourism'), 404);
-        $tourism = CatalogEntity::query()->publicTourism()->where('slug', $slug)->with(['mitra', 'category', 'region', 'tourism', 'location', 'facilities', 'operatingHours', 'media', 'offers.ticketPackage', 'offers.availabilities', 'reviews' => fn ($q) => $q->where('status', 'published')->latest()])->firstOrFail();
+        $tourism = CatalogEntity::query()->publicTourism()->where('slug', $slug)->with([
+            'mitra', 'category', 'region', 'tourism', 'location', 'facilities', 'operatingHours', 'media',
+            'offers.ticketPackage', 'offers.availabilities',
+            'reviews' => fn ($q) => $q->where('status', 'published')->with(['user', 'replies.author', 'replies.mitra'])->latest(),
+        ])->firstOrFail();
 
         return view('public.tourism.show', compact('tourism'));
     }
@@ -78,9 +82,23 @@ class TourismController extends Controller
     {
         abort_unless($request->user()->can('reviews.create'), 403);
         $entity = CatalogEntity::publicTourism()->where('slug', $slug)->firstOrFail();
-        $data = $request->validate(['rating' => 'required|integer|between:1,5', 'title' => 'nullable|string|max:191', 'body' => 'nullable|string|max:5000']);
-        Review::updateOrCreate(['user_id' => $request->user()->id, 'catalog_entity_id' => $entity->id], $data + ['status' => 'pending']);
+        $data = $request->validate([
+            'rating' => 'required|integer|between:1,5',
+            'title' => ['nullable', 'string', 'max:191', new \App\Rules\CleanContent],
+            'body' => ['required', 'string', 'min:5', 'max:5000', new \App\Rules\CleanContent],
+        ], [
+            'rating.required' => 'Silakan pilih rating bintang.',
+            'body.required' => 'Isi ulasan pengalaman tidak boleh kosong.',
+            'body.min' => 'Isi ulasan minimal 5 karakter.',
+        ]);
 
-        return back()->with('status', 'Ulasan dikirim dan menunggu moderasi.');
+        $review = Review::updateOrCreate(
+            ['user_id' => $request->user()->id, 'catalog_entity_id' => $entity->id],
+            $data + ['status' => 'published']
+        );
+
+        $review->syncCatalogRating();
+
+        return back()->with('status', 'Ulasan Anda berhasil dikirim dan dipublikasikan!');
     }
 }

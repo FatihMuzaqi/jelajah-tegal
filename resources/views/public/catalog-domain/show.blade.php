@@ -280,21 +280,104 @@
 
                 <!-- 5. Ulasan Pengunjung -->
                 <div class="cd-card">
-                    <h2 class="cd-card-title"><i class="fa-solid fa-star text-warning me-2"></i> Ulasan Pengunjung ({{ $item->reviews->count() }})</h2>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h2 class="cd-card-title mb-0"><i class="fa-solid fa-star text-warning me-2"></i> Ulasan Pengunjung ({{ $item->reviews->count() }})</h2>
+                    </div>
+
+                    @if (session('status'))
+                        <div class="alert alert-success border-0 shadow-sm rounded-3 py-2 px-3 mb-3 d-flex align-items-center gap-2 fs-8">
+                            <i class="fa-solid fa-circle-check text-success"></i>
+                            <span>{{ session('status') }}</span>
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger border-0 shadow-sm rounded-3 py-2 px-3 mb-3 fs-8">
+                            <ul class="mb-0 ps-3">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 
                     @forelse($item->reviews as $review)
                         <div class="p-3 rounded-3 mb-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <strong class="text-dark">{{ $review->user?->name ?? 'Pengunjung' }}</strong>
-                                <span class="text-warning"><i class="fa-solid fa-star"></i> {{ $review->rating }}/5</span>
+                            <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
+                                <div class="d-flex align-items-center gap-2.5">
+                                    <div style="width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, var(--lokantara-primary), var(--lokantara-accent)); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 14px; flex-shrink: 0;">
+                                        {{ strtoupper(substr($review->user?->name ?? 'P', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <strong class="fs-7 text-dark">{{ $review->user?->name ?? 'Pengunjung' }}</strong>
+                                        <div class="text-warning" style="font-size: 12px;">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted opacity-25' }}"></i>
+                                            @endfor
+                                            <span class="text-muted ms-1" style="font-size: 11px;">({{ $review->rating }}/5)</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <small class="text-muted" style="font-size: 11px;">{{ $review->created_at?->diffForHumans() }}</small>
                             </div>
-                            <p class="text-muted mb-2" style="font-size: 13px;">{{ $review->body }}</p>
 
-                            @if($review->reply)
-                                <div class="p-2 rounded mt-2 border-start border-3 border-success" style="background: #f0fdf4; font-size: 12px;">
-                                    <strong>Balasan Pengelola:</strong> {{ $review->reply->body }}
+                            @if ($review->title)
+                                <h6 class="fw-bold mb-1 fs-7" style="color: var(--lokantara-text);">{{ $review->title }}</h6>
+                            @endif
+                            <p class="text-muted mb-2" style="font-size: 13.5px; line-height: 1.6;">{{ $review->body }}</p>
+
+                            <!-- Nested Replies List -->
+                            @if ($review->replies->isNotEmpty())
+                                <div class="mt-3 pt-2.5 border-top d-flex flex-column gap-2" style="border-color: rgba(0,0,0,0.06) !important;">
+                                    @foreach ($review->replies as $reply)
+                                        <div class="p-2.5 rounded-3 ms-3" style="background: rgba(255,255,255,0.7); border: 1px solid var(--lokantara-border);">
+                                            <div class="d-flex align-items-center justify-content-between mb-1">
+                                                <div class="d-flex align-items-center gap-2">
+                                                    <strong class="fs-8 text-dark">{{ $reply->author?->name ?? 'Pengguna' }}</strong>
+                                                    @if ($reply->mitra_id)
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size: 9.5px;">
+                                                            <i class="fa-solid fa-shield-halved me-0.5"></i> Mitra Pengelola
+                                                        </span>
+                                                    @else
+                                                        <span class="badge bg-light text-muted border px-1.5 py-0.5" style="font-size: 9.5px;">
+                                                            <i class="fa-solid fa-user me-0.5"></i> Pengunjung
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <small class="text-muted" style="font-size: 10.5px;">{{ $reply->created_at?->diffForHumans() }}</small>
+                                            </div>
+                                            <p class="mb-0 text-muted" style="font-size: 12.5px; line-height: 1.5;">{{ $reply->body }}</p>
+                                        </div>
+                                    @endforeach
                                 </div>
                             @endif
+
+                            <!-- Action: Reply Toggle & Form -->
+                            <div class="mt-2.5 pt-2 d-flex align-items-center justify-content-between">
+                                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 text-primary fw-semibold" style="font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#replyBox-cd-{{ $review->id }}" aria-expanded="false">
+                                    <i class="fa-solid fa-reply me-1"></i> Balas ({{ $review->replies->count() }})
+                                </button>
+                            </div>
+
+                            <div class="collapse mt-2.5" id="replyBox-cd-{{ $review->id }}">
+                                @auth
+                                    <form method="POST" action="{{ route('public.reviews.replies.store', $review->id) }}" class="p-2.5 rounded-3 bg-white border">
+                                        @csrf
+                                        <div class="mb-2">
+                                            <label class="form-label mb-1 text-muted" style="font-size: 11px; font-weight: 600;">Tulis Balasan:</label>
+                                            <textarea name="body" class="form-control form-control-sm" rows="2" placeholder="Tulis tanggapan atau balasan Anda..." required style="font-size: 12.5px;"></textarea>
+                                        </div>
+                                        <div class="d-flex justify-content-end gap-2">
+                                            <button type="button" class="btn btn-sm btn-light py-1 px-2.5 border" style="font-size: 11.5px;" data-bs-toggle="collapse" data-bs-target="#replyBox-cd-{{ $review->id }}">Batal</button>
+                                            <button type="submit" class="btn btn-sm btn-lokantara py-1 px-3" style="font-size: 11.5px;">Kirim Balasan</button>
+                                        </div>
+                                    </form>
+                                @else
+                                    <div class="p-2 rounded-3 bg-white border text-center" style="font-size: 12px;">
+                                        <a href="{{ route('login') }}" class="text-primary fw-bold text-decoration-none">Masuk (Login)</a> untuk menulis balasan ulasan ini.
+                                    </div>
+                                @endauth
+                            </div>
                         </div>
                     @empty
                         <x-empty-state title="Belum Ada Ulasan" description="Jadilah yang pertama memberikan ulasan setelah berkunjung." compact />

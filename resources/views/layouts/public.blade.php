@@ -169,8 +169,6 @@
                                 href='{{ route('login') }}'>
                                 <i class="fa-regular fa-user me-1"></i> Masuk
                             </a>
-                            <a class='btn btn-emerald rounded-pill px-4 fw-bold text-white text-center py-2'
-                                style="background: #047857;" href='{{ route('register') }}'>Daftar</a>
                         @else
                             <div class="dropdown">
                                 <button

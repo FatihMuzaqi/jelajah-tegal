@@ -32,6 +32,26 @@ class Review extends Model
 
     public function reply(): HasOne
     {
-        return $this->hasOne(ReviewReply::class);
+        return $this->hasOne(ReviewReply::class)->latestOfMany();
+    }
+
+    public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(ReviewReply::class)->where('status', 'published')->oldest();
+    }
+
+    public function syncCatalogRating(): void
+    {
+        if ($entity = $this->catalogEntity) {
+            $stats = $entity->reviews()
+                ->where('status', 'published')
+                ->selectRaw('COUNT(*) as total, COALESCE(AVG(rating), 0) as average')
+                ->first();
+
+            $entity->update([
+                'rating_count' => (int) ($stats->total ?? 0),
+                'rating_average' => round((float) ($stats->average ?? 0), 2),
+            ]);
+        }
     }
 }
