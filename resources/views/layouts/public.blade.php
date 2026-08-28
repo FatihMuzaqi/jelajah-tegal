@@ -175,20 +175,28 @@
                                     class="d-flex align-items-center justify-content-center p-0 rounded-circle border-0 bg-transparent"
                                     type="button" data-bs-toggle="dropdown" aria-expanded="false"
                                     title="{{ auth()->user()->name }}" aria-label="Menu Akun {{ auth()->user()->name }}">
-                                    <span
-                                        class="d-inline-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
-                                        style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #047857 0%, #10b981 100%); font-size: 15px; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(4,120,87,0.25);">
-                                        {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
-                                    </span>
+                                    @if(auth()->user()->profile?->avatar)
+                                        <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle shadow-sm" style="width: 38px; height: 38px; border: 2px solid #ffffff; object-fit: cover; box-shadow: 0 2px 8px rgba(4,120,87,0.25);">
+                                    @else
+                                        <span
+                                            class="d-inline-flex align-items-center justify-content-center text-white fw-bold shadow-sm"
+                                            style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #047857 0%, #10b981 100%); font-size: 15px; border: 2px solid #ffffff; box-shadow: 0 2px 8px rgba(4,120,87,0.25);">
+                                            {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
+                                        </span>
+                                    @endif
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2 p-2"
                                     style="border-radius: 18px; min-width: 240px; font-size: 13px; box-shadow: 0 10px 30px rgba(0,0,0,0.1) !important;">
                                     <li class="px-3 py-2.5 mb-1 rounded-3" style="background: #f8fafc;">
                                         <div class="d-flex align-items-center gap-2">
-                                            <span class="d-inline-flex align-items-center justify-content-center text-white fw-bold rounded-circle flex-shrink-0"
-                                                style="width: 32px; height: 32px; background: #047857; font-size: 13px;">
-                                                {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
-                                            </span>
+                                            @if(auth()->user()->profile?->avatar)
+                                                <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle flex-shrink-0" style="width: 32px; height: 32px; object-fit: cover;">
+                                            @else
+                                                <span class="d-inline-flex align-items-center justify-content-center text-white fw-bold rounded-circle flex-shrink-0"
+                                                    style="width: 32px; height: 32px; background: #047857; font-size: 13px;">
+                                                    {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
+                                                </span>
+                                            @endif
                                             <div class="text-truncate">
                                                 <strong class="d-block text-dark text-truncate" style="font-size: 13px;">{{ auth()->user()->name }}</strong>
                                                 <small class="text-muted d-block text-truncate" style="font-size: 11px;">{{ auth()->user()->email }}</small>
