@@ -44,17 +44,32 @@ class ProfileController extends Controller
 
         if ($request->hasFile('avatar')) {
             $file = $request->file('avatar');
-            $mime = $file->getMimeType();
-            $path = $file->store('avatars', 'public');
+            $webpConverter = app(\App\Services\WebpConverter::class);
+            $converted = $webpConverter->convert($file, quality: 85, maxWidth: 600);
+
+            if ($converted) {
+                $name = str()->ulid().'.webp';
+                $objectKey = 'avatars/'.$name;
+                \Illuminate\Support\Facades\Storage::disk('public')->put($objectKey, file_get_contents($converted['path']), 'public');
+                $mime = 'image/webp';
+                $sizeBytes = $converted['size_bytes'];
+                $checksum = hash_file('sha256', $converted['path']);
+                @unlink($converted['path']);
+            } else {
+                $objectKey = $file->store('avatars', 'public');
+                $mime = $file->getMimeType();
+                $sizeBytes = $file->getSize();
+                $checksum = hash_file('sha256', $file->getRealPath());
+            }
             
             $media = \App\Models\MediaAsset::create([
                 'owner_user_id' => $user->id,
                 'disk' => 'public',
-                'object_key' => $path,
+                'object_key' => $objectKey,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $mime,
-                'size_bytes' => $file->getSize(),
-                'checksum_sha256' => hash_file('sha256', $file->getRealPath()),
+                'size_bytes' => $sizeBytes,
+                'checksum_sha256' => $checksum,
                 'visibility' => 'public',
                 'purpose' => 'avatar',
                 'status' => 'ready',

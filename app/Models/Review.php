@@ -13,11 +13,21 @@ class Review extends Model
 {
     use HasFactory, HasUlids, SoftDeletes;
 
-    protected $fillable = ['user_id', 'catalog_entity_id', 'order_item_id', 'rating', 'title', 'body', 'status', 'moderated_by', 'moderated_at'];
+    protected $fillable = ['user_id', 'catalog_entity_id', 'order_item_id', 'rating', 'title', 'body', 'photos', 'status', 'moderated_by', 'moderated_at'];
 
     protected function casts(): array
     {
-        return ['rating' => 'integer', 'moderated_at' => 'datetime'];
+        return [
+            'rating' => 'integer',
+            'photos' => 'array',
+            'moderated_at' => 'datetime',
+        ];
+    }
+
+    protected static function booted(): void
+    {
+        static::saved(fn () => \Illuminate\Support\Facades\Cache::forget('chatbot_knowledge_base'));
+        static::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('chatbot_knowledge_base'));
     }
 
     public function user(): BelongsTo

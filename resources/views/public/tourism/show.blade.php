@@ -628,24 +628,17 @@
                             </tbody>
                         </table>
                     </div>
-                @endif
-
-                <!-- Visitor Reviews Card -->
-                <div class="detail-card">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h2 class="detail-card-title mb-0"><span class="title-icon"><i class="fa-solid fa-comments text-info"></i></span> Ulasan & Testimoni Pengunjung</h2>
-                        <span class="badge bg-light text-muted border px-2.5 py-1.5 fs-8">{{ $tourism->reviews->count() }} Ulasan</span>
-                    </div>
-
+                @endif                <!-- Visitor Reviews Section -->
+                <div class="mt-4 pt-2">
                     @if (session('status'))
-                        <div class="alert alert-success border-0 shadow-sm rounded-3 py-2 px-3 mb-3 d-flex align-items-center gap-2 fs-8">
+                        <div class="alert alert-success border-0 shadow-sm rounded-3 py-2.5 px-3 mb-3 d-flex align-items-center gap-2 fs-8">
                             <i class="fa-solid fa-circle-check text-success"></i>
                             <span>{{ session('status') }}</span>
                         </div>
                     @endif
 
                     @if ($errors->any())
-                        <div class="alert alert-danger border-0 shadow-sm rounded-3 py-2 px-3 mb-3 fs-8">
+                        <div class="alert alert-danger border-0 shadow-sm rounded-3 py-2.5 px-3 mb-3 fs-8">
                             <ul class="mb-0 ps-3">
                                 @foreach ($errors->all() as $error)
                                     <li>{{ $error }}</li>
@@ -654,87 +647,87 @@
                         </div>
                     @endif
                     
-                    <!-- Review Form Box directly in Reviews Section -->
+                    <!-- 1. Review Form Box -->
                     <div class="mb-4" id="section-tulis-ulasan">
                         <x-review-form :action="route('tourism.reviews.store', $tourism->slug)" itemType="destinasi wisata" />
                     </div>
 
-                    <h4 class="fs-6 fw-bold mb-3 text-dark d-flex align-items-center gap-2">
-                        <i class="fa-solid fa-comments text-primary"></i>
-                        <span>Semua Ulasan Wisatawan ({{ $tourism->reviews->count() }})</span>
-                    </h4>
+                    <!-- 2. Section Heading -->
+                    <h5 class="fw-bold text-dark mb-3 mt-4" style="font-size: 16px;">
+                        Semua Ulasan Wisatawan ({{ $tourism->reviews->count() }})
+                    </h5>
 
+                    <!-- 3. Reviews List -->
                     @forelse ($tourism->reviews as $review)
-                        <div class="p-3 mb-3 rounded-4 shadow-sm bg-white border" style="transition: all 0.2s ease;">
+                        <div class="p-3.5 mb-3 rounded-4 shadow-sm bg-white border" style="border-color: #e2e8f0 !important; transition: all 0.2s ease;">
                             <div class="d-flex align-items-start justify-content-between gap-2 mb-2">
                                 <div class="d-flex align-items-center gap-2.5">
                                     @if($review->user?->profile?->avatar)
-                                        <img src="{{ asset('storage/' . $review->user->profile->avatar->object_key) }}" alt="{{ $review->user->name }}" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 42px; height: 42px; object-fit: cover;">
+                                        <img src="{{ asset('storage/' . $review->user->profile->avatar->object_key) }}" alt="{{ $review->user->name }}" class="rounded-circle border shadow-sm flex-shrink-0" style="width: 38px; height: 38px; object-fit: cover;">
                                     @else
-                                        <div style="width: 42px; height: 42px; border-radius: 12px; background: linear-gradient(135deg, #047857 0%, #10b981 100%); color: #fff; display: grid; place-items: center; font-weight: 700; font-size: 16px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(4,120,87,0.2);">
+                                        <div style="width: 38px; height: 38px; border-radius: 50%; background: #0d9488; color: #fff; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 15px; flex-shrink: 0;">
                                             {{ strtoupper(substr($review->user?->name ?? 'P', 0, 1)) }}
                                         </div>
                                     @endif
                                     <div>
-                                        <div class="d-flex align-items-center gap-1.5 flex-wrap">
-                                            <strong class="fs-7 text-dark">{{ $review->user?->name ?? 'Pengunjung Jelajah Tegal' }}</strong>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-1 mt-0.5">
-                                            <div class="text-warning" style="font-size: 13px;">
-                                                @for ($i = 1; $i <= 5; $i++)
-                                                    <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted opacity-25' }}"></i>
-                                                @endfor
-                                            </div>
-                                            <span class="badge bg-warning-subtle text-warning-emphasis fw-bold rounded-pill px-2 py-0.5" style="font-size: 10.5px;">
-                                                {{ $review->rating }}.0
-                                            </span>
+                                        <strong class="text-dark fw-bold" style="font-size: 14px; line-height: 1.2;">{{ $review->user?->name ?? 'Pengunjung' }}</strong>
+                                        <div class="d-flex align-items-center gap-0.5 mt-0.5" style="color: #f59e0b; font-size: 11px;">
+                                            @for ($i = 1; $i <= 5; $i++)
+                                                <i class="fa-solid fa-star {{ $i <= $review->rating ? 'text-warning' : 'text-muted opacity-25' }}"></i>
+                                            @endfor
                                         </div>
                                     </div>
                                 </div>
-                                <small class="text-muted" style="font-size: 11.5px;">{{ $review->created_at?->diffForHumans() }}</small>
+                                <span class="text-muted" style="font-size: 11px;">{{ $review->created_at?->diffForHumans() }}</span>
                             </div>
 
-                            @if ($review->title)
-                                <h6 class="fw-bold mb-1 fs-7 text-dark">{{ $review->title }}</h6>
-                            @endif
-                            <p class="mb-2 text-secondary" style="font-size: 13.5px; line-height: 1.6;">{{ $review->body }}</p>
+                            <p class="text-dark mt-2.5 mb-2" style="font-size: 13px; line-height: 1.5; color: #334155;">{{ $review->body }}</p>
 
-                            <!-- Nested Replies List -->
+                            <!-- Review Photos Gallery -->
+                            @if (!empty($review->photos) && is_array($review->photos))
+                                <div class="d-flex flex-wrap gap-2 mt-2 mb-2.5 review-photos-gallery">
+                                    @foreach ($review->photos as $photo)
+                                        <a href="{{ asset('storage/' . $photo) }}" target="_blank" class="review-photo-thumbnail rounded-3 overflow-hidden border shadow-2xs d-inline-block position-relative" style="width: 72px; height: 72px; background: #f8fafc;" title="Klik untuk perbesar foto ulasan">
+                                            <img src="{{ asset('storage/' . $photo) }}" alt="Foto ulasan {{ $review->user?->name }}" style="width: 100%; height: 100%; object-fit: cover; transition: transform 0.2s ease;" onmouseover="this.style.transform='scale(1.08)';" onmouseout="this.style.transform='scale(1)';">
+                                        </a>
+                                    @endforeach
+                                </div>
+                            @endif
+
+                            <!-- Nested Replies (Discussion Thread) -->
                             @if ($review->replies->isNotEmpty())
-                                <div class="mt-3 pt-2.5 border-top d-flex flex-column gap-2" style="border-color: rgba(0,0,0,0.06) !important;">
+                                <div class="mt-3 ps-3 border-start d-flex flex-column gap-2" style="border-left: 2px solid #e2e8f0 !important; margin-left: 14px;">
                                     @foreach ($review->replies as $reply)
-                                        <div class="p-2.5 rounded-3 ms-2 ms-md-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                                        <div class="py-1">
                                             <div class="d-flex align-items-center justify-content-between mb-1">
-                                                <div class="d-flex align-items-center gap-2">
+                                                <div class="d-flex align-items-center gap-1.5 flex-wrap">
                                                     @if($reply->author?->profile?->avatar)
                                                         <img src="{{ asset('storage/' . $reply->author->profile->avatar->object_key) }}" alt="{{ $reply->author->name }}" class="rounded-circle border" style="width: 24px; height: 24px; object-fit: cover;">
                                                     @else
-                                                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 24px; height: 24px; font-size: 10px; background: #047857;">
+                                                        <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold" style="width: 24px; height: 24px; font-size: 10px; background: #475569;">
                                                             {{ strtoupper(substr($reply->author?->name ?? 'P', 0, 1)) }}
                                                         </div>
                                                     @endif
-                                                    <strong class="fs-8 text-dark">{{ $reply->author?->name ?? 'Pengguna' }}</strong>
+                                                    <strong class="text-dark fw-bold ms-1" style="font-size: 12.5px;">{{ $reply->author?->name ?? 'Pengguna' }}</strong>
                                                     @if ($reply->mitra_id)
-                                                        <span class="badge bg-success-subtle text-success border border-success-subtle px-1.5 py-0.5" style="font-size: 9.5px;">
-                                                            <i class="fa-solid fa-shield-halved me-0.5"></i> Pengelola
-                                                        </span>
+                                                        <span class="badge" style="background: #e0f2fe; color: #0369a1; font-size: 9.5px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">Pengelola</span>
                                                     @else
-                                                        <span class="badge bg-light text-muted border px-1.5 py-0.5" style="font-size: 9.5px;">
-                                                            <i class="fa-solid fa-user me-0.5"></i> Pengunjung
-                                                        </span>
+                                                        <span class="badge" style="background: #f1f5f9; color: #475569; font-size: 9.5px; font-weight: 600; padding: 2px 6px; border-radius: 4px;">Pengunjung</span>
                                                     @endif
                                                 </div>
-                                                <small class="text-muted" style="font-size: 10.5px;">{{ $reply->created_at?->diffForHumans() }}</small>
+                                                <span class="text-muted" style="font-size: 10.5px;">{{ $reply->created_at?->diffForHumans() }}</span>
                                             </div>
-                                            <p class="mb-0 text-muted" style="font-size: 12.5px; line-height: 1.5;">{{ $reply->body }}</p>
+                                            <div class="text-dark ps-4 ms-2" style="font-size: 12.5px; line-height: 1.5; color: #1e293b;">
+                                                {{ $reply->body }}
+                                            </div>
                                         </div>
                                     @endforeach
                                 </div>
                             @endif
 
                             <!-- Action: Reply Toggle & Form -->
-                            <div class="mt-2.5 pt-2 d-flex align-items-center justify-content-between">
-                                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 text-primary fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 12px;" data-bs-toggle="collapse" data-bs-target="#replyBox-{{ $review->id }}" aria-expanded="false">
+                            <div class="mt-2.5 pt-1 d-flex align-items-center justify-content-between">
+                                <button type="button" class="btn btn-sm btn-link text-decoration-none p-0 text-muted fw-semibold d-inline-flex align-items-center gap-1" style="font-size: 11.5px;" data-bs-toggle="collapse" data-bs-target="#replyBox-{{ $review->id }}" aria-expanded="false">
                                     <i class="fa-solid fa-reply"></i>
                                     <span>Balas Ulasan ({{ $review->replies->count() }})</span>
                                 </button>
@@ -742,31 +735,37 @@
 
                             <div class="collapse mt-2.5" id="replyBox-{{ $review->id }}">
                                 @auth
-                                    <form method="POST" action="{{ route('public.reviews.replies.store', $review->id) }}" class="p-3 rounded-3 bg-white border shadow-sm">
+                                    <form method="POST" action="{{ route('public.reviews.replies.store', $review->id) }}" class="p-3 rounded-3 bg-white border shadow-sm" style="border-color: #e2e8f0 !important;">
                                         @csrf
                                         <div class="d-flex align-items-center gap-2 mb-2">
                                             @if(auth()->user()->profile?->avatar)
-                                                <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle border" style="width: 26px; height: 26px; object-fit: cover;">
+                                                <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="Avatar" class="rounded-circle border" style="width: 24px; height: 24px; object-fit: cover;">
                                             @endif
                                             <small class="fw-bold text-dark fs-8">Tulis tanggapan sebagai {{ auth()->user()->name }}:</small>
                                         </div>
                                         <div class="mb-2">
-                                            <textarea name="body" class="form-control form-control-sm" rows="2" placeholder="Tulis balasan atau tips tambahan Anda..." required style="font-size: 12.5px; border-radius: 8px;"></textarea>
+                                            <textarea name="body" class="form-control form-control-sm rounded-3" rows="2" placeholder="Tulis tanggapan atau saran Anda..." required style="font-size: 12.5px; border-color: #cbd5e1; background: #f8fafc;"></textarea>
                                         </div>
                                         <div class="d-flex justify-content-end gap-2">
-                                            <button type="button" class="btn btn-sm btn-light py-1 px-3 border rounded-pill" style="font-size: 11.5px;" data-bs-toggle="collapse" data-bs-target="#replyBox-{{ $review->id }}">Batal</button>
-                                            <button type="submit" class="btn btn-sm btn-lokantara py-1 px-3 rounded-pill fw-bold" style="font-size: 11.5px;">Kirim Balasan</button>
+                                            <button type="button" class="btn btn-sm btn-light py-1 px-3 border rounded-3" style="font-size: 11.5px;" data-bs-toggle="collapse" data-bs-target="#replyBox-{{ $review->id }}">Batal</button>
+                                            <button type="submit" class="btn btn-sm text-white py-1 px-3 rounded-3 fw-bold" style="background: #0d9488; font-size: 11.5px; border: none;">Kirim Balasan</button>
                                         </div>
                                     </form>
                                 @else
-                                    <div class="p-2.5 rounded-3 bg-light border text-center" style="font-size: 12px;">
-                                        <a href="{{ route('login') }}" class="text-success fw-bold text-decoration-none"><i class="fa-regular fa-user me-1"></i>Masuk (Login)</a> untuk menulis balasan ulasan ini.
+                                    <div class="p-2.5 rounded-3 bg-light border text-center" style="font-size: 12px; border-color: #e2e8f0 !important;">
+                                        <a href="{{ route('login') }}" class="text-emerald fw-bold text-decoration-none"><i class="fa-regular fa-user me-1"></i>Masuk (Login)</a> untuk menulis balasan ulasan ini.
                                     </div>
                                 @endauth
                             </div>
                         </div>
                     @empty
-                        <x-empty-state title="Belum ada ulasan publik" description="Jadilah pengunjung pertama yang membagikan pengalaman seru berwisata di sini." compact />
+                        <div class="p-4 rounded-4 bg-white border text-center shadow-sm" style="border-color: #e2e8f0 !important;">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 44px; height: 44px; background: #f0fdf4; color: #047857; font-size: 18px;">
+                                <i class="fa-solid fa-comments"></i>
+                            </div>
+                            <h6 class="fw-bold text-dark mb-1 fs-7">Belum Ada Ulasan</h6>
+                            <p class="text-muted small mb-0" style="font-size: 12px;">Jadilah yang pertama memberikan ulasan dan rating untuk destinasi wisata ini.</p>
+                        </div>
                     @endforelse
                 </div>
             </div>

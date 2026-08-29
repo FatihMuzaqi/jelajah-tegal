@@ -13,6 +13,8 @@ class MitraMediaStorage
 {
     private const EXTENSIONS = ['application/pdf' => 'pdf', 'image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
 
+    public function __construct(protected WebpConverter $webpConverter) {}
+
     public function store(Mitra $mitra, UploadedFile $file, string $purpose, bool $private): MediaAsset
     {
         $mime = $file->getMimeType();
@@ -23,10 +25,36 @@ class MitraMediaStorage
 
         $disk = $private ? 'local' : 'public';
         $directory = $private ? 'kyc/'.$mitra->id : 'mitras/'.$mitra->id.'/'.$purpose;
-        $name = str()->ulid().'.'.$extension;
-        $objectKey = $file->storeAs($directory, $name, ['disk' => $disk, 'visibility' => $private ? 'private' : 'public']);
-        if (! $objectKey) {
-            throw ValidationException::withMessages(['file' => 'File gagal disimpan.']);
+
+        // Auto-convert to WebP for public visual media (cover, gallery, logo, banner, etc.)
+        $converted = null;
+        if (! $private && in_array($mime, ['image/jpeg', 'image/png', 'image/webp'])) {
+            $converted = $this->webpConverter->convert($file, quality: 82, maxWidth: 1920);
+        }
+
+        if ($converted) {
+            $extension = 'webp';
+            $mime = 'image/webp';
+            $name = str()->ulid().'.webp';
+            $objectKey = $directory.'/'.$name;
+
+            $stored = Storage::disk($disk)->put($objectKey, file_get_contents($converted['path']), 'public');
+            $sizeBytes = $converted['size_bytes'];
+            $checksum = hash_file('sha256', $converted['path']);
+
+            @unlink($converted['path']);
+
+            if (! $stored) {
+                throw ValidationException::withMessages(['file' => 'File WebP gagal disimpan.']);
+            }
+        } else {
+            $name = str()->ulid().'.'.$extension;
+            $objectKey = $file->storeAs($directory, $name, ['disk' => $disk, 'visibility' => $private ? 'private' : 'public']);
+            if (! $objectKey) {
+                throw ValidationException::withMessages(['file' => 'File gagal disimpan.']);
+            }
+            $sizeBytes = $file->getSize();
+            $checksum = hash_file('sha256', $file->getRealPath());
         }
 
         try {
@@ -36,8 +64,8 @@ class MitraMediaStorage
                 'object_key' => $objectKey,
                 'original_name' => $file->getClientOriginalName(),
                 'mime_type' => $mime,
-                'size_bytes' => $file->getSize(),
-                'checksum_sha256' => hash_file('sha256', $file->getRealPath()),
+                'size_bytes' => $sizeBytes,
+                'checksum_sha256' => $checksum,
                 'visibility' => $private ? 'private' : 'public',
                 'purpose' => $purpose,
                 'status' => 'ready',

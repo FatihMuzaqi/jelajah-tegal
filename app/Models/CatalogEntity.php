@@ -24,6 +24,14 @@ class CatalogEntity extends Model
         return ['is_featured' => 'boolean', 'has_virtual_tour' => 'boolean', 'rating_average' => 'decimal:2', 'rating_count' => 'integer', 'published_at' => 'datetime', 'archived_at' => 'datetime'];
     }
 
+    protected static function booted(): void
+    {
+        static::saved(fn () => \Illuminate\Support\Facades\Cache::forget('chatbot_knowledge_base'));
+        static::deleted(fn () => \Illuminate\Support\Facades\Cache::forget('chatbot_knowledge_base'));
+        static::restored(fn () => \Illuminate\Support\Facades\Cache::forget('chatbot_knowledge_base'));
+        static::forceDeleted(fn () => \Illuminate\Support\Facades\Cache::forget('chatbot_knowledge_base'));
+    }
+
     public function scopePublicTourism(Builder $query): Builder
     {
         return $query->where('status', 'published')

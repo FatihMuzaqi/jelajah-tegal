@@ -78,6 +78,14 @@ Route::middleware(['auth', 'verified', 'active.user'])->group(function () {
     Route::get('/select-mitra', [NavigationController::class, 'mitras'])->name('mitra.select');
     Route::post('/select-mitra', [NavigationController::class, 'chooseMitra'])->name('mitra.choose');
 
+    // System Notification Interactions
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/{id}/read', [\App\Http\Controllers\NotificationController::class, 'readAndRedirect'])->name('read');
+        Route::post('/mark-all-read', [\App\Http\Controllers\NotificationController::class, 'markAllAsRead'])->name('mark-all-read');
+        Route::post('/clear-all', [\App\Http\Controllers\NotificationController::class, 'clearAll'])->name('clear-all');
+        Route::delete('/{id}', [\App\Http\Controllers\NotificationController::class, 'destroy'])->name('destroy');
+    });
+
     // Midtrans Finish / Unfinish / Shorthand Redirects
     Route::get('/orders', fn () => redirect()->route('consumer.orders.index'));
     Route::get('/orders/{order}', fn ($order) => redirect()->route('consumer.orders.show', $order));

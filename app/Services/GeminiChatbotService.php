@@ -192,30 +192,34 @@ class GeminiChatbotService
      */
     protected function buildSystemPrompt(array $knowledge, ?string $customAddition = null): string
     {
-        $wisataText = empty($knowledge['wisata']) ? 'Data wisata dalam pembaruan.' : implode("\n", $knowledge['wisata']);
-        $penginapanText = empty($knowledge['penginapan']) ? 'Data penginapan dalam pembaruan.' : implode("\n", $knowledge['penginapan']);
-        $kulinerText = empty($knowledge['kuliner']) ? 'Data kuliner dalam pembaruan.' : implode("\n", $knowledge['kuliner']);
-        $eventText = empty($knowledge['event']) ? 'Data event dalam pembaruan.' : implode("\n", $knowledge['event']);
-        $rentalText = empty($knowledge['rental']) ? 'Data rental dalam pembaruan.' : implode("\n", $knowledge['rental']);
+        $wisataText = empty($knowledge['wisata']) ? 'Belum ada data destinasi wisata aktif.' : implode("\n", $knowledge['wisata']);
+        $penginapanText = empty($knowledge['penginapan']) ? 'Belum ada data penginapan/hotel aktif.' : implode("\n", $knowledge['penginapan']);
+        $kulinerText = empty($knowledge['kuliner']) ? 'Belum ada data tempat kuliner aktif.' : implode("\n", $knowledge['kuliner']);
+        $eventText = empty($knowledge['event']) ? 'Belum ada data event/festival aktif.' : implode("\n", $knowledge['event']);
+        $rentalText = empty($knowledge['rental']) ? 'Belum ada data rental kendaraan aktif.' : implode("\n", $knowledge['rental']);
 
         $customSection = $customAddition ? "\n\nINSTRUKSI & PENGUMUMAN KHUSUS DARI PENGELOLA:\n" . $customAddition : '';
 
         return <<<PROMPT
-Anda adalah "Asisten Wisata Jelajah Tegal", pemandu wisata virtual resmi, cerdas, ramah, dan solutif untuk platform pariwisata Jelajah Tegal (Jawa Tengah).
+Anda adalah "Asisten Wisata Jelajah Tegal", pemandu virtual resmi, cerdas, ramah, dan solutif untuk platform pariwisata Jelajah Tegal (Jawa Tengah).
 
 TUGAS DAN ATURAN ANDA:
 1. Jawab pertanyaan wisatawan dengan ramah, hangat, antusias, dan menggunakan Bahasa Indonesia yang santun.
-2. Berikan rekomendasi terbaik untuk 5 domain layanan Jelajah Tegal:
-   - 🏖️ Destinasi Wisata (Pemandian Air Panas Guci, Curug Cantel, Pantai Purwahamba Indah / Purin, Waduk Cacaban, dsb.)
-   - 🏨 Penginapan & Hotel (Villa di Guci, Hotel di Kota Tegal, Glamping, Homestay)
-   - 🍲 Kuliner Khas Tegal (Sate Kambing Balibul/Batibul muda, Kupat Glabed, Tahu Aci/Pletok, Soto Tauco, Teh Poci Slawi)
-   - 🎪 Event & Festival (Pesta Budaya, Konser Musik, Pameran UMKM)
-   - 🚗 Rental Kendaraan (Sewa Mobil & Motor lepas kunci atau dengan driver)
-3. Sertakan tautan relevan menggunakan format markdown jika merekomendasikan produk (misal: [Lihat & Pesan](/wisata/guci-hot-spring)).
-4. Gunakan bullet points atau penomoran agar jawaban mudah dibaca di layar HP/smartphone.
-5. Jika ditanya hal di luar topik wisata/kuliner/Tegal, jawab dengan sopan dan kembalikan fokus ke pariwisata Tegal.{$customSection}
+2. REKOMENDASI BERDASARKAN RATING & POPULARITAS WISATAWAN:
+   - Anda MEMILIKI AKSES DATA RATING RATA-RATA (skala 1.0 - 5.0), JUMLAH ULASAN, serta label POPULER / UNGGULAN pada setiap entitas di daftar data di bawah.
+   - Jika pengguna menanyakan:
+     * "Destinasi paling populer", "wisata favorit", "rekomendasi terbaik", "rating tertinggi", "tempat paling ramai/disukai":
+     * Prioritaskan merekomendasikan destinasi yang memiliki rating bintang tertinggi (misal ⭐ 4.8 atau 5.0) atau bertanda [🔥 PALING POPULER] / [⭐ REKOMENDASI UNGGULAN] / [⭐ TOP RATED].
+   - Selalu sertakan informasi rating & ulasan saat merekomendasikan tempat (contoh: "⭐ Rating 5.0/5.0 dari 12 ulasan wisatawan") agar rekomendasi Anda akurat, informatif, dan terpercaya.
+3. PENTING - ATURAN DATA AKTUAL (DATABASE):
+   - Hanya rekomendasikan produk, tempat wisata, penginapan, kuliner, event, dan rental yang TERDAFTAR PADA BAGIAN "DATA KATALOG AKTUAL DI PLATFORM JELAJAH TEGAL" DI BAWAH INI.
+   - JANGAN PERNAH mengarang, merekayasa, atau merekomendasikan tempat wisata/produk yang TIDAK ADA atau SUDAH DIHAPUS dari daftar katalog aktual di bawah ini.
+   - Jika pengguna bertanya tentang kategori yang belum ada datanya, sampaikan dengan ramah bahwa saat ini belum ada data terdaftar di platform untuk kategori tersebut.
+4. Sertakan tautan relevan menggunakan format markdown jika merekomendasikan produk (contoh format tautan: [Lihat & Pesan](/wisata/slug-produk)).
+5. Gunakan bullet points atau penomoran agar jawaban mudah dibaca di layar HP/smartphone.
+6. Jika ditanya hal di luar topik pariwisata Tegal, jawab dengan sopan dan arahkan kembali ke pariwisata Tegal.{$customSection}
 
-DATA KATALOG AKTUAL DI PLATFORM JELAJAH TEGAL:
+DATA KATALOG AKTUAL DI PLATFORM JELAJAH TEGAL (TERURUT BERDASARKAN RATING & POPULARITAS TERTINGGI):
 --- DESTINASI WISATA ---
 {$wisataText}
 
@@ -235,13 +239,19 @@ PROMPT;
 
     /**
      * Mengambil ringkasan katalog aktual dari database untuk knowledge base AI.
+     * Mengurutkan berdasarkan rating_average, rating_count, dan is_featured untuk deteksi popularitas.
      */
     public function getKnowledgeBase(): array
     {
         return Cache::remember('chatbot_knowledge_base', 120, function () {
             $catalogs = CatalogEntity::query()
                 ->where('status', 'published')
+                ->whereNull('deleted_at')
                 ->with(['serviceType', 'category', 'region', 'offers', 'facilities', 'tourism', 'accommodation', 'culinary', 'event', 'rentalVehicle'])
+                ->orderByDesc('is_featured')
+                ->orderByDesc('rating_average')
+                ->orderByDesc('rating_count')
+                ->latest('published_at')
                 ->get();
 
             $knowledge = [
@@ -259,6 +269,27 @@ PROMPT;
                 $region = $c->region?->name ?? 'Tegal';
                 $category = $c->category?->name ?? 'Umum';
 
+                // Format Rating & Popularitas
+                $ratingAvg = (float) ($c->rating_average ?? 0);
+                $ratingCount = (int) ($c->rating_count ?? 0);
+                $isFeatured = (bool) ($c->is_featured ?? false);
+
+                if ($ratingCount > 0) {
+                    $ratingFormatted = number_format($ratingAvg, 1, '.', '');
+                    $ratingStr = "⭐ Rating: {$ratingFormatted}/5.0 ({$ratingCount} ulasan wisatawan)";
+                } else {
+                    $ratingStr = "⭐ Rating: Destinasi Baru (Belum ada ulasan)";
+                }
+
+                $popularityBadge = "";
+                if ($isFeatured && $ratingCount > 0 && $ratingAvg >= 4.5) {
+                    $popularityBadge = " [🔥 PALING POPULER & FAVORIT]";
+                } elseif ($isFeatured) {
+                    $popularityBadge = " [⭐ REKOMENDASI UNGGULAN]";
+                } elseif ($ratingCount >= 5 && $ratingAvg >= 4.5) {
+                    $popularityBadge = " [⭐ TOP RATED]";
+                }
+
                 // Map route prefix
                 $routePrefix = match($code) {
                     'tourism' => 'wisata',
@@ -269,26 +300,34 @@ PROMPT;
                     default => 'wisata'
                 };
 
-                $summary = "• **{$c->name}** ({$category} - {$region}) | {$priceStr} | Link: [Lihat & Pesan](/{$routePrefix}/{$c->slug}) | Keterangan: " . str($c->description)->limit(150);
+                $summary = "• **{$c->name}**{$popularityBadge} ({$category} - {$region}) | {$ratingStr} | {$priceStr} | Link: [Lihat & Pesan](/{$routePrefix}/{$c->slug}) | Keterangan: " . str($c->description)->limit(140);
 
                 if ($code === 'tourism') {
-                    $knowledge['wisata'][] = $summary;
+                    if ($c->tourism) {
+                        $knowledge['wisata'][] = $summary;
+                    }
                 } elseif ($code === 'accommodation') {
-                    $propType = $c->accommodation?->property_type ?? 'Penginapan';
-                    $knowledge['penginapan'][] = $summary . " (Tipe: {$propType})";
+                    if ($c->accommodation) {
+                        $propType = $c->accommodation->property_type ?? 'Penginapan';
+                        $knowledge['penginapan'][] = $summary . " (Tipe: {$propType})";
+                    }
                 } elseif ($code === 'culinary') {
-                    $venueType = $c->culinary?->venue_type ?? 'Restoran';
-                    $knowledge['kuliner'][] = $summary . " (Tipe: {$venueType})";
+                    if ($c->culinary) {
+                        $venueType = $c->culinary->venue_type ?? 'Restoran';
+                        $knowledge['kuliner'][] = $summary . " (Tipe: {$venueType})";
+                    }
                 } elseif ($code === 'event') {
-                    $startDate = $c->event?->starts_at?->format('d M Y') ?? 'Segera';
-                    $knowledge['event'][] = $summary . " (Jadwal: {$startDate})";
+                    if ($c->event) {
+                        $startDate = $c->event->starts_at?->format('d M Y') ?? 'Segera';
+                        $knowledge['event'][] = $summary . " (Jadwal: {$startDate})";
+                    }
                 } elseif ($code === 'rental') {
-                    $vType = $c->rentalVehicle?->vehicle_type ?? 'Kendaraan';
-                    $brand = $c->rentalVehicle?->brand ?? '';
-                    $model = $c->rentalVehicle?->model ?? '';
-                    $knowledge['rental'][] = $summary . " ({$brand} {$model} - {$vType})";
-                } else {
-                    $knowledge['wisata'][] = $summary;
+                    if ($c->rentalVehicle) {
+                        $vType = $c->rentalVehicle->vehicle_type ?? 'Kendaraan';
+                        $brand = $c->rentalVehicle->brand ?? '';
+                        $model = $c->rentalVehicle->model ?? '';
+                        $knowledge['rental'][] = $summary . " ({$brand} {$model} - {$vType})";
+                    }
                 }
             }
 
@@ -297,41 +336,67 @@ PROMPT;
     }
 
     /**
-     * Fallback cerdas jika API tidak dapat dihubungi.
+     * Fallback cerdas berbasis data riil database jika API Gemini tidak terhubung.
      */
     protected function getFallbackResponse(string $message, array $knowledge): string
     {
         $m = strtolower($message);
 
-        if (str_contains($m, 'guci') || str_contains($m, 'wisata') || str_contains($m, 'pantai') || str_contains($m, 'curug')) {
-            return "🏖️ **Rekomendasi Wisata Populer di Tegal:**\n\n" .
-                   "1. **Pemandian Air Panas Guci** - Relaksasi air panas alami di kaki Gunung Slamet.\n" .
-                   "2. **Pantai Purwahamba Indah (Purin)** - Pantai asri dengan wahana rekreasi keluarga.\n" .
-                   "3. **Waduk Cacaban** - Danau indah dengan panorama perbukitan.\n\n" .
-                   "👉 Anda bisa melihat dan memesan tiket langsung di menu [Jelajah Wisata](/wisata)!";
+        // 1. Kategori Populer / Rating Tertinggi / Terbaik
+        if (str_contains($m, 'populer') || str_contains($m, 'terbaik') || str_contains($m, 'rating') || str_contains($m, 'favorit') || str_contains($m, 'ramai') || str_contains($m, 'bagus')) {
+            if (!empty($knowledge['wisata'])) {
+                $list = implode("\n", array_slice($knowledge['wisata'], 0, 5));
+                return "⭐ **Destinasi Wisata Paling Populer & Berating Tinggi di Jelajah Tegal:**\n\n" . $list . "\n\n👉 Destinasi di atas diurutkan berdasarkan ulasan dan rating kepuasan wisatawan. Kunjungi menu [Jelajah Wisata](/wisata) untuk pesan tiket!";
+            }
+            return "⭐ **Destinasi Paling Populer di Jelajah Tegal:**\n\nSaat ini belum ada destinasi yang memiliki ulasan dan publikasi aktif di sistem. Silakan periksa berkala di menu [Jelajah Wisata](/wisata).";
         }
 
-        if (str_contains($m, 'makan') || str_contains($m, 'kuliner') || str_contains($m, 'sate') || str_contains($m, 'soto')) {
-            return "🍲 **Kuliner Khas Tegal Wajib Coba:**\n\n" .
-                   "1. **Sate Kambing Muda (Balibul/Batibul)** - Daging super empuk tanpa bau prengus.\n" .
-                   "2. **Kupat Glabed & Blengong** - Ketupat kuah gurih berpadu sate blengong khas Tegal.\n" .
-                   "3. **Tahu Aci / Pletok** - Camilan renyah gurih khas Slawi.\n\n" .
-                   "👉 Cek daftar tempat makan favorit di menu [Kuliner Tegal](/kuliner)!";
+        // 2. Kategori Wisata Umum
+        if (str_contains($m, 'wisata') || str_contains($m, 'pantai') || str_contains($m, 'curug') || str_contains($m, 'alam') || str_contains($m, 'libur')) {
+            if (!empty($knowledge['wisata'])) {
+                $list = implode("\n", array_slice($knowledge['wisata'], 0, 5));
+                return "🏖️ **Destinasi Wisata Terdaftar di Jelajah Tegal:**\n\n" . $list . "\n\n👉 Kunjungi menu [Jelajah Wisata](/wisata) untuk informasi lengkap dan pemesanan tiket!";
+            }
+            return "🏖️ **Destinasi Wisata Jelajah Tegal:**\n\nSaat ini belum ada destinasi wisata yang terdaftar/terpublikasi aktif di sistem. Silakan periksa kembali berkala di menu [Jelajah Wisata](/wisata).";
         }
 
-        if (str_contains($m, 'hotel') || str_contains($m, 'inap') || str_contains($m, 'villa') || str_contains($m, 'homestay')) {
-            return "🏨 **Pilihan Penginapan Nyaman di Tegal:**\n\n" .
-                   "• **Villa & Resort Guci**: Cocok untuk liburan keluarga dengan akses langsung pemandian air panas.\n" .
-                   "• **Hotel Pusat Kota Tegal**: Pilihan strategis dekat stasiun dan pusat perbelanjaan.\n\n" .
-                   "👉 Temukan kamar terbaik di menu [Penginapan & Hotel](/penginapan)!";
+        // 3. Kategori Kuliner
+        if (str_contains($m, 'makan') || str_contains($m, 'kuliner') || str_contains($m, 'sate') || str_contains($m, 'soto') || str_contains($m, 'resto')) {
+            if (!empty($knowledge['kuliner'])) {
+                $list = implode("\n", array_slice($knowledge['kuliner'], 0, 5));
+                return "🍲 **Rekomendasi Kuliner Terdaftar di Tegal:**\n\n" . $list . "\n\n👉 Cek daftar resto favorit di menu [Kuliner Tegal](/kuliner)!";
+            }
+            return "🍲 **Kuliner Khas Tegal:**\n\nSaat ini belum ada data restoran/kuliner yang terpublikasi di sistem. Anda dapat melihat informasi kuliner selengkapnya di menu [Kuliner Tegal](/kuliner).";
         }
 
-        if (str_contains($m, 'rental') || str_contains($m, 'mobil') || str_contains($m, 'motor') || str_contains($m, 'sewa')) {
-            return "🚗 **Layanan Rental Kendaraan di Tegal:**\n\n" .
-                   "Kami menyediakan sewa mobil & motor lepas kunci maupun dengan driver berpengalaman untuk menemani perjalanan wisata Anda.\n\n" .
-                   "👉 Cek tarif & ketersediaan unit di menu [Rental Kendaraan](/rental)!";
+        // 4. Kategori Penginapan & Hotel
+        if (str_contains($m, 'hotel') || str_contains($m, 'inap') || str_contains($m, 'villa') || str_contains($m, 'homestay') || str_contains($m, 'kamar')) {
+            if (!empty($knowledge['penginapan'])) {
+                $list = implode("\n", array_slice($knowledge['penginapan'], 0, 5));
+                return "🏨 **Pilihan Penginapan Terdaftar di Tegal:**\n\n" . $list . "\n\n👉 Temukan kamar terbaik di menu [Penginapan & Hotel](/penginapan)!";
+            }
+            return "🏨 **Penginapan & Hotel di Tegal:**\n\nSaat ini belum ada data penginapan yang terpublikasi di sistem. Silakan cek menu [Penginapan & Hotel](/penginapan) untuk informasi lebih lanjut.";
         }
 
-        return "Halo! Saya Asisten Wisata **Jelajah Tegal** siap membantu Anda. Anda bisa menanyakan rekomendasi **Tempat Wisata**, **Kuliner Enak**, **Penginapan/Hotel**, **Jadwal Event**, atau **Rental Kendaraan** di wilayah Tegal. Apa yang ingin Anda cari hari ini?";
+        // 5. Kategori Rental Kendaraan
+        if (str_contains($m, 'rental') || str_contains($m, 'mobil') || str_contains($m, 'motor') || str_contains($m, 'sewa') || str_contains($m, 'kendaraan')) {
+            if (!empty($knowledge['rental'])) {
+                $list = implode("\n", array_slice($knowledge['rental'], 0, 5));
+                return "🚗 **Layanan Rental Kendaraan Terdaftar:**\n\n" . $list . "\n\n👉 Cek ketersediaan armada di menu [Rental Kendaraan](/rental)!";
+            }
+            return "🚗 **Rental Kendaraan di Tegal:**\n\nSaat ini belum ada unit rental kendaraan yang terpublikasi di sistem. Silakan kunjungi menu [Rental Kendaraan](/rental).";
+        }
+
+        // 6. Kategori Event
+        if (str_contains($m, 'event') || str_contains($m, 'acara') || str_contains($m, 'festival') || str_contains($m, 'konser')) {
+            if (!empty($knowledge['event'])) {
+                $list = implode("\n", array_slice($knowledge['event'], 0, 5));
+                return "🎪 **Agenda Event & Festival Terdaftar:**\n\n" . $list . "\n\n👉 Cek jadwal selengkapnya di menu [Event & Festival](/event)!";
+            }
+            return "🎪 **Event & Festival di Tegal:**\n\nSaat ini belum ada event aktif yang terpublikasi. Silakan cek berkala di menu [Event & Festival](/event).";
+        }
+
+        // General Welcome
+        return "Halo! Saya Asisten Wisata **Jelajah Tegal** siap membantu Anda. Anda dapat menanyakan rekomendasi **Tempat Wisata Populer**, **Kuliner Enak**, **Penginapan/Hotel Terbaik**, **Jadwal Event**, atau **Rental Kendaraan** yang aktif terdaftar di sistem. Apa yang ingin Anda cari?";
     }
 }

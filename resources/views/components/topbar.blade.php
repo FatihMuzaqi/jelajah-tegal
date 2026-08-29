@@ -24,27 +24,62 @@
     </button>
 
     @auth
+    @php
+      $unreadNotificationsCount = auth()->user()?->notifications()->whereNull('read_at')->count() ?? 0;
+      $notificationsList = auth()->user()?->notifications()->latest()->limit(10)->get() ?? collect();
+    @endphp
     <div class='dropdown'>
       <button class='icon-button notification-trigger' data-bs-toggle='dropdown' aria-expanded='false' aria-label='Notifikasi' title='Notifikasi'>
         <i class="fa-regular fa-bell"></i>
-        @if(auth()->user()?->notifications()->whereNull('read_at')->exists())
+        @if($unreadNotificationsCount > 0)
           <span class='notification-indicator'></span>
         @endif
       </button>
-      <div class='dropdown-menu dropdown-menu-end notification-menu shadow-sm'>
-        <div class='dropdown-heading d-flex align-items-center justify-content-between px-3 py-2'>
-          <strong>Notifikasi</strong>
-          <span class="badge bg-primary rounded-pill">{{ auth()->user()?->notifications()->whereNull('read_at')->count() ?? 0 }} baru</span>
-        </div>
-        <div class="dropdown-divider my-0"></div>
-        @forelse(auth()->user()?->notifications()->latest()->limit(4)->get() ?? [] as $notification)
-          <x-notification-item :notification='$notification' />
-        @empty
-          <div class="p-3 text-center text-muted">
-            <i class="fa-regular fa-bell-slash fs-4 mb-2 d-block opacity-50"></i>
-            <small>Belum ada notifikasi baru.</small>
+      <div class='dropdown-menu dropdown-menu-end notification-menu shadow-lg p-0 border' style="width: 360px; max-width: 92vw; border-radius: 16px; border-color: #e2e8f0 !important; overflow: hidden;">
+        <!-- Header -->
+        <div class='d-flex align-items-center justify-content-between px-3.5 py-3 border-bottom' style="background: #ffffff; border-color: #f1f5f9 !important;">
+          <div class="d-flex align-items-center gap-2">
+            <strong class="text-dark" style="font-size: 14.5px;">Notifikasi</strong>
+            @if($unreadNotificationsCount > 0)
+              <span class="badge rounded-pill px-2 py-0.5" style="background: #eff6ff; color: #2563eb; font-size: 11px; font-weight: 600;">
+                {{ $unreadNotificationsCount }} baru
+              </span>
+            @endif
           </div>
-        @endforelse
+          @if($notificationsList->isNotEmpty())
+            <form method="POST" action="{{ route('notifications.clear-all') }}" onsubmit="return confirm('Bersihkan semua notifikasi?');">
+              @csrf
+              <button type="submit" class="btn btn-sm btn-link p-0 text-muted text-decoration-none d-inline-flex align-items-center gap-1" style="font-size: 11.5px;">
+                <i class="fa-regular fa-trash-can" style="font-size: 11px;"></i>
+                <span>Hapus Semua</span>
+              </button>
+            </form>
+          @endif
+        </div>
+
+        <!-- Notification List -->
+        <div class="notification-list-scroll" style="max-height: 380px; overflow-y: auto;">
+          @forelse($notificationsList as $notification)
+            <x-notification-item :notification='$notification' />
+          @empty
+            <div class="py-4 px-3 text-center text-muted">
+              <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2" style="width: 44px; height: 44px; background: #f8fafc; color: #94a3b8; font-size: 18px;">
+                <i class="fa-regular fa-bell-slash"></i>
+              </div>
+              <h6 class="fw-bold text-dark mb-1" style="font-size: 13px;">Tidak Ada Notifikasi</h6>
+              <p class="small text-muted mb-0" style="font-size: 11.5px;">Semua informasi dan pembaruan akan tampil di sini.</p>
+            </div>
+          @endforelse
+        </div>
+
+        <!-- Footer -->
+        @if($notificationsList->isNotEmpty())
+          <div class="px-3 py-2 text-center border-top" style="background: #f8fafc; border-color: #f1f5f9 !important;">
+            <span class="text-muted" style="font-size: 11px;">
+              <i class="fa-solid fa-arrow-pointer me-1 text-primary"></i> Klik item untuk langsung menuju halaman & menghapus
+            </span>
+          </div>
+        @endif
       </div>
     </div>
 

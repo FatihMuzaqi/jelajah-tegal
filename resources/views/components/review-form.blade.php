@@ -5,82 +5,66 @@
     'compact' => false
 ])
 
-<div class="review-form-card rounded-4 p-3.5 p-md-4 border shadow-sm" style="background: #ffffff;">
+<div class="review-form-card rounded-4 p-3.5 p-md-4 border shadow-sm" style="background: #ffffff; border-color: #e2e8f0 !important;">
+    <h5 class="fw-bold text-dark mb-3" style="font-size: 16px;">Tulis Ulasan Anda</h5>
     @auth
-        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-3 border-bottom">
-            <div class="d-flex align-items-center gap-2.5">
-                @if(auth()->user()->profile?->avatar)
-                    <img src="{{ asset('storage/' . auth()->user()->profile->avatar->object_key) }}" alt="{{ auth()->user()->name }}" class="rounded-circle border" style="width: 44px; height: 44px; object-fit: cover;">
-                @else
-                    <div class="rounded-circle d-flex align-items-center justify-content-center text-white fw-bold shadow-sm" style="width: 44px; height: 44px; background: linear-gradient(135deg, #047857 0%, #10b981 100%); font-size: 16px;">
-                        {{ str(auth()->user()->name)->substr(0, 1)->upper() }}
-                    </div>
-                @endif
-                <div>
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
-                        <strong class="text-dark fs-7">{{ auth()->user()->name }}</strong>
-                        <span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-0.5 rounded-pill" style="font-size: 10px;">
-                            <i class="fa-solid fa-circle-check me-1"></i> Pengulas Terverifikasi
-                        </span>
-                    </div>
-                    <small class="text-muted d-block" style="font-size: 11.5px;">Beri rating & tulis pengalaman jujur Anda</small>
-                </div>
-            </div>
-            <span class="badge bg-light text-muted border px-2.5 py-1 rounded-pill" style="font-size: 11px;">
-                <i class="fa-solid fa-bolt text-warning me-1"></i> Langsung Terbit
-            </span>
-        </div>
-
-        <form method="POST" action="{{ $action }}" class="needs-validation review-interactive-form">
+        <form method="POST" action="{{ $action }}" enctype="multipart/form-data" class="needs-validation review-interactive-form">
             @csrf
             
-            <!-- 1. Interactive Star Rating -->
-            <div class="mb-3.5 p-3 rounded-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
-                <label class="form-label fw-bold text-dark fs-7 mb-1 d-flex align-items-center justify-content-between">
-                    <span>Pilih Penilaian Anda <span class="text-danger">*</span></span>
-                    <span class="rating-feedback-badge fw-semibold text-emerald fs-8" id="ratingLabelFeedback-{{ md5($action) }}">5 / 5 — Luar Biasa!</span>
-                </label>
-                <div class="star-rating-interactive d-flex align-items-center gap-1.5 my-1" id="starRatingContainer-{{ md5($action) }}" data-target="ratingInput-{{ md5($action) }}" data-label="ratingLabelFeedback-{{ md5($action) }}">
+            <!-- 1. Interactive Star Rating Box -->
+            <div class="mb-3.5 p-3 rounded-3 text-center" style="background: #f0fdf4; border: 1px solid #86efac;">
+                <div class="star-rating-interactive d-flex align-items-center justify-content-center gap-2 mb-1" id="starRatingContainer-{{ md5($action) }}" data-target="ratingInput-{{ md5($action) }}" data-label="ratingLabelFeedback-{{ md5($action) }}">
                     @for($i = 1; $i <= 5; $i++)
-                        <button type="button" class="btn p-0 star-btn border-0 bg-transparent" data-rating="{{ $i }}" aria-label="Beri {{ $i }} bintang" style="font-size: 26px; color: #f59e0b; transition: transform 0.15s ease, color 0.15s ease; cursor: pointer;">
+                        <button type="button" class="btn p-0 star-btn border-0 bg-transparent" data-rating="{{ $i }}" aria-label="Beri {{ $i }} bintang" style="font-size: 24px; color: #f59e0b; transition: transform 0.15s ease, color 0.15s ease; cursor: pointer;">
                             <i class="fa-solid fa-star"></i>
                         </button>
                     @endfor
                     <input type="hidden" name="rating" id="ratingInput-{{ md5($action) }}" value="5" required>
                 </div>
-                <small class="text-muted d-block" style="font-size: 11px;">Klik salah satu bintang untuk menentukan skor penilaian Anda.</small>
-            </div>
-
-            <!-- 2. Review Title (Optional) -->
-            <div class="mb-3">
-                <label class="form-label fw-bold text-dark fs-7 mb-1">
-                    Judul Ulasan <span class="text-muted fw-normal fs-8">(Opsional)</span>
-                </label>
-                <div class="input-group">
-                    <span class="input-group-text bg-white text-muted border-end-0"><i class="fa-solid fa-heading fs-7"></i></span>
-                    <input type="text" name="title" class="form-control border-start-0 ps-1" placeholder="Contoh: Pengalaman seru, suasana asri dan ramah keluarga..." maxlength="120" style="font-size: 13.5px;">
+                <div class="rating-feedback-badge fw-semibold" id="ratingLabelFeedback-{{ md5($action) }}" style="font-size: 12px; color: #166534;">
+                    5.0 / 5.0 — Luar Biasa & Sangat Puas!
                 </div>
             </div>
 
-            <!-- 3. Review Body -->
-            <div class="mb-3">
-                <label class="form-label fw-bold text-dark fs-7 mb-1">
+            <!-- 2. Review Body (Cerita & Ulasan Pengalaman) -->
+            <div class="mb-3.5">
+                <label class="form-label text-dark fw-medium mb-1.5" style="font-size: 13px;">
                     Cerita & Ulasan Pengalaman <span class="text-danger">*</span>
                 </label>
-                <div class="position-relative">
-                    <textarea name="body" class="form-control review-textarea p-3" rows="3" required minlength="5" maxlength="1000" placeholder="Ceritakan suasana tempat, kebersihan, pelayanan, spot favorit, tips perjalanan, atau saran berguna untuk pengunjung lainnya..." style="font-size: 13.5px; border-radius: 12px; resize: vertical;"></textarea>
+                <textarea name="body" class="form-control rounded-3 review-textarea" rows="3" required minlength="5" maxlength="1000" placeholder="Ceritakan suasana tempat, kebersihan, pelayanan, dan pengalaman Anda..." style="border: 1px solid #cbd5e1; font-size: 13.5px; padding: 10px 14px; background: #f8fafc; resize: vertical;"></textarea>
+            </div>
+
+            <!-- 3. Photo Upload Attachment with Live Preview -->
+            <div class="mb-3.5">
+                <div class="d-flex align-items-center justify-content-between mb-1.5">
+                    <label class="form-label text-dark fw-medium mb-0" style="font-size: 13px;">
+                        <i class="fa-solid fa-camera text-success me-1" style="color: #0d9488 !important;"></i> Foto Pengalaman <span class="text-muted fw-normal" style="font-size: 11.5px;">(Opsional, maks. 5 foto)</span>
+                    </label>
+                    <span class="badge bg-light text-muted border fw-normal" id="photoCountBadge-{{ md5($action) }}" style="font-size: 11px;">0 / 5 foto</span>
                 </div>
-                <div class="d-flex align-items-center justify-content-between mt-1">
-                    <small class="text-muted d-flex align-items-center gap-1" style="font-size: 11px;">
-                        <i class="fa-solid fa-shield-halved text-success"></i> Ulasan otomatis ditayangkan dan disaring secara aman.
-                    </small>
+
+                <!-- Hidden File Input -->
+                <input type="file" name="photos[]" id="reviewPhotosInput-{{ md5($action) }}" class="d-none review-file-input" multiple accept="image/png,image/jpeg,image/jpg,image/webp" data-target-grid="previewGrid-{{ md5($action) }}" data-target-badge="photoCountBadge-{{ md5($action) }}">
+
+                <!-- Dropzone / Upload Trigger Button -->
+                <div class="review-upload-dropzone p-3 rounded-3 text-center cursor-pointer" id="dropzone-{{ md5($action) }}" onclick="document.getElementById('reviewPhotosInput-{{ md5($action) }}').click()" style="background: #f8fafc; border: 1.5px dashed #cbd5e1; transition: all 0.2s ease; cursor: pointer;">
+                    <div class="d-flex flex-column align-items-center justify-content-center gap-1">
+                        <div class="rounded-circle d-flex align-items-center justify-content-center shadow-sm" style="width: 36px; height: 36px; background: #ccfbf1; color: #0d9488; font-size: 15px;">
+                            <i class="fa-solid fa-images"></i>
+                        </div>
+                        <span class="fw-semibold text-dark mt-1" style="font-size: 12.5px;">Pilih Foto atau Seret ke Sini</span>
+                        <span class="text-muted" style="font-size: 11px;">Format JPG, PNG, atau WebP (Maks. 5MB per foto)</span>
+                    </div>
                 </div>
+
+                <!-- Responsive Live Preview Grid -->
+                <div class="review-preview-grid d-flex flex-wrap gap-2 mt-2" id="previewGrid-{{ md5($action) }}"></div>
             </div>
 
             <!-- 4. Submit Action -->
-            <div class="d-flex align-items-center justify-content-end gap-2 pt-1">
-                <button type="submit" class="btn btn-lokantara fw-bold py-2.5 px-4 rounded-pill shadow-sm d-inline-flex align-items-center gap-2" style="font-size: 13.5px;">
-                    <i class="fa-solid fa-paper-plane"></i>
+            <div>
+                <button type="submit" class="btn w-100 fw-bold text-white py-2.5 rounded-3 d-flex align-items-center justify-content-center gap-2 shadow-sm" style="background: #0d9488; font-size: 14px; border: none; transition: background-color 0.2s ease;">
+                    <i class="fa-solid fa-paper-plane" style="font-size: 13px;"></i>
                     <span>Kirim Ulasan Saya</span>
                 </button>
             </div>
@@ -88,15 +72,14 @@
     @else
         <!-- GUEST CALLOUT CARD -->
         <div class="text-center py-3 px-2">
-            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2.5 shadow-sm" style="width: 52px; height: 52px; background: #ecfdf5; color: #047857; font-size: 22px;">
+            <div class="d-inline-flex align-items-center justify-content-center rounded-circle mb-2.5 shadow-sm" style="width: 48px; height: 48px; background: #ecfdf5; color: #047857; font-size: 20px;">
                 <i class="fa-solid fa-pen-nib"></i>
             </div>
-            <h6 class="fw-bold text-dark mb-1 fs-6">Bagikan Pengalaman Berharga Anda</h6>
             <p class="text-muted small mb-3" style="max-width: 480px; margin-inline: auto; font-size: 12.5px; line-height: 1.5;">
-                Punya cerita atau penilaian menarik tentang {{ $itemType }} ini? Masuk dengan akun Jelajah Tegal Anda untuk memberikan rating dan ulasan jujur.
+                Punya cerita atau penilaian menarik tentang {{ $itemType }} ini? Masuk dengan akun Jelajah Tegal Anda untuk memberikan rating dan ulasan jujur beserta foto pengalaman.
             </p>
             <div class="d-flex align-items-center justify-content-center gap-2 flex-wrap">
-                <a href="{{ route('login') }}" class="btn btn-lokantara fw-bold px-4 py-2 rounded-pill shadow-sm d-inline-flex align-items-center gap-2" style="font-size: 13px;">
+                <a href="{{ route('login') }}" class="btn fw-bold px-4 py-2 text-white rounded-3 shadow-sm d-inline-flex align-items-center gap-2" style="background: #0d9488; font-size: 13px;">
                     <i class="fa-regular fa-user"></i>
                     <span>Masuk untuk Tulis Ulasan</span>
                 </a>
@@ -109,11 +92,11 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const labels = {
-        5: '5 / 5 — Luar Biasa & Sangat Puas! ⭐⭐⭐⭐⭐',
-        4: '4 / 5 — Bagus & Menyenangkan! ⭐⭐⭐⭐',
-        3: '3 / 5 — Cukup Standar & Nyaman ⭐⭐⭐',
-        2: '2 / 5 — Kurang Memuaskan ⭐⭐',
-        1: '1 / 5 — Sangat Mengecewakan ⭐'
+        5: '5.0 / 5.0 — Luar Biasa & Sangat Puas!',
+        4: '4.0 / 5.0 — Bagus & Menyenangkan!',
+        3: '3.0 / 5.0 — Cukup Standar & Nyaman',
+        2: '2.0 / 5.0 — Kurang Memuaskan',
+        1: '1.0 / 5.0 — Sangat Mengecewakan'
     };
 
     document.querySelectorAll('.star-rating-interactive').forEach(container => {
@@ -161,6 +144,117 @@ document.addEventListener('DOMContentLoaded', function () {
 
         // Init with 5 stars
         updateStars(5);
+    });
+
+    // 2. Photo Upload Live Previews & Drag-Drop Handling
+    document.querySelectorAll('.review-file-input').forEach(input => {
+        const grid = document.getElementById(input.dataset.targetGrid);
+        const badge = document.getElementById(input.dataset.targetBadge);
+        const dropzone = input.closest('form')?.querySelector('.review-upload-dropzone');
+        let dt = new DataTransfer();
+
+        function renderPreviews() {
+            if (!grid) return;
+            grid.innerHTML = '';
+            
+            Array.from(dt.files).forEach((file, index) => {
+                if (!file.type.startsWith('image/')) return;
+
+                const reader = new FileReader();
+                const previewCard = document.createElement('div');
+                previewCard.className = 'position-relative rounded-3 border overflow-hidden shadow-2xs preview-card';
+                previewCard.style.cssText = 'width: 72px; height: 72px; background: #000; flex-shrink: 0; animation: fadeIn 0.2s ease;';
+
+                reader.onload = (e) => {
+                    previewCard.innerHTML = `
+                        <img src="${e.target.result}" alt="Preview" style="width: 100%; height: 100%; object-fit: cover; opacity: 0.92;">
+                        <button type="button" class="btn btn-danger position-absolute top-0 end-0 m-1 p-0 d-flex align-items-center justify-content-center rounded-circle border-0 shadow-sm" style="width: 18px; height: 18px; font-size: 9px; line-height: 1;" data-index="${index}" title="Hapus foto ini">
+                            <i class="fa-solid fa-xmark"></i>
+                        </button>
+                    `;
+
+                    // Remove item handler
+                    previewCard.querySelector('button').addEventListener('click', (ev) => {
+                        ev.stopPropagation();
+                        const newDt = new DataTransfer();
+                        Array.from(dt.files).forEach((f, i) => {
+                            if (i !== index) newDt.items.add(f);
+                        });
+                        dt = newDt;
+                        input.files = dt.files;
+                        renderPreviews();
+                    });
+                };
+
+                reader.readAsDataURL(file);
+                grid.appendChild(previewCard);
+            });
+
+            if (badge) {
+                badge.textContent = `${dt.files.length} / 5 foto`;
+                if (dt.files.length > 0) {
+                    badge.className = 'badge bg-teal-50 text-teal-700 border border-teal-200 fw-semibold';
+                    badge.style.color = '#0f766e';
+                    badge.style.background = '#f0fdfa';
+                } else {
+                    badge.className = 'badge bg-light text-muted border fw-normal';
+                    badge.style.color = '';
+                    badge.style.background = '';
+                }
+            }
+        }
+
+        input.addEventListener('change', () => {
+            const files = Array.from(input.files);
+            if (dt.files.length + files.length > 5) {
+                alert('Maksimal 5 foto yang dapat diunggah per ulasan.');
+            }
+            files.forEach(file => {
+                if (dt.files.length < 5 && file.type.startsWith('image/')) {
+                    dt.items.add(file);
+                }
+            });
+            input.files = dt.files;
+            renderPreviews();
+        });
+
+        // Drag & Drop effects on dropzone
+        if (dropzone) {
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.style.background = '#f0fdfa';
+                    dropzone.style.borderColor = '#0d9488';
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropzone.addEventListener(eventName, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dropzone.style.background = '#f8fafc';
+                    dropzone.style.borderColor = '#cbd5e1';
+                });
+            });
+
+            dropzone.addEventListener('drop', (e) => {
+                const dtDropped = e.dataTransfer;
+                if (dtDropped && dtDropped.files) {
+                    const files = Array.from(dtDropped.files);
+                    if (dt.files.length + files.length > 5) {
+                        alert('Maksimal 5 foto yang dapat diunggah per ulasan.');
+                    }
+                    files.forEach(file => {
+                        if (dt.files.length < 5 && file.type.startsWith('image/')) {
+                            dt.items.add(file);
+                        }
+                    });
+                    input.files = dt.files;
+                    renderPreviews();
+                }
+            });
+        }
     });
 });
 </script>
