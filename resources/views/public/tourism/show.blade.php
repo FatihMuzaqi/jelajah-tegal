@@ -530,7 +530,7 @@
             <div class="col-lg-8">
                 <!-- Description Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-book-open text-emerald"></i></span> Tentang Destinasi</h2>
+                    <h2 class="detail-card-title">Tentang Destinasi</h2>
                     <div style="font-size: 15px; line-height: 1.8; color: var(--lokantara-text);">
                         {!! nl2br(e($tourism->description ?: 'Nikmati keindahan dan pesona lokal di ' . $tourism->name . ', salah satu destinasi wisata unggulan di wilayah Tegal yang menawarkan pengalaman tak terlupakan.')) !!}
                     </div>
@@ -551,7 +551,7 @@
 
                 <!-- Interactive Map Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-map-location-dot text-info"></i></span> Lokasi & Peta Interaktif</h2>
+                    <h2 class="detail-card-title">Lokasi & Peta Interaktif</h2>
                     
                     <!-- Leaflet Map Container -->
                     <div id="tourismMap" style="height: 380px; width: 100%; border-radius: 16px; overflow: hidden; margin-bottom: 20px; background: #e9ecef; z-index: 1; border: 1px solid var(--lokantara-border);"></div>
@@ -575,7 +575,7 @@
 
                 <!-- Facilities Card -->
                 <div class="detail-card">
-                    <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-wand-magic-sparkles text-warning"></i></span> Fasilitas Tersedia</h2>
+                    <h2 class="detail-card-title">Fasilitas Tersedia</h2>
                     @if ($tourism->facilities->isNotEmpty())
                         <div class="facility-grid">
                             @foreach ($tourism->facilities as $facility)
@@ -593,7 +593,7 @@
                 <!-- Operating Hours Schedule Card -->
                 @if ($tourism->operatingHours->isNotEmpty())
                     <div class="detail-card">
-                        <h2 class="detail-card-title"><span class="title-icon"><i class="fa-solid fa-calendar-days text-primary"></i></span> Jadwal Jam Operasional Mingguan</h2>
+                        <h2 class="detail-card-title">Jadwal Jam Operasional Mingguan</h2>
                         <table class="schedule-table">
                             <tbody>
                                 @php

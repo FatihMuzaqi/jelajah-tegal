@@ -28,6 +28,15 @@ class NavigationController extends Controller
             return redirect()->to($intended);
         }
 
+        // 1.5 Cek status jika akun adalah pemilik pendaftaran mitra yang masih pending atau ditolak
+        $pendingMitra = $r->user()->ownedMitras()->whereIn('status', ['pending', 'rejected'])->latest()->first();
+        if ($pendingMitra && ! $r->user()->hasGlobalRole(['super-admin', 'admin', 'dinas'])) {
+            $hasActive = $r->user()->mitraMemberships()->where('status', 'active')->whereHas('mitra', fn($q) => $q->where('status', 'active'))->exists();
+            if (! $hasActive) {
+                return redirect()->route('mitra.pending-notice');
+            }
+        }
+
         // 2. Jika murni Consumer (Wisatawan) -> Arahkan langsung ke Landing Page (Beranda)
         if ($allowed === ['consumer']) {
             return redirect()->route('home')->with('status', 'Selamat datang di Jelajah Tegal, ' . $r->user()->name . '!');

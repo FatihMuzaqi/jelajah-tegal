@@ -218,7 +218,7 @@
                                     @foreach($item->culinary->tableSlots as $slot)
                                         <div class="p-3 rounded-3 border d-flex flex-wrap align-items-center justify-content-between gap-2" style="background: var(--lokantara-background);">
                                             <div>
-                                                <strong>📅 {{ $slot->service_date?->format('d M Y') }}</strong> · Jam {{ $slot->start_time }} - {{ $slot->end_time }}
+                                                <strong><i class="fa-regular fa-calendar text-primary me-1"></i> {{ $slot->service_date?->format('d M Y') }}</strong> · Jam {{ $slot->start_time }} - {{ $slot->end_time }}
                                                 <small class="text-muted d-block">Kapasitas meja: {{ $slot->capacity }} orang</small>
                                             </div>
                                             @auth

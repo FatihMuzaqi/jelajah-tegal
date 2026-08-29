@@ -159,12 +159,9 @@
                                 Informasi
                             </a>
                             <ul class='dropdown-menu border-0 shadow-sm rounded-3 mt-1'>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}'><i
-                                            class="fa-solid fa-circle-info text-success me-2"></i>Tentang</a></li>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}'><i
-                                            class="fa-solid fa-circle-question text-info me-2"></i>FAQ</a></li>
-                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}'><i
-                                            class="fa-solid fa-envelope text-warning me-2"></i>Kontak</a></li>
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.about') }}'>Tentang</a></li>
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.faq') }}'>FAQ</a></li>
+                                <li><a class='dropdown-item py-2 fs-7' href='{{ route('public.contact') }}'>Kontak</a></li>
                             </ul>
                         </li>
                     </ul>
@@ -187,7 +184,7 @@
                         @guest
                             <a class='btn btn-outline-dark rounded-pill px-4 fw-bold text-center py-2'
                                 href='{{ route('login') }}'>
-                                <i class="fa-regular fa-user me-1"></i> Masuk
+                                Masuk
                             </a>
                         @else
                             <div class="dropdown">
@@ -336,7 +333,7 @@
                     wilayah Tegal.</p>
             </div>
             <div>
-                <h2>Informasi</h2><a href='{{ route('public.mitra.index') }}'>Direktori Mitra</a><a href='{{ route('public.about') }}'>Tentang</a><a
+                <h2>Informasi</h2><a href='{{ route('mitra.register') }}' class='fw-bold text-success'>Daftar Jadi Mitra</a><a href='{{ route('public.mitra.index') }}'>Direktori Mitra</a><a href='{{ route('public.about') }}'>Tentang</a><a
                     href='{{ route('public.faq') }}'>FAQ</a><a href='{{ route('public.contact') }}'>Kontak</a>
             </div>
             <div>

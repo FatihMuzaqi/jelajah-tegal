@@ -172,10 +172,10 @@
                 <!-- Badges -->
                 <div class="d-flex flex-wrap gap-2 mb-3">
                     <span class="badge" style="background: rgba(242,169,59,0.25); color: #fbd38d; border: 1px solid rgba(242,169,59,0.4); padding: 6px 12px; border-radius: 99px;">
-                        🏨 Tipe Kamar
+                        <i class="fa-solid fa-bed text-info me-1"></i> Tipe Kamar
                     </span>
                     <span class="badge" style="background: rgba(45,140,168,0.25); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); padding: 6px 12px; border-radius: 99px;">
-                        📍 {{ $accommodation->region?->name ?? 'Tegal' }}
+                        <i class="fa-solid fa-location-dot text-danger me-1"></i> {{ $accommodation->region?->name ?? 'Tegal' }}
                     </span>
                 </div>
 
@@ -263,7 +263,7 @@
 
                 <!-- Facilities Card -->
                 <div class="room-card">
-                    <h2 class="room-card-title"><span class="fs-5">✨</span> Fasilitas Kamar</h2>
+                    <h2 class="room-card-title"><span class="fs-5"><i class="fa-solid fa-wand-magic-sparkles text-warning"></i></span> Fasilitas Kamar</h2>
                     @if ($room->facilities->isNotEmpty())
                         <div class="room-facility-grid">
                             @foreach ($room->facilities as $facility)
@@ -307,7 +307,7 @@
                 <!-- Upcoming Availabilities Table -->
                 @if ($room->offer && $room->offer->availabilities->isNotEmpty())
                     <div class="room-card">
-                        <h2 class="room-card-title"><span class="fs-5">📅</span> Jadwal Ketersediaan Mendatang</h2>
+                        <h2 class="room-card-title"><span class="fs-5"><i class="fa-regular fa-calendar-days text-primary"></i></span> Jadwal Ketersediaan Mendatang</h2>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0" style="font-size: 13px;">
                                 <thead class="table-light">

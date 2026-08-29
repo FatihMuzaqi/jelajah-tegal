@@ -109,7 +109,7 @@
                     Tipe Properti <span class="text-danger">*</span>
                 </label>
                 <select class="form-select @error('property_type') is-invalid @enderror" name="property_type" required>
-                    @foreach (['hotel' => '🏨 Hotel', 'homestay' => '🏡 Homestay', 'villa' => '🏖️ Villa', 'resort' => '🌴 Resort', 'camping_ground' => '⛺ Camping Ground'] as $key => $label)
+                    @foreach (['hotel' => 'Hotel', 'homestay' => 'Homestay', 'villa' => 'Villa', 'resort' => 'Resort', 'camping_ground' => 'Camping Ground'] as $key => $label)
                         <option value="{{ $key }}" @selected(old('property_type', $accommodation->accommodation->property_type ?? 'hotel') === $key)>{{ $label }}</option>
                     @endforeach
                 </select>

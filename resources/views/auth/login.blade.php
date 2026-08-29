@@ -510,6 +510,9 @@
                 <div class="auth-footer-prompt">
                     Belum memiliki akun? <a href="{{ route('register') }}">Daftar Akun Baru</a>
                 </div>
+                <div class="auth-footer-prompt" style="margin-top: 10px;">
+                    Punya usaha di Tegal? <a href="{{ route('mitra.register') }}" style="color: #059669;">Gabung Jadi Mitra</a>
+                </div>
             </div>
 
         </div>

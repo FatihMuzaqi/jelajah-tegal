@@ -29,6 +29,9 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::get('/kyc', [KycController::class, 'index'])->name('kyc.index');
     Route::post('/kyc', [KycController::class, 'store'])->name('kyc.store');
     Route::get('/kyc/{document}/download', [KycController::class, 'download'])->name('kyc.download');
+    Route::get('/kyc/{document}/preview', [KycController::class, 'preview'])->name('kyc.preview');
+    Route::patch('/kyc/{document}', [KycController::class, 'update'])->name('kyc.update');
+    Route::delete('/kyc/{document}', [KycController::class, 'destroy'])->name('kyc.destroy');
     Route::get('/members', [MemberController::class, 'index'])->name('members.index');
     Route::post('/members', [MemberController::class, 'store'])->name('members.store');
     Route::post('/members/{member}/reset-password', [MemberController::class, 'resetPassword'])->name('members.reset-password');

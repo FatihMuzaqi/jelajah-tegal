@@ -281,7 +281,7 @@
         <!-- Periode Bulan -->
         <div class="col-12 col-lg-3 col-md-3">
             <label class="dinas-filter-label">
-                <span>📅</span> Periode Bulan
+                <i class="fa-regular fa-calendar text-primary me-1"></i> Periode Bulan
             </label>
             <select name="month" class="form-select dinas-select">
                 @for($m = 1; $m <= 12; $m++)
@@ -295,7 +295,7 @@
         <!-- Tahun Anggaran -->
         <div class="col-12 col-lg-3 col-md-3">
             <label class="dinas-filter-label">
-                <span>📅</span> Tahun Anggaran
+                <i class="fa-regular fa-calendar text-primary me-1"></i> Tahun Anggaran
             </label>
             <select name="year" class="form-select dinas-select">
                 @for($y = now()->year; $y >= 2024; $y--)

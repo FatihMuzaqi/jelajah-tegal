@@ -19,7 +19,14 @@
             <tbody>
                 <tr>
                     <td>
-                        <x-empty-state title="Belum ada properti penginapan" description="Tambahkan properti hotel, homestay, atau villa pertama Anda untuk diajukan ke kurasi publik." compact />
+                        <x-empty-state title="Belum ada properti penginapan" description="Tambahkan properti hotel, homestay, atau villa pertama Anda untuk diajukan ke kurasi publik." compact>
+                            @can('accommodation.manage')
+                                <a class="btn btn-lokantara rounded-pill px-4 py-2 mt-2 fw-bold d-inline-flex align-items-center gap-2" href="{{ route('mitra.accommodation.create') }}">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Tambah Penginapan Sekarang</span>
+                                </a>
+                            @endcan
+                        </x-empty-state>
                     </td>
                 </tr>
             </tbody>

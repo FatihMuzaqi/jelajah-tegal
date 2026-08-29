@@ -426,7 +426,7 @@ function initTripNavigator() {
                 <h6 style="margin: 2px 0 4px; font-size: 13px; font-weight: 700; color: #0f172a;">${dest.name}</h6>
                 <p style="margin: 0 0 8px; font-size: 11px; color: #64748b;">${dest.address}</p>
                 <button class="btn btn-sm btn-primary w-100 rounded-pill" style="font-size: 11px; padding: 5px 10px; background: ${dest.badge_color}; border: none;" onclick="selectDestination('${dest.id}')">
-                    📍 Panduan Rute ke Sini
+                    <i class="fa-solid fa-location-dot text-danger"></i> Panduan Rute ke Sini
                 </button>
             </div>
         `);
@@ -467,7 +467,7 @@ function initTripNavigator() {
                         iconAnchor: [9, 9]
                     });
                     userMarker = L.marker(userLocation, { icon: userIcon, zIndexOffset: 1000 }).addTo(map);
-                    userMarker.bindPopup("<b>📍 Lokasi Anda Saat Ini</b>");
+                    userMarker.bindPopup("<b><i class='fa-solid fa-location-dot text-danger'></i> Lokasi Anda Saat Ini</b>");
                 }
 
                 // Hitung jarak ke seluruh destinasi
@@ -517,7 +517,7 @@ function initTripNavigator() {
             const dist = calculateHaversineDistance(userLocation[0], userLocation[1], dest.latitude, dest.longitude);
             const labelEl = document.getElementById(`distance-label-${dest.id}`);
             if (labelEl) {
-                labelEl.textContent = `📍 ${dist} km`;
+                labelEl.innerHTML = `<i class='fa-solid fa-location-dot text-danger'></i> ${dist} km`;
             }
         });
     }

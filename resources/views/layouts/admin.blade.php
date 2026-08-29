@@ -13,6 +13,7 @@
         crossorigin="anonymous" referrerpolicy="no-referrer" />
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
+    @stack('head-extra')
 </head>
 <body class='dashboard-body' data-surface='{{ $surface }}'>
     <div class='mobile-backdrop' data-sidebar-close></div>

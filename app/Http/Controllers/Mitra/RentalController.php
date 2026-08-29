@@ -31,14 +31,26 @@ class RentalController extends Controller
         return view('mitra.catalog-domain.index', ['items' => $items, 'title' => 'Rental', 'routePrefix' => 'mitra.rental']);
     }
 
-    public function create(Request $r): View
+    public function create(Request $r)
     {
+        $mitra = $this->activeMitra($r);
+        $service = \App\Models\ServiceType::where('code', 'rental')->firstOrFail();
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Rental belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
+        }
+
         return view('mitra.catalog-domain.form', $this->refs() + ['title' => 'Rental', 'routePrefix' => 'mitra.rental', 'domain' => 'rental']);
     }
 
     public function store(SaveRentalVehicleRequest $r, SaveRentalVehicle $a): RedirectResponse
     {
-        $e = $a->execute($this->activeMitra($r), $r->validated(), $r->user());
+        $mitra = $this->activeMitra($r);
+        $service = \App\Models\ServiceType::where('code', 'rental')->firstOrFail();
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Rental belum aktif untuk Mitra Anda.');
+        }
+
+        $e = $a->execute($mitra, $r->validated(), $r->user());
 
         return redirect()->route('mitra.rental.show', $e);
     }

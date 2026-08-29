@@ -324,7 +324,7 @@
         <!-- Dari Tanggal -->
         <div class="col-6 col-lg-2 col-md-4">
             <label class="dinas-filter-label">
-                <span>📅</span> Dari Tanggal
+                <i class="fa-regular fa-calendar text-primary me-1"></i> Dari Tanggal
             </label>
             <input type="date" name="start_date" value="{{ request('start_date') }}" class="form-control dinas-input" placeholder="dd/mm/yyyy">
         </div>
@@ -332,7 +332,7 @@
         <!-- Sampai Tanggal -->
         <div class="col-6 col-lg-2 col-md-4">
             <label class="dinas-filter-label">
-                <span>📅</span> Sampai Tanggal
+                <i class="fa-regular fa-calendar text-primary me-1"></i> Sampai Tanggal
             </label>
             <input type="date" name="end_date" value="{{ request('end_date') }}" class="form-control dinas-input" placeholder="dd/mm/yyyy">
         </div>
