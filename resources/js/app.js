@@ -130,7 +130,8 @@ window.initLokantaraMap = async (containerId, lat, lng, title, address, type = '
         center: [lat, lng],
         zoom: 15,
         zoomControl: true,
-        scrollWheelZoom: false
+        scrollWheelZoom: false,
+        attributionControl: false
     });
 
     L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
