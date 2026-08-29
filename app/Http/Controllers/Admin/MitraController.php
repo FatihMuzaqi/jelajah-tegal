@@ -47,7 +47,10 @@ class MitraController extends Controller
             'total' => Mitra::count(),
             'dinas' => Mitra::where('category', 'dinas')->count(),
             'non_dinas' => Mitra::where('category', 'non_dinas')->count(),
+            'pending' => Mitra::where('status', 'pending')->count(),
             'active' => Mitra::where('status', 'active')->count(),
+            'rejected' => Mitra::where('status', 'rejected')->count(),
+            'suspended' => Mitra::where('status', 'suspended')->count(),
         ];
 
         $mitras = $query->latest()->paginate(15)->withQueryString();
@@ -77,11 +80,14 @@ class MitraController extends Controller
 
         $mitra->load([
             'region:id,name',
-            'owner:id,name,email',
+            'serviceType',
+            'categoryModel',
+            'owner:id,name,email,phone',
             'members.user:id,name,email',
             'features.serviceType',
             'bankAccounts',
-            'kycDocuments',
+            'kycDocuments.mediaAsset',
+            'mediaAssets',
             'balance'
         ]);
 
@@ -111,44 +117,102 @@ class MitraController extends Controller
     public function status(UpdateMitraStatusRequest $request, Mitra $mitra, AuditLogger $audit): RedirectResponse
     {
         $status = $request->validated('status');
-        if ($status === 'active' && ! $mitra->kycDocuments()->where('status', 'approved')->exists()) {
-            throw ValidationException::withMessages(['status' => 'Mitra memerlukan minimal satu dokumen KYC approved sebelum aktivasi.']);
-        }
 
         DB::transaction(function () use ($request, $mitra, $status, $audit) {
-            $before = ['status' => $mitra->status];
-            $mitra->update([
-                'status' => $status,
-                'approved_by' => $status === 'active' ? $request->user()->id : $mitra->approved_by,
-                'approved_at' => $status === 'active' ? now() : $mitra->approved_at,
-                'suspended_at' => $status === 'suspended' ? now() : null,
-            ]);
+            $before = ['status' => $mitra->status, 'is_verified' => $mitra->is_verified];
 
-            if ($status === 'active' && $mitra->owner_user_id) {
-                $mitra->members()->updateOrCreate(
-                    ['user_id' => $mitra->owner_user_id],
-                    ['status' => 'active', 'joined_at' => now()]
-                );
-                setPermissionsTeamId($mitra->id);
-                $mitra->owner?->assignRole('mitra-owner');
-                setPermissionsTeamId(null);
-                app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+            $updateData = [
+                'status' => $status,
+                'rejection_reason' => $status === 'rejected' ? $request->validated('reason') : null,
+                'admin_notes' => $request->validated('admin_notes', $mitra->admin_notes),
+            ];
+
+            if ($request->has('is_verified')) {
+                $updateData['is_verified'] = $request->boolean('is_verified');
             }
+
+            if ($status === 'active') {
+                $updateData['approved_by'] = $request->user()->id;
+                $updateData['approved_at'] = now();
+                $updateData['suspended_at'] = null;
+
+                // Auto-approve pending KYC documents & bank account on mitra activation
+                $mitra->kycDocuments()->where('status', 'pending')->update([
+                    'status' => 'approved',
+                    'reviewed_by' => $request->user()->id,
+                    'reviewed_at' => now(),
+                ]);
+                $mitra->bankAccounts()->where('status', 'pending')->update([
+                    'status' => 'active',
+                    'verified_by' => $request->user()->id,
+                    'verified_at' => now(),
+                ]);
+
+                if ($mitra->owner_user_id) {
+                    $mitra->members()->updateOrCreate(
+                        ['user_id' => $mitra->owner_user_id],
+                        ['status' => 'active', 'joined_at' => now()]
+                    );
+                    setPermissionsTeamId($mitra->id);
+                    $mitra->owner?->assignRole('mitra-owner');
+                    setPermissionsTeamId(null);
+                    app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+                }
+            } elseif ($status === 'suspended') {
+                $updateData['suspended_at'] = now();
+            } elseif ($status === 'rejected') {
+                $mitra->kycDocuments()->where('status', 'pending')->update([
+                    'status' => 'rejected',
+                    'rejection_reason' => $request->validated('reason'),
+                    'reviewed_by' => $request->user()->id,
+                    'reviewed_at' => now(),
+                ]);
+            }
+
+            $mitra->update($updateData);
 
             DatabaseNotification::create([
                 'user_id' => $mitra->owner_user_id,
                 'mitra_id' => $mitra->id,
                 'type' => 'mitra.status_changed',
                 'data' => [
-                    'title' => 'Status Mitra berubah',
-                    'message' => $mitra->display_name.' sekarang berstatus '.$status.'.'
+                    'title' => 'Status Pendaftaran Mitra',
+                    'message' => $status === 'active'
+                        ? 'Selamat! Pendaftaran kemitraan ' . $mitra->display_name . ' telah disetujui dan aktif.'
+                        : ($status === 'rejected'
+                            ? 'Pendaftaran kemitraan ' . $mitra->display_name . ' belum dapat disetujui: ' . $request->validated('reason')
+                            : 'Mitra ' . $mitra->display_name . ' berstatus ' . $status . '.'),
                 ]
             ]);
 
-            $audit->record('admin.mitra_status_changed', $mitra, $before, ['status' => $status, 'reason' => $request->validated('reason')], $request->user());
+            $audit->record('admin.mitra_status_changed', $mitra, $before, [
+                'status' => $status,
+                'reason' => $request->validated('reason'),
+                'is_verified' => $mitra->is_verified,
+            ], $request->user());
         });
 
-        return back()->with('status', 'Status Mitra diperbarui dan hak akses owner telah aktif.');
+        $message = match ($status) {
+            'active' => 'Mitra berhasil disetujui & diaktifkan. Hak akses portal mitra telah diberikan kepada akun owner.',
+            'rejected' => 'Pendaftaran mitra telah ditolak dan alasan penolakan telah disimpan.',
+            'suspended' => 'Mitra berhasil disuspend sementara.',
+            default => 'Status Mitra berhasil diperbarui.',
+        };
+
+        return back()->with('status', $message);
+    }
+
+    public function toggleVerifiedBadge(Request $request, Mitra $mitra): RedirectResponse
+    {
+        abort_unless(auth()->user()->can('mitras.create'), 403);
+
+        $mitra->update([
+            'is_verified' => ! $mitra->is_verified,
+        ]);
+
+        $status = $mitra->is_verified ? 'diberikan (Aktif)' : 'dicabut';
+
+        return back()->with('status', "Badge Resmi 'Terverifikasi' untuk {$mitra->display_name} berhasil {$status}.");
     }
 
     public function resetOwnerPassword(Request $request, Mitra $mitra, AuditLogger $audit): RedirectResponse

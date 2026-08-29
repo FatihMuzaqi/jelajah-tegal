@@ -19,7 +19,14 @@
             <tbody>
                 <tr>
                     <td>
-                        <x-empty-state title="Belum ada destinasi wisata" description="Buat draft destinasi wisata pertama Anda untuk diajukan ke kurasi publik." compact />
+                        <x-empty-state title="Belum ada destinasi wisata" description="Buat draft destinasi wisata pertama Anda untuk diajukan ke kurasi publik." compact>
+                            @can('tourism.manage')
+                                <a class="btn btn-lokantara rounded-pill px-4 py-2 mt-2 fw-bold d-inline-flex align-items-center gap-2" href="{{ route('mitra.tourism.create') }}">
+                                    <i class="fa-solid fa-plus"></i>
+                                    <span>Tambah Wisata Sekarang</span>
+                                </a>
+                            @endcan
+                        </x-empty-state>
                     </td>
                 </tr>
             </tbody>

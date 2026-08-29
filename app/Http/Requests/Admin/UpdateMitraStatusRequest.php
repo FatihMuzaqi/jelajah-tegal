@@ -14,6 +14,11 @@ class UpdateMitraStatusRequest extends FormRequest
 
     public function rules(): array
     {
-        return ['status' => ['required', Rule::in(['active', 'suspended'])], 'reason' => ['nullable', 'required_if:status,suspended', 'string', 'max:2000']];
+        return [
+            'status' => ['required', Rule::in(['active', 'rejected', 'suspended'])],
+            'reason' => ['nullable', 'required_if:status,rejected', 'required_if:status,suspended', 'string', 'max:2000'],
+            'is_verified' => ['nullable', 'boolean'],
+            'admin_notes' => ['nullable', 'string', 'max:2000'],
+        ];
     }
 }

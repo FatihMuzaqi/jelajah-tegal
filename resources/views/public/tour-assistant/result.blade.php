@@ -177,7 +177,7 @@
             <i class="fa-solid fa-wand-magic-sparkles"></i> Rencana Liburan Teroptimalisasi
         </div>
         <h1 class="fw-bolder text-white mb-2" style="font-size: clamp(26px, 4.5vw, 42px); letter-spacing: -0.5px;">
-            Rencana Perjalanan Impian Anda di Tegal ✨
+            Rencana Perjalanan Impian Anda di Tegal
         </h1>
         <p class="text-white-50 mx-auto mb-4 fs-6" style="max-width: 650px;">
             AI telah menyusun jadwal kronologis aktivitas, estimasi jam, destinasi, dan optimasi biaya sesuai preferensi Anda.
@@ -198,7 +198,7 @@
                 <i class="fa-solid fa-users text-warning me-1"></i> {{ $data['pax'] }} Wisatawan
             </span>
             <span class="badge bg-emerald-subtle text-emerald rounded-pill px-3 py-2 fw-bold fs-7" style="background: rgba(52, 211, 153, 0.2); color: #34d399;">
-                <i class="fa-solid fa-sparkles me-1"></i> Teroptimalisasi ✨
+                <i class="fa-solid fa-sparkles me-1"></i> Teroptimalisasi
             </span>
         </div>
     </div>

@@ -32,14 +32,26 @@ class EventController extends Controller
         return view('mitra.catalog-domain.index', ['items' => $items, 'title' => 'Event', 'routePrefix' => 'mitra.event']);
     }
 
-    public function create(Request $r): View
+    public function create(Request $r)
     {
+        $mitra = $this->activeMitra($r);
+        $service = \App\Models\ServiceType::where('code', 'event')->firstOrFail();
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Event belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
+        }
+
         return view('mitra.catalog-domain.form', $this->refs() + ['title' => 'Event', 'routePrefix' => 'mitra.event', 'domain' => 'event']);
     }
 
     public function store(SaveEventRequest $r, SaveEvent $a): RedirectResponse
     {
-        $e = $a->execute($this->activeMitra($r), $r->validated(), $r->user());
+        $mitra = $this->activeMitra($r);
+        $service = \App\Models\ServiceType::where('code', 'event')->firstOrFail();
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Event belum aktif untuk Mitra Anda.');
+        }
+
+        $e = $a->execute($mitra, $r->validated(), $r->user());
 
         return redirect()->route('mitra.event.show', $e);
     }

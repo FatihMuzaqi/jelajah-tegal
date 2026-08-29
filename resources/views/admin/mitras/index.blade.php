@@ -14,45 +14,72 @@
 
 @section('content')
     <!-- 1. Category & Filter Toolbar -->
-    <div class='d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3 mb-3'>
-        <!-- Category Filter Pills -->
-        <div class='d-flex align-items-center gap-2 overflow-x-auto pb-1 pb-md-0'>
+    <div class='d-flex flex-column gap-2 mb-3'>
+        <div class='d-flex flex-column flex-md-row justify-content-between align-items-stretch align-items-md-center gap-3'>
+            <!-- Status Filter Pills -->
+            <div class='d-flex align-items-center gap-2 overflow-x-auto pb-1 pb-md-0'>
+                <a href='{{ route('admin.mitras.index', array_merge(request()->except('status', 'page'), [])) }}'
+                    class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ !request('status') ? 'btn-dark' : 'btn-light border text-muted' }}'>
+                    Semua Status ({{ $counts['total'] ?? 0 }})
+                </a>
+                <a href='{{ route('admin.mitras.index', array_merge(request()->except('status', 'page'), ['status' => 'pending'])) }}'
+                    class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('status') === 'pending' ? 'btn-warning text-dark' : 'btn-light border text-warning-emphasis' }}'>
+                    <i class='fa-solid fa-clock me-1'></i> Pending Verifikasi ({{ $counts['pending'] ?? 0 }})
+                </a>
+                <a href='{{ route('admin.mitras.index', array_merge(request()->except('status', 'page'), ['status' => 'active'])) }}'
+                    class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('status') === 'active' ? 'btn-success' : 'btn-light border text-success' }}'>
+                    <i class='fa-solid fa-circle-check me-1'></i> Aktif ({{ $counts['active'] ?? 0 }})
+                </a>
+                <a href='{{ route('admin.mitras.index', array_merge(request()->except('status', 'page'), ['status' => 'rejected'])) }}'
+                    class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('status') === 'rejected' ? 'btn-danger' : 'btn-light border text-danger' }}'>
+                    <i class='fa-solid fa-circle-xmark me-1'></i> Ditolak ({{ $counts['rejected'] ?? 0 }})
+                </a>
+                <a href='{{ route('admin.mitras.index', array_merge(request()->except('status', 'page'), ['status' => 'suspended'])) }}'
+                    class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('status') === 'suspended' ? 'btn-secondary' : 'btn-light border text-muted' }}'>
+                    Suspended ({{ $counts['suspended'] ?? 0 }})
+                </a>
+            </div>
+
+            <!-- Search Form -->
+            <form method='GET' action='{{ route('admin.mitras.index') }}' class='d-flex align-items-center gap-2'>
+                @if (request('category'))
+                    <input type='hidden' name='category' value='{{ request('category') }}'>
+                @endif
+                @if (request('status'))
+                    <input type='hidden' name='status' value='{{ request('status') }}'>
+                @endif
+                <div class='input-group input-group-sm'>
+                    <span class='input-group-text bg-light border-end-0 text-muted'>
+                        <i class='fa-solid fa-magnifying-glass'></i>
+                    </span>
+                    <input type='text' name='q' value='{{ request('q') }}'
+                        class='form-control bg-light border-start-0 fs-8' placeholder='Cari nama, legal, slug, owner...'>
+                </div>
+                @if (request('q') || request('category') || request('status'))
+                    <a href='{{ route('admin.mitras.index') }}' class='btn btn-sm btn-light border text-muted'
+                        title='Reset Filter'>
+                        <i class='fa-solid fa-rotate-left'></i>
+                    </a>
+                @endif
+            </form>
+        </div>
+
+        <!-- Category Sub-Filters -->
+        <div class='d-flex align-items-center gap-2 overflow-x-auto'>
+            <span class='text-muted fs-8 fw-semibold me-1'>Kategori:</span>
             <a href='{{ route('admin.mitras.index', array_merge(request()->except('category', 'page'), [])) }}'
-                class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ !request('category') ? 'btn-dark' : 'btn-light border text-muted' }}'>
-                Semua ({{ $counts['total'] ?? 0 }})
+                class='badge text-decoration-none py-1.5 px-2.5 rounded-pill {{ !request('category') ? 'bg-dark text-white' : 'bg-light text-muted border' }}'>
+                Semua
             </a>
             <a href='{{ route('admin.mitras.index', array_merge(request()->except('category', 'page'), ['category' => 'dinas'])) }}'
-                class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('category') === 'dinas' ? 'btn-primary' : 'btn-light border text-primary' }}'>
+                class='badge text-decoration-none py-1.5 px-2.5 rounded-pill {{ request('category') === 'dinas' ? 'bg-primary text-white' : 'bg-light text-muted border' }}'>
                 <i class='fa-solid fa-building-columns me-1'></i> Dinas ({{ $counts['dinas'] ?? 0 }})
             </a>
             <a href='{{ route('admin.mitras.index', array_merge(request()->except('category', 'page'), ['category' => 'non_dinas'])) }}'
-                class='btn btn-sm rounded-pill px-3 fw-bold fs-8 {{ request('category') === 'non_dinas' ? 'btn-dark' : 'btn-light border text-muted' }}'>
+                class='badge text-decoration-none py-1.5 px-2.5 rounded-pill {{ request('category') === 'non_dinas' ? 'bg-dark text-white' : 'bg-light text-muted border' }}'>
                 <i class='fa-solid fa-store me-1'></i> Non-Dinas ({{ $counts['non_dinas'] ?? 0 }})
             </a>
         </div>
-
-        <!-- Search Form -->
-        <form method='GET' action='{{ route('admin.mitras.index') }}' class='d-flex align-items-center gap-2'>
-            @if (request('category'))
-                <input type='hidden' name='category' value='{{ request('category') }}'>
-            @endif
-            @if (request('status'))
-                <input type='hidden' name='status' value='{{ request('status') }}'>
-            @endif
-            <div class='input-group input-group-sm'>
-                <span class='input-group-text bg-light border-end-0 text-muted'>
-                    <i class='fa-solid fa-magnifying-glass'></i>
-                </span>
-                <input type='text' name='q' value='{{ request('q') }}'
-                    class='form-control bg-light border-start-0 fs-8' placeholder='Cari nama, legal, slug, owner...'>
-            </div>
-            @if (request('q') || request('category') || request('status'))
-                <a href='{{ route('admin.mitras.index') }}' class='btn btn-sm btn-light border text-muted'
-                    title='Reset Filter'>
-                    <i class='fa-solid fa-rotate-left'></i>
-                </a>
-            @endif
-        </form>
     </div>
 
     <!-- 2. Data Table Wrapper -->
@@ -70,7 +97,7 @@
         @else
             <thead>
                 <tr>
-                    <th>Nama & Kategori Mitra</th>
+                    <th>Nama & Legalitas Mitra</th>
                     <th>Penanggung Jawab (Owner)</th>
                     <th>Wilayah</th>
                     <th>Status</th>
@@ -82,23 +109,29 @@
                 @foreach ($mitras as $mitra)
                     <tr>
                         <td data-label='Nama Mitra'>
-                            <div class='d-flex align-items-center gap-2 mb-1 flex-wrap'>
-                                <strong class='text-dark fs-7'>{{ $mitra->display_name }}</strong>
-                                @if ($mitra->category === 'dinas')
-                                    <span
-                                        class='badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 fs-8 fw-bold'>
-                                        <i class='fa-solid fa-building-columns me-1'></i> Dinas
+                            <div class='d-flex align-items-center gap-1.5 mb-1 flex-wrap'>
+                                <a href='{{ route('admin.mitras.show', $mitra) }}' class='text-dark fw-bold fs-7 text-decoration-none hover-primary'>
+                                    {{ $mitra->display_name }}
+                                </a>
+                                @if ($mitra->is_verified)
+                                    <span class='badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 fs-8 fw-bold' title='Mitra Terverifikasi'>
+                                        <i class='fa-solid fa-circle-check'></i> Terverifikasi
                                     </span>
-                                @else
-                                    <span class='badge bg-secondary-subtle text-secondary rounded-pill px-2 py-0.5 fs-8'>
-                                        <i class='fa-solid fa-store me-1'></i> Non-Dinas
+                                @endif
+                                @if ($mitra->category === 'dinas')
+                                    <span class='badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2 py-0.5 fs-8 fw-bold'>
+                                        <i class='fa-solid fa-building-columns me-1'></i> Dinas
                                     </span>
                                 @endif
                             </div>
                             <small class='d-block text-muted fs-8'>
-                                Legal: {{ $mitra->legal_name }} &middot; <code
-                                    class='text-muted'>/{{ $mitra->slug }}</code>
+                                Legal: {{ $mitra->legal_name }} &middot; <code class='text-muted'>/{{ $mitra->slug }}</code>
                             </small>
+                            @if ($mitra->status === 'rejected' && $mitra->rejection_reason)
+                                <small class='d-block text-danger fs-8 mt-0.5'>
+                                    <i class='fa-solid fa-circle-exclamation me-1'></i> Ditolak: {{ Str::limit($mitra->rejection_reason, 45) }}
+                                </small>
+                            @endif
                         </td>
                         <td data-label='Owner'>
                             <span class='text-dark fw-medium fs-8 d-block'>{{ $mitra->owner?->name ?? '—' }}</span>
@@ -115,6 +148,13 @@
                         </td>
                         <td data-label='Aksi' class='text-end'>
                             <div class='d-flex justify-content-end align-items-center gap-1.5'>
+                                <!-- Review / Detail Button -->
+                                <a href='{{ route('admin.mitras.show', $mitra) }}'
+                                    class='btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fs-8 fw-semibold'
+                                    title='Tinjau Detail & Berkas'>
+                                    <i class='fa-solid fa-eye me-1'></i> Tinjau
+                                </a>
+
                                 <!-- Edit Button -->
                                 <a href='{{ route('admin.mitras.edit', $mitra) }}'
                                     class='btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-1'
@@ -123,10 +163,10 @@
                                 </a>
 
                                 <!-- Reset Password Button -->
-                                <button type='button' class='btn btn-sm btn-outline-primary rounded-pill px-2.5 py-1 fs-8'
+                                <button type='button' class='btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-1 fs-8'
                                     data-bs-toggle='modal' data-bs-target='#reset-pw-mitra-{{ $mitra->id }}'
                                     title='Reset Kata Sandi Akun Owner'>
-                                    <i class='fa-solid fa-key me-1'></i>
+                                    <i class='fa-solid fa-key'></i>
                                 </button>
 
                                 <!-- Status Activation / Suspend -->
@@ -135,7 +175,7 @@
                                         @csrf
                                         @method('PATCH')
                                         <input type='hidden' name='status' value='active'>
-                                        <button class='btn btn-sm btn-success rounded-pill px-2.5 py-1 fw-bold fs-8'>
+                                        <button class='btn btn-sm btn-success rounded-pill px-2.5 py-1 fw-bold fs-8' title='Aktifkan Mitra'>
                                             <i class='fa-solid fa-check me-1'></i> Aktifkan
                                         </button>
                                     </form>

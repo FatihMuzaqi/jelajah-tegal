@@ -26,7 +26,12 @@
             <tbody>
                 <tr>
                     <td>
-                        <x-empty-state :title="'Belum ada ' . strtolower($title)" description="Tambahkan layanan {{ strtolower($title) }} pertama Anda untuk diajukan ke kurasi publik." compact />
+                        <x-empty-state :title="'Belum ada ' . strtolower($title)" description="Tambahkan layanan {{ strtolower($title) }} pertama Anda untuk diajukan ke kurasi publik." compact>
+                            <a class="btn btn-lokantara rounded-pill px-4 py-2 mt-2 fw-bold d-inline-flex align-items-center gap-2" href="{{ route($routePrefix . '.create') }}">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>Tambah {{ $title }} Sekarang</span>
+                            </a>
+                        </x-empty-state>
                     </td>
                 </tr>
             </tbody>

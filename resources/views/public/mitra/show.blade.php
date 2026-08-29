@@ -193,7 +193,7 @@
                     </span>
                     @if ($mitra->region)
                         <span class="badge" style="background: rgba(45,140,168,0.3); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); border-radius: 99px; font-size: 11px;">
-                            📍 {{ $mitra->region->name }}
+                            <i class="fa-solid fa-location-dot text-danger"></i> {{ $mitra->region->name }}
                         </span>
                     @endif
                 </div>
@@ -292,7 +292,7 @@
                 @if ($accommodations->isNotEmpty())
                     <div class="mitra-content-card">
                         <h2 class="mitra-content-title">
-                            <span>🏨</span> Hotel & Penginapan yang Dikelola ({{ $accommodations->count() }})
+                            <span><i class="fa-solid fa-hotel text-info"></i></span> Hotel & Penginapan yang Dikelola ({{ $accommodations->count() }})
                         </h2>
 
                         <div class="row g-3">
@@ -309,7 +309,7 @@
                                                 <img src="{{ $coverUrl }}" alt="{{ $item->name }}">
                                             @else
                                                 <div style="width: 100%; height: 100%; display: grid; place-items: center; background: #1b634b; color: #fff; font-size: 28px;">
-                                                    🏨
+                                                    <i class="fa-solid fa-hotel text-secondary"></i>
                                                 </div>
                                             @endif
                                         </div>
@@ -421,7 +421,7 @@
 
                     @if ($mitra->address)
                         <div class="mb-3">
-                            <strong class="fs-7 d-block mb-1">📍 Alamat Kantor / Lokasi:</strong>
+                            <strong class="fs-7 d-block mb-1"><i class="fa-solid fa-location-dot text-danger"></i> Alamat Kantor / Lokasi:</strong>
                             <p class="text-muted mb-0" style="font-size: 13px;">{{ $mitra->address }}</p>
                         </div>
                     @endif

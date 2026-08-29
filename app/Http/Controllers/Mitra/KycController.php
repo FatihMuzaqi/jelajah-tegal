@@ -58,4 +58,53 @@ class KycController extends Controller
 
         return Storage::disk($media->disk)->download($media->object_key, $media->original_name ?? 'dokumen-kyc');
     }
+
+    public function preview(Request $request, MitraKycDocument $document, AuditLogger $audit): StreamedResponse
+    {
+        $this->authorize('view', $document);
+        $media = $document->mediaAsset;
+        abort_unless($media && $media->visibility === 'private' && Storage::disk($media->disk)->exists($media->object_key), 404);
+        $audit->record('mitra.kyc_accessed', $document, [], ['purpose' => 'authorized_preview'], $request->user());
+
+        return Storage::disk($media->disk)->response($media->object_key);
+    }
+
+    public function update(Request $request, MitraKycDocument $document, AuditLogger $audit): RedirectResponse
+    {
+        $this->authorize('update', $document);
+        abort_if($document->status === 'approved', 403, 'Dokumen yang telah disetujui tidak dapat diubah.');
+
+        $validated = $request->validate([
+            'document_number' => ['nullable', 'string', 'max:100'],
+            'expires_on' => ['nullable', 'date'],
+        ]);
+
+        $number = $validated['document_number'] ?? null;
+        $document->update([
+            'document_number_encrypted' => $number,
+            'document_fingerprint' => $number ? hash_hmac('sha256', preg_replace('/\s+/', '', $number), config('app.key')) : null,
+            'expires_on' => $validated['expires_on'] ?? null,
+        ]);
+
+        $audit->record('mitra.kyc_updated', $document, [], ['type' => $document->document_type], $request->user());
+
+        return back()->with('status', 'Data pendukung dokumen KYC berhasil diperbarui.');
+    }
+
+    public function destroy(Request $request, MitraKycDocument $document, AuditLogger $audit, MitraMediaStorage $storage): RedirectResponse
+    {
+        $this->authorize('delete', $document);
+        abort_if($document->status === 'approved', 403, 'Dokumen yang telah disetujui tidak dapat dihapus.');
+
+        $media = $document->mediaAsset;
+        
+        $audit->record('mitra.kyc_deleted', $document, ['type' => $document->document_type], [], $request->user());
+        
+        $document->delete();
+        if ($media) {
+            $storage->discard($media);
+        }
+
+        return back()->with('status', 'Dokumen KYC berhasil dihapus secara permanen.');
+    }
 }

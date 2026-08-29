@@ -35,7 +35,7 @@
                             </div>
                         </div>
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon">🔐</div>
+                            <div class="auth-feature-icon"><i class="fa-solid fa-lock text-success"></i></div>
                             <div class="auth-feature-text">
                                 <h6>Keamanan Akses Terisolasi</h6>
                                 <p>Satu akun untuk multi-mitra dengan otorisasi berbasis peran dan izin yang aman.</p>
@@ -103,7 +103,7 @@
                         <div class="form-input-group">
                             <label for="password_confirmation">Konfirmasi Kata Sandi Baru</label>
                             <div class="form-input-wrapper">
-                                <span class="form-input-icon">🔐</span>
+                                <span class="form-input-icon"><i class="fa-solid fa-key"></i></span>
                                 <input id="password_confirmation" type="password" name="password_confirmation" required autocomplete="new-password" placeholder="Ulangi kata sandi baru" class="form-control-custom has-toggle">
                                 <button type="button" class="password-toggle-btn" onclick="togglePassword('password_confirmation', this)" aria-label="Lihat kata sandi">
                                     <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>

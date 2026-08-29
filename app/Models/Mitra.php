@@ -17,30 +17,50 @@ class Mitra extends Model
 
     protected $fillable = [
         'owner_user_id',
+        'owner_nik_encrypted',
         'category',
+        'service_type_id',
+        'category_id',
         'legal_name',
         'display_name',
         'slug',
         'registration_number',
         'tax_number_encrypted',
+        'nib',
+        'npwp',
         'status',
+        'is_verified',
         'description',
         'contact_email',
         'contact_phone',
         'region_id',
         'address',
+        'latitude',
+        'longitude',
+        'founded_year',
         'logo_media_id',
         'banner_media_id',
         'approved_by',
         'approved_at',
-        'suspended_at'
+        'suspended_at',
+        'rejection_reason',
+        'admin_notes',
     ];
 
-    protected $hidden = ['tax_number_encrypted'];
+    protected $hidden = ['tax_number_encrypted', 'owner_nik_encrypted'];
 
     protected function casts(): array
     {
-        return ['tax_number_encrypted' => 'encrypted', 'approved_at' => 'datetime', 'suspended_at' => 'datetime'];
+        return [
+            'tax_number_encrypted' => 'encrypted',
+            'owner_nik_encrypted' => 'encrypted',
+            'is_verified' => 'boolean',
+            'latitude' => 'float',
+            'longitude' => 'float',
+            'founded_year' => 'integer',
+            'approved_at' => 'datetime',
+            'suspended_at' => 'datetime',
+        ];
     }
 
     public function isDinas(): bool
@@ -68,6 +88,26 @@ class Mitra extends Model
     public function region(): BelongsTo
     {
         return $this->belongsTo(Region::class);
+    }
+
+    public function serviceType(): BelongsTo
+    {
+        return $this->belongsTo(ServiceType::class, 'service_type_id');
+    }
+
+    public function categoryModel(): BelongsTo
+    {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function locationPhotos(): HasMany
+    {
+        return $this->hasMany(MediaAsset::class)->where('purpose', 'business_location');
+    }
+
+    public function productPhotos(): HasMany
+    {
+        return $this->hasMany(MediaAsset::class)->where('purpose', 'business_product');
     }
 
     public function members(): HasMany

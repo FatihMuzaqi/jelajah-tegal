@@ -37,9 +37,11 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.admin',
     Route::put('/mitras/{mitra}', [MitraController::class, 'update'])->name('mitras.update');
     Route::post('/mitras/{mitra}/reset-owner-password', [MitraController::class, 'resetOwnerPassword'])->name('mitras.reset-owner-password');
     Route::patch('/mitras/{mitra}/status', [MitraController::class, 'status'])->name('mitras.status');
+    Route::patch('/mitras/{mitra}/toggle-verified', [MitraController::class, 'toggleVerifiedBadge'])->name('mitras.toggle-verified');
     Route::get('/kyc', [KycReviewController::class, 'index'])->name('kyc.index');
     Route::patch('/kyc/{document}', [KycReviewController::class, 'update'])->name('kyc.update');
     Route::get('/kyc/{document}/download', [KycController::class, 'download'])->name('kyc.download');
+    Route::get('/kyc/{document}/preview', [KycController::class, 'preview'])->name('kyc.preview');
     Route::get('/feature-requests', [FeatureRequestController::class, 'index'])->name('features.index');
     Route::patch('/feature-requests/{featureRequest}', [FeatureRequestController::class, 'update'])->name('features.update');
     Route::get('/tourism', [TourismModerationController::class, 'index'])->name('tourism.index');

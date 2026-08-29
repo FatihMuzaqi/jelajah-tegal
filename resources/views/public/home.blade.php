@@ -762,33 +762,31 @@
         <!-- Dua Tombol Utama: Rekomendasi AI & Pencarian -->
         <div class="jt-hero-actions-wrap mb-4 pt-2">
             <a href="{{ route('tour-assistant.index') }}" class="btn jt-hero-btn jt-hero-btn-ai">
-                <i class="fa-solid fa-wand-magic-sparkles text-warning fs-5"></i>
                 <span>Rekomendasi AI</span>
-                <span class="jt-badge-tag"><i class="fa-solid fa-bolt text-warning me-1"></i> Pintar & Otomatis</span>
+                <span class="jt-badge-tag">Pintar & Otomatis</span>
             </a>
             <a href="{{ route('tourism.index') }}" class="btn jt-hero-btn jt-hero-btn-search">
-                <i class="fa-solid fa-magnifying-glass text-success fs-5"></i>
                 <span>Pencarian Wisata</span>
             </a>
         </div>
 
         <!-- Popular Chips -->
         <div class="jt-chips-wrapper">
-            <span class="text-white-50 flex-shrink-0"><i class="fa-solid fa-fire text-danger me-1"></i> Sedang Populer</span>
+            <span class="text-white-50 flex-shrink-0">Sedang Populer</span>
             <a href="{{ route('tourism.show', 'purwahamba-indah') }}" class="jt-chip-item">
-                <i class="fa-solid fa-umbrella-beach text-warning me-1"></i> Purwahamba Indah
+                Purwahamba Indah
             </a>
             <a href="{{ route('tourism.index') }}" class="jt-chip-item">
-                <i class="fa-solid fa-water text-info me-1"></i> Guci & Curug
+                Guci & Curug
             </a>
             <a href="{{ route('home', ['service' => 'culinary']) }}" class="jt-chip-item">
-                <i class="fa-solid fa-utensils text-warning me-1"></i> Sate Tegal
+                Sate Tegal
             </a>
             <a href="{{ route('accommodation.index') }}" class="jt-chip-item">
-                <i class="fa-solid fa-hotel text-info me-1"></i> Hotel Pilihan
+                Hotel Pilihan
             </a>
             <a href="{{ route('home', ['service' => 'event']) }}" class="jt-chip-item">
-                <i class="fa-solid fa-calendar-days text-danger me-1"></i> Event Budaya
+                Event Budaya
             </a>
         </div>
     </div>
@@ -1250,6 +1248,26 @@
         </div>
     </div>
 </section>
+
+<!-- CTA Gabung Mitra -->
+<div class="container public-container mb-5">
+    <div class="rounded-4 overflow-hidden position-relative p-4 p-md-5" style="background: linear-gradient(135deg, #047857 0%, #065f46 100%);">
+        <div class="row align-items-center position-relative z-1">
+            <div class="col-lg-8 mb-4 mb-lg-0 text-center text-lg-start">
+                <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold mb-3" style="font-size: 13px;">Tingkatkan Omset Bisnismu</span>
+                <h2 class="text-white fw-extrabold mb-3">Punya Usaha Wisata, Kuliner, atau Penginapan di Tegal?</h2>
+                <p class="text-white-50 fs-6 mb-0" style="max-width: 600px; line-height: 1.6;">
+                    Jangkau lebih banyak wisatawan, kelola pesanan dengan mudah, dan kembangkan bisnismu secara digital dengan menjadi Mitra resmi Jelajah Tegal hari ini.
+                </p>
+            </div>
+            <div class="col-lg-4 text-center text-lg-end">
+                <a href="{{ route('mitra.register') }}" class="btn btn-warning rounded-pill px-4 py-2.5 fw-bold shadow-sm d-inline-flex align-items-center gap-2" style="font-size: 15px;">
+                    Gabung Mitra Sekarang
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- 5. Section 4: Newsletter Footer Banner -->
 <div class="container public-container pb-5">
