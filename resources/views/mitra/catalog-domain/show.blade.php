@@ -14,6 +14,34 @@
 @section('page-description', 'Kelola data layanan ' . strtolower($title) . ', galeri foto, buku menu/tarif/tiket, dan status moderasi.')
 
 @section('content')
+    @if (session('status'))
+        <div class="alert alert-success border-0 shadow-sm rounded-4 mb-3 d-flex align-items-center gap-2">
+            <i class="fa-solid fa-circle-check text-success fs-5"></i>
+            <div>{{ session('status') }}</div>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-3 d-flex align-items-center gap-2">
+            <i class="fa-solid fa-triangle-exclamation text-danger fs-5"></i>
+            <div>{{ session('error') }}</div>
+        </div>
+    @endif
+
+    @if ($errors->any())
+        <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="fa-solid fa-triangle-exclamation text-danger fs-5"></i>
+                <strong class="text-danger">Pengajuan Moderasi Belum Dapat Diproses:</strong>
+            </div>
+            <ul class="mb-0 ps-3">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
     <!-- Action Bar -->
     <div class='d-flex flex-wrap align-items-center justify-content-between gap-2 mb-4 p-3 rounded-4'
         style='background: #ffffff; border: 1px solid var(--lokantara-border, #e2e8f0); box-shadow: 0 2px 10px rgba(15, 23, 42, 0.02);'>

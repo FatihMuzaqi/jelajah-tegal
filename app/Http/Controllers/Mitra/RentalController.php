@@ -92,7 +92,7 @@ class RentalController extends Controller
         $this->owned($r, $rental);
         $a->execute($rental, 'rental', $r->user(), [$rental->rentalVehicle->rates()->exists() => 'tarif']);
 
-        return back();
+        return back()->with('status', 'Armada rental berhasil diajukan untuk moderasi!');
     }
 
     public function archive(Request $r, CatalogEntity $rental, \App\Services\AuditLogger $audit): RedirectResponse

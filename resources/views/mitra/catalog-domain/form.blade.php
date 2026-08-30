@@ -148,13 +148,18 @@
 
             @if(isset($categories) && $categories->isNotEmpty())
                 <div class="col-md-6">
-                    <label class="form-label fw-bold" style="font-size: 13px;">Kategori Layanan</label>
-                    <select class="form-select @error('category_id') is-invalid @enderror" name="category_id">
-                        <option value="">Pilih Kategori</option>
-                        @foreach ($categories as $cat)
-                            <option value="{{ $cat->id }}" @selected(old('category_id', $item->category_id ?? null) == $cat->id)>{{ $cat->name }}</option>
-                        @endforeach
-                    </select>
+                    <label class="form-label fw-bold" style="font-size: 13px;">
+                        Kategori Layanan <span class="text-danger">*</span>
+                    </label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-white text-muted"><i class="fa-solid fa-layer-group"></i></span>
+                        <select class="form-select @error('category_id') is-invalid @enderror" name="category_id" required>
+                            <option value="">Pilih Kategori Layanan</option>
+                            @foreach ($categories as $cat)
+                                <option value="{{ $cat->id }}" @selected(old('category_id', $item->category_id ?? null) == $cat->id)>{{ $cat->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                     @error('category_id') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
                 </div>
             @endif
