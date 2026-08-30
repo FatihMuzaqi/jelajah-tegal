@@ -97,7 +97,7 @@ class ValidateQrTicket
                 $this->log($ticket, $gatekeeper, $assignment, 'duplicate', $hash, $device);
                 $usedTime = $ticket->used_at ? $ticket->used_at->translatedFormat('d F Y, H:i') : 'Waktu tidak tercatat';
                 $serviceName = $ticket->orderItem?->item_name ?? 'Layanan Mitra';
-                return [$ticket, "❌ TIKET SUDAH DIGUNAKAN! Tiket {$ticket->ticket_code} ({$serviceName}) telah dicheck-in sebelumnya pada {$usedTime} WIB. Tiket tidak dapat dipindai ulang."];
+                return [$ticket, " TIKET SUDAH DIGUNAKAN! Tiket {$ticket->ticket_code} ({$serviceName}) telah dicheck-in sebelumnya pada {$usedTime} WIB. Tiket tidak dapat dipindai ulang."];
             }
 
             // 2. CEK STATUS DIBATALKAN / REVOKED

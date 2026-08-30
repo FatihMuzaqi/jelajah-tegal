@@ -163,14 +163,27 @@ class AccommodationController extends Controller
     public function roomMedia(Request $request, CatalogEntity $accommodation, AccommodationRoom $room, MitraMediaStorage $storage): RedirectResponse
     {
         $this->roomOwned($request, $accommodation, $room);
-        $data = $request->validate(['image' => 'required|file|mimes:jpg,jpeg,png,webp|max:8192', 'role' => 'required|in:cover,gallery', 'caption' => 'nullable|string|max:255']);
-        $asset = $storage->store($this->activeMitra($request), $request->file('image'), 'accommodation-room', false);
-        DB::transaction(function () use ($room, $asset, $data) {
+        $data = $request->validate([
+            'photos' => 'required|array|max:5',
+            'photos.*' => 'required|file|mimes:jpg,jpeg,png,webp|max:8192',
+            'role' => 'required|in:cover,gallery',
+            'caption' => 'nullable|string|max:255'
+        ]);
+
+        DB::transaction(function () use ($room, $data, $storage, $request) {
             if ($data['role'] === 'cover') {
                 $room->media()->wherePivot('role', 'cover')->detach();
             }
-            $sort = (int) DB::table('accommodation_room_media')->where('accommodation_room_id', $room->id)->max('sort_order') + 1;
-            $room->media()->attach($asset->id, ['role' => $data['role'], 'sort_order' => $sort, 'caption' => $data['caption'] ?? null]);
+
+            foreach ($data['photos'] as $index => $photo) {
+                $asset = $storage->store($this->activeMitra($request), $photo, 'accommodation-room', false);
+                $sort = (int) DB::table('accommodation_room_media')->where('accommodation_room_id', $room->id)->max('sort_order') + 1;
+                // If it's a cover and we're uploading multiple, only the first one gets to be cover, others become gallery. Or just make them all cover? 
+                // A room should only have 1 cover. So we force 'gallery' for subsequent ones if role is cover.
+                $currentRole = ($data['role'] === 'cover' && $index > 0) ? 'gallery' : $data['role'];
+                
+                $room->media()->attach($asset->id, ['role' => $currentRole, 'sort_order' => $sort, 'caption' => $data['caption'] ?? null]);
+            }
         });
 
         return back()->with('status', 'Media kamar ditambahkan.');

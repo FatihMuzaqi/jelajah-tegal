@@ -689,7 +689,7 @@
                             <form method="POST" action="{{ route('accommodation.favorite', $accommodation->slug) }}">
                                 @csrf
                                 <button type="submit" class="btn btn-outline-lokantara w-100 d-flex align-items-center justify-content-center gap-2 py-2">
-                                    <span>❤️</span> Simpan ke Favorit
+                                    <span>️</span> Simpan ke Favorit
                                 </button>
                             </form>
                         @endauth
@@ -704,7 +704,7 @@
                         <div>
                             <small class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Mitra Pengelola</small>
                             <strong class="fs-6">{{ $accommodation->mitra->display_name }}</strong>
-                            <div class="text-success" style="font-size: 12px;">✔ Mitra Terverifikasi</div>
+                            <div class="text-success" style="font-size: 12px;"> Mitra Terverifikasi</div>
                         </div>
                     </div>
 

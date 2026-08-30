@@ -203,28 +203,28 @@
     <div class="room-stats-card">
         <div class="room-stats-grid">
             <div class="room-stat-box">
-                <div class="room-stat-icon">👥</div>
+                <div class="room-stat-icon"><i class="fa-solid fa-user-group"></i></div>
                 <div class="room-stat-info">
                     <h6>Kapasitas Tamu</h6>
                     <p>{{ $room->capacity_adults }} Dewasa, {{ $room->capacity_children }} Anak</p>
                 </div>
             </div>
             <div class="room-stat-box">
-                <div class="room-stat-icon">🛏️</div>
+                <div class="room-stat-icon"><i class="fa-solid fa-bed"></i></div>
                 <div class="room-stat-info">
                     <h6>Tipe Ranjang</h6>
                     <p>{{ $room->bed_type ?: 'Double Bed Nyaman' }}</p>
                 </div>
             </div>
             <div class="room-stat-box">
-                <div class="room-stat-icon">📐</div>
+                <div class="room-stat-icon"><i class="fa-solid fa-maximize"></i></div>
                 <div class="room-stat-info">
                     <h6>Luas Ruangan</h6>
                     <p>{{ $room->room_size_sqm ? $room->room_size_sqm . ' m²' : 'Standar Nyaman' }}</p>
                 </div>
             </div>
             <div class="room-stat-box">
-                <div class="room-stat-icon">🏢</div>
+                <div class="room-stat-icon"><i class="fa-solid fa-door-open"></i></div>
                 <div class="room-stat-info">
                     <h6>Ketersediaan</h6>
                     <p class="text-success">{{ $room->total_units }} Unit Kamar</p>
@@ -242,7 +242,7 @@
             <div class="col-lg-8">
                 <!-- Description Card -->
                 <div class="room-card">
-                    <h2 class="room-card-title"><span class="fs-5">📖</span> Deskripsi & Suasana Kamar</h2>
+                    <h2 class="room-card-title"><span class="fs-5"><i class="fa-solid fa-align-left text-primary"></i></span> Deskripsi & Suasana Kamar</h2>
                     <div style="font-size: 15px; line-height: 1.8; color: var(--lokantara-text);">
                         {!! nl2br(e($room->description ?: 'Nikmati kenyamanan istirahat maksimal di kamar ' . $room->name . '. Didesain dengan tata ruang yang bersih, kasur empuk berkualitas, dan pencahayaan hangat untuk memastikan pengalaman menginap Anda di Tegal terasa menyenangkan.')) !!}
                     </div>
@@ -268,26 +268,26 @@
                         <div class="room-facility-grid">
                             @foreach ($room->facilities as $facility)
                                 <div class="room-facility-pill">
-                                    <span class="text-success">✔</span>
+                                    <span class="text-success"></span>
                                     <span>{{ $facility->name }}</span>
                                 </div>
                             @endforeach
                         </div>
                     @else
                         <div class="room-facility-grid">
-                            <div class="room-facility-pill"><span class="text-success">✔</span><span>Pendingin Ruangan (AC)</span></div>
-                            <div class="room-facility-pill"><span class="text-success">✔</span><span>Akses Wi-Fi Cepat</span></div>
-                            <div class="room-facility-pill"><span class="text-success">✔</span><span>Kamar Mandi Dalam & Shower</span></div>
-                            <div class="room-facility-pill"><span class="text-success">✔</span><span>Perlengkapan Mandi Gratis</span></div>
-                            <div class="room-facility-pill"><span class="text-success">✔</span><span>Air Mineral Botol</span></div>
-                            <div class="room-facility-pill"><span class="text-success">✔</span><span>Meja & Kursi Kerja</span></div>
+                            <div class="room-facility-pill"><span class="text-success"></span><span>Pendingin Ruangan (AC)</span></div>
+                            <div class="room-facility-pill"><span class="text-success"></span><span>Akses Wi-Fi Cepat</span></div>
+                            <div class="room-facility-pill"><span class="text-success"></span><span>Kamar Mandi Dalam & Shower</span></div>
+                            <div class="room-facility-pill"><span class="text-success"></span><span>Perlengkapan Mandi Gratis</span></div>
+                            <div class="room-facility-pill"><span class="text-success"></span><span>Air Mineral Botol</span></div>
+                            <div class="room-facility-pill"><span class="text-success"></span><span>Meja & Kursi Kerja</span></div>
                         </div>
                     @endif
                 </div>
 
                 <!-- Policies Card -->
                 <div class="room-card">
-                    <h2 class="room-card-title"><span class="fs-5">📜</span> Kebijakan & Ketentuan Menginap</h2>
+                    <h2 class="room-card-title"><span class="fs-5"></span> Kebijakan & Ketentuan Menginap</h2>
                     <div class="p-3 rounded-3" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                         <ul class="mb-0 ps-3" style="font-size: 14px; line-height: 1.8; color: var(--lokantara-text);">
                             <li><strong>Durasi Menginap Minimum:</strong> {{ $room->min_stay_nights ?? 1 }} malam.</li>
@@ -356,15 +356,15 @@
 
                     <div class="p-3 rounded-3 mb-4" style="background: var(--lokantara-background); border: 1px solid var(--lokantara-border);">
                         <div class="d-flex align-items-center gap-2 mb-2" style="font-size: 13px;">
-                            <span class="text-success">✔</span>
+                            <span class="text-success"></span>
                             <span>Konfirmasi Instan</span>
                         </div>
                         <div class="d-flex align-items-center gap-2 mb-2" style="font-size: 13px;">
-                            <span class="text-success">✔</span>
+                            <span class="text-success"></span>
                             <span>Bebas Biaya Pemesanan</span>
                         </div>
                         <div class="d-flex align-items-center gap-2" style="font-size: 13px;">
-                            <span class="text-success">✔</span>
+                            <span class="text-success"></span>
                             <span>Jaminan Kamar Bersih & Nyaman</span>
                         </div>
                     </div>
@@ -393,7 +393,7 @@
                         <div>
                             <small class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Pengelola Penginapan</small>
                             <strong class="fs-6">{{ $accommodation->mitra->display_name }}</strong>
-                            <div class="text-success" style="font-size: 12px;">✔ Mitra Terverifikasi</div>
+                            <div class="text-success" style="font-size: 12px;"> Mitra Terverifikasi</div>
                         </div>
                     </div>
                 </div>

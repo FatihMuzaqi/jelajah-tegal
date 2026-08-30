@@ -190,7 +190,7 @@
 
     <!-- Add Room Card -->
     <x-content-card title='Tambah Tipe Kamar Baru' class='mt-4'>
-        <form method='POST' action='{{ route('mitra.accommodation.rooms.store', $accommodation) }}'>
+        <form method='POST' action='{{ route('mitra.accommodation.rooms.store', $accommodation) }}' enctype='multipart/form-data'>
             @csrf
             <div class='row g-3'>
                 <div class='col-md-4'>
@@ -242,9 +242,39 @@
                 <div class='col-md-3'>
                     <label class='form-label fw-bold' style='font-size: 13px;'>Status Publikasi <span class='text-danger'>*</span></label>
                     <select name='status' class='form-select' required>
-                        <option value='active'>🟢 Aktif (Tersedia)</option>
-                        <option value='draft'>🟡 Draft (Disembunyikan)</option>
+                        <option value='active'> Aktif (Tersedia)</option>
+                        <option value='draft'> Draft (Disembunyikan)</option>
                     </select>
+                </div>
+            </div>
+
+            <div class='row g-3 mt-1'>
+                <div class='col-md-6'>
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Fasilitas Kamar</label>
+                    <div class='p-2 rounded border' style='max-height: 150px; overflow-y: auto; background: #f8fafc;'>
+                        @php
+                            $roomFacilities = \App\Models\Facility::whereHas('serviceType', fn($q) => $q->where('code', 'accommodation'))->where('is_active', true)->get();
+                        @endphp
+                        <div class="row g-2">
+                            @forelse($roomFacilities as $facility)
+                                <div class="col-6 col-sm-4">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="facilities[]" value="{{ $facility->id }}" id="facility_room_{{ $facility->id }}">
+                                        <label class="form-check-label" for="facility_room_{{ $facility->id }}" style="font-size: 12px;">
+                                            {{ $facility->name }}
+                                        </label>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="col-12 text-muted" style="font-size: 12px;">Belum ada master fasilitas tersedia.</div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+                <div class='col-md-6'>
+                    <label class='form-label fw-bold' style='font-size: 13px;'>Foto Sampel Kamar (Maks. 5)</label>
+                    <input type="file" name="photos[]" class="form-control" accept="image/jpeg,image/png,image/webp" multiple>
+                    <div class="form-text" style="font-size: 11px;">Anda bisa memilih lebih dari satu foto sekaligus. Ukuran maksimal 5MB per foto.</div>
                 </div>
             </div>
 

@@ -217,8 +217,8 @@
                                                                         <div class='col-6'>
                                                                             <label class='form-label fw-bold' style='font-size: 13px;'>Status Menu</label>
                                                                             <select class='form-select form-select-sm' name='status'>
-                                                                                <option value='active' @selected($menuItem->status === 'active')>🟢 Aktif Tersedia</option>
-                                                                                <option value='inactive' @selected($menuItem->status === 'inactive')>🔴 Non-Aktif (Habis)</option>
+                                                                                <option value='active' @selected($menuItem->status === 'active')> Aktif Tersedia</option>
+                                                                                <option value='inactive' @selected($menuItem->status === 'inactive')> Non-Aktif (Habis)</option>
                                                                             </select>
                                                                         </div>
                                                                         <div class='col-6 d-flex align-items-end'>

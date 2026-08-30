@@ -30,7 +30,7 @@ class TicketController extends Controller
 
             $serviceName = $ticket->orderItem?->item_name ?? 'Layanan Mitra';
             $holderName = $ticket->holderUser?->name ?? 'Pengunjung';
-            $msg = "✅ Tiket {$ticket->ticket_code} ({$serviceName}) BERHASIL divalidasi & check-in untuk {$holderName}!";
+            $msg = " Tiket {$ticket->ticket_code} ({$serviceName}) BERHASIL divalidasi & check-in untuk {$holderName}!";
 
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([

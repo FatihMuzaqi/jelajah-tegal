@@ -209,7 +209,7 @@ TUGAS DAN ATURAN ANDA:
    - Anda MEMILIKI AKSES DATA RATING RATA-RATA (skala 1.0 - 5.0), JUMLAH ULASAN, serta label POPULER / UNGGULAN pada setiap entitas di daftar data di bawah.
    - Jika pengguna menanyakan:
      * "Destinasi paling populer", "wisata favorit", "rekomendasi terbaik", "rating tertinggi", "tempat paling ramai/disukai":
-     * Prioritaskan merekomendasikan destinasi yang memiliki rating bintang tertinggi (misal ⭐ 4.8 atau 5.0) atau bertanda [🔥 PALING POPULER] / [⭐ REKOMENDASI UNGGULAN] / [⭐ TOP RATED].
+     * Prioritaskan merekomendasikan destinasi yang memiliki rating bintang tertinggi (misal ⭐ 4.8 atau 5.0) atau bertanda [ PALING POPULER] / [⭐ REKOMENDASI UNGGULAN] / [⭐ TOP RATED].
    - Selalu sertakan informasi rating & ulasan saat merekomendasikan tempat (contoh: "⭐ Rating 5.0/5.0 dari 12 ulasan wisatawan") agar rekomendasi Anda akurat, informatif, dan terpercaya.
 3. PENTING - ATURAN DATA AKTUAL (DATABASE):
    - Hanya rekomendasikan produk, tempat wisata, penginapan, kuliner, event, dan rental yang TERDAFTAR PADA BAGIAN "DATA KATALOG AKTUAL DI PLATFORM JELAJAH TEGAL" DI BAWAH INI.
@@ -283,7 +283,7 @@ PROMPT;
 
                 $popularityBadge = "";
                 if ($isFeatured && $ratingCount > 0 && $ratingAvg >= 4.5) {
-                    $popularityBadge = " [🔥 PALING POPULER & FAVORIT]";
+                    $popularityBadge = " [ PALING POPULER & FAVORIT]";
                 } elseif ($isFeatured) {
                     $popularityBadge = " [⭐ REKOMENDASI UNGGULAN]";
                 } elseif ($ratingCount >= 5 && $ratingAvg >= 4.5) {
@@ -346,7 +346,7 @@ PROMPT;
         if (str_contains($m, 'populer') || str_contains($m, 'terbaik') || str_contains($m, 'rating') || str_contains($m, 'favorit') || str_contains($m, 'ramai') || str_contains($m, 'bagus')) {
             if (!empty($knowledge['wisata'])) {
                 $list = implode("\n", array_slice($knowledge['wisata'], 0, 5));
-                return "⭐ **Destinasi Wisata Paling Populer & Berating Tinggi di Jelajah Tegal:**\n\n" . $list . "\n\n👉 Destinasi di atas diurutkan berdasarkan ulasan dan rating kepuasan wisatawan. Kunjungi menu [Jelajah Wisata](/wisata) untuk pesan tiket!";
+                return "⭐ **Destinasi Wisata Paling Populer & Berating Tinggi di Jelajah Tegal:**\n\n" . $list . "\n\n Destinasi di atas diurutkan berdasarkan ulasan dan rating kepuasan wisatawan. Kunjungi menu [Jelajah Wisata](/wisata) untuk pesan tiket!";
             }
             return "⭐ **Destinasi Paling Populer di Jelajah Tegal:**\n\nSaat ini belum ada destinasi yang memiliki ulasan dan publikasi aktif di sistem. Silakan periksa berkala di menu [Jelajah Wisata](/wisata).";
         }
@@ -355,45 +355,45 @@ PROMPT;
         if (str_contains($m, 'wisata') || str_contains($m, 'pantai') || str_contains($m, 'curug') || str_contains($m, 'alam') || str_contains($m, 'libur')) {
             if (!empty($knowledge['wisata'])) {
                 $list = implode("\n", array_slice($knowledge['wisata'], 0, 5));
-                return "🏖️ **Destinasi Wisata Terdaftar di Jelajah Tegal:**\n\n" . $list . "\n\n👉 Kunjungi menu [Jelajah Wisata](/wisata) untuk informasi lengkap dan pemesanan tiket!";
+                return "️ **Destinasi Wisata Terdaftar di Jelajah Tegal:**\n\n" . $list . "\n\n Kunjungi menu [Jelajah Wisata](/wisata) untuk informasi lengkap dan pemesanan tiket!";
             }
-            return "🏖️ **Destinasi Wisata Jelajah Tegal:**\n\nSaat ini belum ada destinasi wisata yang terdaftar/terpublikasi aktif di sistem. Silakan periksa kembali berkala di menu [Jelajah Wisata](/wisata).";
+            return "️ **Destinasi Wisata Jelajah Tegal:**\n\nSaat ini belum ada destinasi wisata yang terdaftar/terpublikasi aktif di sistem. Silakan periksa kembali berkala di menu [Jelajah Wisata](/wisata).";
         }
 
         // 3. Kategori Kuliner
         if (str_contains($m, 'makan') || str_contains($m, 'kuliner') || str_contains($m, 'sate') || str_contains($m, 'soto') || str_contains($m, 'resto')) {
             if (!empty($knowledge['kuliner'])) {
                 $list = implode("\n", array_slice($knowledge['kuliner'], 0, 5));
-                return "🍲 **Rekomendasi Kuliner Terdaftar di Tegal:**\n\n" . $list . "\n\n👉 Cek daftar resto favorit di menu [Kuliner Tegal](/kuliner)!";
+                return " **Rekomendasi Kuliner Terdaftar di Tegal:**\n\n" . $list . "\n\n Cek daftar resto favorit di menu [Kuliner Tegal](/kuliner)!";
             }
-            return "🍲 **Kuliner Khas Tegal:**\n\nSaat ini belum ada data restoran/kuliner yang terpublikasi di sistem. Anda dapat melihat informasi kuliner selengkapnya di menu [Kuliner Tegal](/kuliner).";
+            return " **Kuliner Khas Tegal:**\n\nSaat ini belum ada data restoran/kuliner yang terpublikasi di sistem. Anda dapat melihat informasi kuliner selengkapnya di menu [Kuliner Tegal](/kuliner).";
         }
 
         // 4. Kategori Penginapan & Hotel
         if (str_contains($m, 'hotel') || str_contains($m, 'inap') || str_contains($m, 'villa') || str_contains($m, 'homestay') || str_contains($m, 'kamar')) {
             if (!empty($knowledge['penginapan'])) {
                 $list = implode("\n", array_slice($knowledge['penginapan'], 0, 5));
-                return "🏨 **Pilihan Penginapan Terdaftar di Tegal:**\n\n" . $list . "\n\n👉 Temukan kamar terbaik di menu [Penginapan & Hotel](/penginapan)!";
+                return " **Pilihan Penginapan Terdaftar di Tegal:**\n\n" . $list . "\n\n Temukan kamar terbaik di menu [Penginapan & Hotel](/penginapan)!";
             }
-            return "🏨 **Penginapan & Hotel di Tegal:**\n\nSaat ini belum ada data penginapan yang terpublikasi di sistem. Silakan cek menu [Penginapan & Hotel](/penginapan) untuk informasi lebih lanjut.";
+            return " **Penginapan & Hotel di Tegal:**\n\nSaat ini belum ada data penginapan yang terpublikasi di sistem. Silakan cek menu [Penginapan & Hotel](/penginapan) untuk informasi lebih lanjut.";
         }
 
         // 5. Kategori Rental Kendaraan
         if (str_contains($m, 'rental') || str_contains($m, 'mobil') || str_contains($m, 'motor') || str_contains($m, 'sewa') || str_contains($m, 'kendaraan')) {
             if (!empty($knowledge['rental'])) {
                 $list = implode("\n", array_slice($knowledge['rental'], 0, 5));
-                return "🚗 **Layanan Rental Kendaraan Terdaftar:**\n\n" . $list . "\n\n👉 Cek ketersediaan armada di menu [Rental Kendaraan](/rental)!";
+                return " **Layanan Rental Kendaraan Terdaftar:**\n\n" . $list . "\n\n Cek ketersediaan armada di menu [Rental Kendaraan](/rental)!";
             }
-            return "🚗 **Rental Kendaraan di Tegal:**\n\nSaat ini belum ada unit rental kendaraan yang terpublikasi di sistem. Silakan kunjungi menu [Rental Kendaraan](/rental).";
+            return " **Rental Kendaraan di Tegal:**\n\nSaat ini belum ada unit rental kendaraan yang terpublikasi di sistem. Silakan kunjungi menu [Rental Kendaraan](/rental).";
         }
 
         // 6. Kategori Event
         if (str_contains($m, 'event') || str_contains($m, 'acara') || str_contains($m, 'festival') || str_contains($m, 'konser')) {
             if (!empty($knowledge['event'])) {
                 $list = implode("\n", array_slice($knowledge['event'], 0, 5));
-                return "🎪 **Agenda Event & Festival Terdaftar:**\n\n" . $list . "\n\n👉 Cek jadwal selengkapnya di menu [Event & Festival](/event)!";
+                return " **Agenda Event & Festival Terdaftar:**\n\n" . $list . "\n\n Cek jadwal selengkapnya di menu [Event & Festival](/event)!";
             }
-            return "🎪 **Event & Festival di Tegal:**\n\nSaat ini belum ada event aktif yang terpublikasi. Silakan cek berkala di menu [Event & Festival](/event).";
+            return " **Event & Festival di Tegal:**\n\nSaat ini belum ada event aktif yang terpublikasi. Silakan cek berkala di menu [Event & Festival](/event).";
         }
 
         // General Welcome

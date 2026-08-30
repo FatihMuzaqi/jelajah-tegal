@@ -250,7 +250,7 @@
                 deferredPrompt = null;
             } else {
                 // Friendly guide if native prompt is deferred by browser
-                alert('📱 Cara Pasang Aplikasi:\n1. Tekan tombol menu titik tiga (⋮) di kanan atas browser Chrome.\n2. Pilih "Pasang aplikasi" atau "Tambahkan ke Layar Utama".');
+                alert(' Cara Pasang Aplikasi:\n1. Tekan tombol menu titik tiga (⋮) di kanan atas browser Chrome.\n2. Pilih "Pasang aplikasi" atau "Tambahkan ke Layar Utama".');
             }
         });
     }

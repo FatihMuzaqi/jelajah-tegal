@@ -527,7 +527,7 @@
                         <td>
                             @if($admin->hasRole('super-admin'))
                                 <span class="role-badge-super">
-                                    ★ Super Admin
+                                     Super Admin
                                 </span>
                             @elseif($admin->hasRole('admin'))
                                 <span class="role-badge-admin">

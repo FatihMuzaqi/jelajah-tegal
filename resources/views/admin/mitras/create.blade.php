@@ -22,7 +22,7 @@
                                    @checked(old('category', 'non_dinas') === 'non_dinas') required>
                             <div>
                                 <div class='d-flex align-items-center gap-2 mb-1'>
-                                    <strong class='text-dark fs-6'>🏢 Non-Dinas (Swasta / Umum)</strong>
+                                    <strong class='text-dark fs-6'> Non-Dinas (Swasta / Umum)</strong>
                                     <span class='badge bg-secondary-subtle text-secondary rounded-pill px-2 py-0.5 fs-8'>Default</span>
                                 </div>
                                 <p class='text-muted fs-8 mb-0'>
@@ -38,7 +38,7 @@
                                    @checked(old('category') === 'dinas') required>
                             <div>
                                 <div class='d-flex align-items-center gap-2 mb-1'>
-                                    <strong class='text-primary fs-6'>🏛️ Dinas (Pemerintah / Instansi)</strong>
+                                    <strong class='text-primary fs-6'>️ Dinas (Pemerintah / Instansi)</strong>
                                     <span class='badge bg-primary-subtle text-primary rounded-pill px-2 py-0.5 fs-8'>Resmi</span>
                                 </div>
                                 <p class='text-muted fs-8 mb-0'>

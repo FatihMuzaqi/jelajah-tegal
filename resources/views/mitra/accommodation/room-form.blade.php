@@ -124,8 +124,8 @@
                     Status Publikasi <span class="text-danger">*</span>
                 </label>
                 <select class="form-select @error('status') is-invalid @enderror" name="status" required>
-                    <option value="active" @selected(old('status', $room->status) === 'active')>🟢 Aktif (Siap Dipesan)</option>
-                    <option value="draft" @selected(old('status', $room->status) === 'draft')>🟡 Draft (Disembunyikan)</option>
+                    <option value="active" @selected(old('status', $room->status) === 'active')> Aktif (Siap Dipesan)</option>
+                    <option value="draft" @selected(old('status', $room->status) === 'draft')> Draft (Disembunyikan)</option>
                 </select>
                 @error('status') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
             </div>
@@ -144,8 +144,8 @@
                     Jenis Ruang <span class="text-danger">*</span>
                 </label>
                 <select class="form-select @error('kind') is-invalid @enderror" name="kind" required>
-                    <option value="room" @selected(old('kind', $room->kind) === 'room')>🏢 Kamar Bangunan (Room)</option>
-                    <option value="tent_plot" @selected(old('kind', $room->kind) === 'tent_plot')>⛺ Kavling Lahan Tenda (Tent Plot)</option>
+                    <option value="room" @selected(old('kind', $room->kind) === 'room')> Kamar Bangunan (Room)</option>
+                    <option value="tent_plot" @selected(old('kind', $room->kind) === 'tent_plot')> Kavling Lahan Tenda (Tent Plot)</option>
                 </select>
                 @error('kind') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
             </div>
@@ -291,7 +291,7 @@
         @csrf
         <div class="row g-2 align-items-center">
             <div class="col-md-5">
-                <input class="form-control form-control-sm" type="file" name="image" accept="image/jpeg,image/png,image/webp" required>
+                <input class="form-control form-control-sm" type="file" name="photos[]" accept="image/jpeg,image/png,image/webp" multiple required>
             </div>
             <div class="col-md-3">
                 <select class="form-select form-select-sm" name="role">

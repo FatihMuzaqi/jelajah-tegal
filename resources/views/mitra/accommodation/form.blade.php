@@ -273,7 +273,7 @@
                         <option value="">Non-Bintang</option>
                         @for ($i = 1; $i <= 5; $i++)
                             <option value="{{ $i }}" @selected(old('star_rating', $accommodation->accommodation->star_rating ?? null) == $i)>
-                                {{ $i }} Bintang ({{ str_repeat('★', $i) }})
+                                {{ $i }} Bintang ({{ str_repeat('', $i) }})
                             </option>
                         @endfor
                     </select>

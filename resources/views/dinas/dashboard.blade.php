@@ -266,7 +266,7 @@
         <!-- Objek Wisata Pemda -->
         <div class="col-12 col-lg-4 col-md-4">
             <label class="dinas-filter-label">
-                <span>🏛️</span> Objek Wisata Pemda
+                <span>️</span> Objek Wisata Pemda
             </label>
             <select name="mitra_id" class="form-select dinas-select">
                 <option value="">-- Seluruh Objek Wisata Pemda (Semua) --</option>
@@ -400,7 +400,7 @@
             <div class="chart-card-header">
                 <div>
                     <h6 class="chart-card-title">
-                        <span>📊</span> Tren Retribusi Bulanan (Tahun {{ $selectedYear }})
+                        <span></span> Tren Retribusi Bulanan (Tahun {{ $selectedYear }})
                     </h6>
                     <div class="chart-card-sub">Perbandingan realisasi PAD & volume tiket Januari s.d. Desember</div>
                 </div>
@@ -418,7 +418,7 @@
             <div class="chart-card-header">
                 <div>
                     <h6 class="chart-card-title">
-                        <span>📈</span> Arus Retribusi Harian
+                        <span></span> Arus Retribusi Harian
                     </h6>
                     <div class="chart-card-sub">Realisasi per hari {{ \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->translatedFormat('F Y') }} (Tgl 1 - {{ count($dailyLabels) }})</div>
                 </div>

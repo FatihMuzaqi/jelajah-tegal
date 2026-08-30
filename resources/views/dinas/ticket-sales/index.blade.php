@@ -296,7 +296,7 @@
         <!-- Objek Wisata -->
         <div class="col-12 col-lg-3 col-md-4">
             <label class="dinas-filter-label">
-                <span>🏛️</span> Objek Wisata
+                <span>️</span> Objek Wisata
             </label>
             <select name="mitra_id" class="form-select dinas-input">
                 <option value="">-- Semua Objek Wisata Dinas --</option>
@@ -311,7 +311,7 @@
         <!-- Status Tiket -->
         <div class="col-6 col-lg-2 col-md-4">
             <label class="dinas-filter-label">
-                <span class="text-primary">🔵</span> Status Tiket
+                <span class="text-primary"></span> Status Tiket
             </label>
             <select name="status" class="form-select dinas-input">
                 <option value="">-- Semua Status --</option>
@@ -340,7 +340,7 @@
         <!-- Cari Data -->
         <div class="col-6 col-lg-2 col-md-4">
             <label class="dinas-filter-label">
-                <span>🔍</span> Cari Data
+                <span></span> Cari Data
             </label>
             <input type="text" name="q" value="{{ request('q') }}" class="form-control dinas-input" placeholder="Kode tiket, no order...">
         </div>
@@ -363,7 +363,7 @@
 <div class="dinas-table-card">
     <div class="dinas-table-header">
         <h6 class="table-card-title">
-            <span>📄</span> Rincian Transaksi Tiket Resmi
+            <span></span> Rincian Transaksi Tiket Resmi
         </h6>
         <div class="table-card-sub">
             Menampilkan {{ $tickets->count() }} data transaksi &bull; Total Retribusi: <strong>Rp {{ number_format($totalAmount, 0, ',', '.') }}</strong>
@@ -431,7 +431,7 @@
                     <tr>
                         <td colspan="6" class="py-5 text-center text-muted">
                             <div class="d-inline-flex align-items-center justify-content-center rounded-3 bg-light mb-2 text-warning" style="width: 48px; height: 48px; font-size: 24px;">
-                                📁
+                                
                             </div>
                             <p class="mb-0 fs-7 fw-semibold text-secondary">Belum ada data transaksi tiket yang tercatat pada filter ini.</p>
                         </td>

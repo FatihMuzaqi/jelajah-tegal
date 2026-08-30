@@ -30,7 +30,7 @@
             </div>
             <div class="card-body">
                 <div class="alert alert-info m-0" role="alert">
-                    🔒 <strong>Strict Redaction Active</strong><br>
+                     <strong>Strict Redaction Active</strong><br>
                     Kredensial database, `.env`, Midtrans Server Key, dan rahasia R2 disanitasi secara otomatis dan tidak akan pernah ditampilkan pada antarmuka.
                 </div>
             </div>

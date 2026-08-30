@@ -7,11 +7,14 @@ use App\Http\Requests\PublicSearchRequest;
 use App\Models\ApplicationSetting;
 use App\Models\CatalogEntity;
 use App\Models\Category;
+use App\Models\Feedback;
 use App\Models\Mitra;
 use App\Models\Region;
 use App\Models\ServiceType;
 use App\Support\FeatureFlags;
 use Illuminate\Contracts\View\View;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 
 class PublicPortalController extends Controller
@@ -110,17 +113,118 @@ class PublicPortalController extends Controller
 
     public function about(): View
     {
-        return $this->contentPage('Tentang Lokantara', 'public.about', 'Informasi resmi mengenai Lokantara belum diterbitkan.');
+        $stats = [
+            'tourism_count' => CatalogEntity::whereHas('serviceType', fn ($q) => $q->where('code', 'tourism'))->where('status', 'published')->count(),
+            'accommodation_count' => CatalogEntity::whereHas('serviceType', fn ($q) => $q->where('code', 'accommodation'))->where('status', 'published')->count(),
+            'culinary_count' => CatalogEntity::whereHas('serviceType', fn ($q) => $q->where('code', 'culinary'))->where('status', 'published')->count(),
+            'mitra_count' => Mitra::where('status', 'active')->where('is_verified', true)->count(),
+        ];
+
+        return view('public.about', compact('stats'));
     }
 
     public function faq(): View
     {
-        return $this->contentPage('Pertanyaan yang Sering Diajukan', 'public.faq', 'FAQ resmi belum diterbitkan.');
+        $faqCategories = [
+            [
+                'name' => 'Umum & Informasi Wisata',
+                'icon' => 'fa-compass',
+                'items' => [
+                    [
+                        'q' => 'Apa itu platform Jelajah Tegal?',
+                        'a' => 'Jelajah Tegal adalah portal ekosistem digital pariwisata terpadu Kabupaten Tegal yang menyediakan informasi lengkap destinasi wisata, reservasi penginapan, panduan kuliner khas, jadwal event, dan rental transportasi lokal dalam satu pintu.',
+                    ],
+                    [
+                        'q' => 'Apakah seluruh destinasi dan akomodasi di sini terpercaya?',
+                        'a' => 'Ya, seluruh Mitra terdaftar telah melalui proses verifikasi resmi dari dinas terkait dan tim kurasi kami demi memastikan data akurat, legalitas terjamin, dan keamanan wisatawan.',
+                    ],
+                    [
+                        'q' => 'Apakah saya harus memiliki akun untuk menjelajahi Jelajah Tegal?',
+                        'a' => 'Tidak. Seluruh informasi katalog wisata, kuliner, dan penginapan dapat diakses secara publik dan gratis. Akun pengguna hanya diperlukan saat Anda ingin melakukan reservasi, pembelian tiket, atau memberikan ulasan.',
+                    ],
+                ],
+            ],
+            [
+                'name' => 'Tiket & Pembayaran Online',
+                'icon' => 'fa-ticket',
+                'items' => [
+                    [
+                        'q' => 'Bagaimana cara membeli tiket wisata secara online?',
+                        'a' => 'Pilih destinasi wisata atau event yang Anda tuju, tentukan tanggal kunjungan dan jumlah tiket, lalu klik tombol Pesan Sekarang. Anda dapat menyelesaikan pembayaran secara instan menggunakan QRIS, Virtual Account bank, maupun e-wallet.',
+                    ],
+                    [
+                        'q' => 'Bagaimana bentuk tiket yang akan saya terima?',
+                        'a' => 'Setelah pembayaran berhasil, Anda akan menerima tiket digital berformat QR Code yang dapat langsung ditunjukkan ke petugas loket pintu masuk untuk dipindai (scan). Tiket juga tersimpan rapi di dashboard profil Anda.',
+                    ],
+                    [
+                        'q' => 'Apakah tiket yang sudah dibeli dapat dibatalkan (refund)?',
+                        'a' => 'Kebijakan pengembalian dana mengikuti ketentuan masing-masing pengelola objek wisata atau penyelenggara event yang tertera pada rincian saat pemesanan.',
+                    ],
+                ],
+            ],
+            [
+                'name' => 'Pendaftaran Mitra & Pelaku Usaha',
+                'icon' => 'fa-handshake',
+                'items' => [
+                    [
+                        'q' => 'Bagaimana cara mendaftarkan usaha saya sebagai Mitra resmi?',
+                        'a' => 'Klik menu "Daftar Jadi Mitra" di bagian navigasi atas, lengkapi profil usaha dan dokumen identitas pendukung. Tim admin akan memverifikasi data Anda dalam waktu 1x24 jam kerja.',
+                    ],
+                    [
+                        'q' => 'Layanan apa saja yang bisa didaftarkan oleh Mitra?',
+                        'a' => 'Mitra dapat mendaftarkan usaha di bidang Objek Wisata, Penginapan (Hotel/Villa/Homestay/Glamping), Rumah Makan & Kuliner Tradisional, Event Organizer, maupun Rental Kendaraan.',
+                    ],
+                ],
+            ],
+            [
+                'name' => 'Fitur AI & Kotak Saran',
+                'icon' => 'fa-wand-magic-sparkles',
+                'items' => [
+                    [
+                        'q' => 'Bagaimana cara menggunakan Asisten AI Pintar Jelajah Tegal?',
+                        'a' => 'Klik tombol "Tanya Asisten AI" di pojok kanan bawah layar kapan saja untuk bertanya mengenai rekomendasi objek wisata, estimasi bujet liburan, maupun jadwal kuliner terbaik di Tegal.',
+                    ],
+                    [
+                        'q' => 'Bagaimana cara menyampaikan saran, kritik, atau masukan untuk platform ini?',
+                        'a' => 'Anda dapat langsung mengisi formulir "Kotak Saran & Kritik" pada bagian bawah halaman FAQ ini. Tim kami senantiasa meninjau setiap masukan demi peningkatan kualitas layanan.',
+                    ],
+                ],
+            ],
+        ];
+
+        return view('public.faq', compact('faqCategories'));
+    }
+
+    public function storeFeedback(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'type' => ['required', 'in:saran,kritik,pertanyaan,apresiasi'],
+            'category' => ['required', 'string', 'max:64'],
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:150'],
+            'phone' => ['nullable', 'string', 'max:32'],
+            'subject' => ['required', 'string', 'max:200'],
+            'message' => ['required', 'string', 'max:3000'],
+        ]);
+
+        Feedback::create([
+            'user_id' => $request->user()?->id,
+            'type' => $validated['type'],
+            'category' => $validated['category'],
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'phone' => $validated['phone'] ?? null,
+            'subject' => $validated['subject'],
+            'message' => $validated['message'],
+            'status' => 'pending',
+        ]);
+
+        return redirect()->route('public.faq', ['#kotak-saran'])->with('feedback_success', 'Terima kasih! Saran atau kritik Anda telah berhasil kami terima dan akan segera ditinjau oleh tim Jelajah Tegal.');
     }
 
     public function contact(): View
     {
-        return $this->contentPage('Kontak', 'public.contact', 'Informasi kontak resmi belum diterbitkan.');
+        return view('public.contact');
     }
 
     public function privacy(): View

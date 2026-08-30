@@ -387,7 +387,7 @@
             const data = await response.json();
 
             if (response.ok && data.success) {
-                // 🟢 SUKSES
+                //  SUKSES
                 playBeep(true);
 
                 Swal.fire({
@@ -429,7 +429,7 @@
                 });
 
             } else {
-                // 🔴 GAGAL / SUDAH DIGUNAKAN
+                //  GAGAL / SUDAH DIGUNAKAN
                 playBeep(false);
 
                 Swal.fire({

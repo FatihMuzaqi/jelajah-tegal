@@ -21,14 +21,14 @@
                     
                     <div class="auth-feature-list">
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon">🏢</div>
+                            <div class="auth-feature-icon"></div>
                             <div class="auth-feature-text">
                                 <h6>Manajemen Tenant Mandiri</h6>
                                 <p>Akses katalog wisata, kamar hotel, menu kuliner, tiket event, dan armada kendaraan.</p>
                             </div>
                         </div>
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon">📊</div>
+                            <div class="auth-feature-icon"></div>
                             <div class="auth-feature-text">
                                 <h6>Buku Besar Ledger & Payout</h6>
                                 <p>Pantau pencatatan transaksi seimbang real-time dan ajukan klaim penarikan saldo.</p>
@@ -91,7 +91,7 @@
                         <div class="form-input-group">
                             <label for="password">Buat Kata Sandi Baru</label>
                             <div class="form-input-wrapper">
-                                <span class="form-input-icon">🔒</span>
+                                <span class="form-input-icon"></span>
                                 <input id="password" type="password" name="password" required autocomplete="new-password" placeholder="Minimal 8 karakter" class="form-control-custom has-toggle">
                                 <button type="button" class="password-toggle-btn" onclick="togglePassword('password', this)" aria-label="Lihat kata sandi">
                                     <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>

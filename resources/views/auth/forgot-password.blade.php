@@ -57,7 +57,7 @@
                     <div class="form-input-group">
                         <label for="email">Alamat Email Terdaftar</label>
                         <div class="form-input-wrapper">
-                            <span class="form-input-icon">✉️</span>
+                            <span class="form-input-icon">️</span>
                             <input 
                                 id="email" 
                                 name="email" 

@@ -206,7 +206,7 @@
                     <!-- Form Reservasi Meja jika Menerima Reservasi -->
                     @if($item->culinary->accepts_reservations)
                         <div class="cd-card">
-                            <h2 class="cd-card-title"><span>🪑</span> Reservasi Meja / Slot Waktu</h2>
+                            <h2 class="cd-card-title"><span></span> Reservasi Meja / Slot Waktu</h2>
                             <p class="text-muted" style="font-size: 13px;">Pesan tempat Anda terlebih dahulu untuk kenyamanan bersantap bersama keluarga.</p>
 
                             @if($item->culinary->tableSlots->isEmpty())

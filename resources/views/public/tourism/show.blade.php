@@ -869,7 +869,7 @@
                         <div>
                             <small class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Mitra Pengelola</small>
                             <strong class="fs-6">{{ $tourism->mitra->display_name }}</strong>
-                            <div class="text-success" style="font-size: 12px;">✔ Mitra Terverifikasi</div>
+                            <div class="text-success" style="font-size: 12px;"> Mitra Terverifikasi</div>
                         </div>
                     </div>
 

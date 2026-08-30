@@ -17,7 +17,7 @@
                     </div>
                     <div>
                         <h2 class="h5 fw-bold mb-1 text-dark">
-                            Selamat Datang, {{ auth()->user()->name }}! 👋
+                            Selamat Datang, {{ auth()->user()->name }}! 
                         </h2>
                         <p class="text-muted small mb-0">
                             @if ($surface === 'mitra')

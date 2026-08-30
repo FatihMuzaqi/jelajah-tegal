@@ -59,7 +59,7 @@
                                         @break
 
                                         @default
-                                            📦 {{ $service->name }}
+                                             {{ $service->name }}
                                     @endswitch
                                 </option>
                             @endforeach

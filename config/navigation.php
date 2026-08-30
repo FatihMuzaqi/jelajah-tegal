@@ -128,6 +128,7 @@ return [
             'items' => [
                 ['label' => 'Voucher Platform', 'route' => 'admin.vouchers.index', 'icon' => 'fa-solid fa-tags', 'permission' => 'vouchers.manage'],
                 ['label' => 'Penarikan Dana', 'route' => 'admin.withdrawals.index', 'icon' => 'fa-solid fa-wallet', 'permission' => 'withdrawals.process'],
+                ['label' => 'Saran & Kontak Masuk', 'route' => 'admin.feedbacks.index', 'icon' => 'fa-solid fa-inbox', 'permission' => 'access.admin'],
                 ['label' => 'Audit Log Keamanan', 'route' => 'admin.audit.index', 'icon' => 'fa-solid fa-shield-halved', 'permission' => 'audit.view'],
             ],
         ],
@@ -150,8 +151,9 @@ return [
             ],
         ],
         [
-            'category' => 'Sistem',
+            'category' => 'Sistem & Aspirasi',
             'items' => [
+                ['label' => 'Saran & Kontak Masuk', 'route' => 'admin.feedbacks.index', 'icon' => 'fa-solid fa-inbox', 'permission' => 'access.super-admin'],
                 ['label' => 'Pengaturan Platform', 'route' => 'super-admin.settings.index', 'icon' => 'fa-solid fa-gears', 'permission' => 'settings.manage'],
                 ['label' => 'Pengaturan AI Chatbot', 'route' => 'super-admin.chatbot.index', 'icon' => 'fa-solid fa-robot', 'permission' => 'settings.manage'],
             ],

@@ -20,21 +20,21 @@
 
                     <div class="auth-feature-list">
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon">🛡️</div>
+                            <div class="auth-feature-icon">️</div>
                             <div class="auth-feature-text">
                                 <h6>Keamanan Akun Terjamin</h6>
                                 <p>Melindungi data pesanan tiket dan riwayat transaksi dari akses tidak sah.</p>
                             </div>
                         </div>
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon">🎟️</div>
+                            <div class="auth-feature-icon">️</div>
                             <div class="auth-feature-text">
                                 <h6>E-Tiket Langsung Aktif</h6>
                                 <p>Nikmati kemudahan pemesanan destinasi, akomodasi, dan event tanpa hambatan.</p>
                             </div>
                         </div>
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon">📬</div>
+                            <div class="auth-feature-icon"></div>
                             <div class="auth-feature-text">
                                 <h6>Konfirmasi & Invoice Resmi</h6>
                                 <p>Bukti pembayaran dan e-tiket QR otomatis dikirim ke kotak masuk email Anda.</p>
@@ -53,7 +53,7 @@
             <div class="auth-form-side">
                 <div class="text-center mb-4">
                     <div style="width: 72px; height: 72px; border-radius: 50%; background: #f0fdf4; border: 2px solid #bbf7d0; display: inline-flex; align-items: center; justify-content: center; font-size: 32px; color: #15803d; margin-bottom: 16px;">
-                        ✉️
+                        ️
                     </div>
                     <h2 class="fw-extrabold text-dark mb-1" style="font-size: 22px;">Periksa Email Anda</h2>
                     <p class="text-muted fs-7 mb-0">

@@ -51,7 +51,7 @@
                     <div class="form-input-group">
                         <label for="email">Alamat Email</label>
                         <div class="form-input-wrapper">
-                            <span class="form-input-icon">✉️</span>
+                            <span class="form-input-icon">️</span>
                             <input 
                                 id="email" 
                                 name="email" 
@@ -68,7 +68,7 @@
                     <div class="form-input-group">
                         <label for="password">Kata Sandi Baru</label>
                         <div class="form-input-wrapper">
-                            <span class="form-input-icon">🔒</span>
+                            <span class="form-input-icon"></span>
                             <input 
                                 id="password" 
                                 name="password" 
@@ -86,7 +86,7 @@
                     <div class="form-input-group">
                         <label for="password_confirmation">Konfirmasi Kata Sandi Baru</label>
                         <div class="form-input-wrapper">
-                            <span class="form-input-icon">🔑</span>
+                            <span class="form-input-icon"></span>
                             <input 
                                 id="password_confirmation" 
                                 name="password_confirmation" 

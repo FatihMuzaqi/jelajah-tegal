@@ -12,7 +12,7 @@ use Illuminate\Validation\ValidationException;
 
 class SaveAccommodationRoom
 {
-    public function __construct(private AuditLogger $audit) {}
+    public function __construct(private AuditLogger $audit, private \App\Services\MitraMediaStorage $mediaStorage) {}
 
     public function execute(Accommodation $accommodation, array $data, $actor, ?AccommodationRoom $room = null): AccommodationRoom
     {
@@ -34,9 +34,17 @@ class SaveAccommodationRoom
             $room->fill(Arr::only($data, ['name', 'description', 'room_type', 'kind', 'capacity_adults', 'capacity_children', 'total_units', 'plot_count', 'min_stay_nights', 'max_stay_nights', 'advance_booking_days', 'availability_notes', 'status', 'bed_config']));
             $room->save();
             $room->facilities()->sync($data['facilities'] ?? []);
+
+            if (isset($data['photos']) && is_array($data['photos'])) {
+                foreach ($data['photos'] as $index => $photo) {
+                    $media = $this->mediaStorage->store($entity->mitra, $photo, 'rooms', false);
+                    $room->media()->attach($media->id, ['role' => 'gallery', 'sort_order' => $index + 1]);
+                }
+            }
+
             $this->audit->record($before ? 'accommodation.room_updated' : 'accommodation.room_created', $entity, $before, $room->fresh()->toArray(), $actor);
 
-            return $room->fresh(['offer', 'facilities']);
+            return $room->fresh(['offer', 'facilities', 'media']);
         });
     }
 }

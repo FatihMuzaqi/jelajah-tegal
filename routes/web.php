@@ -25,6 +25,7 @@ Route::prefix('tour-assistant')->name('tour-assistant.')->group(function () {
 
 Route::get('/tentang', [PublicPortalController::class, 'about'])->name('public.about');
 Route::get('/faq', [PublicPortalController::class, 'faq'])->name('public.faq');
+Route::post('/faq/saran-kritik', [PublicPortalController::class, 'storeFeedback'])->name('public.feedback.store')->middleware('throttle:10,1');
 Route::get('/kontak', [PublicPortalController::class, 'contact'])->name('public.contact');
 Route::get('/kebijakan-privasi', [PublicPortalController::class, 'privacy'])->name('public.privacy');
 Route::get('/syarat-ketentuan', [PublicPortalController::class, 'terms'])->name('public.terms');

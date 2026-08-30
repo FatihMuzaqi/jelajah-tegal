@@ -189,7 +189,7 @@
             <div style="flex: 1; min-width: 280px;">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
                     <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
-                        ✔ Mitra Terverifikasi Resmi
+                         Mitra Terverifikasi Resmi
                     </span>
                     @if ($mitra->region)
                         <span class="badge" style="background: rgba(45,140,168,0.3); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); border-radius: 99px; font-size: 11px;">
@@ -246,7 +246,7 @@
                 @if ($tourisms->isNotEmpty())
                     <div class="mitra-content-card">
                         <h2 class="mitra-content-title">
-                            <span>🏖️</span> Destinasi Wisata yang Dikelola ({{ $tourisms->count() }})
+                            <span>️</span> Destinasi Wisata yang Dikelola ({{ $tourisms->count() }})
                         </h2>
 
                         <div class="row g-3">
@@ -263,7 +263,7 @@
                                                 <img src="{{ $coverUrl }}" alt="{{ $item->name }}">
                                             @else
                                                 <div style="width: 100%; height: 100%; display: grid; place-items: center; background: #174d3c; color: #fff; font-size: 28px;">
-                                                    🏖️
+                                                    ️
                                                 </div>
                                             @endif
                                         </div>
@@ -338,7 +338,7 @@
                 @if ($culinaries->isNotEmpty())
                     <div class="mitra-content-card">
                         <h2 class="mitra-content-title">
-                            <span>🍲</span> Tempat Kuliner & Restoran ({{ $culinaries->count() }})
+                            <span></span> Tempat Kuliner & Restoran ({{ $culinaries->count() }})
                         </h2>
 
                         <div class="row g-3">
@@ -365,7 +365,7 @@
                 <!-- 4. Event & Rental jika ada -->
                 @if ($events->isNotEmpty())
                     <div class="mitra-content-card">
-                        <h2 class="mitra-content-title"><span>🎪</span> Event & Acara</h2>
+                        <h2 class="mitra-content-title"><span></span> Event & Acara</h2>
                         <div class="row g-3">
                             @foreach ($events as $item)
                                 <div class="col-md-6">
@@ -388,7 +388,7 @@
 
                 @if ($totalCatalogs === 0)
                     <div class="mitra-content-card text-center py-5">
-                        <span class="fs-1 mb-2 d-block">📦</span>
+                        <span class="fs-1 mb-2 d-block"></span>
                         <h3 class="fs-5 fw-bold">Katalog Layanan Sedang Dipersiapkan</h3>
                         <p class="text-muted mb-0" style="font-size: 14px;">Mitra {{ $mitra->display_name }} sedang melengkapi katalog produk dan layanan untuk Anda.</p>
                     </div>
@@ -411,7 +411,7 @@
                         </div>
                         <div class="py-2 border-bottom">
                             <span class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Status Legalitas</span>
-                            <span class="text-success fw-bold">✔ Terverifikasi Resmi</span>
+                            <span class="text-success fw-bold"> Terverifikasi Resmi</span>
                         </div>
                         <div class="py-2">
                             <span class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Bergabung Sejak</span>
@@ -428,16 +428,16 @@
 
                     @if ($mitra->contact_phone || $mitra->contact_email)
                         <hr class="my-3">
-                        <strong class="fs-7 d-block mb-2">📞 Hubungi Mitra:</strong>
+                        <strong class="fs-7 d-block mb-2"> Hubungi Mitra:</strong>
                         <div class="d-flex flex-column gap-2">
                             @if ($mitra->contact_phone)
                                 <a href="tel:{{ $mitra->contact_phone }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-2">
-                                    <span>📱</span> {{ $mitra->contact_phone }}
+                                    <span></span> {{ $mitra->contact_phone }}
                                 </a>
                             @endif
                             @if ($mitra->contact_email)
                                 <a href="mailto:{{ $mitra->contact_email }}" class="btn btn-sm btn-outline-secondary d-flex align-items-center justify-content-center gap-2">
-                                    <span>✉️</span> {{ $mitra->contact_email }}
+                                    <span>️</span> {{ $mitra->contact_email }}
                                 </a>
                             @endif
                         </div>

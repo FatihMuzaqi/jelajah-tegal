@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\BankAccountVerificationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Mitra\KycController;
 use App\Http\Controllers\Admin\AuditController;
+use App\Http\Controllers\Admin\FeedbackController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -25,6 +26,9 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.admin',
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::post('/users/{user}/reset-password', [UserController::class, 'resetPassword'])->name('users.reset-password');
     Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+    Route::get('/feedbacks', [FeedbackController::class, 'index'])->name('feedbacks.index');
+    Route::patch('/feedbacks/{feedback}', [FeedbackController::class, 'update'])->name('feedbacks.update');
+    Route::delete('/feedbacks/{feedback}', [FeedbackController::class, 'destroy'])->name('feedbacks.destroy');
 
     // Master Data Management (Kategori & Wilayah)
     Route::resource('categories', CategoryController::class)->only(['index', 'store', 'update', 'destroy']);
