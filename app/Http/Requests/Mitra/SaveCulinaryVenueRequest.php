@@ -1,4 +1,48 @@
 <?php
+
 namespace App\Http\Requests\Mitra;
-use Illuminate\Foundation\Http\FormRequest; use Illuminate\Validation\Rule;
-class SaveCulinaryVenueRequest extends FormRequest { public function authorize(): bool{return $this->user()->can('culinary.manage');} public function rules():array{return ['name'=>'required|string|max:191','slug'=>['required','alpha_dash','max:191',Rule::unique('catalog_entities','slug')->ignore($this->route('culinary')?->id)],'category_id'=>'nullable|exists:categories,id','region_id'=>'required|exists:regions,id','description'=>'required|string|min:20','address'=>'required|string','venue_type'=>'required|in:restaurant,cafe,street_food,food_court,bakery,other','accepts_reservations'=>'sometimes|boolean','phone'=>'nullable|string|max:32','reservation_notes'=>'nullable|string','latitude'=>'required|numeric|between:-90,90','longitude'=>'required|numeric|between:-180,180','facilities'=>'array','facilities.*'=>'exists:facilities,id'];} }
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
+
+class SaveCulinaryVenueRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()->can('culinary.manage');
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('name') && blank($this->input('slug'))) {
+            $this->merge([
+                'slug' => Str::slug($this->input('name')),
+            ]);
+        } elseif ($this->filled('slug')) {
+            $this->merge([
+                'slug' => Str::slug($this->input('slug')),
+            ]);
+        }
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:191',
+            'slug' => ['required', 'alpha_dash', 'max:191', Rule::unique('catalog_entities', 'slug')->ignore($this->route('culinary')?->id)],
+            'category_id' => 'nullable|exists:categories,id',
+            'region_id' => 'required|exists:regions,id',
+            'description' => 'required|string|min:20',
+            'address' => 'required|string',
+            'venue_type' => 'required|in:restaurant,cafe,street_food,food_court,bakery,other',
+            'accepts_reservations' => 'sometimes|boolean',
+            'phone' => 'nullable|string|max:32',
+            'reservation_notes' => 'nullable|string',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+            'facilities' => 'array',
+            'facilities.*' => 'exists:facilities,id',
+        ];
+    }
+}

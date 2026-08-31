@@ -535,10 +535,12 @@
 <script>
     function generateSlug(text) {
         const slugInput = document.getElementById('domain_slug');
-        if (slugInput && (!slugInput.value || !{{ $editing ? 'true' : 'false' }})) {
+        if (slugInput) {
             slugInput.value = text.toLowerCase()
-                .replace(/[^\w ]+/g, '')
-                .replace(/ +/g, '-');
+                .trim()
+                .replace(/[^\w\s-]/g, '')
+                .replace(/[\s_-]+/g, '-')
+                .replace(/^-+|-+$/g, '');
         }
     }
 

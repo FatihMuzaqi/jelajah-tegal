@@ -26,15 +26,15 @@
 .hotel-hero-bg {
     position: absolute;
     inset: 0;
-    opacity: 0.22;
+    opacity: 0.45;
     background-size: cover;
     background-position: center;
-    filter: blur(6px) scale(1.05);
+    filter: blur(2px) scale(1.03);
 }
 .hotel-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(13,38,30,0.65) 0%, rgba(13,38,30,0.96) 100%);
+    background: linear-gradient(to bottom, rgba(13,38,30,0.32) 0%, rgba(13,38,30,0.78) 100%);
 }
 .hotel-breadcrumbs {
     display: flex;

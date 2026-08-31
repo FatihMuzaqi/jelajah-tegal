@@ -1,4 +1,55 @@
 <?php
+
 namespace App\Http\Requests\Mitra;
-use Illuminate\Foundation\Http\FormRequest; use Illuminate\Validation\Rule;
-class SaveRentalVehicleRequest extends FormRequest { public function authorize():bool{return $this->user()->can('rental.manage');} public function rules():array{return ['name'=>'required|string|max:191','slug'=>['required','alpha_dash','max:191',Rule::unique('catalog_entities','slug')->ignore($this->route('rental')?->id)],'category_id'=>'nullable|exists:categories,id','region_id'=>'required|exists:regions,id','description'=>'required|string|min:20','address'=>'required|string','vehicle_type'=>'required|string|max:64','brand'=>'required|string|max:100','model'=>'required|string|max:100','year'=>'nullable|integer|min:1900|max:'.(now()->year+1),'plate_number'=>'required|string|max:20','transmission'=>'nullable|in:manual,automatic','seats'=>'required|integer|min:1|max:100','self_drive_available'=>'sometimes|boolean','driver_available'=>'sometimes|boolean','deposit_amount'=>'required|numeric|min:0','insurance_policy'=>'nullable|string','fuel_policy'=>'nullable|string','pickup_instructions'=>'nullable|string','latitude'=>'required|numeric|between:-90,90','longitude'=>'required|numeric|between:-180,180'];} }
+
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
+
+class SaveRentalVehicleRequest extends FormRequest
+{
+    public function authorize(): bool
+    {
+        return $this->user()->can('rental.manage');
+    }
+
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('name') && blank($this->input('slug'))) {
+            $this->merge([
+                'slug' => Str::slug($this->input('name')),
+            ]);
+        } elseif ($this->filled('slug')) {
+            $this->merge([
+                'slug' => Str::slug($this->input('slug')),
+            ]);
+        }
+    }
+
+    public function rules(): array
+    {
+        return [
+            'name' => 'required|string|max:191',
+            'slug' => ['required', 'alpha_dash', 'max:191', Rule::unique('catalog_entities', 'slug')->ignore($this->route('rental')?->id)],
+            'category_id' => 'nullable|exists:categories,id',
+            'region_id' => 'required|exists:regions,id',
+            'description' => 'required|string|min:20',
+            'address' => 'required|string',
+            'vehicle_type' => 'required|string|max:64',
+            'brand' => 'required|string|max:100',
+            'model' => 'required|string|max:100',
+            'year' => 'nullable|integer|min:1900|max:' . (now()->year + 1),
+            'plate_number' => 'required|string|max:20',
+            'transmission' => 'nullable|in:manual,automatic',
+            'seats' => 'required|integer|min:1|max:100',
+            'self_drive_available' => 'sometimes|boolean',
+            'driver_available' => 'sometimes|boolean',
+            'deposit_amount' => 'required|numeric|min:0',
+            'insurance_policy' => 'nullable|string',
+            'fuel_policy' => 'nullable|string',
+            'pickup_instructions' => 'nullable|string',
+            'latitude' => 'required|numeric|between:-90,90',
+            'longitude' => 'required|numeric|between:-180,180',
+        ];
+    }
+}

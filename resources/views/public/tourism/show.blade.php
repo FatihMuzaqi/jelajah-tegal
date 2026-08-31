@@ -43,14 +43,14 @@
     height: 100%;
     object-fit: cover;
     object-position: center;
-    opacity: 0.22;
-    filter: blur(8px) scale(1.05);
-    transform: scale(1.05);
+    opacity: 0.45;
+    filter: blur(2px) scale(1.03);
+    transform: scale(1.03);
 }
 .tourism-hero-overlay {
     position: absolute;
     inset: 0;
-    background: linear-gradient(to bottom, rgba(13,38,30,0.6) 0%, rgba(13,38,30,0.95) 100%);
+    background: linear-gradient(to bottom, rgba(13,38,30,0.32) 0%, rgba(13,38,30,0.78) 100%);
 }
 .tourism-breadcrumbs {
     display: flex;

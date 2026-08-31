@@ -13,6 +13,19 @@ class SaveAccommodationRequest extends FormRequest
         return $this->user()?->can('accommodation.manage') ?? false;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->filled('name') && blank($this->input('slug'))) {
+            $this->merge([
+                'slug' => \Illuminate\Support\Str::slug($this->input('name')),
+            ]);
+        } elseif ($this->filled('slug')) {
+            $this->merge([
+                'slug' => \Illuminate\Support\Str::slug($this->input('slug')),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         $service = ServiceType::where('code', 'accommodation')->value('id');
