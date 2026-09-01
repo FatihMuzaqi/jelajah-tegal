@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Setel Ulang Kata Sandi — Lokantara')
-@section('meta-description', 'Setel ulang kata sandi baru untuk akun Lokantara Anda.')
+@section('title', 'Setel Ulang Kata Sandi — Jelajah Tegal')
+@section('meta-description', 'Setel ulang kata sandi baru untuk akun Jelajah Tegal Anda.')
 
 @section('content')
 <div class="auth-page-wrapper">
@@ -10,9 +10,9 @@
             <!-- Left Side: Branding -->
             <div class="auth-visual-side">
                 <div>
-                    <a href="{{ route('home') }}" class="auth-brand-logo" aria-label="Lokantara Beranda">
-                        <span class="auth-brand-badge">L</span>
-                        <span>Lokantara</span>
+                    <a href="{{ route('home') }}" class="auth-brand-logo" aria-label="Jelajah Tegal Beranda">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" width="36" height="36" style="border-radius: 8px; object-fit: contain;">
+                        <span>Jelajah Tegal</span>
                     </a>
                     
                     <h1 class="auth-hero-title">Setel Kata Sandi Baru</h1>
@@ -20,13 +20,21 @@
                 </div>
                 
                 <div class="auth-visual-footer">
-                    <span>&copy; {{ now()->year }} Lokantara Monolith</span>
+                    <span>&copy; {{ now()->year }} Jelajah Tegal</span>
                     <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-1">Aman & Terenkripsi</span>
                 </div>
             </div>
 
             <!-- Right Side: Form Card -->
             <div class="auth-form-side">
+                <!-- Mobile Brand Header -->
+                <div class="d-lg-none text-center mb-3">
+                    <a href="{{ route('home') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" width="36" height="36" style="border-radius: 8px; object-fit: contain;">
+                        <span class="fw-bold text-dark fs-6">Jelajah Tegal</span>
+                    </a>
+                </div>
+
                 <div class="auth-header">
                     <h2>Buat Kata Sandi Baru</h2>
                     <p>Masukkan kata sandi baru Anda di bawah ini.</p>

@@ -45,7 +45,7 @@ class InviteMitraMember
             return $invitation;
         });
 
-        DB::afterCommit(fn () => Notification::route('mail', $email)->notify(new MitraInvitationNotification($mitra->display_name, $token)));
+        DB::afterCommit(fn () => Notification::route('mail', $email)->notify(new MitraInvitationNotification($mitra->display_name, $token, $data['name'] ?? null, $email)));
 
         return $invitation;
     }

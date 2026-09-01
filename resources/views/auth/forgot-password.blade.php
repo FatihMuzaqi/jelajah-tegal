@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 
-@section('title', 'Lupa Kata Sandi — Lokantara')
+@section('title', 'Lupa Kata Sandi — Jelajah Tegal')
 @section('meta-description', 'Kirim tautan pemulihan kata sandi ke email Anda.')
 
 @section('content')
@@ -10,9 +10,9 @@
             <!-- Left Side: Branding & Info -->
             <div class="auth-visual-side">
                 <div>
-                    <a href="{{ route('home') }}" class="auth-brand-logo" aria-label="Lokantara Beranda">
-                        <span class="auth-brand-badge">L</span>
-                        <span>Lokantara</span>
+                    <a href="{{ route('home') }}" class="auth-brand-logo" aria-label="Jelajah Tegal Beranda">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" width="36" height="36" style="border-radius: 8px; object-fit: contain;">
+                        <span>Jelajah Tegal</span>
                     </a>
                     
                     <h1 class="auth-hero-title">Pemulihan Akses Akun</h1>
@@ -20,13 +20,21 @@
                 </div>
                 
                 <div class="auth-visual-footer">
-                    <span>&copy; {{ now()->year }} Lokantara Monolith</span>
+                    <span>&copy; {{ now()->year }} Jelajah Tegal</span>
                     <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-1">Sistem Keamanan</span>
                 </div>
             </div>
 
             <!-- Right Side: Form Card -->
             <div class="auth-form-side">
+                <!-- Mobile Brand Header -->
+                <div class="d-lg-none text-center mb-3">
+                    <a href="{{ route('home') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" width="36" height="36" style="border-radius: 8px; object-fit: contain;">
+                        <span class="fw-bold text-dark fs-6">Jelajah Tegal</span>
+                    </a>
+                </div>
+
                 <div class="auth-header">
                     <h2>Lupa Kata Sandi?</h2>
                     <p>Masukkan alamat email akun Anda yang terdaftar.</p>

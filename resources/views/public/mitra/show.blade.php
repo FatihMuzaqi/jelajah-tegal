@@ -38,18 +38,26 @@
     color: #f2a93b;
 }
 .mitra-avatar-box {
-    width: 80px;
-    height: 80px;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #f2a93b, #d97706);
+    width: 84px;
+    height: 84px;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #047857, #065f46);
     color: #ffffff;
     display: grid;
     place-items: center;
-    font-size: 36px;
+    font-size: 34px;
     font-weight: 900;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-    border: 3px solid rgba(255,255,255,0.25);
+    border: 3.5px solid rgba(255,255,255,0.4);
     flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+}
+.mitra-avatar-box img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 .mitra-header-title {
     font-size: 36px;
@@ -168,22 +176,31 @@
 }
 </style>
 
+@php
+    $logoUrl = $mitra->logoMedia ? asset('storage/' . $mitra->logoMedia->object_key) : null;
+    $bannerUrl = $mitra->bannerMedia ? asset('storage/' . $mitra->bannerMedia->object_key) : null;
+@endphp
+
 <!-- Hero Section -->
-<section class="mitra-hero-section">
+<section class="mitra-hero-section" @if($bannerUrl) style="background: linear-gradient(135deg, rgba(9, 32, 24, 0.85) 0%, rgba(19, 64, 50, 0.88) 55%, rgba(27, 99, 75, 0.92) 100%), url('{{ $bannerUrl }}') center/cover no-repeat;" @endif>
     <div class="mitra-hero-overlay"></div>
     <div class="container public-container position-relative" style="z-index: 2;">
         <!-- Breadcrumbs -->
         <nav class="mitra-breadcrumbs" aria-label="Breadcrumb">
             <a href="{{ route('home') }}">Beranda</a>
             <span>/</span>
-            <a href="{{ route('home') }}">Mitra</a>
+            <a href="{{ route('public.mitra.index') }}">Mitra</a>
             <span>/</span>
             <span class="text-white fw-semibold">{{ $mitra->display_name }}</span>
         </nav>
 
         <div class="d-flex flex-wrap align-items-center gap-4">
-            <div class="mitra-avatar-box">
-                {{ str($mitra->display_name)->substr(0, 1)->upper() }}
+            <div class="mitra-avatar-box" style="@if($mitra->isDinas()) background: linear-gradient(135deg, #047857, #064e3b); @else background: linear-gradient(135deg, #d97706, #b45309); @endif">
+                @if($logoUrl)
+                    <img src="{{ $logoUrl }}" alt="{{ $mitra->display_name }}">
+                @else
+                    {{ str($mitra->display_name)->substr(0, 1)->upper() }}
+                @endif
             </div>
 
             <div style="flex: 1; min-width: 280px;">

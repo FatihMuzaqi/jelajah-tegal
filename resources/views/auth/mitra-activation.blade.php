@@ -1,7 +1,7 @@
 @extends('layouts.auth')
 
-@section('title', 'Aktivasi Akses Mitra — Lokantara')
-@section('meta-description', 'Aktivasi akun Mitra Lokantara untuk mengelola layanan wisata, penginapan, kuliner, event, dan armada rental.')
+@section('title', 'Aktivasi Akses Mitra — Jelajah Tegal')
+@section('meta-description', 'Aktivasi akun Mitra Jelajah Tegal untuk mengelola layanan wisata, penginapan, kuliner, event, dan armada rental.')
 @section('robots', 'noindex,nofollow')
 
 @section('content')
@@ -11,9 +11,9 @@
             <!-- Left Side: Branding & Mitra Portal Showcase -->
             <div class="auth-visual-side">
                 <div>
-                    <a href="{{ route('home') }}" class="auth-brand-logo" aria-label="Lokantara Beranda">
-                        <span class="auth-brand-badge">L</span>
-                        <span>Lokantara</span>
+                    <a href="{{ route('home') }}" class="auth-brand-logo" aria-label="Jelajah Tegal Beranda">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" width="36" height="36" style="border-radius: 8px; object-fit: contain;">
+                        <span>Jelajah Tegal</span>
                     </a>
                     
                     <h1 class="auth-hero-title">Undangan Bisnis Mitra Terverifikasi</h1>
@@ -21,14 +21,14 @@
                     
                     <div class="auth-feature-list">
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon"></div>
+                            <div class="auth-feature-icon"><i class="fa-solid fa-store text-success"></i></div>
                             <div class="auth-feature-text">
                                 <h6>Manajemen Tenant Mandiri</h6>
                                 <p>Akses katalog wisata, kamar hotel, menu kuliner, tiket event, dan armada kendaraan.</p>
                             </div>
                         </div>
                         <div class="auth-feature-item">
-                            <div class="auth-feature-icon"></div>
+                            <div class="auth-feature-icon"><i class="fa-solid fa-chart-line text-success"></i></div>
                             <div class="auth-feature-text">
                                 <h6>Buku Besar Ledger & Payout</h6>
                                 <p>Pantau pencatatan transaksi seimbang real-time dan ajukan klaim penarikan saldo.</p>
@@ -45,13 +45,21 @@
                 </div>
                 
                 <div class="auth-visual-footer">
-                    <span>&copy; {{ now()->year }} Lokantara Monolith</span>
+                    <span>&copy; {{ now()->year }} Jelajah Tegal</span>
                     <span class="badge bg-white bg-opacity-10 text-white rounded-pill px-3 py-1">Undangan Resmi</span>
                 </div>
             </div>
 
             <!-- Right Side: Activation Form Card -->
             <div class="auth-form-side">
+                <!-- Mobile Brand Header -->
+                <div class="d-lg-none text-center mb-3">
+                    <a href="{{ route('home') }}" class="d-inline-flex align-items-center gap-2 text-decoration-none">
+                        <img src="{{ asset('images/logo.png') }}" alt="Logo Jelajah Tegal" width="36" height="36" style="border-radius: 8px; object-fit: contain;">
+                        <span class="fw-bold text-dark fs-6">Jelajah Tegal</span>
+                    </a>
+                </div>
+
                 <div class="auth-header">
                     <h2>Aktivasi Akses Mitra</h2>
                     <p>Undangan untuk <strong>{{ $invitation->email }}</strong></p>

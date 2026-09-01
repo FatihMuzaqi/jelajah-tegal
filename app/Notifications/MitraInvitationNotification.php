@@ -10,7 +10,12 @@ class MitraInvitationNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(private readonly string $mitraName, private readonly string $token) {}
+    public function __construct(
+        public readonly string $mitraName,
+        public readonly string $token,
+        public readonly ?string $recipientName = null,
+        public readonly ?string $recipientEmail = null,
+    ) {}
 
     public function via(object $notifiable): array
     {
@@ -19,11 +24,17 @@ class MitraInvitationNotification extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $activationUrl = route('mitra.activation.show', $this->token);
+        $email = $this->recipientEmail ?? ($notifiable->email ?? ($notifiable->routes['mail'] ?? null));
+
         return (new MailMessage)
-            ->subject('Undangan Mitra Lokantara')
-            ->greeting('Anda diundang ke '.$this->mitraName)
-            ->line('Gunakan tautan berikut untuk menerima undangan. Tautan hanya dapat digunakan satu kali.')
-            ->action('Aktifkan akses Mitra', route('mitra.activation.show', $this->token))
-            ->line('Abaikan email ini jika Anda tidak mengenali undangan tersebut.');
+            ->subject('Undangan Aktivasi Akun Pengelola Mitra — Jelajah Tegal')
+            ->view('emails.mitra-invitation', [
+                'mitraName' => $this->mitraName,
+                'token' => $this->token,
+                'activationUrl' => $activationUrl,
+                'recipientName' => $this->recipientName,
+                'recipientEmail' => $email,
+            ]);
     }
 }

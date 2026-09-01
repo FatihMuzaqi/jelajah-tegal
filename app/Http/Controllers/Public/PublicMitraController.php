@@ -100,6 +100,8 @@ class PublicMitraController extends Controller
             ->where('slug', $slug)
             ->with([
                 'region',
+                'logoMedia',
+                'bannerMedia',
                 'features' => fn ($q) => $q->where('status', 'enabled')->with('serviceType'),
             ])
             ->firstOrFail();

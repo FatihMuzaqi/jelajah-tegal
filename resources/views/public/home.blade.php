@@ -1018,18 +1018,8 @@
                                 </div>
 
                                 <!-- Location -->
-                                <div class="jt-mitra-ref-location">
+                                <div class="jt-mitra-ref-location mb-3">
                                     <i class="fa-solid fa-location-dot text-secondary"></i> {{ $mitra->region?->name ?? 'Kabupaten Tegal' }}
-                                </div>
-
-                                <!-- Rating & Visitor Stats -->
-                                <div class="jt-mitra-ref-stats">
-                                    <div class="jt-mitra-ref-rating">
-                                        <i class="fa-solid fa-star"></i> 4.9 <span class="text-muted fw-normal">(320 ulasan)</span>
-                                    </div>
-                                    <div class="jt-mitra-ref-visitors">
-                                        <i class="fa-solid fa-users fs-8"></i> 1.2K+ <span class="d-none d-xl-inline">pengunjung</span>
-                                    </div>
                                 </div>
 
                                 <!-- Button Action -->
