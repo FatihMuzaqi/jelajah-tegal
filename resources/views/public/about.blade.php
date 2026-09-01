@@ -1,7 +1,7 @@
 @extends('layouts.public')
 
 @section('title', 'Tentang Jelajah Tegal — Platform Digital Pariwisata & Layanan Terpadu')
-@section('meta-description', 'Mengenal Jelajah Tegal (Lokantara), ekosistem digital terpadu untuk eksplorasi wisata, penginapan, kuliner khas, dan event di Kabupaten Tegal.')
+@section('meta-description', 'Mengenal Jelajah Tegal, ekosistem digital terpadu untuk eksplorasi wisata, penginapan, kuliner khas, dan event di Kabupaten Tegal.')
 @section('canonical', route('public.about'))
 
 @section('content')
@@ -9,24 +9,24 @@
 /* Hero Section */
 .about-hero {
     position: relative;
-    background: linear-gradient(135deg, #0d261e 0%, #154737 55%, #1b634b 100%);
+    background: linear-gradient(135deg, #092018 0%, #114232 55%, #185c46 100%);
     color: #ffffff;
-    padding: 70px 0 90px;
+    padding: clamp(50px, 8vw, 85px) 0 clamp(60px, 9vw, 95px);
     overflow: hidden;
 }
 .about-hero-bg {
     position: absolute;
     inset: 0;
-    opacity: 0.15;
-    background-image: url('{{ asset("images/guci_hero.webp") }}');
+    opacity: 0.2;
+    background-image: url('{{ asset("images/guci_hero.png") }}');
     background-size: cover;
     background-position: center;
-    filter: blur(4px) scale(1.05);
+    filter: blur(2px) scale(1.03);
 }
 .about-hero-overlay {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 80% 20%, rgba(21, 128, 61, 0.4) 0%, rgba(13, 38, 30, 0.95) 75%);
+    background: radial-gradient(circle at 80% 20%, rgba(21, 128, 61, 0.45) 0%, rgba(9, 32, 24, 0.95) 75%);
 }
 .about-hero-content {
     position: relative;
@@ -37,27 +37,29 @@
     align-items: center;
     gap: 8px;
     background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     color: #a7f3d0;
-    font-size: 13px;
-    font-weight: 600;
+    font-size: 12.5px;
+    font-weight: 700;
     padding: 6px 16px;
     border-radius: 999px;
     margin-bottom: 20px;
+    letter-spacing: 0.02em;
 }
 .about-hero h1 {
-    font-size: clamp(32px, 4.5vw, 48px);
+    font-size: clamp(26px, 4.5vw, 46px);
     font-weight: 800;
-    line-height: 1.2;
+    line-height: 1.25;
     letter-spacing: -0.02em;
     color: #ffffff;
-    margin-bottom: 20px;
+    margin-bottom: 18px;
 }
 .about-hero p.lead-text {
-    font-size: 17px;
+    font-size: clamp(14.5px, 2vw, 16.5px);
     line-height: 1.7;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.88);
     max-width: 680px;
     margin-bottom: 0;
 }
@@ -67,8 +69,8 @@
     background: var(--lokantara-surface, #ffffff);
     border: 1px solid var(--lokantara-border, #e2e8f0);
     border-radius: 20px;
-    padding: 30px;
-    margin-top: -50px;
+    padding: 24px 28px;
+    margin-top: -45px;
     position: relative;
     z-index: 10;
     box-shadow: 0 16px 40px rgba(15, 23, 42, 0.08);
@@ -76,27 +78,27 @@
 .about-stat-item {
     display: flex;
     align-items: center;
-    gap: 18px;
-    padding: 10px 15px;
+    gap: 16px;
+    padding: 6px;
 }
 .about-stat-icon {
-    width: 52px;
-    height: 52px;
+    width: 48px;
+    height: 48px;
     border-radius: 14px;
     display: grid;
     place-items: center;
-    font-size: 22px;
+    font-size: 20px;
     flex-shrink: 0;
 }
 .about-stat-number {
-    font-size: 28px;
+    font-size: 26px;
     font-weight: 800;
     line-height: 1;
     color: var(--lokantara-text, #0f172a);
     margin-bottom: 4px;
 }
 .about-stat-label {
-    font-size: 13px;
+    font-size: 12.5px;
     font-weight: 600;
     color: var(--lokantara-muted, #64748b);
     margin: 0;
@@ -104,71 +106,72 @@
 
 /* Section Common */
 .about-section {
-    padding: 70px 0;
+    padding: clamp(50px, 7vw, 75px) 0;
 }
 .section-tag {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    font-size: 12px;
+    font-size: 11.5px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #15803d;
-    background: #dcfce7;
+    color: #047857;
+    background: rgba(4, 120, 87, 0.1);
     padding: 4px 12px;
     border-radius: 999px;
     margin-bottom: 12px;
 }
 .section-title {
-    font-size: clamp(26px, 3.2vw, 36px);
+    font-size: clamp(22px, 3.2vw, 34px);
     font-weight: 800;
     color: var(--lokantara-text, #0f172a);
     letter-spacing: -0.02em;
-    margin-bottom: 16px;
+    margin-bottom: 14px;
+    line-height: 1.3;
 }
 .section-desc {
-    font-size: 16px;
+    font-size: clamp(14px, 1.8vw, 15.5px);
     line-height: 1.7;
     color: var(--lokantara-muted, #64748b);
     max-width: 640px;
 }
 
-/* Feature & Vision Cards */
+/* Vision & Mission Cards */
 .vision-card {
     background: var(--lokantara-surface, #ffffff);
     border: 1px solid var(--lokantara-border, #e2e8f0);
     border-radius: 20px;
-    padding: 32px;
+    padding: clamp(24px, 3vw, 32px);
     height: 100%;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
     box-shadow: 0 4px 20px rgba(15, 23, 42, 0.03);
 }
 .vision-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
-    border-color: #86efac;
+    box-shadow: 0 12px 30px rgba(4, 120, 87, 0.1);
+    border-color: rgba(4, 120, 87, 0.35);
 }
 .vision-icon-wrapper {
-    width: 60px;
-    height: 60px;
+    width: 56px;
+    height: 56px;
     border-radius: 16px;
-    background: #ecfdf5;
-    color: #15803d;
+    background: rgba(4, 120, 87, 0.1);
+    color: #047857;
     display: grid;
     place-items: center;
-    font-size: 24px;
-    margin-bottom: 22px;
+    font-size: 22px;
+    margin-bottom: 20px;
 }
 .vision-title {
-    font-size: 20px;
-    font-weight: 700;
+    font-size: 19px;
+    font-weight: 800;
     color: var(--lokantara-text, #0f172a);
     margin-bottom: 12px;
 }
 .vision-text {
-    font-size: 14.5px;
-    line-height: 1.7;
+    font-size: 14px;
+    line-height: 1.75;
     color: var(--lokantara-muted, #64748b);
     margin: 0;
 }
@@ -177,45 +180,79 @@
 .pillar-card {
     background: var(--lokantara-surface, #ffffff);
     border: 1px solid var(--lokantara-border, #e2e8f0);
-    border-radius: 16px;
+    border-radius: 18px;
     padding: 24px;
     transition: all 0.25s ease;
     height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 .pillar-card:hover {
-    border-color: #15803d;
-    background: #fdfefe;
-    box-shadow: 0 8px 24px rgba(21, 128, 61, 0.06);
+    border-color: #047857;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(4, 120, 87, 0.08);
 }
 .pillar-icon {
-    width: 48px;
-    height: 48px;
+    width: 46px;
+    height: 46px;
     border-radius: 12px;
     display: grid;
     place-items: center;
-    font-size: 20px;
+    font-size: 19px;
     margin-bottom: 16px;
 }
 
 /* CTA Card */
 .about-cta-box {
-    background: linear-gradient(135deg, #0d261e 0%, #154737 60%, #166534 100%);
-    border-radius: 24px;
-    padding: 50px 40px;
+    background: linear-gradient(135deg, #092018 0%, #114232 60%, #15803d 100%);
+    border-radius: 22px;
+    padding: clamp(28px, 5vw, 44px) clamp(20px, 4vw, 36px);
     color: #ffffff;
     position: relative;
     overflow: hidden;
-    box-shadow: 0 20px 45px rgba(13, 38, 30, 0.2);
+    box-shadow: 0 20px 45px rgba(9, 32, 24, 0.2);
 }
 .about-cta-pattern {
     position: absolute;
     top: -50%;
     right: -20%;
-    width: 500px;
-    height: 500px;
+    width: 450px;
+    height: 450px;
     border-radius: 50%;
     background: radial-gradient(circle, rgba(74, 222, 128, 0.15) 0%, rgba(21, 128, 61, 0) 70%);
     pointer-events: none;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 767px) {
+    .about-stats-card {
+        padding: 16px 12px !important;
+        margin-top: -30px !important;
+        border-radius: 16px !important;
+    }
+    .about-stat-item {
+        padding: 6px !important;
+        gap: 12px !important;
+    }
+    .about-stat-icon {
+        width: 40px !important;
+        height: 40px !important;
+        font-size: 17px !important;
+        border-radius: 10px !important;
+    }
+    .about-stat-number {
+        font-size: 21px !important;
+    }
+    .about-stat-label {
+        font-size: 11px !important;
+    }
+    .about-cta-box {
+        padding: 24px 18px !important;
+    }
+    .about-cta-box .btn {
+        width: 100% !important;
+        text-align: center !important;
+    }
 }
 </style>
 
@@ -235,9 +272,9 @@
             <span>Platform Resmi Pariwisata & Layanan Terpadu Tegal</span>
         </div>
 
-        <h1>Menghubungkan Pesona Tegal<br>dengan Sentuhan Digital Modern</h1>
+        <h1>Menghubungkan Pesona Tegal<br class="d-none d-md-inline"> dengan Sentuhan Digital Modern</h1>
         <p class="lead-text">
-            <strong>Jelajah Tegal</strong> hadir sebagai gerbang digital satu pintu yang mengintegrasikan destinasi wisata unggulan, penginapan nyaman, kuliner legendaris, pagelaran acara, serta transportasi di Kabupaten Tegal.
+            <strong>Jelajah Tegal</strong> hadir sebagai gerbang digital satu pintu yang mengintegrasikan destinasi wisata unggulan, penginapan nyaman, kuliner legendaris, pagelaran acara, serta transportasi lokal di Kabupaten Tegal.
         </p>
     </div>
 </header>
@@ -245,10 +282,10 @@
 <!-- Floating Stats Bar -->
 <div class="container public-container">
     <div class="about-stats-card">
-        <div class="row g-4 align-items-center">
+        <div class="row g-3 g-md-4 align-items-center">
             <div class="col-6 col-lg-3">
                 <div class="about-stat-item">
-                    <div class="about-stat-icon" style="background: #ecfdf5; color: #10b981;">
+                    <div class="about-stat-icon" style="background: #ecfdf5; color: #047857;">
                         <i class="fa-solid fa-mountain-sun"></i>
                     </div>
                     <div>
@@ -259,7 +296,7 @@
             </div>
             <div class="col-6 col-lg-3">
                 <div class="about-stat-item">
-                    <div class="about-stat-icon" style="background: #eff6ff; color: #3b82f6;">
+                    <div class="about-stat-icon" style="background: #eff6ff; color: #2563eb;">
                         <i class="fa-solid fa-hotel"></i>
                     </div>
                     <div>
@@ -270,7 +307,7 @@
             </div>
             <div class="col-6 col-lg-3">
                 <div class="about-stat-item">
-                    <div class="about-stat-icon" style="background: #fff7ed; color: #f97316;">
+                    <div class="about-stat-icon" style="background: #fff7ed; color: #ea580c;">
                         <i class="fa-solid fa-utensils"></i>
                     </div>
                     <div>
@@ -315,7 +352,7 @@
                     </div>
                     <h3 class="vision-title">Visi Utama</h3>
                     <p class="vision-text">
-                        Menjadikan Kabupaten Tegal sebagai destinasi pariwisata terkemuka di Jawa Tengah dengan ekosistem digital terintegrasi yang memudahkan akses informasi, reservasi langsung, serta memberdayakan ekonomi kreatif lokal secara inklusif.
+                        Menjadikan Kabupaten Tegal sebagai destinasi pariwisata terkemuka di Jawa Tengah dengan ekosistem digital terintegrasi yang memudahkan akses informasi, reservasi langsung, serta memberdayakan ekonomi kreatif lokal secara inklusif dan berkelanjutan.
                     </p>
                 </div>
             </div>
@@ -328,8 +365,8 @@
                     <h3 class="vision-title">Misi Kami</h3>
                     <p class="vision-text">
                         1. Menyediakan direktori wisata, penginapan, dan kuliner terakurat dan terverifikasi.<br>
-                        2. Membuka pintu digitalisasi bagi UMKM dan pelaku wisata lokal di Tegal.<br>
-                        3. Menghadirkan sistem pemesanan dan tiket digital QR yang cepat, mudah, dan terpercaya.
+                        2. Membuka pintu digitalisasi bagi UMKM dan pelaku wisata lokal di seluruh wilayah Tegal.<br>
+                        3. Menghadirkan sistem pemesanan tiket digital QR yang cepat, mudah, dan transparan bagi semua wisatawan.
                     </p>
                 </div>
             </div>
@@ -353,72 +390,72 @@
         </div>
 
         <div class="row g-4">
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="pillar-card">
-                    <div class="pillar-icon" style="background: #ecfdf5; color: #15803d;">
+                    <div class="pillar-icon" style="background: #ecfdf5; color: #047857;">
                         <i class="fa-solid fa-mountain-sun"></i>
                     </div>
-                    <h4 class="fw-bold fs-6 mb-2">Wisata & Rekreasi</h4>
+                    <h4 class="fw-bold fs-6 mb-2 text-dark">Wisata & Rekreasi</h4>
                     <p class="text-muted fs-7 mb-0">
                         Eksplorasi keindahan alam Guci, pesisir pantai utara, situs purbakala Semedo, hingga agrowisata perkebunan teh yang menyejukkan.
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="pillar-card">
                     <div class="pillar-icon" style="background: #eff6ff; color: #2563eb;">
                         <i class="fa-solid fa-hotel"></i>
                     </div>
-                    <h4 class="fw-bold fs-6 mb-2">Penginapan & Villa</h4>
+                    <h4 class="fw-bold fs-6 mb-2 text-dark">Penginapan & Villa</h4>
                     <p class="text-muted fs-7 mb-0">
                         Pilihan hotel berbintang, resort air panas, homestay ramah keluarga, hingga area glamping dengan tarif transparan dan fasilitas lengkap.
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="pillar-card">
                     <div class="pillar-icon" style="background: #fff7ed; color: #ea580c;">
                         <i class="fa-solid fa-utensils"></i>
                     </div>
-                    <h4 class="fw-bold fs-6 mb-2">Kuliner Otentik Tegal</h4>
+                    <h4 class="fw-bold fs-6 mb-2 text-dark">Kuliner Otentik Tegal</h4>
                     <p class="text-muted fs-7 mb-0">
                         Cita rasa legendaris Sate Kambing Batibul, Tahu Aci khas Slawi, Teh Poci harum melati, dan aneka jajanan pasar tradisional.
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="pillar-card">
                     <div class="pillar-icon" style="background: #fdf2f8; color: #db2777;">
                         <i class="fa-solid fa-calendar-check"></i>
                     </div>
-                    <h4 class="fw-bold fs-6 mb-2">Event & Festival Budaya</h4>
+                    <h4 class="fw-bold fs-6 mb-2 text-dark">Event & Festival Budaya</h4>
                     <p class="text-muted fs-7 mb-0">
                         Informasi kalender festival daerah, konser musik, karnaval budaya, serta pameran ekonomi kreatif tahunan di Kabupaten Tegal.
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="pillar-card">
                     <div class="pillar-icon" style="background: #fefce8; color: #ca8a04;">
                         <i class="fa-solid fa-car"></i>
                     </div>
-                    <h4 class="fw-bold fs-6 mb-2">Rental & Transportasi</h4>
+                    <h4 class="fw-bold fs-6 mb-2 text-dark">Rental & Transportasi</h4>
                     <p class="text-muted fs-7 mb-0">
                         Sewa mobil lepas kunci, paket dengan supir berpengalaman, hingga rental motor untuk kemudahan mobilitas selama berlibur.
                     </p>
                 </div>
             </div>
 
-            <div class="col-md-6 col-lg-4">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="pillar-card">
                     <div class="pillar-icon" style="background: #f5f3ff; color: #7c3aed;">
                         <i class="fa-solid fa-shield-halved"></i>
                     </div>
-                    <h4 class="fw-bold fs-6 mb-2">Keamanan & Keaslian Data</h4>
+                    <h4 class="fw-bold fs-6 mb-2 text-dark">Keamanan & Keaslian Data</h4>
                     <p class="text-muted fs-7 mb-0">
                         Semua Mitra melalui proses verifikasi resmi dari dinas dan tim kurasi demi menjamin kenyamanan transaksi Anda.
                     </p>
@@ -431,7 +468,7 @@
 <!-- Mengapa Memilih Jelajah Tegal -->
 <section class="about-section">
     <div class="container public-container">
-        <div class="row align-items-center g-5">
+        <div class="row align-items-center g-4 g-lg-5">
             <div class="col-lg-6">
                 <span class="section-tag">
                     <i class="fa-solid fa-award"></i> Keunggulan Platform
@@ -443,31 +480,31 @@
 
                 <div class="d-flex flex-column gap-3">
                     <div class="d-flex align-items-start gap-3">
-                        <div class="p-2 rounded-circle bg-success-subtle text-success fs-6 mt-1">
+                        <div class="p-2 rounded-circle bg-success-subtle text-success fs-6 mt-1 flex-shrink-0">
                             <i class="fa-solid fa-check"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold fs-6 mb-1">Tiket QR & Pemesanan Instan</h5>
+                            <h5 class="fw-bold fs-6 mb-1 text-dark">Tiket QR & Pemesanan Instan</h5>
                             <p class="text-muted fs-7 mb-0">Masuk ke objek wisata tanpa antre panjang dengan tiket digital yang tersinkronisasi langsung ke pos tiket resmi.</p>
                         </div>
                     </div>
 
                     <div class="d-flex align-items-start gap-3">
-                        <div class="p-2 rounded-circle bg-success-subtle text-success fs-6 mt-1">
+                        <div class="p-2 rounded-circle bg-success-subtle text-success fs-6 mt-1 flex-shrink-0">
                             <i class="fa-solid fa-check"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold fs-6 mb-1">Bantuan Asisten AI Pintar</h5>
+                            <h5 class="fw-bold fs-6 mb-1 text-dark">Bantuan Asisten AI Pintar</h5>
                             <p class="text-muted fs-7 mb-0">Dapatkan rekomendasi rute, estimasi biaya, dan rekomendasi kuliner 24/7 melalui asisten cerdas terintegrasi.</p>
                         </div>
                     </div>
 
                     <div class="d-flex align-items-start gap-3">
-                        <div class="p-2 rounded-circle bg-success-subtle text-success fs-6 mt-1">
+                        <div class="p-2 rounded-circle bg-success-subtle text-success fs-6 mt-1 flex-shrink-0">
                             <i class="fa-solid fa-check"></i>
                         </div>
                         <div>
-                            <h5 class="fw-bold fs-6 mb-1">Ulasan Otentik Berbasis Pengalaman</h5>
+                            <h5 class="fw-bold fs-6 mb-1 text-dark">Ulasan Otentik Berbasis Pengalaman</h5>
                             <p class="text-muted fs-7 mb-0">Baca review jujur dan foto nyata langsung dari wisatawan lain yang telah berkunjung sebelumnya.</p>
                         </div>
                     </div>
@@ -477,14 +514,14 @@
             <div class="col-lg-6">
                 <div class="about-cta-box">
                     <div class="about-cta-pattern"></div>
-                    <span class="badge bg-white text-success fw-bold px-3 py-2 rounded-pill mb-3" style="font-size: 12px;">
+                    <span class="badge bg-white text-success fw-bold px-3 py-1.5 rounded-pill mb-3" style="font-size: 11.5px;">
                         <i class="fa-solid fa-users-gear me-1"></i> Mitra & Komunitas
                     </span>
                     <h3 class="fw-bold fs-4 mb-3">Punya Usaha Wisata, Penginapan, atau Kuliner di Tegal?</h3>
                     <p class="text-white-50 fs-7 mb-4">
                         Bergabunglah bersama puluhan mitra lainnya untuk memperluas jangkauan promosi usaha Anda ke ribuan wisatawan nusantara. Pendaftaran mudah, gratis, dan diverifikasi langsung.
                     </p>
-                    <div class="d-flex flex-wrap gap-3">
+                    <div class="d-flex flex-wrap gap-2 gap-sm-3">
                         <a href="{{ route('mitra.register') }}" class="btn btn-warning text-dark fw-bold rounded-pill px-4 py-2.5 shadow-sm">
                             <i class="fa-solid fa-user-plus me-1"></i> Daftar Sebagai Mitra
                         </a>

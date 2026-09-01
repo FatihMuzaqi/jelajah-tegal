@@ -229,19 +229,85 @@ class PublicPortalController extends Controller
 
     public function privacy(): View
     {
-        return $this->contentPage('Kebijakan Privasi', 'public.privacy', 'Kebijakan privasi belum diterbitkan. Jangan memproses data publik sebelum dokumen ini disetujui.');
+        $defaultPrivacy = [
+            'published' => true,
+            'summary' => 'Kebijakan Privasi ini menjelaskan bagaimana platform resmi Jelajah Tegal mengumpulkan, mengelola, menggunakan, dan melindungi data pribadi wisatawan serta mitra pengguna layanan.',
+            'items' => [
+                [
+                    'title' => '1. Pengumpulan Informasi Pribadi',
+                    'body' => "Jelajah Tegal mengumpulkan informasi yang Anda berikan secara sukarela saat mendaftar akun, melakukan reservasi tiket wisata, memesan kamar penginapan, mereservasi meja kuliner, atau menghubungi tim bantuan. Data tersebut mencakup nama lengkap, alamat email, nomor telepon, dan data transaksi pemesanan.",
+                ],
+                [
+                    'title' => '2. Penggunaan Data Pengguna',
+                    'body' => "Informasi yang dikumpulkan digunakan semata-mata untuk:\n• Memproses reservasi dan menerbitkan e-tiket QR resmi;\n• Mengirimkan konfirmasi pembayaran dan bukti transaksi;\n• Memfasilitasi koordinasi antara wisatawan dan pengelola unit bisnis Mitra;\n• Meningkatkan kualitas rekomendasi rute dan asisten wisata cerdas.",
+                ],
+                [
+                    'title' => '3. Keamanan & Perlindungan Data',
+                    'body' => "Kami menerapkan protokol enkripsi modern (HTTPS/TLS) dan penyimpanan kata sandi terenkripsi (Argon2id/Bcrypt) untuk memastikan data pribadi Anda terlindungi dari akses, pengubahan, atau pengungkapan tanpa izin.",
+                ],
+                [
+                    'title' => '4. Pembagian Informasi dengan Mitra Terverifikasi',
+                    'body' => "Kami hanya membagikan data identitas pemesanan yang relevan (seperti nama pemesan dan nomor kode tiket) kepada Mitra penyedia layanan resmi terkait demi kepentingan validasi saat Anda tiba di lokasi. Kami tidak pernah menjual atau menyewakan data pribadi Anda kepada pihak ketiga manapun.",
+                ],
+                [
+                    'title' => '5. Hak Akses & Pembaruan Pengguna',
+                    'body' => "Anda memiliki hak penuh untuk mengakses, memperbarui, atau menghapus informasi profil akun Anda kapan saja melalui dashboard profil pengguna Jelajah Tegal atau dengan menghubungi tim dukungan kami.",
+                ],
+                [
+                    'title' => '6. Kontak & Pusat Bantuan',
+                    'body' => "Apabila Anda memiliki pertanyaan, kendala, atau masukan mengenai Kebijakan Privasi ini, silakan hubungi tim pengelola Jelajah Tegal melalui halaman Kontak kami.",
+                ],
+            ],
+        ];
+
+        return $this->contentPage('Kebijakan Privasi', 'public.privacy', $defaultPrivacy);
     }
 
     public function terms(): View
     {
-        return $this->contentPage('Syarat dan Ketentuan', 'public.terms', 'Syarat dan ketentuan belum diterbitkan.');
+        $defaultTerms = [
+            'published' => true,
+            'summary' => 'Syarat dan Ketentuan ini mengatur penggunaan seluruh layanan digital pada portal Jelajah Tegal, mencakup ketentuan akun, pemesanan tiket online, hak cipta, serta kewajiban pengguna dan mitra.',
+            'items' => [
+                [
+                    'title' => '1. Penerimaan Ketentuan Layanan',
+                    'body' => "Dengan mengakses, mendaftar, atau menggunakan platform Jelajah Tegal, Anda menyatakan telah membaca, memahami, dan menyetujui seluruh Syarat dan Ketentuan yang berlaku. Jika Anda tidak menyetujui salah satu poin, harap tidak melanjutkan penggunaan layanan.",
+                ],
+                [
+                    'title' => '2. Akun & Keamanan Pengguna',
+                    'body' => "Pengguna bertanggung jawab penuh untuk menjaga kerahasiaan informasi akun dan kata sandi masing-masing. Segala aktivitas yang dilakukan menggunakan akun terdaftar merupakan tanggung jawab pemilik akun yang sah.",
+                ],
+                [
+                    'title' => '3. Pemesanan, Pembayaran & Penerbitan E-Tiket',
+                    'body' => "Pemesanan tiket destinasi wisata, penginapan, kuliner, dan event dianggap sah setelah pembayaran berhasil diverifikasi melalui kanal pembayaran resmi sistem. E-tiket digital berformat QR Code akan diterbitkan secara otomatis dan wajib ditunjukkan kepada petugas di lokasi mitra.",
+                ],
+                [
+                    'title' => '4. Kebijakan Pembatalan & Pengembalian Dana (Refund)',
+                    'body' => "Kebijakan pengembalian dana, perubahan jadwal, atau pembatalan tiket tunduk pada aturan spesifik masing-masing pengelola objek wisata atau penyelenggara event yang tertera pada lembar rincian pesanan.",
+                ],
+                [
+                    'title' => '5. Hak Kekayaan Intelektual',
+                    'body' => "Seluruh merek dagang, logo Jelajah Tegal, desain antarmuka, basis data, dan konten yang diterbitkan di dalam platform ini merupakan hak milik eksklusif pengelola platform Jelajah Tegal dan dilindungi undang-undang hak cipta Republik Indonesia.",
+                ],
+                [
+                    'title' => '6. Batasan Tanggung Jawab & Perubahan Layanan',
+                    'body' => "Jelajah Tegal berhak memperbarui, menambah, atau mengubah Syarat dan Ketentuan ini dari waktu ke waktu untuk menyesuaikan regulasi perundang-undangan dan peningkatan mutu operasional platform.",
+                ],
+            ],
+        ];
+
+        return $this->contentPage('Syarat dan Ketentuan', 'public.terms', $defaultTerms);
     }
 
-    private function contentPage(string $title, string $key, string $emptyMessage): View
+    private function contentPage(string $title, string $key, array|string $defaultContent): View
     {
+        $settingContent = $this->publishedSetting($key);
+        $content = $settingContent ?: (is_array($defaultContent) ? $defaultContent : null);
+        $emptyMessage = is_string($defaultContent) ? $defaultContent : 'Dokumen belum tersedia.';
+
         return view('public.content-page', [
             'title' => $title,
-            'content' => $this->publishedSetting($key),
+            'content' => $content,
             'emptyMessage' => $emptyMessage,
         ]);
     }
