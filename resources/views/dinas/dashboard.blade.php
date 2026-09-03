@@ -394,37 +394,49 @@
 
 <!-- 3. Interactive Charts Row (2 Columns) -->
 <div class="row g-3 mb-4">
-    <!-- Chart 1: Tren Retribusi Bulanan -->
-    <div class="col-12 col-lg-6">
+    <!-- Chart 1: Tren Penjualan Tiket & Retribusi Interaktif (Minggu / Bulan / Tahun) -->
+    <div class="col-12 col-lg-7">
         <div class="dinas-chart-card">
-            <div class="chart-card-header">
+            <div class="chart-card-header d-flex flex-wrap justify-content-between align-items-center gap-2">
                 <div>
-                    <h6 class="chart-card-title">
-                        <span></span> Tren Retribusi Bulanan (Tahun {{ $selectedYear }})
+                    <h6 class="chart-card-title mb-0" id="salesChartTitle">
+                        <i class="fa-solid fa-chart-column text-primary me-1"></i> Tren Penjualan Tiket & Retribusi PAD
                     </h6>
-                    <div class="chart-card-sub">Perbandingan realisasi PAD & volume tiket Januari s.d. Desember</div>
+                    <div class="chart-card-sub" id="salesChartSubtitle">Perbandingan realisasi pendapatan (Rp) dan volume tiket terjual</div>
                 </div>
-                <span class="badge-pill-light">12 Bulan</span>
+                
+                <!-- Period Switcher Buttons -->
+                <div class="d-flex align-items-center gap-1 p-1 bg-light rounded-pill border" style="font-size: 12px;">
+                    <button type="button" class="btn btn-sm rounded-pill px-2.5 py-1 fw-bold fs-8 border-0 period-btn" id="btnPeriodWeekly" onclick="switchSalesPeriod('weekly')">
+                        Minggu
+                    </button>
+                    <button type="button" class="btn btn-sm rounded-pill px-2.5 py-1 fw-bold fs-8 border-0 period-btn btn-primary text-white shadow-xs" id="btnPeriodMonthly" onclick="switchSalesPeriod('monthly')">
+                        Bulan
+                    </button>
+                    <button type="button" class="btn btn-sm rounded-pill px-2.5 py-1 fw-bold fs-8 border-0 period-btn" id="btnPeriodYearly" onclick="switchSalesPeriod('yearly')">
+                        Tahun
+                    </button>
+                </div>
             </div>
-            <div style="position: relative; height: 260px; width: 100%;">
+            <div style="position: relative; height: 280px; width: 100%;">
                 <canvas id="monthlyChart"></canvas>
             </div>
         </div>
     </div>
 
     <!-- Chart 2: Arus Retribusi Harian -->
-    <div class="col-12 col-lg-6">
+    <div class="col-12 col-lg-5">
         <div class="dinas-chart-card">
             <div class="chart-card-header">
                 <div>
                     <h6 class="chart-card-title">
-                        <span></span> Arus Retribusi Harian
+                        <i class="fa-solid fa-chart-line text-success me-1"></i> Arus Retribusi Harian
                     </h6>
-                    <div class="chart-card-sub">Realisasi per hari {{ \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->translatedFormat('F Y') }} (Tgl 1 - {{ count($dailyLabels) }})</div>
+                    <div class="chart-card-sub">Realisasi {{ \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->translatedFormat('F Y') }} (Tgl 1 - {{ count($dailyLabels) }})</div>
                 </div>
-                <span class="badge-pill-light">Harian</span>
+                <span class="badge-pill-light">Bulan {{ $selectedMonth }}</span>
             </div>
-            <div style="position: relative; height: 260px; width: 100%;">
+            <div style="position: relative; height: 280px; width: 100%;">
                 <canvas id="dailyChart"></canvas>
             </div>
         </div>
@@ -558,35 +570,85 @@
 
 <!-- Chart.js Scripts -->
 <script>
+let salesChartInstance = null;
+
+const salesChartData = {
+    weekly: {
+        title: 'Tren Penjualan Tiket Mingguan (7 Hari Terakhir)',
+        subtitle: 'Data penjualan tiket dan retribusi 7 hari ke belakang',
+        labels: @json($weeklyLabels),
+        revenue: @json($weeklyRevenueData),
+        tickets: @json($weeklyTicketsData)
+    },
+    monthly: {
+        title: 'Tren Penjualan Tiket Bulanan (Tahun {{ $selectedYear }})',
+        subtitle: 'Data penjualan tiket dan retribusi Januari s.d. Desember {{ $selectedYear }}',
+        labels: @json($monthLabels),
+        revenue: @json($monthlyRevenueData),
+        tickets: @json($monthlyTicketsData)
+    },
+    yearly: {
+        title: 'Tren Penjualan Tiket Tahunan (5 Tahun Terakhir)',
+        subtitle: 'Perbandingan akumulasi pendapatan dan tiket antar tahun',
+        labels: @json($yearlyLabels),
+        revenue: @json($yearlyRevenueData),
+        tickets: @json($yearlyTicketsData)
+    }
+};
+
+function switchSalesPeriod(period) {
+    if (!salesChartInstance || !salesChartData[period]) return;
+    
+    // Update active button styling
+    ['weekly', 'monthly', 'yearly'].forEach(p => {
+        const btn = document.getElementById('btnPeriod' + p.charAt(0).toUpperCase() + p.slice(1));
+        if (btn) {
+            if (p === period) {
+                btn.className = 'btn btn-sm rounded-pill px-2.5 py-1 fw-bold fs-8 border-0 period-btn btn-primary text-white shadow-xs';
+            } else {
+                btn.className = 'btn btn-sm rounded-pill px-2.5 py-1 fw-bold fs-8 border-0 period-btn text-muted';
+            }
+        }
+    });
+
+    const data = salesChartData[period];
+    
+    // Update titles
+    const titleEl = document.getElementById('salesChartTitle');
+    const subEl = document.getElementById('salesChartSubtitle');
+    if (titleEl) titleEl.innerHTML = '<i class="fa-solid fa-chart-column text-primary me-1"></i> ' + data.title;
+    if (subEl) subEl.textContent = data.subtitle;
+
+    // Update Chart data
+    salesChartInstance.data.labels = data.labels;
+    salesChartInstance.data.datasets[0].data = data.revenue;
+    salesChartInstance.data.datasets[1].data = data.tickets;
+    salesChartInstance.update();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Monthly Revenue Chart
+    // 1. Sales Chart (Week / Month / Year switchable)
     const ctxMonthly = document.getElementById('monthlyChart').getContext('2d');
-    new Chart(ctxMonthly, {
+    salesChartInstance = new Chart(ctxMonthly, {
         type: 'bar',
         data: {
-            labels: @json($monthLabels),
+            labels: salesChartData.monthly.labels,
             datasets: [
                 {
                     label: 'Retribusi PAD (Rp)',
-                    data: @json($monthlyRevenueData),
+                    data: salesChartData.monthly.revenue,
                     backgroundColor: 'rgba(37, 99, 235, 0.85)',
                     borderRadius: 6,
                     yAxisID: 'y',
-                    maxBarThickness: 28,
+                    maxBarThickness: 24,
                 },
                 {
                     label: 'Jumlah Tiket Terjual',
-                    data: @json($monthlyTicketsData),
-                    type: 'line',
-                    borderColor: '#10b981',
-                    backgroundColor: '#10b981',
-                    borderWidth: 2,
-                    pointBackgroundColor: '#ffffff',
-                    pointBorderColor: '#10b981',
-                    pointBorderWidth: 2,
-                    pointRadius: 3,
-                    tension: 0.35,
+                    data: salesChartData.monthly.tickets,
+                    backgroundColor: 'rgba(16, 185, 129, 0.85)',
+                    borderRadius: 6,
                     yAxisID: 'y1',
+                    maxBarThickness: 24,
                 }
             ]
         },
@@ -596,6 +658,15 @@ document.addEventListener('DOMContentLoaded', function() {
             interaction: {
                 mode: 'index',
                 intersect: false,
+            },
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: {
+                        boxWidth: 12,
+                        font: { size: 12, weight: 'bold' }
+                    }
+                }
             },
             scales: {
                 x: {
@@ -609,8 +680,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     position: 'left',
                     ticks: {
                         callback: function(value) {
-                            if (value >= 1000000) return 'Rp ' + (value/1000000) + ' Jt';
-                            if (value >= 1000) return 'Rp ' + (value/1000) + ' Rb';
+                            if (value >= 1000000) return 'Rp ' + (value/1000000).toLocaleString('id-ID') + ' Jt';
+                            if (value >= 1000) return 'Rp ' + (value/1000).toLocaleString('id-ID') + ' Rb';
                             return 'Rp ' + value;
                         }
                     }
@@ -622,6 +693,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     grid: {
                         drawOnChartArea: false,
                     },
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('id-ID') + ' tkt';
+                        }
+                    }
                 }
             }
         }

@@ -87,32 +87,70 @@
     @php($chartLabels = $chart['labels'] ?? [])
     @php($chartSeries = $chart['series'] ?? [])
 
+    {{-- Full-Width Sales Chart & Popular Destinations for Mitra --}}
+    @if ($surface === 'mitra' && isset($salesTrends))
+        <div class="mb-4">
+            @include('dashboards.partials.mitra-sales-chart', ['salesTrends' => $salesTrends])
+        </div>
+    @endif
+
+    @if ($surface === 'mitra' && isset($popularDestinations))
+        <div class="mb-4">
+            @include('dashboards.partials.mitra-popular-destinations', ['popularDestinations' => $popularDestinations])
+        </div>
+    @endif
+
     {{-- Data Analytics & Timeline Activity --}}
-    <div class='dashboard-grid'>
-        <x-chart-card title='Distribusi Data Operasional' chart-id='surface-overview-chart' :labels='$chartLabels'
-            :series='$chartSeries' />
+    @if ($surface !== 'mitra')
+        <div class='dashboard-grid'>
+            <x-chart-card title='Distribusi Data Operasional' chart-id='surface-overview-chart' :labels='$chartLabels'
+                :series='$chartSeries' />
 
-        <x-content-card title='Aktivitas & Log Terbaru' subtitle='Data aktual yang tercatat otomatis pada sistem.'>
-            @if ($activity->isEmpty())
-                <x-empty-state title='Belum ada aktivitas' description='Aktivitas baru akan tampil otomatis di area ini.'
-                    compact />
-            @else
-                <x-timeline>
-                    @foreach ($activity as $item)
-                        @php($activityTitle = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'title', 'Notifikasi') : str($item->event)->replace('.', ' ')->headline())
-                        @php($activityDescription = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'message') : ($item->auditable_type ? class_basename($item->auditable_type) : null))
-                        @php($activityTime = $item->created_at?->diffForHumans())
-                        <x-activity-item :title='$activityTitle' :description='$activityDescription' :time='$activityTime' />
-                    @endforeach
-                </x-timeline>
-            @endif
-        </x-content-card>
-    </div>
+            <x-content-card title='Aktivitas & Log Terbaru' subtitle='Data aktual yang tercatat otomatis pada sistem.'>
+                @if ($activity->isEmpty())
+                    <x-empty-state title='Belum ada aktivitas' description='Aktivitas baru akan tampil otomatis di area ini.'
+                        compact />
+                @else
+                    <x-timeline>
+                        @foreach ($activity as $item)
+                            @php($activityTitle = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'title', 'Notifikasi') : str($item->event)->replace('.', ' ')->headline())
+                            @php($activityDescription = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'message') : ($item->auditable_type ? class_basename($item->auditable_type) : null))
+                            @php($activityTime = $item->created_at?->diffForHumans())
+                            <x-activity-item :title='$activityTitle' :description='$activityDescription' :time='$activityTime' />
+                        @endforeach
+                    </x-timeline>
+                @endif
+            </x-content-card>
+        </div>
 
-    {{-- Surface Specific Tables & Operational Data --}}
-    @include('dashboards.tables.' . $surface)
+        {{-- Surface Specific Tables for non-Mitra --}}
+        @include('dashboards.tables.' . $surface)
+    @else
+        {{-- Side-by-Side: Anggota Mitra & Aktivitas Log --}}
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-6">
+                @include('dashboards.tables.mitra')
+            </div>
 
-    @if ($surface === 'mitra')
+            <div class="col-12 col-lg-6">
+                <x-content-card title='Aktivitas & Log Terbaru' subtitle='Data aktual yang tercatat otomatis pada sistem.'>
+                    @if ($activity->isEmpty())
+                        <x-empty-state title='Belum ada aktivitas' description='Aktivitas baru akan tampil otomatis di area ini.'
+                            compact />
+                    @else
+                        <x-timeline>
+                            @foreach ($activity as $item)
+                                @php($activityTitle = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'title', 'Notifikasi') : str($item->event)->replace('.', ' ')->headline())
+                                @php($activityDescription = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'message') : ($item->auditable_type ? class_basename($item->auditable_type) : null))
+                                @php($activityTime = $item->created_at?->diffForHumans())
+                                <x-activity-item :title='$activityTitle' :description='$activityDescription' :time='$activityTime' />
+                            @endforeach
+                        </x-timeline>
+                    @endif
+                </x-content-card>
+            </div>
+        </div>
+
         @include('dashboards.partials.mitra-operational', ['operational' => $operational])
     @endif
 @endsection

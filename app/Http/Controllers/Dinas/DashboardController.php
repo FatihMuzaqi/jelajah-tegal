@@ -75,7 +75,20 @@ class DashboardController extends Controller
             ->whereMonth('used_at', $selectedMonth)
             ->count();
 
-        // 4. Monthly Trend Data for Chart.js (Jan - Dec)
+        // 4a. Weekly Trend Data (Last 7 Days)
+        $weeklyRevenueData = [];
+        $weeklyTicketsData = [];
+        $weeklyLabels = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = Carbon::today()->subDays($i);
+            $weeklyLabels[] = $date->translatedFormat('D, d M');
+            $dateStr = $date->toDateString();
+
+            $weeklyRevenueData[] = (float) (clone $baseOrderQuery)->whereDate('paid_at', $dateStr)->sum('total_amount');
+            $weeklyTicketsData[] = (clone $baseTicketQuery)->whereDate('created_at', $dateStr)->count();
+        }
+
+        // 4b. Monthly Trend Data for Chart.js (Jan - Dec)
         $monthlyRevenueData = [];
         $monthlyTicketsData = [];
         $monthLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
@@ -93,6 +106,17 @@ class DashboardController extends Controller
 
             $monthlyRevenueData[] = (float) $rev;
             $monthlyTicketsData[] = $tix;
+        }
+
+        // 4c. Yearly Trend Data (5 Years)
+        $yearlyRevenueData = [];
+        $yearlyTicketsData = [];
+        $yearlyLabels = [];
+        $startYear = now()->year - 4;
+        for ($y = $startYear; $y <= now()->year; $y++) {
+            $yearlyLabels[] = 'Tahun ' . $y;
+            $yearlyRevenueData[] = (float) (clone $baseOrderQuery)->whereYear('paid_at', $y)->sum('total_amount');
+            $yearlyTicketsData[] = (clone $baseTicketQuery)->whereYear('created_at', $y)->count();
         }
 
         // 5. Daily Trend Data for selected month (Days 1 - 31)
@@ -159,6 +183,12 @@ class DashboardController extends Controller
             'monthLabels',
             'monthlyRevenueData',
             'monthlyTicketsData',
+            'weeklyLabels',
+            'weeklyRevenueData',
+            'weeklyTicketsData',
+            'yearlyLabels',
+            'yearlyRevenueData',
+            'yearlyTicketsData',
             'dailyLabels',
             'dailyRevenueData',
             'destinationRankings',

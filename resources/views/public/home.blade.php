@@ -1259,34 +1259,6 @@
     </div>
 </div>
 
-<!-- 5. Section 4: Newsletter Footer Banner -->
-<div class="container public-container pb-5">
-    <div class="jt-newsletter-banner-footer">
-        <div class="d-flex align-items-center gap-3">
-            <div class="bg-white text-emerald p-3 rounded-circle" style="width: 54px; height: 54px; display: grid; place-items: center; background: rgba(255,255,255,0.15); color: #ffffff;">
-                <i class="fa-solid fa-paper-plane fs-4"></i>
-            </div>
-            <div>
-                <h3 class="fs-4 fw-extrabold m-0 text-white">Dapatkan Info Wisata Tegal Terbaru</h3>
-                <p class="m-0 text-white-50 fs-7">Berlangganan newsletter untuk mendapatkan info destinasi, event, dan promo menarik dari Jelajah Tegal.</p>
-            </div>
-        </div>
-
-        <div class="d-flex align-items-center gap-3 flex-wrap flex-lg-nowrap w-100 w-lg-auto justify-content-center justify-content-lg-end">
-            <div class="input-group" style="max-width: 420px;">
-                <input type="email" class="form-control px-3 py-2 border-0" placeholder="Masukkan email kamu" style="font-size: 13px;">
-                <button class="btn btn-emerald px-4 fw-bold" style="background: #059669; color: #ffffff;" type="button">Berlangganan</button>
-            </div>
-            <div class="d-flex gap-3 text-white-50 fs-5">
-                <a href="#" class="text-white-50"><i class="fa-brands fa-instagram"></i></a>
-                <a href="#" class="text-white-50"><i class="fa-brands fa-facebook"></i></a>
-                <a href="#" class="text-white-50"><i class="fa-brands fa-youtube"></i></a>
-                <a href="#" class="text-white-50"><i class="fa-brands fa-tiktok"></i></a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Hero Background Slider Script -->
 <script>
     let currentHeroSlide = 0;

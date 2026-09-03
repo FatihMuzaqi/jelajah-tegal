@@ -73,14 +73,135 @@ class DashboardController extends Controller
             ['label' => 'Menunggu moderasi', 'available' => Schema::hasTable('catalog_entities'), 'value' => Schema::hasTable('catalog_entities') ? CatalogEntity::where('mitra_id', $m->id)->whereIn('status', ['submitted', 'under_review'])->count() : null],
             ['label' => 'Published', 'available' => Schema::hasTable('catalog_entities'), 'value' => Schema::hasTable('catalog_entities') ? CatalogEntity::where('mitra_id', $m->id)->where('status', 'published')->count() : null],
             ['label' => 'Rejected', 'available' => Schema::hasTable('catalog_entities'), 'value' => Schema::hasTable('catalog_entities') ? CatalogEntity::where('mitra_id', $m->id)->where('status', 'rejected')->count() : null],
-            ['label' => 'Order', 'available' => Schema::hasTable('orders'), 'value' => null],
+            ['label' => 'Order', 'available' => Schema::hasTable('orders'), 'value' => Schema::hasTable('orders') ? \App\Models\Order::where('mitra_id', $m->id)->count() : null],
             ['label' => 'Saldo available', 'available' => Schema::hasTable('mitra_balances'), 'value' => null],
             ['label' => 'Saldo held', 'available' => Schema::hasTable('mitra_balances'), 'value' => null],
             ['label' => 'Withdrawal', 'available' => Schema::hasTable('withdrawal_claims'), 'value' => null],
             ['label' => 'Review terbaru', 'available' => Schema::hasTable('reviews'), 'value' => null],
         ];
 
-        return $this->view('mitra', $r, [['label' => 'Kelengkapan profil', 'value' => round(($completed / count($profileFields)) * 100).'%', 'tone' => 'primary'], ['label' => 'Status KYC', 'value' => str($latestKyc?->status ?? 'belum dikirim')->headline(), 'tone' => $latestKyc?->status === 'approved' ? 'success' : 'warning'], ['label' => 'Fitur aktif', 'value' => $m->features()->where('status', 'enabled')->count(), 'tone' => 'success'], ['label' => 'Anggota aktif', 'value' => $m->members()->where('status', 'active')->count(), 'tone' => 'info']], AuditLog::where('mitra_id', $m->id)->latest('created_at')->limit(6)->get(), $m, [], $m->members()->with('user')->limit(8)->get(), ['operational' => $operational]);
+        $salesTrends = $this->mitraSalesTrends($m);
+        $popularDestinations = $this->mitraPopularDestinations($m);
+
+        return $this->view(
+            'mitra',
+            $r,
+            [
+                ['label' => 'Kelengkapan profil', 'value' => round(($completed / count($profileFields)) * 100).'%', 'tone' => 'primary'],
+                ['label' => 'Status KYC', 'value' => str($latestKyc?->status ?? 'belum dikirim')->headline(), 'tone' => $latestKyc?->status === 'approved' ? 'success' : 'warning'],
+                ['label' => 'Fitur aktif', 'value' => $m->features()->where('status', 'enabled')->count(), 'tone' => 'success'],
+                ['label' => 'Anggota aktif', 'value' => $m->members()->where('status', 'active')->count(), 'tone' => 'info']
+            ],
+            AuditLog::where('mitra_id', $m->id)->latest('created_at')->limit(6)->get(),
+            $m,
+            [],
+            $m->members()->with('user')->limit(8)->get(),
+            ['operational' => $operational, 'salesTrends' => $salesTrends, 'popularDestinations' => $popularDestinations]
+        );
+    }
+
+    private function mitraPopularDestinations(Mitra $m): array
+    {
+        $entities = \App\Models\CatalogEntity::where('mitra_id', $m->id)
+            ->whereHas('serviceType', fn ($q) => $q->where('code', 'tourism'))
+            ->with(['category', 'region'])
+            ->get();
+
+        $destinations = [];
+        foreach ($entities as $entity) {
+            $totalTickets = \App\Models\OrderItem::where('reference_id', $entity->id)
+                ->whereHas('order', function ($q) {
+                    $q->whereIn('payment_status', ['paid', 'settlement', 'capture'])
+                      ->orWhereIn('status', ['paid', 'confirmed', 'completed']);
+                })
+                ->sum('quantity');
+
+            $totalRevenue = \App\Models\OrderItem::where('reference_id', $entity->id)
+                ->whereHas('order', function ($q) {
+                    $q->whereIn('payment_status', ['paid', 'settlement', 'capture'])
+                      ->orWhereIn('status', ['paid', 'confirmed', 'completed']);
+                })
+                ->sum('line_total');
+
+            $destinations[] = [
+                'name' => $entity->name,
+                'slug' => $entity->slug,
+                'category' => $entity->category?->name ?? 'Wisata Alam',
+                'region' => $entity->region?->name ?? 'Tegal',
+                'status' => $entity->status,
+                'tickets_count' => (int) $totalTickets,
+                'revenue' => (float) $totalRevenue,
+            ];
+        }
+
+        // Sort by tickets sold descending
+        usort($destinations, fn ($a, $b) => $b['tickets_count'] <=> $a['tickets_count']);
+
+        $colors = [
+            '#10b981', // Emerald Green
+            '#3b82f6', // Royal Blue
+            '#f59e0b', // Amber
+            '#8b5cf6', // Purple
+            '#ec4899', // Pink
+            '#06b6d4', // Cyan
+        ];
+
+        return [
+            'labels' => array_column($destinations, 'name'),
+            'tickets' => array_column($destinations, 'tickets_count'),
+            'revenue' => array_column($destinations, 'revenue'),
+            'colors' => array_slice($colors, 0, count($destinations)),
+            'items' => $destinations,
+        ];
+    }
+
+    private function mitraSalesTrends(Mitra $m): array
+    {
+        $baseOrderQuery = \App\Models\Order::where('mitra_id', $m->id)
+            ->where(function ($q) {
+                $q->whereIn('payment_status', ['paid', 'settlement', 'capture'])
+                  ->orWhereIn('status', ['paid', 'confirmed', 'completed']);
+            });
+
+        $baseTicketQuery = \App\Models\Ticket::where('mitra_id', $m->id);
+
+        // 1. Weekly (7 Hari Terakhir)
+        $weeklyLabels = [];
+        $weeklyRevenue = [];
+        $weeklyTickets = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = \Carbon\Carbon::today()->subDays($i);
+            $weeklyLabels[] = $date->translatedFormat('D, d M');
+            $dateStr = $date->toDateString();
+
+            $weeklyRevenue[] = (float) (clone $baseOrderQuery)->whereDate('paid_at', $dateStr)->sum('total_amount');
+            $weeklyTickets[] = (clone $baseTicketQuery)->whereDate('created_at', $dateStr)->count();
+        }
+
+        // 2. Monthly (12 Bulan)
+        $monthlyLabels = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agu', 'Sep', 'Okt', 'Nov', 'Des'];
+        $monthlyRevenue = [];
+        $monthlyTickets = [];
+        for ($month = 1; $month <= 12; $month++) {
+            $monthlyRevenue[] = (float) (clone $baseOrderQuery)->whereYear('paid_at', now()->year)->whereMonth('paid_at', $month)->sum('total_amount');
+            $monthlyTickets[] = (clone $baseTicketQuery)->whereYear('created_at', now()->year)->whereMonth('created_at', $month)->count();
+        }
+
+        // 3. Yearly (5 Tahun Terakhir)
+        $yearlyLabels = [];
+        $yearlyRevenue = [];
+        $yearlyTickets = [];
+        for ($year = now()->year - 4; $year <= now()->year; $year++) {
+            $yearlyLabels[] = 'Tahun ' . $year;
+            $yearlyRevenue[] = (float) (clone $baseOrderQuery)->whereYear('paid_at', $year)->sum('total_amount');
+            $yearlyTickets[] = (clone $baseTicketQuery)->whereYear('created_at', $year)->count();
+        }
+
+        return [
+            'weekly' => ['labels' => $weeklyLabels, 'revenue' => $weeklyRevenue, 'tickets' => $weeklyTickets],
+            'monthly' => ['labels' => $monthlyLabels, 'revenue' => $monthlyRevenue, 'tickets' => $monthlyTickets],
+            'yearly' => ['labels' => $yearlyLabels, 'revenue' => $yearlyRevenue, 'tickets' => $yearlyTickets],
+        ];
     }
 
     public function gatekeeper(Request $r)
