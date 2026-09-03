@@ -164,10 +164,295 @@
                     @endif
                 </div>
 
-                <!-- 2. Khusus KULINER: Buku Menu Makanan & Minuman -->
+                <!-- 2. Khusus KULINER: E-Voucher & Daftar Menu -->
                 @if($routePrefix === 'culinary' && $item->culinary)
+                    <!-- Pilihan E-Voucher & Paket Menu Hemat (Premium Coupon UI) -->
+                    @if($item->offers && $item->offers->isNotEmpty())
+                        @php
+                            $cashVouchers = $item->offers->filter(fn($o) => str_contains(strtolower($o->name), 'bebas') || str_contains(strtolower($o->sku), 'cash'));
+                            $packageVouchers = $item->offers->reject(fn($o) => str_contains(strtolower($o->name), 'bebas') || str_contains(strtolower($o->sku), 'cash'));
+                        @endphp
+
+                        <div class="cd-card border-0 shadow-sm p-4 rounded-4 mb-4 position-relative overflow-hidden" style="background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%); border: 1px solid #e2e8f0 !important;">
+                            <!-- Header Bar -->
+                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3 pb-3 border-bottom">
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 mb-1">
+                                        <span class="badge rounded-pill px-2.5 py-1 text-white fw-bold fs-8" style="background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 2px 6px rgba(245,158,11,0.3);">
+                                            <i class="fa-solid fa-gift me-1"></i> E-VOUCHER PROMO
+                                        </span>
+                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-semibold fs-8">
+                                            <i class="fa-solid fa-qrcode me-1"></i> Instant QR Redeem
+                                        </span>
+                                    </div>
+                                    <h2 class="h5 fw-bold text-dark mb-0" style="font-size: 18px;">
+                                        Pilihan E-Voucher & Paket Menu Hemat
+                                    </h2>
+                                    <p class="text-muted small mb-0 mt-0.5" style="font-size: 12.5px;">
+                                        Beli voucher santap online dengan harga promo. Cukup tunjukkan kode QR saat tiba di restoran.
+                                    </p>
+                                </div>
+
+                                <!-- Tab Switcher -->
+                                <div class="d-flex align-items-center p-1 bg-white rounded-pill border shadow-xs" style="font-size: 12px;">
+                                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8 border-0 vch-tab-btn btn-primary text-white shadow-xs" id="btnTabCash" onclick="switchVchTab('cash')">
+                                        <i class="fa-solid fa-wallet me-1"></i> Voucher Bebas Menu ({{ $cashVouchers->count() }})
+                                    </button>
+                                    <button type="button" class="btn btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8 border-0 vch-tab-btn text-muted" id="btnTabPackage" onclick="switchVchTab('package')">
+                                        <i class="fa-solid fa-bowl-food me-1"></i> Paket Menu ({{ $packageVouchers->count() }})
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- List Tab 1: Voucher Saldo Bebas Menu -->
+                            <div id="vchTabContentCash" class="d-flex flex-column gap-3">
+                                @forelse($cashVouchers as $vch)
+                                    @php
+                                        // Extract face value if available in name (e.g. 50.000, 100.000, 200.000)
+                                        preg_match('/Rp\s*([0-9\.]+)/i', $vch->name, $matches);
+                                        $nominalText = $matches[1] ?? number_format($vch->price, 0, ',', '.');
+                                        $nominalNum = (int) str_replace('.', '', $nominalText);
+                                        $savedAmount = max(0, $nominalNum - (float) $vch->price);
+                                    @endphp
+                                    <div class="vch-ticket-card rounded-4 border position-relative overflow-hidden" style="background: #ffffff; transition: all 0.25s ease; border-color: #cbd5e1 !important; box-shadow: 0 3px 12px rgba(15,23,42,0.04);">
+                                        <div class="row g-0 align-items-stretch">
+                                            <!-- Sisi Kiri: Nilai Saldo Voucher -->
+                                            <div class="col-12 col-md-3 p-3.5 d-flex flex-column justify-content-center align-items-center text-center position-relative" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: #ffffff;">
+                                                <small class="text-white-50 text-uppercase fw-bold letter-spacing-1 mb-0.5" style="font-size: 10px; letter-spacing: 0.08em;">NILAI VOUCHER</small>
+                                                <div class="fw-extrabold text-white" style="font-size: 20px; line-height: 1.1;">
+                                                    Rp {{ $nominalText }}
+                                                </div>
+                                                @if($savedAmount > 0)
+                                                    <span class="badge rounded-pill mt-2 px-2.5 py-0.5 fw-bold" style="background: rgba(255,255,255,0.22); color: #fef08a; font-size: 10.5px; border: 1px solid rgba(255,255,255,0.35);">
+                                                        Hemat Rp {{ number_format($savedAmount, 0, ',', '.') }}
+                                                    </span>
+                                                @else
+                                                    <span class="badge rounded-pill mt-2 px-2 py-0.5" style="background: rgba(255,255,255,0.2); font-size: 10px;">Bebas Pilih</span>
+                                                @endif
+                                            </div>
+
+                                            <!-- Sisi Kanan: Informasi & Tombol Beli -->
+                                            <div class="col-12 col-md-9 p-3.5 d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <div class="d-flex align-items-start justify-content-between gap-2 mb-1.5">
+                                                        <h4 class="fw-bold text-dark fs-6 mb-0">{{ $vch->name }}</h4>
+                                                        <span class="badge bg-blue-subtle text-primary border border-primary-subtle rounded-pill px-2.5 py-1 fw-bold fs-8 flex-shrink-0" style="background: #eff6ff; color: #1d4ed8 !important;">
+                                                            <i class="fa-solid fa-wallet me-1"></i> Potong Kasir
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-muted mb-2.5" style="font-size: 12.5px; line-height: 1.45;">
+                                                        {{ $vch->description ?: 'Bebas pilih makanan & minuman apa saja di lokasi. Tunjukkan QR voucher saat bayar di kasir untuk potong total tagihan.' }}
+                                                    </p>
+                                                    <div class="d-flex flex-wrap align-items-center gap-3 text-muted mb-3" style="font-size: 11.5px;">
+                                                        <span class="d-inline-flex align-items-center gap-1"><i class="fa-regular fa-clock text-primary"></i> Berlaku 30 Hari</span>
+                                                        <span>&middot;</span>
+                                                        <span class="d-inline-flex align-items-center gap-1 text-success fw-semibold"><i class="fa-solid fa-circle-check"></i> Dine-in & Takeaway</span>
+                                                        <span>&middot;</span>
+                                                        <span class="d-inline-flex align-items-center gap-1"><i class="fa-solid fa-shield-halved text-warning"></i> Garansi Resmi</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center justify-content-between pt-2.5 border-top border-light-subtle flex-wrap gap-2">
+                                                    <div>
+                                                        <small class="text-muted d-block fs-8">Harga Beli Promo:</small>
+                                                        <div class="fs-5 fw-extrabold text-primary" style="line-height: 1.1;">
+                                                            Rp {{ number_format($vch->price, 0, ',', '.') }}
+                                                        </div>
+                                                    </div>
+
+                                                    @auth
+                                                        <button type="button" class="btn btn-primary text-white fw-bold px-4 py-1.5 rounded-pill shadow-xs d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#vchModal-{{ $vch->id }}" style="font-size: 13px;">
+                                                            <i class="fa-solid fa-cart-shopping"></i> Beli Voucher
+                                                        </button>
+                                                    @else
+                                                        <a href="{{ route('login') }}" class="btn btn-outline-primary fw-bold px-4 py-1.5 rounded-pill" style="font-size: 13px;">
+                                                            Login untuk Beli
+                                                        </a>
+                                                    @endauth
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="p-4 bg-light rounded-3 text-center text-muted small">
+                                        Belum ada voucher saldo bebas menu yang tersedia.
+                                    </div>
+                                @endforelse
+                            </div>
+
+                            <!-- List Tab 2: Paket Menu Promo Komplit -->
+                            <div id="vchTabContentPackage" class="d-flex flex-column gap-3" style="display: none !important;">
+                                @forelse($packageVouchers as $vch)
+                                    <div class="vch-ticket-card rounded-4 border position-relative overflow-hidden" style="background: #ffffff; transition: all 0.25s ease; border-color: #cbd5e1 !important; box-shadow: 0 3px 12px rgba(15,23,42,0.04);">
+                                        <div class="row g-0 align-items-stretch">
+                                            <!-- Sisi Kiri: Badge Paket Menu -->
+                                            <div class="col-12 col-md-3 p-3.5 d-flex flex-column justify-content-center align-items-center text-center position-relative" style="background: linear-gradient(135deg, #065f46 0%, #10b981 100%); color: #ffffff;">
+                                                <i class="fa-solid fa-bowl-food text-warning mb-1" style="font-size: 22px;"></i>
+                                                <small class="text-white-50 text-uppercase fw-bold letter-spacing-1 mb-0.5" style="font-size: 10px; letter-spacing: 0.08em;">PAKET MENU</small>
+                                                <div class="fw-extrabold text-white" style="font-size: 18px; line-height: 1.1;">
+                                                    Hemat & Kenyang
+                                                </div>
+                                                <span class="badge rounded-pill mt-2 px-2 py-0.5" style="background: rgba(255,255,255,0.2); font-size: 10px;">Menu Komplit</span>
+                                            </div>
+
+                                            <!-- Sisi Kanan: Rincian Paket & Beli -->
+                                            <div class="col-12 col-md-9 p-3.5 d-flex flex-column justify-content-between">
+                                                <div>
+                                                    <div class="d-flex align-items-start justify-content-between gap-2 mb-1.5">
+                                                        <h4 class="fw-bold text-dark fs-6 mb-0">{{ $vch->name }}</h4>
+                                                        <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1 fw-bold fs-8 flex-shrink-0">
+                                                            <i class="fa-solid fa-utensils me-1"></i> Paket Promo
+                                                        </span>
+                                                    </div>
+                                                    <p class="text-muted mb-2.5" style="font-size: 12.5px; line-height: 1.45;">
+                                                        {{ $vch->description ?: 'Paket hemat makanan & minuman siap santap di tempat atau bungkus.' }}
+                                                    </p>
+                                                    <div class="d-flex flex-wrap align-items-center gap-3 text-muted mb-3" style="font-size: 11.5px;">
+                                                        <span class="d-inline-flex align-items-center gap-1"><i class="fa-regular fa-clock text-primary"></i> Berlaku 30 Hari</span>
+                                                        <span>&middot;</span>
+                                                        <span class="d-inline-flex align-items-center gap-1 text-success fw-semibold"><i class="fa-solid fa-circle-check"></i> Siap Santap di Lokasi</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="d-flex align-items-center justify-content-between pt-2.5 border-top border-light-subtle flex-wrap gap-2">
+                                                    <div>
+                                                        <small class="text-muted d-block fs-8">Harga Paket:</small>
+                                                        <div class="fs-5 fw-extrabold text-success" style="line-height: 1.1;">
+                                                            Rp {{ number_format($vch->price, 0, ',', '.') }}
+                                                        </div>
+                                                    </div>
+
+                                                    @auth
+                                                        <button type="button" class="btn btn-lokantara fw-bold px-4 py-1.5 rounded-pill shadow-xs d-inline-flex align-items-center gap-1.5" data-bs-toggle="modal" data-bs-target="#vchModal-{{ $vch->id }}" style="font-size: 13px;">
+                                                            <i class="fa-solid fa-cart-shopping"></i> Beli Paket
+                                                        </button>
+                                                    @else
+                                                        <a href="{{ route('login') }}" class="btn btn-outline-lokantara fw-bold px-4 py-1.5 rounded-pill" style="font-size: 13px;">
+                                                            Login untuk Beli
+                                                        </a>
+                                                    @endauth
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="p-4 bg-light rounded-3 text-center text-muted small">
+                                        Belum ada paket menu promo yang tersedia.
+                                    </div>
+                                @endforelse
+                            </div>
+                        </div>
+
+                        <!-- Modals for all Vouchers -->
+                        @foreach($item->offers as $vch)
+                            <div class="modal fade" id="vchModal-{{ $vch->id }}" tabindex="-1" aria-labelledby="vchModalLabel-{{ $vch->id }}" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content rounded-4 border-0 shadow-lg overflow-hidden">
+                                        <div class="modal-header bg-success text-white border-0 py-3 px-4">
+                                            <h5 class="modal-title fs-6 fw-bold text-white d-flex align-items-center" id="vchModalLabel-{{ $vch->id }}">
+                                                <i class="fa-solid fa-ticket text-warning me-2"></i> Beli E-Voucher Kuliner
+                                            </h5>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <form action="{{ route('consumer.checkout.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="idempotency_key" value="{{ Str::uuid() }}">
+                                            <input type="hidden" name="domain" value="culinary">
+                                            <input type="hidden" name="reference_id" value="{{ $vch->id }}">
+
+                                            <div class="modal-body p-4">
+                                                <div class="p-3.5 rounded-3 mb-3 bg-light border">
+                                                    <h6 class="fw-bold mb-1 text-dark">{{ $vch->name }}</h6>
+                                                    <p class="text-muted small mb-1">{{ $item->name }} — {{ $item->region?->name ?? 'Tegal' }}</p>
+                                                    <div class="fs-5 fw-extrabold text-success">
+                                                        Rp {{ number_format($vch->price, 0, ',', '.') }} <span class="fs-8 fw-normal text-muted">/ voucher</span>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Rencana Tanggal Penggunaan -->
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold fs-7 text-dark">Rencana Tanggal Penggunaan <span class="text-danger">*</span></label>
+                                                    <input type="date" name="service_date" class="form-control rounded-3" value="{{ date('Y-m-d') }}" min="{{ date('Y-m-d') }}" required>
+                                                    <small class="text-muted" style="font-size: 11px;">*Voucher tetap dapat digunakan hingga 30 hari ke depan.</small>
+                                                </div>
+
+                                                <!-- Jumlah Voucher -->
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold fs-7 text-dark mb-1">Jumlah Voucher <span class="text-danger">*</span></label>
+                                                    <div class="input-group">
+                                                        <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('vchQty-{{ $vch->id }}'); if(parseInt(q.value) > 1) { q.value = parseInt(q.value) - 1; calcVchTotal{{ $vch->id }}(); }">-</button>
+                                                        <input type="number" id="vchQty-{{ $vch->id }}" name="quantity" class="form-control text-center fw-bold" value="1" min="1" max="10" onchange="calcVchTotal{{ $vch->id }}()" required>
+                                                        <button type="button" class="btn btn-outline-secondary px-3" onclick="let q = document.getElementById('vchQty-{{ $vch->id }}'); if(parseInt(q.value || 0) < 10) { q.value = parseInt(q.value || 0) + 1; calcVchTotal{{ $vch->id }}(); }">+</button>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Kode Promo (Opsional) -->
+                                                <div class="mb-3">
+                                                    <label class="form-label fw-bold fs-7 text-dark">Kode Voucher Promo (Opsional)</label>
+                                                    <input type="text" name="voucher_code" class="form-control rounded-3 text-uppercase" placeholder="Contoh: TEGALHEMAT">
+                                                </div>
+
+                                                <!-- Total Pembayaran -->
+                                                <div class="d-flex align-items-center justify-content-between pt-3 border-top">
+                                                    <span class="fw-bold text-muted fs-7">Total Pembayaran</span>
+                                                    <span class="fs-4 fw-extrabold text-success" id="vchTotalDisplay-{{ $vch->id }}">
+                                                        Rp {{ number_format($vch->price, 0, ',', '.') }}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal-footer border-top-0 pt-0 pb-4 px-4">
+                                                <button type="button" class="btn btn-light rounded-pill px-4 fw-bold" data-bs-dismiss="modal">Batal</button>
+                                                <button type="submit" class="btn btn-success rounded-pill px-4 fw-bold text-white">
+                                                    Lanjutkan Pembayaran <i class="fa-solid fa-arrow-right ms-1"></i>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <script>
+                                function calcVchTotal{{ $vch->id }}() {
+                                    const qty = parseInt(document.getElementById('vchQty-{{ $vch->id }}').value) || 1;
+                                    const unitPrice = {{ (float) $vch->price }};
+                                    const total = qty * unitPrice;
+                                    const display = document.getElementById('vchTotalDisplay-{{ $vch->id }}');
+                                    if (display) {
+                                        display.textContent = 'Rp ' + total.toLocaleString('id-ID');
+                                    }
+                                }
+                            </script>
+                        @endforeach
+
+                        <script>
+                            function switchVchTab(type) {
+                                const btnCash = document.getElementById('btnTabCash');
+                                const btnPkg = document.getElementById('btnTabPackage');
+                                const contentCash = document.getElementById('vchTabContentCash');
+                                const contentPkg = document.getElementById('vchTabContentPackage');
+
+                                if (type === 'cash') {
+                                    btnCash.className = 'btn btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8 border-0 vch-tab-btn btn-primary text-white shadow-xs';
+                                    btnPkg.className = 'btn btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8 border-0 vch-tab-btn text-muted';
+                                    contentCash.style.removeProperty('display');
+                                    contentCash.style.display = 'flex';
+                                    contentPkg.style.display = 'none';
+                                } else {
+                                    btnPkg.className = 'btn btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8 border-0 vch-tab-btn btn-success text-white shadow-xs';
+                                    btnCash.className = 'btn btn-sm rounded-pill px-3 py-1.5 fw-bold fs-8 border-0 vch-tab-btn text-muted';
+                                    contentPkg.style.removeProperty('display');
+                                    contentPkg.style.display = 'flex';
+                                    contentCash.style.display = 'none';
+                                }
+                            }
+                        </script>
+                    @endif
+
+                    <!-- Buku Menu Makanan & Minuman -->
                     <div class="cd-card">
-                        <h2 class="cd-card-title"><i class="fa-solid fa-utensils text-warning me-2"></i> Daftar Menu & Harga</h2>
+                        <h2 class="cd-card-title"><i class="fa-solid fa-utensils text-warning me-2"></i> Daftar Menu & Harga Lengkap</h2>
 
                         @forelse($item->culinary->menuCategories as $cat)
                             <div class="mb-4">
@@ -206,7 +491,7 @@
                     <!-- Form Reservasi Meja jika Menerima Reservasi -->
                     @if($item->culinary->accepts_reservations)
                         <div class="cd-card">
-                            <h2 class="cd-card-title"><span></span> Reservasi Meja / Slot Waktu</h2>
+                            <h2 class="cd-card-title"><i class="fa-solid fa-chair text-primary me-2"></i> Reservasi Meja / Slot Waktu</h2>
                             <p class="text-muted" style="font-size: 13px;">Pesan tempat Anda terlebih dahulu untuk kenyamanan bersantap bersama keluarga.</p>
 
                             @if($item->culinary->tableSlots->isEmpty())
