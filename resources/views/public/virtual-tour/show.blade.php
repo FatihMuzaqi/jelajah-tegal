@@ -32,6 +32,7 @@
             position: relative;
             width: 100vw;
             height: 100vh;
+            height: 100dvh;
         }
         
         .vt-pano {
@@ -62,6 +63,7 @@
             .vt-sidebar {
                 width: 100%;
                 height: 60vh;
+                height: 60dvh;
                 top: auto;
                 bottom: 0;
                 box-shadow: 0 -5px 25px rgba(0,0,0,0.15);
