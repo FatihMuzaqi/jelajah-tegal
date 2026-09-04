@@ -75,5 +75,6 @@ Route::middleware(['auth', 'verified', 'active.user', 'permission:access.admin',
     Route::get('/withdrawals', [WithdrawalController::class, 'index'])->name('withdrawals.index');
     Route::get('/withdrawals/{withdrawal}', [WithdrawalController::class, 'show'])->name('withdrawals.show');
     Route::patch('/withdrawals/{withdrawal}', [WithdrawalController::class, 'transition'])->name('withdrawals.transition');
+    Route::get('/bank-accounts', [BankAccountVerificationController::class, 'index'])->name('bank-accounts.index');
     Route::patch('/bank-accounts/{account}/verification', [BankAccountVerificationController::class, 'update'])->name('bank-accounts.verification');
 });

@@ -17,7 +17,13 @@ class KycReviewController extends Controller
     {
         abort_unless(auth()->user()->can('kyc.review'), 403);
 
-        return view('admin.kyc.index', ['documents' => MitraKycDocument::query()->with(['mitra:id,display_name', 'submitter:id,name'])->whereIn('status', ['submitted', 'under_review'])->latest()->paginate(20)]);
+        return view('admin.kyc.index', [
+            'documents' => MitraKycDocument::query()
+                ->with(['mitra', 'submitter:id,name', 'mediaAsset'])
+                ->whereIn('status', ['submitted', 'under_review'])
+                ->latest()
+                ->paginate(20),
+        ]);
     }
 
     public function update(ReviewKycRequest $request, MitraKycDocument $document, AuditLogger $audit): RedirectResponse

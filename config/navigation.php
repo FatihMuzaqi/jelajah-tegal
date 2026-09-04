@@ -113,6 +113,7 @@ return [
                 ['label' => 'Moderasi Event', 'route' => 'admin.event.index', 'icon' => 'fa-solid fa-calendar-check', 'permission' => 'event.moderate'],
                 ['label' => 'Moderasi Rental', 'route' => 'admin.rental.index', 'icon' => 'fa-solid fa-car-side', 'permission' => 'rental.moderate'],
                 ['label' => 'Review Dokumen KYC', 'route' => 'admin.kyc.index', 'icon' => 'fa-solid fa-file-shield', 'permission' => 'kyc.review'],
+                ['label' => 'Verifikasi Rekening Bank', 'route' => 'admin.bank-accounts.index', 'icon' => 'fa-solid fa-building-columns', 'permission' => 'bank-accounts.verify'],
                 ['label' => 'Request Fitur Mitra', 'route' => 'admin.features.index', 'icon' => 'fa-solid fa-layer-group', 'permission' => 'feature-requests.review'],
             ],
         ],

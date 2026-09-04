@@ -211,9 +211,9 @@
                         </div>
                         @if ($ktpDoc)
                             <div class="d-flex flex-column flex-sm-row gap-2">
-                                <a href="{{ route('admin.kyc.preview', $ktpDoc) }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 fw-bold fs-8">
+                                <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1 fw-bold fs-8" data-bs-toggle="modal" data-bs-target="#previewKyc-{{ $ktpDoc->id }}">
                                     <i class="fa-solid fa-eye me-1"></i> Pratinjau
-                                </a>
+                                </button>
                                 <a href="{{ route('admin.kyc.download', $ktpDoc) }}" class="btn btn-sm btn-outline-primary rounded-pill px-3 py-1 fw-bold fs-8">
                                     <i class="fa-solid fa-download me-1"></i> Unduh
                                 </a>
@@ -325,9 +325,9 @@
                                     <span class="text-muted">Status: {{ $licenseDoc->status }}</span>
                                 </div>
                                 <div class="d-flex flex-wrap gap-1 align-items-center">
-                                    <a href="{{ route('admin.kyc.preview', $licenseDoc) }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-0.5 fs-8">
+                                    <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-0.5 fs-8" data-bs-toggle="modal" data-bs-target="#previewKyc-{{ $licenseDoc->id }}">
                                         <i class="fa-solid fa-eye"></i> Pratinjau
-                                    </a>
+                                    </button>
                                     <a href="{{ route('admin.kyc.download', $licenseDoc) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-0.5 fs-8">
                                         <i class="fa-solid fa-download"></i> Unduh
                                     </a>
@@ -342,9 +342,9 @@
                                     <span class="text-muted">Status: {{ $situDoc->status }}</span>
                                 </div>
                                 <div class="d-flex flex-wrap gap-1 align-items-center">
-                                    <a href="{{ route('admin.kyc.preview', $situDoc) }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-0.5 fs-8">
+                                    <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-0.5 fs-8" data-bs-toggle="modal" data-bs-target="#previewKyc-{{ $situDoc->id }}">
                                         <i class="fa-solid fa-eye"></i> Pratinjau
-                                    </a>
+                                    </button>
                                     <a href="{{ route('admin.kyc.download', $situDoc) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-0.5 fs-8">
                                         <i class="fa-solid fa-download"></i> Unduh
                                     </a>
@@ -359,9 +359,9 @@
                                     <span class="text-muted">Status: {{ $assetDoc->status }}</span>
                                 </div>
                                 <div class="d-flex flex-wrap gap-1 align-items-center">
-                                    <a href="{{ route('admin.kyc.preview', $assetDoc) }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-0.5 fs-8">
+                                    <button type="button" class="btn btn-sm btn-outline-info rounded-pill px-2.5 py-0.5 fs-8" data-bs-toggle="modal" data-bs-target="#previewKyc-{{ $assetDoc->id }}">
                                         <i class="fa-solid fa-eye"></i> Pratinjau
-                                    </a>
+                                    </button>
                                     <a href="{{ route('admin.kyc.download', $assetDoc) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-0.5 fs-8">
                                         <i class="fa-solid fa-download"></i> Unduh
                                     </a>
@@ -430,15 +430,45 @@
                 <div class="review-section-body">
                     @forelse ($mitra->bankAccounts as $bank)
                         <div class="p-3 rounded-3 border bg-light mb-2">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
-                                <strong class="text-dark fs-7">{{ $bank->bank_code }}</strong>
-                                <span class="badge bg-success-subtle text-success rounded-pill px-2 py-0.5 fs-8">{{ $bank->status }}</span>
+                            <div class="d-flex align-items-center justify-content-between mb-1.5 flex-wrap gap-1">
+                                <div class="d-flex align-items-center gap-1.5">
+                                    <span class="badge bg-dark text-white rounded-pill px-2.5 py-0.5 fs-8 fw-bold">{{ $bank->bank_code }}</span>
+                                    @if ($bank->is_primary)
+                                        <span class="badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2 py-0.5 fs-8 fw-bold">
+                                            <i class="fa-solid fa-star me-0.5"></i> Utama
+                                        </span>
+                                    @endif
+                                </div>
+                                <x-status-badge :status="$bank->status" />
                             </div>
-                            <div class="font-mono text-dark fw-bold fs-6 mb-1">{{ $bank->account_number_encrypted }}</div>
-                            <div class="text-muted fs-8">a.n. {{ $bank->account_name_encrypted }}</div>
+                            <div class="font-monospace text-dark fw-bold fs-6 mb-0.5">{{ $bank->decrypted_account_number }}</div>
+                            <div class="text-muted fs-8">a.n. <strong class="text-dark">{{ $bank->decrypted_account_name }}</strong></div>
+
+                            @if ($bank->status === 'pending')
+                                <div class="d-flex align-items-center gap-1.5 mt-2.5 pt-2 border-top">
+                                    <form method="POST" action="{{ route('admin.bank-accounts.verification', $bank) }}" class="d-inline m-0">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="decision" value="verify">
+                                        <button type="submit" class="btn btn-sm btn-success rounded-pill px-3 py-1 fw-bold fs-8 d-inline-flex align-items-center gap-1">
+                                            <i class="fa-solid fa-check"></i>
+                                            <span>Setujui Rekening</span>
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ route('admin.bank-accounts.verification', $bank) }}" class="d-inline m-0">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="decision" value="reject">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-2.5 py-1 fw-bold fs-8 d-inline-flex align-items-center gap-1">
+                                            <i class="fa-solid fa-xmark"></i>
+                                            <span>Tolak</span>
+                                        </button>
+                                    </form>
+                                </div>
+                            @endif
                         </div>
                     @empty
-                        <div class="text-muted fs-8 p-2 rounded bg-light text-center">Belum ada rekening terdaftar.</div>
+                        <div class="text-muted fs-8 p-3 rounded bg-light text-center">Belum ada rekening pencairan yang didaftarkan.</div>
                     @endforelse
                 </div>
             </div>
@@ -561,6 +591,110 @@
             </form>
         </div>
     </div>
+
+    <!-- MODAL PRATINJAU DOKUMEN LEGALITAS KYC -->
+    @foreach ($mitra->kycDocuments as $kycItem)
+        @php
+            $isImg = str_starts_with($kycItem->mediaAsset?->mime_type ?? '', 'image/');
+            $isPdfDoc = ($kycItem->mediaAsset?->mime_type ?? '') === 'application/pdf' || str_ends_with(strtolower($kycItem->mediaAsset?->object_key ?? ''), '.pdf');
+            $docName = match($kycItem->document_type) {
+                'ktp' => 'Foto KTP Penanggung Jawab',
+                'business_license' => 'Izin Usaha Spesifik (Pariwisata/Halal/SIUP)',
+                'situ' => 'SITU / Domisili Usaha',
+                'asset_ownership' => 'Bukti Kepemilikan Aset',
+                default => str($kycItem->document_type)->headline(),
+            };
+        @endphp
+        <div class="modal fade text-start" id="previewKyc-{{ $kycItem->id }}" tabindex="-1" aria-labelledby="previewKycLabel-{{ $kycItem->id }}" aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+                <div class="modal-content shadow-lg border-0 rounded-4 overflow-hidden">
+                    <div class="modal-header bg-dark text-white py-3 px-4">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="fa-solid fa-file-shield text-info fs-5"></i>
+                            <div>
+                                <h5 class="modal-title fs-6 fw-bold mb-0 text-white" id="previewKycLabel-{{ $kycItem->id }}">
+                                    Pratinjau: {{ $docName }}
+                                </h5>
+                                <small class="text-white-50">
+                                    {{ $mitra->display_name }} &middot; Status: {{ $kycItem->status }} &middot; Versi {{ $kycItem->version }}
+                                </small>
+                            </div>
+                        </div>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 bg-light">
+                        <!-- Metadata Card -->
+                        <div class="card border rounded-3 shadow-none bg-white p-3 mb-3">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-3 col-sm-6">
+                                    <small class="text-muted d-block fs-8">Jenis Dokumen</small>
+                                    <strong class="text-dark fs-7">{{ $docName }}</strong>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <small class="text-muted d-block fs-8">Nomor Dokumen</small>
+                                    <span class="text-dark fs-7 font-monospace fw-medium">{{ $kycItem->document_number_encrypted ?? 'Tidak tercantum' }}</span>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <small class="text-muted d-block fs-8">Masa Berlaku</small>
+                                    <span class="text-dark fs-7 fw-medium">
+                                        {{ $kycItem->expires_on ? \Carbon\Carbon::parse($kycItem->expires_on)->isoFormat('D MMMM Y') : 'Seumur Hidup / Tidak ada batas' }}
+                                    </span>
+                                </div>
+                                <div class="col-md-3 col-sm-6">
+                                    <small class="text-muted d-block fs-8">Nama File & Ukuran</small>
+                                    <span class="text-dark fs-7 font-monospace" style="word-break: break-all;">
+                                        {{ $kycItem->mediaAsset?->original_name ?? 'Dokumen' }} 
+                                        @if ($kycItem->mediaAsset)
+                                            ({{ number_format($kycItem->mediaAsset->size_bytes / 1024, 1) }} KB)
+                                        @endif
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Viewer Container -->
+                        <div class="card border rounded-3 shadow-sm overflow-hidden bg-body">
+                            @if ($isImg)
+                                <div class="d-flex justify-content-center align-items-center p-3 bg-secondary-subtle" style="min-height: 480px; max-height: 72vh; overflow: auto;">
+                                    <img src="{{ route('admin.kyc.preview', $kycItem) }}" 
+                                         alt="Pratinjau {{ $docName }}" 
+                                         class="img-fluid rounded border shadow-sm mx-auto d-block" 
+                                         style="max-height: 68vh; width: auto; object-fit: contain;">
+                                </div>
+                            @elseif ($isPdfDoc)
+                                <div style="height: 72vh; width: 100%;">
+                                    <iframe src="{{ route('admin.kyc.preview', $kycItem) }}#toolbar=1" 
+                                            class="w-100 h-100 border-0" 
+                                            title="Pratinjau Dokumen PDF {{ $docName }}">
+                                    </iframe>
+                                </div>
+                            @else
+                                <div style="height: 72vh; width: 100%;">
+                                    <iframe src="{{ route('admin.kyc.preview', $kycItem) }}" 
+                                            class="w-100 h-100 border-0" 
+                                            title="Pratinjau Dokumen {{ $docName }}">
+                                    </iframe>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-white border-top py-3 px-4 d-flex justify-content-between align-items-center">
+                        <div class="d-flex gap-2">
+                            <a href="{{ route('admin.kyc.preview', $kycItem) }}" target="_blank" class="btn btn-sm btn-outline-info rounded-pill px-3 py-1.5 fw-medium">
+                                <i class="fa-solid fa-arrow-up-right-from-square me-1"></i> Buka Tab Penuh
+                            </a>
+                            <a href="{{ route('admin.kyc.download', $kycItem) }}" class="btn btn-sm btn-outline-secondary rounded-pill px-3 py-1.5 fw-medium">
+                                <i class="fa-solid fa-download me-1"></i> Unduh File
+                            </a>
+                        </div>
+                        <button type="button" class="btn btn-sm btn-light border rounded-pill px-4 py-1.5" data-bs-dismiss="modal">
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endforeach
 @endsection
 
 @push('scripts')

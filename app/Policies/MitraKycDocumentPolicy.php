@@ -12,6 +12,9 @@ class MitraKycDocumentPolicy
 
     public function view(User $u, MitraKycDocument $m): bool
     {
-        return ($u->can('access.admin') && $u->can('kyc.review')) || $this->tenantAllows($u, $m, 'kyc.submit');
+        return $u->can('kyc.review') 
+            || $u->can('access.admin') 
+            || $u->can('access.dinas') 
+            || $this->tenantAllows($u, $m, 'kyc.submit');
     }
 }

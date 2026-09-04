@@ -66,7 +66,13 @@ class KycController extends Controller
         abort_unless($media && $media->visibility === 'private' && Storage::disk($media->disk)->exists($media->object_key), 404);
         $audit->record('mitra.kyc_accessed', $document, [], ['purpose' => 'authorized_preview'], $request->user());
 
-        return Storage::disk($media->disk)->response($media->object_key);
+        $mimeType = $media->mime_type ?? Storage::disk($media->disk)->mimeType($media->object_key);
+
+        return Storage::disk($media->disk)->response($media->object_key, $media->original_name ?? 'dokumen-kyc', [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . ($media->original_name ?? 'dokumen-kyc') . '"',
+            'X-Content-Type-Options' => 'nosniff',
+        ]);
     }
 
     public function update(Request $request, MitraKycDocument $document, AuditLogger $audit): RedirectResponse
