@@ -33,6 +33,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 .jt-tourism-card:hover {
     transform: translateY(-6px);

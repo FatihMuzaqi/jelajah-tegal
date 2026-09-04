@@ -64,3 +64,22 @@
 .testing-hints-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:8px}
 .hint-badge{background:var(--lokantara-surface);padding:6px 10px;border-radius:8px;border:1px solid var(--lokantara-border);font-family:monospace;font-size:11px}
 
+/* Card Containment for Stretched Links */
+.jt-tourism-card,
+.jt-popular-card,
+.jt-accomm-card,
+.domain-card,
+.catalog-item-card,
+.mitra-card {
+    position: relative;
+}
+
+.jt-tourism-card .btn,
+.jt-popular-card .btn,
+.jt-accomm-card .btn,
+.domain-card .btn,
+.catalog-item-card .btn,
+.mitra-card .btn {
+    position: relative;
+    z-index: 2;
+}

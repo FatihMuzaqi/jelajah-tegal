@@ -37,7 +37,7 @@ class UpdateMitraRequest extends FormRequest
             'category' => ['required', 'string', Rule::in(['dinas', 'non_dinas'])],
             'legal_name' => ['required', 'string', 'max:191'],
             'display_name' => ['required', 'string', 'max:191'],
-            'slug' => ['required', 'alpha_dash', 'max:191', Rule::unique('mitras', 'slug')->ignore($mitraId)],
+            'slug' => ['required', 'string', 'max:191', Rule::unique('mitras', 'slug')->ignore($mitraId)->whereNull('deleted_at')],
             'region_id' => ['nullable', 'integer', 'exists:regions,id'],
             'description' => ['nullable', 'string', 'max:2000'],
             'contact_email' => ['nullable', 'email:rfc', 'max:191'],

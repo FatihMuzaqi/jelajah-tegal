@@ -21,6 +21,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 .jt-accomm-card:hover {
     transform: translateY(-6px);

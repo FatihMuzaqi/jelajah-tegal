@@ -14,17 +14,24 @@ class StoreMitraRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $baseSlug = null;
         if ($this->filled('slug')) {
-            $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->slug),
-            ]);
+            $baseSlug = \Illuminate\Support\Str::slug($this->slug);
         } elseif ($this->filled('display_name')) {
-            $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->display_name),
-            ]);
+            $baseSlug = \Illuminate\Support\Str::slug($this->display_name);
         } elseif ($this->filled('legal_name')) {
+            $baseSlug = \Illuminate\Support\Str::slug($this->legal_name);
+        }
+
+        if ($baseSlug) {
+            $slug = $baseSlug;
+            $counter = 1;
+            while (\App\Models\Mitra::where('slug', $slug)->exists()) {
+                $counter++;
+                $slug = "{$baseSlug}-{$counter}";
+            }
             $this->merge([
-                'slug' => \Illuminate\Support\Str::slug($this->legal_name),
+                'slug' => $slug,
             ]);
         }
     }
@@ -37,7 +44,7 @@ class StoreMitraRequest extends FormRequest
             'category' => ['required', 'string', Rule::in(['dinas', 'non_dinas'])],
             'legal_name' => ['required', 'string', 'max:191'],
             'display_name' => ['required', 'string', 'max:191'],
-            'slug' => ['required', 'alpha_dash', 'max:191', Rule::unique('mitras', 'slug')],
+            'slug' => ['required', 'string', 'max:191', Rule::unique('mitras', 'slug')->whereNull('deleted_at')],
             'region_id' => ['nullable', 'integer', 'exists:regions,id'],
         ];
     }

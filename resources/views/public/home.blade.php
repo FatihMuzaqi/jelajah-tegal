@@ -411,6 +411,7 @@
     transition: all 0.3s ease;
     box-shadow: 0 4px 16px rgba(0,0,0,0.03);
     height: 100%;
+    position: relative;
 }
 .jt-popular-card:hover {
     transform: translateY(-5px);

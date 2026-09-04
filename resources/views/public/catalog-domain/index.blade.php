@@ -27,6 +27,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 .domain-card:hover {
     transform: translateY(-5px);

@@ -18,12 +18,20 @@ class CreateInvitedMitra
                 ['email' => str($data['owner_email'])->lower()->trim()->toString()],
                 ['name' => $data['owner_name'], 'status' => 'invited']
             );
+            $baseSlug = \Illuminate\Support\Str::slug($data['slug'] ?? $data['display_name'] ?? $data['legal_name']);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (Mitra::where('slug', $slug)->exists()) {
+                $counter++;
+                $slug = "{$baseSlug}-{$counter}";
+            }
+
             $mitra = Mitra::create([
                 'owner_user_id' => $owner->id,
                 'category' => $data['category'] ?? 'non_dinas',
                 'legal_name' => $data['legal_name'],
                 'display_name' => $data['display_name'],
-                'slug' => $data['slug'],
+                'slug' => $slug,
                 'region_id' => $data['region_id'] ?? null,
                 'status' => 'draft',
             ]);
