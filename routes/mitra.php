@@ -80,6 +80,9 @@ Route::middleware(['auth', 'verified', 'active.user', 'active.mitra', 'permissio
     Route::delete('/culinary/{culinary}/menu-items/{item}', [CulinaryController::class, 'destroyItem'])->name('culinary.items.destroy');
     Route::put('/culinary/{culinary}/slots', [CulinaryController::class, 'slot'])->name('culinary.slots.update');
     Route::patch('/culinary/{culinary}/reservations/{reservation}', [CulinaryController::class, 'decide'])->name('culinary.reservations.decide');
+    Route::post('/culinary/{culinary}/vouchers', [CulinaryController::class, 'storeVoucher'])->name('culinary.vouchers.store');
+    Route::put('/culinary/{culinary}/vouchers/{offer}', [CulinaryController::class, 'updateVoucher'])->name('culinary.vouchers.update');
+    Route::delete('/culinary/{culinary}/vouchers/{offer}', [CulinaryController::class, 'destroyVoucher'])->name('culinary.vouchers.destroy');
     Route::resource('event', EventController::class)->except(['destroy']);
     Route::post('/event/{event}/submit', [EventController::class, 'submit'])->name('event.submit');
     Route::post('/event/{event}/archive', [EventController::class, 'archive'])->name('event.archive');

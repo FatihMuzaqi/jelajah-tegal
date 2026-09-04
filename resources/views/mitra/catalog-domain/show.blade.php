@@ -280,6 +280,168 @@
                             description='Buat kategori menu pertama Anda di atas.' compact />
                     @endforelse
                 </x-content-card>
+
+                <!-- Kelola E-Voucher & Paket Menu Promo -->
+                <x-content-card title='Pilihan E-Voucher & Paket Promo Kuliner' class='mt-4'>
+                    <p class='text-muted small mb-3' style='font-size: 13px;'>
+                        Tambahkan voucher potongan saldo bebas menu (digunakan di kasir) atau paket menu komplit hemat untuk menarik lebih banyak pelanggan online.
+                    </p>
+
+                    <!-- Form Tambah Voucher Baru -->
+                    <div class='p-3.5 rounded-3 mb-4' style='background: #f8fafc; border: 1px dashed #cbd5e1;'>
+                        <h6 class='fw-bold text-dark mb-3' style='font-size: 14px;'>
+                            <i class='fa-solid fa-ticket text-danger me-1.5'></i> Buat E-Voucher Baru
+                        </h6>
+                        <form method='POST' action='{{ route('mitra.culinary.vouchers.store', $item) }}'>
+                            @csrf
+                            <div class='row g-3 mb-3'>
+                                <div class='col-md-5'>
+                                    <label class='form-label fw-bold' style='font-size: 12.5px;'>Tipe Voucher <span class='text-danger'>*</span></label>
+                                    <select class='form-select form-select-sm' name='voucher_type' required>
+                                        <option value='cash'> Voucher Saldo Bebas Menu (Potong Kasir)</option>
+                                        <option value='package'> Paket Menu Komplit Promo</option>
+                                    </select>
+                                </div>
+                                <div class='col-md-7'>
+                                    <label class='form-label fw-bold' style='font-size: 12.5px;'>Nama Voucher / Paket <span class='text-danger'>*</span></label>
+                                    <input class='form-control form-control-sm' name='name' placeholder='Cth: Voucher Bebas Menu Senilai Rp 50.000 atau Paket Kenyang' required>
+                                </div>
+                                <div class='col-md-4'>
+                                    <label class='form-label fw-bold' style='font-size: 12.5px;'>Harga Jual Promo (Rp) <span class='text-danger'>*</span></label>
+                                    <div class='input-group input-group-sm'>
+                                        <span class='input-group-text bg-white fw-bold text-success'>Rp</span>
+                                        <input type='number' min='1000' name='price' class='form-control' placeholder='45000' required>
+                                    </div>
+                                </div>
+                                <div class='col-md-8'>
+                                    <label class='form-label fw-bold' style='font-size: 12.5px;'>Deskripsi & Ketentuan</label>
+                                    <input class='form-control form-control-sm' name='description' placeholder='Cth: Bebas pilih menu makanan apa saja. Tunjukkan QR saat bayar di kasir.'>
+                                </div>
+                            </div>
+                            <button type='submit' class='btn btn-sm btn-lokantara fw-bold px-3.5 py-1.5 rounded-pill'>
+                                <i class='fa-solid fa-plus me-1'></i> Tambah E-Voucher
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Daftar Voucher yang Aktif -->
+                    <h6 class='fw-bold text-dark mb-2.5' style='font-size: 13.5px;'>
+                        Daftar E-Voucher Tersedia ({{ $item->offers->where('status', 'active')->count() }})
+                    </h6>
+
+                    @if($item->offers && $item->offers->isNotEmpty())
+                        <div class='table-responsive'>
+                            <table class='table table-sm table-bordered bg-white align-middle mb-0' style='font-size: 12.5px;'>
+                                <thead class='table-light'>
+                                    <tr>
+                                        <th>Nama & Tipe Voucher</th>
+                                        <th>Harga Promo</th>
+                                        <th>Masa Berlaku</th>
+                                        <th>Status</th>
+                                        <th class='text-end' style='width: 130px;'>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($item->offers as $vch)
+                                        @php
+                                            $isCash = str_contains(strtolower($vch->name), 'bebas') || str_contains(strtolower($vch->sku), 'cash');
+                                        @endphp
+                                        <tr>
+                                            <td>
+                                                <div class='d-flex align-items-center gap-1.5'>
+                                                    <strong class='text-dark'>{{ $vch->name }}</strong>
+                                                    @if($isCash)
+                                                        <span class='badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill px-2' style='font-size: 10px;'>
+                                                            <i class='fa-solid fa-wallet me-0.5'></i> Bebas Menu
+                                                        </span>
+                                                    @else
+                                                        <span class='badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2' style='font-size: 10px;'>
+                                                            <i class='fa-solid fa-bowl-food me-0.5'></i> Paket Menu
+                                                        </span>
+                                                    @endif
+                                                </div>
+                                                <small class='text-muted d-block'>{{ $vch->description ?: 'Tanpa deskripsi tambahan' }}</small>
+                                            </td>
+                                            <td class='fw-extrabold text-success'>
+                                                Rp {{ number_format($vch->price, 0, ',', '.') }}
+                                            </td>
+                                            <td>
+                                                <span class='badge bg-light text-dark border'>
+                                                    <i class='fa-regular fa-clock text-primary me-1'></i> 30 Hari
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <x-status-badge :status='$vch->status' />
+                                            </td>
+                                            <td class='text-end'>
+                                                <button type='button' class='btn btn-xs btn-outline-primary py-1 px-2 rounded-2' data-bs-toggle='modal' data-bs-target='#editVchModal{{ $vch->id }}' style='font-size: 11px;'>
+                                                    <i class='fa-solid fa-pen-to-square me-1'></i> Edit
+                                                </button>
+                                                <form method='POST' action='{{ route('mitra.culinary.vouchers.destroy', [$item, $vch]) }}' class='d-inline'>
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type='submit' class='btn btn-xs btn-outline-danger py-1 px-2 rounded-2' style='font-size: 11px;' onclick="return confirm('Hapus voucher {{ $vch->name }}?')">
+                                                        <i class='fa-solid fa-trash-can'></i>
+                                                    </button>
+                                                </form>
+                                            </td>
+                                        </tr>
+
+                                        <!-- Modal Edit Voucher -->
+                                        <div class='modal fade' id='editVchModal{{ $vch->id }}' tabindex='-1' aria-labelledby='editVchModalLabel{{ $vch->id }}' aria-hidden='true'>
+                                            <div class='modal-dialog modal-dialog-centered'>
+                                                <div class='modal-content border-0 shadow-lg rounded-4 text-start'>
+                                                    <form method='POST' action='{{ route('mitra.culinary.vouchers.update', [$item, $vch]) }}'>
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class='modal-header border-bottom py-3 px-4' style='background: #f8fafc;'>
+                                                            <h6 class='modal-title fw-bold text-dark' id='editVchModalLabel{{ $vch->id }}'>
+                                                                <i class='fa-solid fa-ticket text-danger me-1'></i> Edit E-Voucher Kuliner
+                                                            </h6>
+                                                            <button type='button' class='btn-close' data-bs-dismiss='modal' aria-label='Close'></button>
+                                                        </div>
+                                                        <div class='modal-body p-4'>
+                                                            <div class='mb-3'>
+                                                                <label class='form-label fw-bold' style='font-size: 13px;'>Nama Voucher / Paket <span class='text-danger'>*</span></label>
+                                                                <input type='text' name='name' class='form-control' value='{{ old('name', $vch->name) }}' required>
+                                                            </div>
+                                                            <div class='mb-3'>
+                                                                <label class='form-label fw-bold' style='font-size: 13px;'>Harga Jual Promo (Rp) <span class='text-danger'>*</span></label>
+                                                                <div class='input-group'>
+                                                                    <span class='input-group-text bg-white fw-bold text-success'>Rp</span>
+                                                                    <input type='number' min='1000' name='price' class='form-control' value='{{ old('price', $vch->price) }}' required>
+                                                                </div>
+                                                            </div>
+                                                            <div class='mb-3'>
+                                                                <label class='form-label fw-bold' style='font-size: 13px;'>Deskripsi & Ketentuan</label>
+                                                                <textarea name='description' rows='2' class='form-control' placeholder='Penjelasan penggunaan voucher...'>{{ old('description', $vch->description) }}</textarea>
+                                                            </div>
+                                                            <div class='mb-2'>
+                                                                <label class='form-label fw-bold' style='font-size: 13px;'>Status Voucher</label>
+                                                                <select class='form-select' name='status'>
+                                                                    <option value='active' @selected($vch->status === 'active')> Aktif (Dapat Dibeli)</option>
+                                                                    <option value='inactive' @selected($vch->status === 'inactive')> Non-Aktif (Dihentikan Sementara)</option>
+                                                                </select>
+                                                            </div>
+                                                        </div>
+                                                        <div class='modal-footer border-top py-2.5 px-4' style='background: #f8fafc;'>
+                                                            <button type='button' class='btn btn-sm btn-secondary rounded-pill px-3' data-bs-dismiss='modal'>Batal</button>
+                                                            <button type='submit' class='btn btn-sm btn-lokantara rounded-pill px-4 fw-bold'>Simpan Perubahan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @else
+                        <div class='p-3 bg-light rounded-3 text-center text-muted small'>
+                            Belum ada voucher kuliner yang ditambahkan untuk tempat ini. Gunakan formulir di atas untuk membuat voucher pertama Anda.
+                        </div>
+                    @endif
+                </x-content-card>
             @endif
 
             @if ($domain === 'event' && $item->event)

@@ -1,15 +1,85 @@
 <?php
 namespace App\Http\Controllers\Mitra;
-use App\Actions\Catalog\SubmitCatalogDomain;use App\Actions\Culinary\DecideCulinaryReservation;use App\Actions\Culinary\SaveCulinaryVenue;use App\Http\Controllers\Controller;use App\Http\Controllers\Mitra\Concerns\ResolvesActiveMitra;use App\Http\Requests\Mitra\SaveCulinaryVenueRequest;use App\Models\CatalogEntity;use App\Models\Category;use App\Models\CulinaryMenuCategory;use App\Models\CulinaryMenuItem;use App\Models\CulinaryReservation;use App\Models\CulinaryTableSlot;use App\Models\Facility;use App\Models\Region;use App\Models\ServiceType;use App\Services\AuditLogger;use Illuminate\Http\RedirectResponse;use Illuminate\Http\Request;use Illuminate\View\View;
+use App\Actions\Catalog\SubmitCatalogDomain;use App\Actions\Culinary\DecideCulinaryReservation;use App\Actions\Culinary\SaveCulinaryVenue;use App\Http\Controllers\Controller;use App\Http\Controllers\Mitra\Concerns\ResolvesActiveMitra;use App\Http\Requests\Mitra\SaveCulinaryVenueRequest;use App\Models\CatalogEntity;
+use App\Models\CatalogOffer;
+use App\Models\Category;
+use App\Models\CulinaryMenuCategory;
+use App\Models\CulinaryMenuItem;
+use App\Models\CulinaryReservation;
+use App\Models\CulinaryTableSlot;
+use App\Models\Facility;
+use App\Models\Region;
+use App\Models\ServiceType;
+use App\Services\AuditLogger;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Illuminate\View\View;
+
 class CulinaryController extends Controller
-{use ResolvesActiveMitra;public function index(Request $r):View{abort_unless($r->user()->can('culinary.manage'),403);$items=CatalogEntity::where('mitra_id',$this->activeMitra($r)->id)->whereHas('serviceType',fn($q)=>$q->where('code','culinary'))->latest()->paginate(15);return view('mitra.catalog-domain.index',['items'=>$items,'title'=>'Kuliner','routePrefix'=>'mitra.culinary']);}public function create(Request $r){abort_unless($r->user()->can('culinary.manage'),403);$mitra=$this->activeMitra($r);$service=\App\Models\ServiceType::where('code','culinary')->firstOrFail();if(!$mitra->features()->where('service_type_id',$service->id)->where('status','enabled')->exists()){return redirect()->route('mitra.features.index')->with('error','Fitur Kuliner belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');}return view('mitra.catalog-domain.form',$this->refs()+['title'=>'Kuliner','routePrefix'=>'mitra.culinary','domain'=>'culinary']);}public function store(SaveCulinaryVenueRequest $r,SaveCulinaryVenue $a):RedirectResponse{$mitra=$this->activeMitra($r);$service=\App\Models\ServiceType::where('code','culinary')->firstOrFail();if(!$mitra->features()->where('service_type_id',$service->id)->where('status','enabled')->exists()){return redirect()->route('mitra.features.index')->with('error','Fitur Kuliner belum aktif untuk Mitra Anda.');}$e=$a->execute($mitra,$r->validated(),$r->user());return redirect()->route('mitra.culinary.show',$e);}    public function show(Request $r, CatalogEntity $culinary): View
+{
+    use ResolvesActiveMitra;
+
+    public function index(Request $r): View
     {
-        $this->owned($r, $culinary);
-        return view('mitra.catalog-domain.show', [
-            'item' => $culinary->load(['culinary.menuCategories.items', 'culinary.tableSlots.reservations', 'location', 'media', 'facilities', 'moderationReports.actions']),
+        abort_unless($r->user()->can('culinary.manage'), 403);
+        $items = CatalogEntity::where('mitra_id', $this->activeMitra($r)->id)
+            ->whereHas('serviceType', fn ($q) => $q->where('code', 'culinary'))
+            ->latest()
+            ->paginate(15);
+
+        return view('mitra.catalog-domain.index', [
+            'items' => $items,
             'title' => 'Kuliner',
             'routePrefix' => 'mitra.culinary',
-            'domain' => 'culinary'
+        ]);
+    }
+
+    public function create(Request $r)
+    {
+        abort_unless($r->user()->can('culinary.manage'), 403);
+        $mitra = $this->activeMitra($r);
+        $service = ServiceType::where('code', 'culinary')->firstOrFail();
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Kuliner belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
+        }
+
+        return view('mitra.catalog-domain.form', $this->refs() + [
+            'title' => 'Kuliner',
+            'routePrefix' => 'mitra.culinary',
+            'domain' => 'culinary',
+        ]);
+    }
+
+    public function store(SaveCulinaryVenueRequest $r, SaveCulinaryVenue $a): RedirectResponse
+    {
+        $mitra = $this->activeMitra($r);
+        $service = ServiceType::where('code', 'culinary')->firstOrFail();
+        if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
+            return redirect()->route('mitra.features.index')->with('error', 'Fitur Kuliner belum aktif untuk Mitra Anda.');
+        }
+        $e = $a->execute($mitra, $r->validated(), $r->user());
+
+        return redirect()->route('mitra.culinary.show', $e);
+    }
+
+    public function show(Request $r, CatalogEntity $culinary): View
+    {
+        $this->owned($r, $culinary);
+
+        return view('mitra.catalog-domain.show', [
+            'item' => $culinary->load([
+                'culinary.menuCategories.items',
+                'culinary.tableSlots.reservations',
+                'offers',
+                'location',
+                'media',
+                'facilities',
+                'moderationReports.actions',
+            ]),
+            'title' => 'Kuliner',
+            'routePrefix' => 'mitra.culinary',
+            'domain' => 'culinary',
         ]);
     }
 
@@ -46,10 +116,112 @@ public function updateItem(Request $r, CatalogEntity $culinary, CulinaryMenuItem
     return back()->with('status', 'Menu kuliner berhasil diperbarui.');
 }
 
-public function destroyItem(Request $r, CatalogEntity $culinary, CulinaryMenuItem $item): RedirectResponse
-{
-    $this->owned($r, $culinary);
-    abort_unless($item->culinary_venue_id === $culinary->culinary->id, 404);
-    $item->delete();
-    return back()->with('status', 'Menu kuliner berhasil dihapus.');
-}public function slot(Request $r,CatalogEntity $culinary):RedirectResponse{$this->owned($r,$culinary);$d=$r->validate(['service_date'=>'required|date|after_or_equal:today','starts_at'=>'required|date_format:H:i','ends_at'=>'required|date_format:H:i|after:starts_at','capacity_tables'=>'required|integer|min:1','capacity_guests'=>'required|integer|min:1']);$culinary->culinary->tableSlots()->updateOrCreate(['service_date'=>$d['service_date'],'starts_at'=>$d['starts_at']],$d+['status'=>'available']);return back();}public function decide(Request $r,CatalogEntity $culinary,CulinaryReservation $reservation,DecideCulinaryReservation $a):RedirectResponse{$this->owned($r,$culinary);abort_unless($reservation->culinary_venue_id===$culinary->culinary->id,404);$d=$r->validate(['decision'=>'required|in:confirm,reject','reason'=>'nullable|required_if:decision,reject|string']);$a->execute($reservation,$d['decision'],$r->user(),$d['reason']??null);return back();}private function owned(Request $r,CatalogEntity $e):void{abort_unless($r->user()->can('culinary.manage')&&$e->mitra_id===$this->activeMitra($r)->id&&$e->serviceType()->where('code','culinary')->exists(),403);}private function refs():array{$id=ServiceType::where('code','culinary')->value('id');return ['categories'=>Category::where('service_type_id',$id)->get(),'facilities'=>Facility::where('service_type_id',$id)->get(),'regions'=>Region::orderBy('name')->get()];}}
+    public function destroyItem(Request $r, CatalogEntity $culinary, CulinaryMenuItem $item): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        abort_unless($item->culinary_venue_id === $culinary->culinary->id, 404);
+        $item->delete();
+        return back()->with('status', 'Menu kuliner berhasil dihapus.');
+    }
+
+    public function storeVoucher(Request $r, CatalogEntity $culinary): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        $d = $r->validate([
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:1000',
+            'voucher_type' => 'required|in:cash,package',
+        ]);
+
+        $mitra = $this->activeMitra($r);
+        $shortSlug = strtoupper(substr(str_replace('-', '', $culinary->slug), 0, 6));
+        $prefix = $d['voucher_type'] === 'cash' ? 'CASH' : 'PKG';
+        $sku = 'VCH-' . $shortSlug . '-' . $prefix . '-' . strtoupper(Str::random(5));
+
+        $culinary->offers()->create([
+            'mitra_id' => $mitra->id,
+            'offer_type' => 'culinary',
+            'sku' => $sku,
+            'name' => $d['name'],
+            'description' => $d['description'] ?? null,
+            'price' => $d['price'],
+            'currency' => 'IDR',
+            'status' => 'active',
+            'min_quantity' => 1,
+            'max_quantity' => 10,
+        ]);
+
+        return back()->with('status', 'E-Voucher Kuliner berhasil ditambahkan.');
+    }
+
+    public function updateVoucher(Request $r, CatalogEntity $culinary, CatalogOffer $offer): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        abort_unless($offer->catalog_entity_id === $culinary->id, 404);
+
+        $d = $r->validate([
+            'name' => 'required|string|max:150',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric|min:1000',
+            'status' => 'required|in:active,inactive',
+        ]);
+
+        $offer->update([
+            'name' => $d['name'],
+            'description' => $d['description'] ?? null,
+            'price' => $d['price'],
+            'status' => $d['status'],
+        ]);
+
+        return back()->with('status', 'E-Voucher Kuliner berhasil diperbarui.');
+    }
+
+    public function destroyVoucher(Request $r, CatalogEntity $culinary, CatalogOffer $offer): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        abort_unless($offer->catalog_entity_id === $culinary->id, 404);
+
+        $offer->delete();
+
+        return back()->with('status', 'E-Voucher Kuliner berhasil dihapus.');
+    }
+
+    public function slot(Request $r, CatalogEntity $culinary): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        $d = $r->validate([
+            'service_date' => 'required|date|after_or_equal:today',
+            'starts_at' => 'required|date_format:H:i',
+            'ends_at' => 'required|date_format:H:i|after:starts_at',
+            'capacity_tables' => 'required|integer|min:1',
+            'capacity_guests' => 'required|integer|min:1',
+        ]);
+        $culinary->culinary->tableSlots()->updateOrCreate(['service_date' => $d['service_date'], 'starts_at' => $d['starts_at']], $d + ['status' => 'available']);
+        return back();
+    }
+
+    public function decide(Request $r, CatalogEntity $culinary, CulinaryReservation $reservation, DecideCulinaryReservation $a): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        abort_unless($reservation->culinary_venue_id === $culinary->culinary->id, 404);
+        $d = $r->validate(['decision' => 'required|in:confirm,reject', 'reason' => 'nullable|required_if:decision,reject|string']);
+        $a->execute($reservation, $d['decision'], $r->user(), $d['reason'] ?? null);
+        return back();
+    }
+
+    private function owned(Request $r, CatalogEntity $e): void
+    {
+        abort_unless($r->user()->can('culinary.manage') && $e->mitra_id === $this->activeMitra($r)->id && $e->serviceType()->where('code', 'culinary')->exists(), 403);
+    }
+
+    private function refs(): array
+    {
+        $id = ServiceType::where('code', 'culinary')->value('id');
+        return [
+            'categories' => Category::where('service_type_id', $id)->get(),
+            'facilities' => Facility::where('service_type_id', $id)->get(),
+            'regions' => Region::orderBy('name')->get(),
+        ];
+    }
+}
