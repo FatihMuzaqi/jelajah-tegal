@@ -100,8 +100,46 @@
         </div>
     @endif
 
-    {{-- Data Analytics & Timeline Activity --}}
-    @if ($surface !== 'mitra')
+    {{-- Admin Moderation Queues Summary Hub --}}
+    @if ($surface === 'admin' && isset($moderationQueues))
+        @include('dashboards.partials.admin-moderation-queues', [
+            'moderationQueues' => $moderationQueues,
+            'totalModerationPending' => $totalModerationPending ?? 0
+        ])
+    @endif
+
+    {{-- Admin Website Traffic & Visitors Chart --}}
+    @if ($surface === 'admin' && isset($visitorTraffic))
+        @include('dashboards.partials.admin-traffic-chart', [
+            'visitorTraffic' => $visitorTraffic
+        ])
+    @endif
+
+    {{-- Data Analytics & Timeline Activity for Admin / Super Admin --}}
+    @if ($surface === 'admin')
+        <div class="row g-4 mb-4">
+            <div class="col-12 col-lg-7">
+                @include('dashboards.tables.admin')
+            </div>
+            <div class="col-12 col-lg-5">
+                <x-content-card title='Aktivitas & Log Terbaru' subtitle='Data aktual yang tercatat otomatis pada sistem.'>
+                    @if ($activity->isEmpty())
+                        <x-empty-state title='Belum ada aktivitas' description='Aktivitas baru akan tampil otomatis di area ini.'
+                            compact />
+                    @else
+                        <x-timeline>
+                            @foreach ($activity as $item)
+                                @php($activityTitle = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'title', 'Notifikasi') : str($item->event)->replace('.', ' ')->headline())
+                                @php($activityDescription = $item instanceof \App\Models\DatabaseNotification ? data_get($item->data, 'message') : ($item->auditable_type ? class_basename($item->auditable_type) : null))
+                                @php($activityTime = $item->created_at?->diffForHumans())
+                                <x-activity-item :title='$activityTitle' :description='$activityDescription' :time='$activityTime' />
+                            @endforeach
+                        </x-timeline>
+                    @endif
+                </x-content-card>
+            </div>
+        </div>
+    @elseif ($surface !== 'mitra')
         <div class='dashboard-grid'>
             <x-chart-card title='Distribusi Data Operasional' chart-id='surface-overview-chart' :labels='$chartLabels'
                 :series='$chartSeries' />
