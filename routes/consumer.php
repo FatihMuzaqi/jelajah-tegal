@@ -18,6 +18,7 @@ Route::middleware(['auth', 'verified', 'active.user'])->prefix('consumer')->name
     Route::get('/renter-documents', [RenterDocumentController::class, 'index'])->name('renter-documents.index');
     Route::post('/renter-documents', [RenterDocumentController::class, 'store'])->name('renter-documents.store');
     Route::get('/renter-documents/{document}/download', [RenterDocumentController::class, 'download'])->name('renter-documents.download');
+    Route::delete('/renter-documents/{document}', [RenterDocumentController::class, 'destroy'])->name('renter-documents.destroy');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store')->middleware('throttle:30,1');
     Route::get('/orders', [CheckoutController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [CheckoutController::class, 'show'])->name('orders.show');

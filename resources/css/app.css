@@ -83,3 +83,27 @@
     position: relative;
     z-index: 2;
 }
+
+/* Global Print Media Clean Rules */
+@media print {
+    .consumer-bottom-nav,
+    .pwa-install-banner,
+    .pwa-install-card,
+    #pwa-install-prompt,
+    #pwa-ios-prompt,
+    #jelajah-chatbot-root,
+    .chatbot-trigger,
+    .chatbot-card,
+    .chatbot-floating-widget,
+    #chatbot-widget,
+    .jt-floating-toast-wrap,
+    #floating-alert-toast,
+    .mobile-backdrop {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    body {
+        padding-bottom: 0 !important;
+    }
+}
+

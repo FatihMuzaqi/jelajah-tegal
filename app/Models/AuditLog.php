@@ -35,4 +35,9 @@ class AuditLog extends Model
     {
         return $this->belongsTo(User::class, 'actor_user_id');
     }
+
+    public function user(): BelongsTo
+    {
+        return $this->actor();
+    }
 }

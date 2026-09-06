@@ -13,7 +13,7 @@ $catalogSections = [
  @php($emptyTitle=$sectionTitle.' belum tersedia')
  <section class='public-section catalog-placeholder' id='{{ str($sectionTitle)->slug() }}' aria-labelledby='heading-{{ $domainKey }}-{{ $loop->index }}'>
   <div class='container public-container'>
-   <div class='section-heading'><div><p class='public-eyebrow'>Jelajahi Lokantara</p><h2 id='heading-{{ $domainKey }}-{{ $loop->index }}'>{{ $sectionTitle }}</h2></div></div>
+   <div class='section-heading'><div><p class='public-eyebrow'>Jelajahi Tegal</p><h2 id='heading-{{ $domainKey }}-{{ $loop->index }}'>{{ $sectionTitle }}</h2></div></div>
    @if($domainKey==='accommodation' && $featuredAccommodations->isNotEmpty())
     <div class='public-card-grid'>@foreach($featuredAccommodations as $item)<article class='mitra-card'><div class='mitra-cover'><span>{{ str($item->name)->substr(0,1) }}</span></div><div class='mitra-card-body'><div class='card-meta'><span>{{ $item->region?->name }}</span><span>{{ str($item->accommodation?->property_type)->headline() }}</span></div><h3><a href='{{ route('accommodation.show',$item->slug) }}'>{{ $item->name }}</a></h3><p>{{ str($item->description)->limit(110) }}</p></div></article>@endforeach</div>
    @else

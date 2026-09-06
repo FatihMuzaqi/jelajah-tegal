@@ -112,7 +112,7 @@
         </form>
 
         <div class="surface-footer-note">
-            <p>Lokantara Remake Platform · Terautentikasi secara aman dengan Spatie RBAC & Active Tenant Context.</p>
+            <p>Jelajah Tegal Platform · Terautentikasi secara aman dengan Spatie RBAC & Active Tenant Context.</p>
         </div>
 
     </div>

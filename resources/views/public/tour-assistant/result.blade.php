@@ -12,6 +12,11 @@
 }
 
 @media print {
+    @page {
+        size: A4 portrait;
+        margin: 10mm 10mm 12mm 10mm;
+    }
+
     .public-header, 
     .public-footer, 
     .ai-result-hero, 
@@ -20,8 +25,23 @@
     .ai-pkg-nav,
     .skip-link, 
     #floating-alert-toast, 
-    .chatbot-floating-widget {
+    .jt-floating-toast-wrap,
+    .chatbot-floating-widget,
+    #chatbot-widget,
+    #jelajah-chatbot-root,
+    .chatbot-trigger,
+    .chatbot-card,
+    .consumer-bottom-nav,
+    .pwa-install-banner,
+    .pwa-install-card,
+    #pwa-install-prompt,
+    #pwa-ios-prompt,
+    .mobile-backdrop,
+    nav,
+    header,
+    footer {
         display: none !important;
+        visibility: hidden !important;
     }
 
     body, html {
@@ -30,6 +50,7 @@
         font-size: 11px !important;
         margin: 0 !important;
         padding: 0 !important;
+        padding-bottom: 0 !important;
         -webkit-print-color-adjust: exact !important;
         print-color-adjust: exact !important;
     }

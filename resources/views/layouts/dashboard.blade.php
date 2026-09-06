@@ -33,7 +33,7 @@
                     <div>
                         <p class='page-eyebrow'>{{ $surfaceLabel ?? str($surface)->headline() }}</p>
                         <h1>@yield('page-title', 'Dashboard')</h1>
-                        <p class='page-description'>@yield('page-description', 'Ringkasan aktivitas dan status terbaru Lokantara.')</p>
+                        <p class='page-description'>@yield('page-description', 'Ringkasan aktivitas dan status terbaru Jelajah Tegal.')</p>
                     </div>
                     <div class='page-actions'>@yield('page-actions')</div>
                 </div>

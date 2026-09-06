@@ -401,3 +401,14 @@
         z-index: 1060 !important;
     }
 }
+
+@media print {
+    #jelajah-chatbot-root,
+    .chatbot-trigger,
+    .chatbot-card,
+    .chatbot-floating-widget {
+        display: none !important;
+        visibility: hidden !important;
+    }
+}
+

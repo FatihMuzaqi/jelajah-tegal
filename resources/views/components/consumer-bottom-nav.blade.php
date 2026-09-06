@@ -186,4 +186,14 @@
         padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)) !important;
     }
 }
+
+@media print {
+    .consumer-bottom-nav {
+        display: none !important;
+        visibility: hidden !important;
+    }
+    body {
+        padding-bottom: 0 !important;
+    }
+}
 </style>

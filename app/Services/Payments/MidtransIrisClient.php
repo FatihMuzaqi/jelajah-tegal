@@ -73,7 +73,7 @@ class MidtransIrisClient
             'account' => $accountNumber,
             'bank' => strtolower($bankCode),
             'alias_name' => str()->slug($name.'-'.$bankCode),
-            'email' => $email ?? 'mitra@lokantara.id',
+            'email' => $email ?? 'mitra@jelajahtegal.com',
         ]);
 
         $response->throw();
@@ -102,7 +102,7 @@ class MidtransIrisClient
                     'beneficiary_bank' => strtolower($bank->bank_code),
                     'beneficiary_email' => $claim->mitra->contact_email ?? $claim->submitter->email,
                     'amount' => (string) round((float) $claim->amount),
-                    'notes' => 'Payout '.$claim->withdrawal_number.' Lokantara',
+                    'notes' => 'Payout '.$claim->withdrawal_number.' Jelajah Tegal',
                 ],
             ],
         ]);

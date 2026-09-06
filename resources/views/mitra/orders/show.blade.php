@@ -77,7 +77,7 @@
                         <span class="text-muted d-block" style="font-size: 11px;">Nama Pembeli / Wisatawan:</span>
                         <strong class="text-dark fs-6">
                             <i class="fa-regular fa-user text-primary me-1"></i>
-                            {{ data_get($order->user_snapshot, 'name', 'Pengguna Lokantara') }}
+                            {{ data_get($order->user_snapshot, 'name', 'Pengguna Jelajah Tegal') }}
                         </strong>
                     </div>
                     <div class="mb-2 pb-2 border-bottom">

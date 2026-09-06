@@ -7,7 +7,7 @@
 </section>
 
 <section class='public-section'>
- <div class='container public-container'><div class='partner-cta'><div><p class='public-eyebrow'>Untuk pelaku lokal</p><h2>Kelola layanan Anda sebagai Mitra Lokantara.</h2><p>Pendaftaran akun tidak otomatis membuat Mitra. Aktivasi bisnis tetap melalui proses persetujuan platform.</p></div><a class='btn btn-lokantara' href='{{ route('register') }}'>Buat akun</a></div></div>
+ <div class='container public-container'><div class='partner-cta'><div><p class='public-eyebrow'>Untuk pelaku lokal</p><h2>Kelola layanan Anda sebagai Mitra Jelajah Tegal.</h2><p>Pendaftaran akun tidak otomatis membuat Mitra. Aktivasi bisnis tetap melalui proses persetujuan platform.</p></div><a class='btn btn-lokantara' href='{{ route('register') }}'>Buat akun</a></div></div>
 </section>
 
 <section class='public-section faq-section' aria-labelledby='faq-heading'>
@@ -21,5 +21,5 @@
 </section>
 
 @if($newsletterEnabled)
-<section class='public-section'><div class='container public-container'><div class='newsletter-card'><div><h2>Dapatkan pembaruan Lokantara</h2><p>Pendaftaran newsletter tersedia sesuai consent dan konfigurasi platform.</p></div><a class='btn btn-lokantara' href='{{ route('public.contact') }}'>Kelola langganan</a></div></div></section>
+<section class='public-section'><div class='container public-container'><div class='newsletter-card'><div><h2>Dapatkan pembaruan Jelajah Tegal</h2><p>Pendaftaran newsletter tersedia sesuai consent dan konfigurasi platform.</p></div><a class='btn btn-lokantara' href='{{ route('public.contact') }}'>Kelola langganan</a></div></div></section>
 @endif

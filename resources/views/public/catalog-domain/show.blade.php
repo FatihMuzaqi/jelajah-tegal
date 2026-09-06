@@ -735,7 +735,7 @@
                         </div>
                         <div>
                             <small class="text-muted d-block" style="font-size: 11px;">Dikelola oleh:</small>
-                            <a href="{{ route('public.mitra.show', $item->mitra?->slug ?? 'lokantara') }}" class="text-decoration-none fw-bold text-dark">
+                            <a href="{{ route('public.mitra.show', $item->mitra?->slug ?? 'jelajah-tegal') }}" class="text-decoration-none fw-bold text-dark">
                                 {{ $item->mitra?->display_name ?? 'Mitra Jelajah Tegal' }} &rarr;
                             </a>
                         </div>

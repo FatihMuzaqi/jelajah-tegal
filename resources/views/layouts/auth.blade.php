@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ trim($__env->yieldContent('title', 'Lokantara — Portal Akses')) }}</title>
+    <title>{{ trim($__env->yieldContent('title', 'Jelajah Tegal — Portal Akses')) }}</title>
     <meta name="description"
-        content="{{ trim($__env->yieldContent('meta-description', 'Masuk atau daftarkan akun Anda pada ekosistem Lokantara.')) }}">
+        content="{{ trim($__env->yieldContent('meta-description', 'Masuk atau daftarkan akun Anda pada ekosistem Jelajah Tegal.')) }}">
     <meta name="robots" content="{{ trim($__env->yieldContent('robots', 'noindex,nofollow')) }}">
     <link rel="canonical" href="{{ trim($__env->yieldContent('canonical', url()->current())) }}">
 

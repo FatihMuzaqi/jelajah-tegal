@@ -166,6 +166,13 @@
 .pwa-btn-install:hover {
     background: #166534;
 }
+
+@media print {
+    .pwa-install-card, #pwa-install-prompt, #pwa-ios-prompt {
+        display: none !important;
+        visibility: hidden !important;
+    }
+}
 </style>
 
 <script>
