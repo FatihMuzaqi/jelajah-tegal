@@ -903,7 +903,7 @@
                         $coverUrl = $coverMedia ? asset('storage/' . $coverMedia->object_key) : 'https://images.unsplash.com/photo-1432405972618-c60b0225b8f9?q=80&w=800&auto=format&fit=crop';
                         $rating = $tourism->rating_average > 0 ? number_format($tourism->rating_average, 1) : '4.8';
                         $regionName = $tourism->region?->name ?? 'Tegal';
-                        $mitraName = $tourism->mitra?->display_name ?? 'Mitra Terverifikasi';
+                        $mitraName = $tourism->mitra?->display_name ?? 'Mitra Jelajah Tegal';
                     @endphp
                     <div class="col-12 col-sm-6 col-lg-3">
                         <div class="jt-popular-card">
@@ -920,7 +920,14 @@
                                 </h3>
                                 <div class="jt-pop-location">
                                     <i class="fa-solid fa-location-dot text-danger me-1"></i> {{ $regionName }}
-                                    <span class="text-muted d-block fw-normal fs-8">Oleh: {{ $mitraName }}</span>
+                                    <div class="text-muted fw-normal fs-8 mt-1 d-flex align-items-center gap-1 flex-wrap">
+                                        <span>Oleh: {{ $mitraName }}</span>
+                                        @if($tourism->mitra?->is_verified || $tourism->mitra?->isKycVerified())
+                                            <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" style="font-size: 10px;"><i class="fa-solid fa-circle-check"></i> Terverifikasi</span>
+                                        @else
+                                            <span class="badge bg-secondary-subtle text-secondary border rounded-pill px-2 py-0.5" style="font-size: 10px;"><i class="fa-regular fa-clock"></i> Belum Terverifikasi</span>
+                                        @endif
+                                    </div>
                                 </div>
                                 <p>{{ str($tourism->description)->limit(70) }}</p>
                             </div>
@@ -992,9 +999,15 @@
                             <!-- Cover Photo -->
                             <div class="jt-mitra-ref-cover">
                                 <img src="{{ $coverUrl }}" alt="{{ $mitra->display_name }}" loading="lazy" decoding="async">
-                                <div class="jt-mitra-ref-verified">
-                                    <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
-                                </div>
+                                @if($mitra->is_verified || $mitra->isKycVerified())
+                                    <div class="jt-mitra-ref-verified">
+                                        <i class="fa-solid fa-check fs-8"></i> Mitra Terverifikasi
+                                    </div>
+                                @else
+                                    <div class="jt-mitra-ref-verified" style="background: rgba(108, 117, 125, 0.9) !important; border-color: rgba(255, 255, 255, 0.4) !important;">
+                                        <i class="fa-regular fa-clock fs-8"></i> Belum Terverifikasi
+                                    </div>
+                                @endif
                                 <button class="jt-mitra-ref-heart" type="button" aria-label="Simpan">
                                     <i class="fa-regular fa-heart"></i>
                                 </button>

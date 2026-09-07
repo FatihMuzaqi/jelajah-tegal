@@ -39,6 +39,11 @@ class CulinaryController extends Controller
     {
         abort_unless($r->user()->can('culinary.manage'), 403);
         $mitra = $this->activeMitra($r);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = ServiceType::where('code', 'culinary')->firstOrFail();
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
             return redirect()->route('mitra.features.index')->with('error', 'Fitur Kuliner belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
@@ -54,6 +59,11 @@ class CulinaryController extends Controller
     public function store(SaveCulinaryVenueRequest $r, SaveCulinaryVenue $a): RedirectResponse
     {
         $mitra = $this->activeMitra($r);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = ServiceType::where('code', 'culinary')->firstOrFail();
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
             return redirect()->route('mitra.features.index')->with('error', 'Fitur Kuliner belum aktif untuk Mitra Anda.');

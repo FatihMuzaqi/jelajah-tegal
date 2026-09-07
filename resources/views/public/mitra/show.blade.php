@@ -205,9 +205,15 @@
 
             <div style="flex: 1; min-width: 280px;">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                    <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
-                         Mitra Terverifikasi Resmi
-                    </span>
+                    @if($mitra->is_verified || $mitra->isKycVerified())
+                        <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
+                            <i class="fa-solid fa-circle-check me-1"></i> Mitra Terverifikasi Resmi
+                        </span>
+                    @else
+                        <span class="badge bg-secondary text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
+                            <i class="fa-regular fa-clock me-1"></i> Belum Terverifikasi
+                        </span>
+                    @endif
                     @if ($mitra->region)
                         <span class="badge" style="background: rgba(45,140,168,0.3); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); border-radius: 99px; font-size: 11px;">
                             <i class="fa-solid fa-location-dot text-danger"></i> {{ $mitra->region->name }}
@@ -428,7 +434,11 @@
                         </div>
                         <div class="py-2 border-bottom">
                             <span class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Status Legalitas</span>
-                            <span class="text-success fw-bold"> Terverifikasi Resmi</span>
+                            @if($mitra->is_verified || $mitra->isKycVerified())
+                                <span class="text-success fw-bold"><i class="fa-solid fa-circle-check me-1"></i> Terverifikasi Resmi</span>
+                            @else
+                                <span class="text-secondary fw-bold"><i class="fa-regular fa-clock me-1"></i> Belum Terverifikasi</span>
+                            @endif
                         </div>
                         <div class="py-2">
                             <span class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Bergabung Sejak</span>

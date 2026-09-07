@@ -34,6 +34,11 @@ class RentalController extends Controller
     public function create(Request $r)
     {
         $mitra = $this->activeMitra($r);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = \App\Models\ServiceType::where('code', 'rental')->firstOrFail();
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
             return redirect()->route('mitra.features.index')->with('error', 'Fitur Rental belum aktif untuk Mitra Anda. Silakan ajukan aktivasi fitur di bawah ini.');
@@ -45,6 +50,11 @@ class RentalController extends Controller
     public function store(SaveRentalVehicleRequest $r, SaveRentalVehicle $a): RedirectResponse
     {
         $mitra = $this->activeMitra($r);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = \App\Models\ServiceType::where('code', 'rental')->firstOrFail();
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
             return redirect()->route('mitra.features.index')->with('error', 'Fitur Rental belum aktif untuk Mitra Anda.');

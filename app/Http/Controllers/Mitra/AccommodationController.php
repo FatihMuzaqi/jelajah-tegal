@@ -41,6 +41,11 @@ class AccommodationController extends Controller
     {
         abort_unless($request->user()->can('accommodation.manage'), 403);
         $mitra = $this->activeMitra($request);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = \App\Models\ServiceType::where('code', 'accommodation')->firstOrFail();
 
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
@@ -53,6 +58,11 @@ class AccommodationController extends Controller
     public function store(SaveAccommodationRequest $request, SaveAccommodation $action): RedirectResponse
     {
         $mitra = $this->activeMitra($request);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = \App\Models\ServiceType::where('code', 'accommodation')->firstOrFail();
 
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {

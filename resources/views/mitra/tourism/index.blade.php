@@ -14,6 +14,26 @@
 @endsection
 
 @section('content')
+    @php
+        $activeMitra = \App\Models\Mitra::find(session('active_mitra_id'));
+    @endphp
+    @if ($activeMitra && ! $activeMitra->isKycVerified())
+        <div class="alert alert-warning border-0 rounded-4 shadow-sm mb-4 d-flex align-items-center justify-content-between flex-wrap gap-3">
+            <div class="d-flex align-items-center gap-3">
+                <div class="bg-warning text-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0;">
+                    <i class="fa-solid fa-triangle-exclamation fs-5"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1 text-dark">Verifikasi KYC Diperlukan</h6>
+                    <p class="small text-muted mb-0">Dokumen legalitas bisnis Anda belum diverifikasi oleh Admin. Silakan lengkapi KYC untuk dapat menambahkan destinasi wisata baru.</p>
+                </div>
+            </div>
+            <a href="{{ route('mitra.kyc.index') }}" class="btn btn-warning btn-sm rounded-pill px-3 fw-bold">
+                <i class="fa-solid fa-id-card me-1"></i> Lengkapi KYC
+            </a>
+        </div>
+    @endif
+
     <x-table-wrapper title="Daftar Destinasi Wisata">
         @if ($items->isEmpty())
             <tbody>

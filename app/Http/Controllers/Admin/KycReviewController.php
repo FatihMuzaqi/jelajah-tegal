@@ -30,8 +30,14 @@ class KycReviewController extends Controller
     {
         abort_unless(in_array($document->status, ['submitted', 'under_review'], true), 409, 'Dokumen sudah diputuskan.');
         DB::transaction(function () use ($request, $document, $audit) {
+            $decision = $request->validated('decision');
             $before = ['status' => $document->status];
-            $document->update(['status' => $request->validated('decision'), 'rejection_reason' => $request->validated('reason'), 'reviewed_by' => $request->user()->id, 'reviewed_at' => now()]);
+            $document->update(['status' => $decision, 'rejection_reason' => $request->validated('reason'), 'reviewed_by' => $request->user()->id, 'reviewed_at' => now()]);
+
+            if ($decision === 'approved' && $document->mitra) {
+                $document->mitra->update(['is_verified' => true]);
+            }
+
             DatabaseNotification::create(['user_id' => $document->submitted_by, 'mitra_id' => $document->mitra_id, 'type' => 'kyc.reviewed', 'data' => ['title' => 'KYC telah ditinjau', 'message' => 'Dokumen '.$document->document_type.' berstatus '.$document->status.'.']]);
             $audit->record('admin.kyc_reviewed', $document, $before, ['status' => $document->status, 'reason' => $request->validated('reason')], $request->user());
         });

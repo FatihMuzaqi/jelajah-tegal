@@ -89,9 +89,15 @@
         <div class="row align-items-center g-4">
             <div class="col-lg-7">
                 <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
-                    <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
-                        <i class="fa-solid fa-circle-check me-1"></i> Terverifikasi Resmi
-                    </span>
+                    @if($item->mitra?->is_verified || $item->mitra?->isKycVerified())
+                        <span class="badge bg-success text-white px-3 py-1" style="border-radius: 99px; font-size: 11px;">
+                            <i class="fa-solid fa-circle-check me-1"></i> Terverifikasi Resmi
+                        </span>
+                    @else
+                        <span class="badge bg-secondary-subtle text-light px-3 py-1 border border-secondary" style="border-radius: 99px; font-size: 11px;">
+                            <i class="fa-regular fa-clock me-1"></i> Belum Terverifikasi
+                        </span>
+                    @endif
                     <span class="badge" style="background: rgba(45,140,168,0.3); color: #90cdf4; border: 1px solid rgba(45,140,168,0.4); border-radius: 99px; font-size: 11px;">
                         <i class="fa-solid fa-location-dot me-1"></i> {{ $item->region?->name ?? 'Tegal' }}
                     </span>

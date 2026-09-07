@@ -490,10 +490,20 @@
                 </div>
             </div>
             <div class="quick-stat-box">
-                <div class="quick-stat-icon"><i class="fa-solid fa-shield-halved text-success"></i></div>
+                <div class="quick-stat-icon">
+                    @if($tourism->mitra?->is_verified || $tourism->mitra?->isKycVerified())
+                        <i class="fa-solid fa-shield-halved text-success"></i>
+                    @else
+                        <i class="fa-solid fa-clock-rotate-left text-secondary"></i>
+                    @endif
+                </div>
                 <div class="quick-stat-info">
                     <h6>Status Destinasi</h6>
-                    <p class="text-success">Terverifikasi Resmi</p>
+                    @if($tourism->mitra?->is_verified || $tourism->mitra?->isKycVerified())
+                        <p class="text-success">Terverifikasi Resmi</p>
+                    @else
+                        <p class="text-secondary">Belum Terverifikasi</p>
+                    @endif
                 </div>
             </div>
         </div>
@@ -869,7 +879,11 @@
                         <div>
                             <small class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Mitra Pengelola</small>
                             <strong class="fs-6">{{ $tourism->mitra->display_name }}</strong>
-                            <div class="text-success" style="font-size: 12px;"> Mitra Terverifikasi</div>
+                            @if($tourism->mitra?->is_verified || $tourism->mitra?->isKycVerified())
+                                <div class="text-success" style="font-size: 12px;"><i class="fa-solid fa-circle-check me-1"></i> Mitra Terverifikasi</div>
+                            @else
+                                <div class="text-secondary" style="font-size: 12px;"><i class="fa-regular fa-clock me-1"></i> Belum Terverifikasi</div>
+                            @endif
                         </div>
                     </div>
 

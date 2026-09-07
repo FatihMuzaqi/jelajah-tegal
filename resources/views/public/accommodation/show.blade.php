@@ -704,7 +704,11 @@
                         <div>
                             <small class="text-muted d-block" style="font-size: 11px; text-transform: uppercase;">Mitra Pengelola</small>
                             <strong class="fs-6">{{ $accommodation->mitra->display_name }}</strong>
-                            <div class="text-success" style="font-size: 12px;"> Mitra Terverifikasi</div>
+                            @if($accommodation->mitra?->is_verified || $accommodation->mitra?->isKycVerified())
+                                <div class="text-success" style="font-size: 12px;"><i class="fa-solid fa-circle-check me-1"></i> Mitra Terverifikasi</div>
+                            @else
+                                <div class="text-secondary" style="font-size: 12px;"><i class="fa-regular fa-clock me-1"></i> Belum Terverifikasi</div>
+                            @endif
                         </div>
                     </div>
 

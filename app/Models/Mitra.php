@@ -68,6 +68,23 @@ class Mitra extends Model
         return $this->category === 'dinas';
     }
 
+    public function isKycVerified(): bool
+    {
+        if ($this->category === 'dinas') {
+            return true;
+        }
+
+        if ($this->is_verified) {
+            return true;
+        }
+
+        if ($this->relationLoaded('kycDocuments')) {
+            return $this->kycDocuments->contains(fn ($doc) => $doc->status === 'approved');
+        }
+
+        return $this->kycDocuments()->where('status', 'approved')->exists();
+    }
+
     public function getCategoryLabelAttribute(): string
     {
         return $this->category === 'dinas' ? 'Dinas (Pemerintah)' : 'Non-Dinas (Swasta / Umum)';

@@ -41,6 +41,11 @@ class TourismController extends Controller
     {
         abort_unless($request->user()->can('tourism.manage'), 403);
         $mitra = $this->activeMitra($request);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = ServiceType::where('code', 'tourism')->firstOrFail();
 
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {
@@ -53,6 +58,11 @@ class TourismController extends Controller
     public function store(SaveTourismRequest $request, SaveTourismDestination $action): RedirectResponse
     {
         $mitra = $this->activeMitra($request);
+
+        if ($redirect = $this->ensureKycVerified($mitra)) {
+            return $redirect;
+        }
+
         $service = ServiceType::where('code', 'tourism')->firstOrFail();
 
         if (! $mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists()) {

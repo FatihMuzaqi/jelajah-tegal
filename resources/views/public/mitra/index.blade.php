@@ -359,9 +359,15 @@
                                 </div>
                             @endif
 
-                            <div class="jt-mitra-badge-verified">
-                                <i class="fa-solid fa-circle-check"></i> Terverifikasi
-                            </div>
+                            @if($mitra->is_verified || $mitra->isKycVerified())
+                                <div class="jt-mitra-badge-verified">
+                                    <i class="fa-solid fa-circle-check"></i> Terverifikasi
+                                </div>
+                            @else
+                                <div class="jt-mitra-badge-verified" style="background: rgba(108, 117, 125, 0.85); border-color: rgba(255, 255, 255, 0.3);">
+                                    <i class="fa-regular fa-clock"></i> Belum Terverifikasi
+                                </div>
+                            @endif
                         </div>
 
                         <!-- Body Card -->
