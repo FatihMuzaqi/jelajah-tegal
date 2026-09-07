@@ -72,7 +72,7 @@ class RentalController extends Controller
         $this->owned($r, $rental);
 
         return view('mitra.catalog-domain.form', $this->refs() + [
-            'item' => $rental->load(['rentalVehicle', 'location']),
+            'item' => $rental->load(['rentalVehicle', 'location', 'facilities']),
             'title' => 'Rental',
             'routePrefix' => 'mitra.rental',
             'domain' => 'rental'
@@ -84,7 +84,7 @@ class RentalController extends Controller
         $this->owned($r, $rental);
         $a->execute($this->activeMitra($r), $r->validated(), $r->user(), $rental);
 
-        return redirect()->route('mitra.rental.show', $rental);
+        return redirect()->route('mitra.rental.show', $rental)->with('status', 'Armada rental berhasil diperbarui.');
     }
 
     public function submit(Request $r, CatalogEntity $rental, SubmitCatalogDomain $a): RedirectResponse
@@ -193,6 +193,10 @@ class RentalController extends Controller
     {
         $id = ServiceType::where('code', 'rental')->value('id');
 
-        return ['categories' => Category::where('service_type_id',$id)->get(), 'regions' => Region::orderBy('name')->get()];
+        return [
+            'categories' => Category::where('service_type_id', $id)->get(),
+            'facilities' => \App\Models\Facility::where('service_type_id', $id)->get(),
+            'regions' => Region::orderBy('name')->get(),
+        ];
     }
 }

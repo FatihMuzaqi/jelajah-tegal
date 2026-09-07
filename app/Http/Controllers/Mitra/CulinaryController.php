@@ -86,13 +86,22 @@ class CulinaryController extends Controller
     public function edit(Request $r, CatalogEntity $culinary): View
     {
         $this->owned($r, $culinary);
+
         return view('mitra.catalog-domain.form', $this->refs() + [
-            'item' => $culinary->load(['culinary', 'location']),
+            'item' => $culinary->load(['culinary', 'location', 'facilities']),
             'title' => 'Kuliner',
             'routePrefix' => 'mitra.culinary',
-            'domain' => 'culinary'
+            'domain' => 'culinary',
         ]);
-    }public function update(SaveCulinaryVenueRequest $r,CatalogEntity $culinary,SaveCulinaryVenue $a):RedirectResponse{$this->owned($r,$culinary);$a->execute($this->activeMitra($r),$r->validated(),$r->user(),$culinary);return redirect()->route('mitra.culinary.show',$culinary);}public function submit(Request $r,CatalogEntity $culinary,SubmitCatalogDomain $a):RedirectResponse{$this->owned($r,$culinary);$a->execute($culinary,'culinary',$r->user(),[$culinary->culinary->menuItems()->where('status','active')->exists()=>'menu aktif']);return back();}public function archive(Request $r,CatalogEntity $culinary,AuditLogger $audit):RedirectResponse{$this->owned($r,$culinary);abort_unless(in_array($culinary->status,['draft','rejected','published'],true),422);$before=$culinary->status;$culinary->update(['status'=>'archived','archived_at'=>now()]);$audit->record('culinary.archived',$culinary,['status'=>$before],['status'=>'archived'],$r->user());return redirect()->route('mitra.culinary.index')->with('status','Kuliner diarsipkan.');}
+    }
+
+    public function update(SaveCulinaryVenueRequest $r, CatalogEntity $culinary, SaveCulinaryVenue $a): RedirectResponse
+    {
+        $this->owned($r, $culinary);
+        $a->execute($this->activeMitra($r), $r->validated(), $r->user(), $culinary);
+
+        return redirect()->route('mitra.culinary.show', $culinary)->with('status', 'Tempat kuliner berhasil diperbarui.');
+    }public function submit(Request $r,CatalogEntity $culinary,SubmitCatalogDomain $a):RedirectResponse{$this->owned($r,$culinary);$a->execute($culinary,'culinary',$r->user(),[$culinary->culinary->menuItems()->where('status','active')->exists()=>'menu aktif']);return back();}public function archive(Request $r,CatalogEntity $culinary,AuditLogger $audit):RedirectResponse{$this->owned($r,$culinary);abort_unless(in_array($culinary->status,['draft','rejected','published'],true),422);$before=$culinary->status;$culinary->update(['status'=>'archived','archived_at'=>now()]);$audit->record('culinary.archived',$culinary,['status'=>$before],['status'=>'archived'],$r->user());return redirect()->route('mitra.culinary.index')->with('status','Kuliner diarsipkan.');}
 public function category(Request $r,CatalogEntity $culinary):RedirectResponse{$this->owned($r,$culinary);$d=$r->validate(['name'=>'required|string|max:150','sort_order'=>'nullable|integer|min:0']);$culinary->culinary->menuCategories()->create($d);return back();}public function item(Request $r,CatalogEntity $culinary,CulinaryMenuCategory $category):RedirectResponse{$this->owned($r,$culinary);abort_unless($category->culinary_venue_id===$culinary->culinary->id,404);$d=$r->validate(['name'=>'required|string|max:150','description'=>'nullable|string','price'=>'required|numeric|min:0','is_featured'=>'sometimes|boolean']);$category->items()->create($d+['culinary_venue_id'=>$culinary->culinary->id,'status'=>'active']);return back()->with('status','Menu berhasil ditambahkan.');}
 
 public function updateItem(Request $r, CatalogEntity $culinary, CulinaryMenuItem $item): RedirectResponse

@@ -50,6 +50,8 @@ class SaveRentalVehicleRequest extends FormRequest
             'pickup_instructions' => 'nullable|string',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
+            'facilities' => 'nullable|array',
+            'facilities.*' => 'exists:facilities,id',
         ];
     }
 }

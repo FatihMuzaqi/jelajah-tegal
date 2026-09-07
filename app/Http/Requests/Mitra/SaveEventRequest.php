@@ -37,13 +37,13 @@ class SaveEventRequest extends FormRequest
             'address' => 'required|string',
             'event_type' => 'required|string|max:64',
             'venue_name' => 'nullable|string|max:191',
-            'starts_at' => 'required|date|after:now',
+            'starts_at' => ['required', 'date', $this->isMethod('post') ? 'after:now' : 'nullable'],
             'ends_at' => 'required|date|after:starts_at',
             'registration_deadline' => 'nullable|date|before_or_equal:ends_at',
             'know_before_you_go' => 'nullable|string',
             'latitude' => 'required|numeric|between:-90,90',
             'longitude' => 'required|numeric|between:-180,180',
-            'facilities' => 'array',
+            'facilities' => 'nullable|array',
             'facilities.*' => 'exists:facilities,id',
         ];
     }

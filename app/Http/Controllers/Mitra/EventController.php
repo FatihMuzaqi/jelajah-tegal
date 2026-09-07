@@ -73,7 +73,7 @@ class EventController extends Controller
         $this->owned($r, $event);
 
         return view('mitra.catalog-domain.form', $this->refs() + [
-            'item' => $event->load(['event', 'location']),
+            'item' => $event->load(['event', 'location', 'facilities']),
             'title' => 'Event',
             'routePrefix' => 'mitra.event',
             'domain' => 'event'
@@ -85,7 +85,7 @@ class EventController extends Controller
         $this->owned($r, $event);
         $a->execute($this->activeMitra($r), $r->validated(), $r->user(), $event);
 
-        return redirect()->route('mitra.event.show', $event);
+        return redirect()->route('mitra.event.show', $event)->with('status', 'Event berhasil diperbarui.');
     }
 
     public function submit(Request $r, CatalogEntity $event, SubmitCatalogDomain $a): RedirectResponse

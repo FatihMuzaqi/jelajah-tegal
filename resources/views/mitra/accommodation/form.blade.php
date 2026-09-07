@@ -206,7 +206,7 @@
                 <div class="input-group">
                     <span class="input-group-text bg-white text-muted"><i class="fa-solid fa-arrows-up-down"></i></span>
                     <input type="number" step="any" name="latitude" id="coord_latitude" class="form-control @error('latitude') is-invalid @enderror"
-                           placeholder="Contoh: -6.8612345" value="{{ old('latitude', $accommodation->location->latitude ?? '') }}" required oninput="updateGmapsPreviewLink()">
+                           placeholder="Contoh: -6.8612345" value="{{ old('latitude', $accommodation->location?->latitude ?? '') }}" required oninput="updateGmapsPreviewLink()">
                 </div>
                 @error('latitude') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
                 <small class="text-muted d-block mt-1" style="font-size: 11px;">Wilayah Tegal & sekitarnya berkisar antara -6.8 s/d -7.2</small>
@@ -219,7 +219,7 @@
                 <div class="input-group">
                     <span class="input-group-text bg-white text-muted"><i class="fa-solid fa-arrows-left-right"></i></span>
                     <input type="number" step="any" name="longitude" id="coord_longitude" class="form-control @error('longitude') is-invalid @enderror"
-                           placeholder="Contoh: 109.1412345" value="{{ old('longitude', $accommodation->location->longitude ?? '') }}" required oninput="updateGmapsPreviewLink()">
+                           placeholder="Contoh: 109.1412345" value="{{ old('longitude', $accommodation->location?->longitude ?? '') }}" required oninput="updateGmapsPreviewLink()">
                 </div>
                 @error('longitude') <div class="text-danger mt-1 small">{{ $message }}</div> @enderror
                 <small class="text-muted d-block mt-1" style="font-size: 11px;">Wilayah Tegal & sekitarnya berkisar antara 109.0 s/d 109.3</small>

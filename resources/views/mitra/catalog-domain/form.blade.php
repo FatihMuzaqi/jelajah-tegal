@@ -2,7 +2,15 @@
 
 @php
     $editing = isset($item);
-    $detail = $editing ? $item->{$domain} : null;
+    $relationName = match($domain ?? '') {
+        'rental' => 'rentalVehicle',
+        'culinary' => 'culinary',
+        'event' => 'event',
+        'tourism' => 'tourism',
+        'accommodation' => 'accommodation',
+        default => $domain ?? '',
+    };
+    $detail = $editing ? ($item->{$relationName} ?? $item->{$domain} ?? null) : null;
     
     $domainMeta = [
         'culinary' => [

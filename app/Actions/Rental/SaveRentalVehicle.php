@@ -1,8 +1,65 @@
 <?php
+
 namespace App\Actions\Rental;
-use App\Models\CatalogEntity; use App\Models\Mitra; use App\Models\ServiceType; use App\Services\AuditLogger; use Illuminate\Support\Arr; use Illuminate\Support\Facades\DB;
+
+use App\Models\CatalogEntity;
+use App\Models\Mitra;
+use App\Models\ServiceType;
+use App\Services\AuditLogger;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\DB;
+
 class SaveRentalVehicle
 {
     public function __construct(private AuditLogger $audit) {}
-    public function execute(Mitra $mitra,array $data,$actor,?CatalogEntity $entity=null): CatalogEntity { $service=ServiceType::where('code','rental')->firstOrFail();abort_unless($mitra->features()->where('service_type_id',$service->id)->where('status','enabled')->exists(),403);if($entity)abort_unless($entity->mitra_id===$mitra->id&&$entity->service_type_id===$service->id,403);return DB::transaction(function()use($mitra,$service,$data,$actor,$entity){$before=$entity?->toArray()??[];$entity??=new CatalogEntity(['mitra_id'=>$mitra->id,'service_type_id'=>$service->id]);$entity->fill(Arr::only($data,['category_id','region_id','name','slug','description','address']));$entity->status=$entity->status??'draft';$entity->save();$entity->rentalVehicle()->updateOrCreate([],Arr::only($data,['vehicle_type','brand','model','year','plate_number','transmission','seats','self_drive_available','driver_available','deposit_amount','insurance_policy','fuel_policy','pickup_instructions','status']));if(isset($data['latitude'],$data['longitude'])){ $lat = (float) $data['latitude']; $lng = (float) $data['longitude']; DB::table('catalog_locations')->updateOrInsert(['catalog_entity_id' => $entity->id], ['location' => DB::raw("ST_GeomFromText('POINT({$lat} {$lng})', 4326)"), 'latitude' => $lat, 'longitude' => $lng, 'updated_at' => now(), 'created_at' => now()]); } $this->audit->record($before?'rental.updated':'rental.created',$entity,$before,$entity->fresh()->toArray(),$actor);return $entity->fresh(['rentalVehicle','location']);}); }
+
+    public function execute(Mitra $mitra, array $data, $actor, ?CatalogEntity $entity = null): CatalogEntity
+    {
+        $service = ServiceType::where('code', 'rental')->firstOrFail();
+        abort_unless($mitra->features()->where('service_type_id', $service->id)->where('status', 'enabled')->exists(), 403);
+        if ($entity) {
+            abort_unless($entity->mitra_id === $mitra->id && $entity->service_type_id === $service->id, 403);
+        }
+
+        return DB::transaction(function () use ($mitra, $service, $data, $actor, $entity) {
+            $before = $entity?->toArray() ?? [];
+            $entity ??= new CatalogEntity(['mitra_id' => $mitra->id, 'service_type_id' => $service->id]);
+            $entity->fill(Arr::only($data, ['category_id', 'region_id', 'name', 'slug', 'description', 'address']));
+            $entity->status = $entity->status ?? 'draft';
+            $entity->save();
+
+            $entity->rentalVehicle()->updateOrCreate(
+                [],
+                Arr::only($data, [
+                    'vehicle_type', 'brand', 'model', 'year', 'plate_number',
+                    'transmission', 'seats', 'self_drive_available', 'driver_available',
+                    'deposit_amount', 'insurance_policy', 'fuel_policy', 'pickup_instructions', 'status'
+                ])
+            );
+
+            if (isset($data['latitude'], $data['longitude'])) {
+                $lat = (float) $data['latitude'];
+                $lng = (float) $data['longitude'];
+                DB::table('catalog_locations')->updateOrInsert(
+                    ['catalog_entity_id' => $entity->id],
+                    [
+                        'location' => DB::raw("ST_GeomFromText('POINT({$lat} {$lng})', 4326)"),
+                        'latitude' => $lat,
+                        'longitude' => $lng,
+                        'updated_at' => now(),
+                        'created_at' => now(),
+                    ]
+                );
+            }
+
+            if (array_key_exists('facilities', $data)) {
+                $entity->facilities()->sync($data['facilities'] ?? []);
+            }
+
+            $this->audit->record($before ? 'rental.updated' : 'rental.created', $entity, $before, $entity->fresh()->toArray(), $actor);
+
+            return $entity->fresh(['rentalVehicle', 'location', 'facilities']);
+        });
+    }
 }
+
