@@ -28,6 +28,43 @@
     </div>
 
     <div class="card-body p-4 bg-light">
+        @if(isset($pendingMitras) && $pendingMitras->isNotEmpty())
+            <div class="mb-3.5 p-3.5 rounded-4 border border-success-subtle shadow-xs" style="background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);">
+                <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                    <div class="d-flex align-items-start gap-3">
+                        <div class="p-2.5 rounded-3 bg-success text-white d-flex align-items-center justify-content-center" style="width: 42px; height: 42px; flex-shrink: 0; font-size: 18px;">
+                            <i class="fa-solid fa-handshake-angle"></i>
+                        </div>
+                        <div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <h6 class="fw-bold text-dark mb-0 fs-7">Pemberitahuan Pendaftaran Mitra Baru</h6>
+                                <span class="badge bg-danger text-white rounded-pill px-2.5 py-0.5 fs-9 fw-bold">
+                                    {{ $pendingMitras->count() }} Menunggu Tindakan
+                                </span>
+                            </div>
+                            <p class="text-muted fs-8 mb-1.5 mt-0.5">
+                                Calon mitra usaha baru telah mendaftar dan menunggu verifikasi kelengkapan berkas KTP, legalitas, serta rekening bank.
+                            </p>
+                            <div class="d-flex align-items-center gap-2 flex-wrap fs-8">
+                                <span class="text-muted">Antrean terbaru:</span>
+                                @foreach($pendingMitras->take(3) as $pm)
+                                    <a href="{{ route('admin.mitras.show', $pm) }}" class="badge bg-white text-dark border text-decoration-none fw-semibold px-2 py-1">
+                                        <i class="fa-solid fa-store text-success me-1"></i> {{ $pm->display_name }} ({{ $pm->serviceType?->name ?? 'Layanan' }})
+                                    </a>
+                                @endforeach
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-md-end flex-shrink-0">
+                        <a href="{{ route('admin.mitras.index', ['status' => 'pending']) }}" class="btn btn-sm btn-success rounded-pill px-3 py-1.5 fw-bold fs-8 d-inline-flex align-items-center gap-1.5 shadow-xs">
+                            <i class="fa-solid fa-clipboard-check"></i>
+                            <span>Verifikasi Mitra Sekarang</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         <div class="row g-3">
             @foreach ($queues as $key => $queue)
                 @php

@@ -226,6 +226,11 @@ class DashboardController extends Controller
     {
         $queueData = $this->adminModerationQueues();
         $visitorTraffic = $this->adminVisitorTraffic();
+        $pendingMitras = Mitra::with(['owner', 'serviceType', 'region'])
+            ->where('status', 'pending')
+            ->latest()
+            ->limit(5)
+            ->get();
 
         $stats = [
             ['label' => 'Total Pengguna', 'value' => User::count(), 'tone' => 'primary'],
@@ -246,6 +251,7 @@ class DashboardController extends Controller
                 'moderationQueues' => $queueData['queues'],
                 'totalModerationPending' => $queueData['totalPending'],
                 'visitorTraffic' => $visitorTraffic,
+                'pendingMitras' => $pendingMitras,
             ]
         );
     }
@@ -253,6 +259,14 @@ class DashboardController extends Controller
     private function adminModerationQueues(): array
     {
         $queues = [
+            'mitras' => [
+                'label' => 'Verifikasi Mitra Baru',
+                'icon' => 'fa-solid fa-handshake',
+                'color' => 'success',
+                'route' => 'admin.mitras.index',
+                'items' => Mitra::where('status', 'pending')->count(),
+                'reviews' => 0,
+            ],
             'tourism' => [
                 'label' => 'Moderasi Wisata',
                 'icon' => 'fa-solid fa-umbrella-beach',

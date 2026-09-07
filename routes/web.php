@@ -32,6 +32,7 @@ Route::get('/syarat-ketentuan', [PublicPortalController::class, 'terms'])->name(
 Route::get('/daftar-mitra', [\App\Http\Controllers\MitraRegistrationController::class, 'create'])->name('mitra.register');
 Route::post('/daftar-mitra', [\App\Http\Controllers\MitraRegistrationController::class, 'store'])->name('mitra.register.store');
 Route::get('/daftar-mitra/berhasil', [\App\Http\Controllers\MitraRegistrationController::class, 'success'])->name('mitra.register.success');
+Route::get('/mitra/verifikasi-masuk/{user}/{mitra}', [\App\Http\Controllers\MitraRegistrationController::class, 'autoLogin'])->name('mitra.auto-login')->middleware(['signed']);
 Route::get('/mitra/pending-verifikasi', [\App\Http\Controllers\MitraRegistrationController::class, 'pendingNotice'])->name('mitra.pending-notice')->middleware(['auth']);
 Route::get('/mitra/activation/{token}', [MitraActivationController::class, 'show'])->name('mitra.activation.show');
 Route::post('/mitra/activation/{token}', [MitraActivationController::class, 'store'])->name('mitra.activation.store')->middleware('throttle:6,1');

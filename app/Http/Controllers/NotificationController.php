@@ -73,6 +73,17 @@ class NotificationController extends Controller
         $isAdmin = method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['admin', 'super-admin']);
         $isMitra = method_exists($user, 'hasAnyRole') && $user->hasAnyRole(['mitra-owner', 'mitra-staff']);
 
+        // 0. Mitra Registration & Verification Notifications
+        if (str_contains($type, 'mitra')) {
+            if ($isAdmin) {
+                if (! empty($data['mitra_id'])) {
+                    return route('admin.mitras.show', $data['mitra_id']);
+                }
+                return route('admin.mitras.index');
+            }
+            return route('mitra.dashboard');
+        }
+
         // 1. KYC Notifications
         if (str_contains($type, 'kyc')) {
             return $isAdmin ? route('admin.kyc.index') : route('mitra.kyc.index');

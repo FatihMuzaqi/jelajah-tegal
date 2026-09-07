@@ -104,7 +104,7 @@
                             <!-- Category Badge -->
                             <div style="display: inline-block; background-color: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 99px; padding: 4px 12px; margin-bottom: 16px;">
                                 <span style="font-size: 11px; font-weight: 700; color: #047857; text-transform: uppercase; letter-spacing: 0.04em;">
-                                    🏢 Undangan Kemitraan Resmi
+                                    Undangan Kemitraan Resmi
                                 </span>
                             </div>
 
@@ -195,7 +195,7 @@
                             <!-- Security Warning -->
                             <div style="background-color: #fffbeb; border: 1px solid #fef3c7; border-radius: 8px; padding: 10px 14px;">
                                 <p style="margin: 0; font-size: 11.5px; color: #92400e; line-height: 1.45;">
-                                    🔒 <strong>Keamanan:</strong> Tautan ini bersifat rahasia dan hanya berlaku untuk 1 (satu) kali aktivasi. Jangan berikan email atau tautan ini kepada siapapun.
+                                    <strong>Keamanan:</strong> Tautan ini bersifat rahasia dan hanya berlaku untuk 1 (satu) kali aktivasi. Jangan berikan email atau tautan ini kepada siapapun.
                                 </p>
                             </div>
 

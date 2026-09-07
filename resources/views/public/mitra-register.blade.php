@@ -327,7 +327,7 @@
                         <div class="custom-file-dropzone" onclick="document.getElementById('ktp_file').click()">
                             <i class="fa-solid fa-cloud-arrow-up text-success fs-3 mb-2"></i>
                             <div class="fw-bold text-dark fs-7">Klik untuk memilih foto KTP atau seret ke sini</div>
-                            <div class="text-muted fs-8">Format JPG, PNG, atau PDF. Maksimal 3 MB. Pastikan data KTP terbaca jelas.</div>
+                            <div class="text-muted fs-8">Format JPG, JPEG, PNG, WEBP, atau PDF. Maksimal 10 MB. Pastikan data KTP terbaca jelas.</div>
                             <input type="file" name="ktp_file" id="ktp_file" class="d-none" accept="image/*,application/pdf" required onchange="previewKtp(this)">
                         </div>
                         <div id="ktpPreviewBox" class="mt-2.5 p-2 rounded-3 border bg-light d-none align-items-center justify-content-between">
@@ -408,26 +408,53 @@
 
                     <!-- Interactive Leaflet Map Pinpoint -->
                     <div class="col-12">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-1.5">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-2">
                             <label class="form-label fw-bold text-dark fs-7 mb-0">
-                                <i class="fa-solid fa-map-pin text-danger me-1"></i> Titik Lokasi Peta (Maps Pin)
+                                <i class="fa-solid fa-map-pin text-danger me-1"></i> Titik Lokasi Peta (Maps Pin &amp; Koordinat)
                             </label>
-                            <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-8 fw-semibold" onclick="locateUserPosition()">
-                                <i class="fa-solid fa-crosshairs me-1"></i> Gunakan Lokasi GPS Saya
-                            </button>
+                            <div class="d-flex align-items-center gap-1.5 flex-wrap">
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-2.5 py-1 fs-8" onclick="resetToDefaultPosition()" title="Pusatkan kembali ke koordinat Alun-alun / Tegal">
+                                    <i class="fa-solid fa-rotate-left me-1"></i> Reset Titik Tegal
+                                </button>
+                                <button type="button" class="btn btn-sm btn-outline-success rounded-pill px-3 py-1 fs-8 fw-semibold" onclick="locateUserPosition()">
+                                    <i class="fa-solid fa-crosshairs me-1"></i> Gunakan GPS Saya
+                                </button>
+                            </div>
                         </div>
+
+                        <!-- Manual Coordinate Inputs (Two-Way Sync) -->
+                        <div class="p-3 bg-light rounded-3 border mb-2.5">
+                            <div class="row g-2 align-items-center">
+                                <div class="col-12 col-sm-6">
+                                    <label for="map_lat" class="form-label fs-8 fw-bold text-dark mb-1">
+                                        <i class="fa-solid fa-arrows-up-down text-primary me-1"></i> Latitude (Garis Lintang)
+                                    </label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white text-muted font-monospace fs-8">Lat</span>
+                                        <input type="number" step="any" min="-90" max="90" name="latitude" id="map_lat" class="form-control font-monospace py-1 px-2.5 bg-white" placeholder="Contoh: -6.8797000" value="{{ old('latitude', '-6.8797000') }}" oninput="handleManualCoordInput()" onchange="handleManualCoordInput()">
+                                    </div>
+                                    <div class="invalid-feedback fs-9" id="lat-feedback">Latitude harus bernilai antara -90 dan 90.</div>
+                                </div>
+                                <div class="col-12 col-sm-6">
+                                    <label for="map_lng" class="form-label fs-8 fw-bold text-dark mb-1">
+                                        <i class="fa-solid fa-arrows-left-right text-primary me-1"></i> Longitude (Garis Bujur)
+                                    </label>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-text bg-white text-muted font-monospace fs-8">Long</span>
+                                        <input type="number" step="any" min="-180" max="180" name="longitude" id="map_lng" class="form-control font-monospace py-1 px-2.5 bg-white" placeholder="Contoh: 109.1256000" value="{{ old('longitude', '109.1256000') }}" oninput="handleManualCoordInput()" onchange="handleManualCoordInput()">
+                                    </div>
+                                    <div class="invalid-feedback fs-9" id="lng-feedback">Longitude harus bernilai antara -180 dan 180.</div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center justify-content-between mt-2 pt-1.5 border-top border-secondary-subtle fs-8 text-muted flex-wrap gap-2">
+                                <span><i class="fa-solid fa-circle-info text-primary me-1"></i> Anda dapat mengetik langsung koordinat Latitude &amp; Longitude (misal dari Google Maps), atau klik &amp; geser pin penanda pada peta di bawah ini.</span>
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5" id="coord-status">
+                                    <i class="fa-solid fa-arrows-rotate me-1"></i> Peta Tersinkron
+                                </span>
+                            </div>
+                        </div>
+
                         <div id="leaflet-pin-map"></div>
-                        <div class="d-flex align-items-center gap-3 mt-2 flex-wrap">
-                            <div class="d-flex align-items-center gap-1.5 fs-8 text-muted">
-                                <span>Latitude:</span>
-                                <input type="text" name="latitude" id="map_lat" class="form-control form-control-sm font-mono py-0.5 px-2 text-center" style="width: 110px;" value="{{ old('latitude', '-6.8797000') }}" readonly>
-                            </div>
-                            <div class="d-flex align-items-center gap-1.5 fs-8 text-muted">
-                                <span>Longitude:</span>
-                                <input type="text" name="longitude" id="map_lng" class="form-control form-control-sm font-mono py-0.5 px-2 text-center" style="width: 110px;" value="{{ old('longitude', '109.1256000') }}" readonly>
-                            </div>
-                            <small class="text-muted fs-8"><i class="fa-solid fa-circle-info me-1"></i> Geser penanda merah atau klik peta untuk menentukan titik koordinat presisi.</small>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -506,7 +533,7 @@
                         <div class="custom-file-dropzone" onclick="document.getElementById('location_photos').click()">
                             <i class="fa-solid fa-images text-success fs-3 mb-2"></i>
                             <div class="fw-bold text-dark fs-7">Klik untuk memilih 2 - 6 foto lokasi usaha tampak depan</div>
-                            <div class="text-muted fs-8">Format JPG, PNG, WEBP. Maks 3 MB per foto. Perlihatkan plang nama atau tampak luar.</div>
+                            <div class="text-muted fs-8">Format JPG, JPEG, PNG, WEBP, atau JFIF. Maksimal 10 MB per foto. Perlihatkan plang nama atau tampak luar.</div>
                             <input type="file" name="location_photos[]" id="location_photos" class="d-none" accept="image/*" multiple required onchange="previewMultiImages(this, 'locPreviewGrid')">
                         </div>
                         <div class="preview-thumb-grid" id="locPreviewGrid"></div>
@@ -833,15 +860,17 @@
         }
     }
 
-    // Leaflet Pin Map Setup
+    // Leaflet Pin Map Setup & Two-Way Coordinate Sync
+    let coordInputDebounce = null;
+
     function initLeafletPinMap() {
         if (map) {
             map.invalidateSize();
             return;
         }
 
-        const defaultLat = parseFloat(document.getElementById('map_lat').value) || -6.8797;
-        const defaultLng = parseFloat(document.getElementById('map_lng').value) || 109.1256;
+        const defaultLat = parseFloat(document.getElementById('map_lat').value) || -6.8797000;
+        const defaultLng = parseFloat(document.getElementById('map_lng').value) || 109.1256000;
 
         map = L.map('leaflet-pin-map', {
             center: [defaultLat, defaultLng],
@@ -870,14 +899,73 @@
     }
 
     function updateCoords(lat, lng) {
-        document.getElementById('map_lat').value = lat.toFixed(7);
-        document.getElementById('map_lng').value = lng.toFixed(7);
+        const latInput = document.getElementById('map_lat');
+        const lngInput = document.getElementById('map_lng');
+        latInput.value = parseFloat(lat).toFixed(7);
+        lngInput.value = parseFloat(lng).toFixed(7);
+        latInput.classList.remove('is-invalid');
+        lngInput.classList.remove('is-invalid');
+
+        const statusEl = document.getElementById('coord-status');
+        if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-check me-1"></i> Pin Tersinkron';
+            statusEl.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5';
+        }
+    }
+
+    function handleManualCoordInput() {
+        clearTimeout(coordInputDebounce);
+        coordInputDebounce = setTimeout(() => {
+            const latInput = document.getElementById('map_lat');
+            const lngInput = document.getElementById('map_lng');
+            const statusEl = document.getElementById('coord-status');
+
+            const latVal = parseFloat(latInput.value);
+            const lngVal = parseFloat(lngInput.value);
+
+            const isLatValid = !isNaN(latVal) && latVal >= -90 && latVal <= 90;
+            const isLngValid = !isNaN(lngVal) && lngVal >= -180 && lngVal <= 180;
+
+            latInput.classList.toggle('is-invalid', !isLatValid);
+            lngInput.classList.toggle('is-invalid', !isLngValid);
+
+            if (isLatValid && isLngValid) {
+                if (map && marker) {
+                    marker.setLatLng([latVal, lngVal]);
+                    map.panTo([latVal, lngVal]);
+                }
+                if (statusEl) {
+                    statusEl.innerHTML = '<i class="fa-solid fa-check me-1"></i> Pin Bergeser ke Koordinat Baru';
+                    statusEl.className = 'badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2 py-0.5';
+                }
+            } else {
+                if (statusEl) {
+                    statusEl.innerHTML = '<i class="fa-solid fa-circle-exclamation me-1"></i> Koordinat Tidak Valid';
+                    statusEl.className = 'badge bg-danger-subtle text-danger border border-danger-subtle rounded-pill px-2 py-0.5';
+                }
+            }
+        }, 300);
+    }
+
+    function resetToDefaultPosition() {
+        const defaultLat = -6.8797000;
+        const defaultLng = 109.1256000;
+        updateCoords(defaultLat, defaultLng);
+        if (map && marker) {
+            map.setView([defaultLat, defaultLng], 13);
+            marker.setLatLng([defaultLat, defaultLng]);
+        }
     }
 
     function locateUserPosition() {
         if (!navigator.geolocation) {
             alert('Fitur geolokasi tidak didukung oleh browser Anda.');
             return;
+        }
+        const statusEl = document.getElementById('coord-status');
+        if (statusEl) {
+            statusEl.innerHTML = '<i class="fa-solid fa-spinner fa-spin me-1"></i> Mendeteksi Lokasi GPS...';
+            statusEl.className = 'badge bg-info-subtle text-info border border-info-subtle rounded-pill px-2 py-0.5';
         }
         navigator.geolocation.getCurrentPosition(pos => {
             const lat = pos.coords.latitude;
@@ -888,6 +976,10 @@
                 updateCoords(lat, lng);
             }
         }, err => {
+            if (statusEl) {
+                statusEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation me-1"></i> GPS Gagal';
+                statusEl.className = 'badge bg-warning-subtle text-warning border border-warning-subtle rounded-pill px-2 py-0.5';
+            }
             alert('Tidak dapat mendeteksi lokasi GPS Anda: ' + err.message);
         });
     }

@@ -104,7 +104,8 @@
     @if ($surface === 'admin' && isset($moderationQueues))
         @include('dashboards.partials.admin-moderation-queues', [
             'moderationQueues' => $moderationQueues,
-            'totalModerationPending' => $totalModerationPending ?? 0
+            'totalModerationPending' => $totalModerationPending ?? 0,
+            'pendingMitras' => $pendingMitras ?? collect()
         ])
     @endif
 

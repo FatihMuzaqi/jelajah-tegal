@@ -2,18 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AuditLog;
 use App\Models\Category;
 use App\Models\Mitra;
 use App\Models\MitraKycDocument;
 use App\Models\Region;
 use App\Models\ServiceType;
 use App\Models\User;
+use App\Notifications\MitraRegistrationReceivedNotification;
 use App\Services\MitraMediaStorage;
+use App\Services\PlatformNotifier;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -53,7 +58,7 @@ class MitraRegistrationController extends Controller
             'owner_phone' => ['required', 'string', 'min:10', 'max:16', 'unique:users,phone'],
             'owner_email' => ['required', 'email', 'max:120', 'unique:users,email'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'ktp_file' => ['required', 'file', 'mimes:jpeg,jpg,png,pdf', 'max:3072'],
+            'ktp_file' => ['required', 'file', 'mimes:jpeg,jpg,png,webp,pdf,jfif,heic,heif', 'max:10240'],
 
             // 2. Data Usaha/Mitra
             'display_name' => ['required', 'string', 'max:150'],
@@ -70,15 +75,15 @@ class MitraRegistrationController extends Controller
             // 3. Legalitas
             'nib' => ['nullable', 'string', 'max:50'],
             'npwp' => ['nullable', 'string', 'max:50'],
-            'business_license_file' => ['nullable', 'file', 'mimes:jpeg,jpg,png,pdf', 'max:5120'],
-            'situ_file' => ['nullable', 'file', 'mimes:jpeg,jpg,png,pdf', 'max:5120'],
+            'business_license_file' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp,pdf,jfif,heic,heif', 'max:10240'],
+            'situ_file' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp,pdf,jfif,heic,heif', 'max:10240'],
 
             // 4. Dokumen Pendukung / Verifikasi
             'location_photos' => ['required', 'array', 'min:2', 'max:6'],
-            'location_photos.*' => ['required', 'file', 'mimes:jpeg,jpg,png,webp', 'max:3072'],
+            'location_photos.*' => ['required', 'file', 'mimes:jpeg,jpg,png,webp,jfif,heic,heif,bmp', 'max:10240'],
             'product_photos' => ['nullable', 'array', 'max:8'],
-            'product_photos.*' => ['file', 'mimes:jpeg,jpg,png,webp', 'max:3072'],
-            'asset_ownership_file' => ['nullable', 'file', 'mimes:jpeg,jpg,png,pdf', 'max:5120'],
+            'product_photos.*' => ['file', 'mimes:jpeg,jpg,png,webp,jfif,heic,heif,bmp', 'max:10240'],
+            'asset_ownership_file' => ['nullable', 'file', 'mimes:jpeg,jpg,png,webp,pdf,jfif,heic,heif', 'max:10240'],
 
             // 5. Data Rekening & Pembayaran
             'bank_code' => ['required', 'string', 'max:30'],
@@ -101,6 +106,9 @@ class MitraRegistrationController extends Controller
             'password.min' => 'Kata sandi minimal 8 karakter.',
             'password.confirmed' => 'Konfirmasi kata sandi tidak cocok.',
             'ktp_file.required' => 'Foto KTP penanggung jawab wajib diunggah.',
+            'ktp_file.file' => 'File KTP yang diunggah tidak valid.',
+            'ktp_file.mimes' => 'Format file KTP harus berupa gambar (JPG, JPEG, PNG, WEBP) atau dokumen PDF.',
+            'ktp_file.max' => 'Ukuran file KTP maksimal 10 MB.',
             'display_name.required' => 'Nama usaha / bisnis wajib diisi.',
             'service_type_id.required' => 'Silakan pilih jenis layanan usaha Anda.',
             'description.required' => 'Deskripsi singkat profil usaha wajib diisi.',
@@ -108,6 +116,19 @@ class MitraRegistrationController extends Controller
             'address.required' => 'Alamat lengkap tempat usaha wajib diisi.',
             'location_photos.required' => 'Wajib mengunggah minimal 2 foto lokasi usaha (tampak depan).',
             'location_photos.min' => 'Wajib mengunggah minimal 2 foto lokasi usaha (tampak depan).',
+            'location_photos.*.required' => 'File foto lokasi usaha wajib dipilih.',
+            'location_photos.*.file' => 'File foto lokasi usaha tidak valid.',
+            'location_photos.*.mimes' => 'Setiap foto lokasi usaha harus berupa gambar berformat JPG, JPEG, PNG, WEBP, atau JFIF.',
+            'location_photos.*.max' => 'Ukuran setiap foto lokasi usaha tidak boleh melebihi 10 MB.',
+            'product_photos.*.file' => 'File foto produk tidak valid.',
+            'product_photos.*.mimes' => 'Setiap foto produk harus berupa gambar berformat JPG, JPEG, PNG, WEBP, atau JFIF.',
+            'product_photos.*.max' => 'Ukuran setiap foto produk tidak boleh melebihi 10 MB.',
+            'business_license_file.mimes' => 'File izin usaha / NIB harus berupa dokumen PDF atau gambar (JPG, PNG).',
+            'business_license_file.max' => 'Ukuran file izin usaha maksimal 10 MB.',
+            'situ_file.mimes' => 'File SITU harus berupa dokumen PDF atau gambar (JPG, PNG).',
+            'situ_file.max' => 'Ukuran file SITU maksimal 10 MB.',
+            'asset_ownership_file.mimes' => 'Dokumen kepemilikan aset harus berupa file PDF atau gambar (JPG, PNG).',
+            'asset_ownership_file.max' => 'Ukuran dokumen kepemilikan aset maksimal 10 MB.',
             'bank_code.required' => 'Silakan pilih bank untuk penerimaan dana.',
             'account_number.required' => 'Nomor rekening bank wajib diisi.',
             'account_name.required' => 'Nama pemilik rekening bank wajib diisi.',
@@ -256,13 +277,103 @@ class MitraRegistrationController extends Controller
             $user->assignRole('mitra-owner');
             setPermissionsTeamId(null);
 
-            // Login user secara otomatis
-            Auth::login($user);
+            // 12. Notifikasi lonceng ke seluruh Administrator Platform
+            try {
+                app(PlatformNotifier::class)->administrators(
+                    'mitra.registration',
+                    $mitra->id,
+                    [
+                        'title' => 'Pendaftaran Mitra Baru',
+                        'message' => 'Mitra baru "' . $mitra->display_name . '" (' . ($mitra->serviceType?->name ?? 'Layanan') . ') mendaftar dan menunggu verifikasi.',
+                        'url' => route('admin.mitras.show', $mitra->id),
+                        'mitra_id' => $mitra->id,
+                    ]
+                );
+            } catch (\Throwable $e) {
+                Log::warning('Gagal mencatat notifikasi administrator pendaftaran mitra: ' . $e->getMessage());
+            }
+
+            // 13. Catat entri pada Audit Log
+            try {
+                AuditLog::create([
+                    'mitra_id' => $mitra->id,
+                    'actor_user_id' => $user->id,
+                    'event' => 'mitra.registered',
+                    'auditable_type' => Mitra::class,
+                    'auditable_id' => $mitra->id,
+                    'before_values' => [],
+                    'after_values' => [
+                        'display_name' => $mitra->display_name,
+                        'service_type_id' => $mitra->service_type_id,
+                        'category_id' => $mitra->category_id,
+                        'region_id' => $mitra->region_id,
+                        'status' => 'pending',
+                    ],
+                    'metadata' => [
+                        'owner_name' => $validated['owner_name'],
+                        'owner_email' => $validated['owner_email'],
+                        'ip' => $request->ip(),
+                    ],
+                    'created_at' => now(),
+                ]);
+            } catch (\Throwable $e) {
+                Log::warning('Gagal mencatat audit log pendaftaran mitra: ' . $e->getMessage());
+            }
+
+            // 14. Kirim email konfirmasi penerimaan pendaftaran ke pemilik mitra via Gmail Jelajah Tegal
+            DB::afterCommit(function () use ($mitra, $validated) {
+                try {
+                    Notification::route('mail', $validated['owner_email'])
+                        ->notify(new MitraRegistrationReceivedNotification(
+                            $mitra,
+                            $validated['owner_name'],
+                            $validated['owner_email']
+                        ));
+                } catch (\Throwable $e) {
+                    Log::warning('Gagal mengirim email tanda terima pendaftaran mitra: ' . $e->getMessage());
+                }
+            });
+
+            // Calon mitra tidak perlu login prematur sebagai unverified user
+            // Verifikasi email dan login otomatis akan diberikan melalui email saat disetujui admin
+            Auth::logout();
 
             return $mitra;
         });
 
         return redirect()->route('mitra.register.success', ['mitra' => $mitra->id]);
+    }
+
+    public function autoLogin(Request $request, User $user, Mitra $mitra): RedirectResponse
+    {
+        // 1. Verifikasi kecocokan user dengan mitra
+        if ($mitra->owner_user_id !== $user->id && ! $mitra->members()->where('user_id', $user->id)->exists()) {
+            abort(403, 'Tautan verifikasi tidak cocok dengan data kemitraan.');
+        }
+
+        // 2. Tandai email sebagai terverifikasi
+        if (! $user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+        }
+
+        // 3. Pastikan akun user aktif
+        if ($user->status !== 'active') {
+            $user->status = 'active';
+            $user->save();
+        }
+
+        // 4. Pastikan status mitra sudah disetujui (active)
+        if ($mitra->status !== 'active') {
+            return redirect()->route('login')->with('warning', 'Pendaftaran kemitraan Anda masih dalam proses kurasi oleh administrator.');
+        }
+
+        // 5. Login otomatis
+        Auth::login($user);
+        $request->session()->regenerate();
+        session(['active_mitra_id' => $mitra->id]);
+        $user->update(['last_login_at' => now()]);
+
+        return redirect()->route('mitra.dashboard')->with('status', 'Selamat! Akun kemitraan "' . $mitra->display_name . '" telah terverifikasi dan Anda berhasil masuk.');
     }
 
     public function success(Request $request): View

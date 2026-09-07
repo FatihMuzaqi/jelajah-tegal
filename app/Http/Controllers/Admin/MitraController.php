@@ -10,10 +10,14 @@ use App\Http\Requests\Admin\UpdateMitraStatusRequest;
 use App\Models\DatabaseNotification;
 use App\Models\Mitra;
 use App\Models\Region;
+use App\Notifications\MitraVerificationApprovedNotification;
+use App\Notifications\MitraVerificationRejectedNotification;
 use App\Services\AuditLogger;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -157,6 +161,14 @@ class MitraController extends Controller
                     $mitra->owner?->assignRole('mitra-owner');
                     setPermissionsTeamId(null);
                     app(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+
+                    // Otomatis verifikasi email akun pemilik mitra saat disetujui admin
+                    if ($mitra->owner) {
+                        $mitra->owner->forceFill([
+                            'email_verified_at' => $mitra->owner->email_verified_at ?? now(),
+                            'status' => 'active',
+                        ])->save();
+                    }
                 }
             } elseif ($status === 'suspended') {
                 $updateData['suspended_at'] = now();
@@ -190,6 +202,48 @@ class MitraController extends Controller
                 'reason' => $request->validated('reason'),
                 'is_verified' => $mitra->is_verified,
             ], $request->user());
+
+            // Kirim email feedback resmi ke akun pemilik mitra via Gmail Jelajah Tegal
+            DB::afterCommit(function () use ($mitra, $status, $request) {
+                try {
+                    $owner = $mitra->owner;
+                    $recipientEmail = $owner?->email ?? $mitra->contact_email;
+                    $recipientName = $owner?->name ?? $mitra->display_name;
+
+                    if ($recipientEmail) {
+                        if ($status === 'active') {
+                            // Buat signed auto-login URL (magic link) berlaku 14 hari
+                            $autoLoginUrl = \Illuminate\Support\Facades\URL::temporarySignedRoute(
+                                'mitra.auto-login',
+                                now()->addDays(14),
+                                ['user' => $mitra->owner_user_id, 'mitra' => $mitra->id]
+                            );
+
+                            Notification::route('mail', $recipientEmail)
+                                ->notify(new MitraVerificationApprovedNotification(
+                                    $mitra,
+                                    $recipientName,
+                                    $recipientEmail,
+                                    $request->validated('admin_notes'),
+                                    $autoLoginUrl
+                                ));
+                        } elseif ($status === 'rejected') {
+                            Notification::route('mail', $recipientEmail)
+                                ->notify(new MitraVerificationRejectedNotification(
+                                    $mitra,
+                                    $request->validated('reason') ?? 'Berkas atau data pendaftaran belum memenuhi syarat standardisasi.',
+                                    $recipientName,
+                                    $recipientEmail
+                                ));
+                        }
+                    }
+                } catch (\Throwable $e) {
+                    Log::warning('Gagal mengirim email feedback status mitra: ' . $e->getMessage(), [
+                        'mitra_id' => $mitra->id,
+                        'status' => $status,
+                    ]);
+                }
+            });
         });
 
         $message = match ($status) {
