@@ -453,9 +453,9 @@
                                 <input type="hidden" name="end_date" value="{{ $data['end_date'] }}">
                                 <input type="hidden" name="pax" value="{{ $data['pax'] }}">
 
-                                <button type="submit" class="btn btn-lokantara btn-lg w-100 rounded-pill py-3 fw-bold fs-7 shadow-sm d-inline-flex align-items-center justify-content-center gap-2">
+                                <button type="submit" class="btn btn-lokantara btn-lg w-100 rounded-pill py-2.5 fw-bold fs-7 shadow-sm d-inline-flex align-items-center justify-content-center gap-2 text-nowrap">
                                     <i class="fa-solid fa-bag-shopping"></i>
-                                    <span>Pesan Rencana Ini (1-Click)</span>
+                                    <span>Pesan Rencana Ini</span>
                                 </button>
                             </form>
 
